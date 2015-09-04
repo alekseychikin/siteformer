@@ -1,0 +1,5 @@
+<?
+
+	class SFTypeDefault extends SFType
+	{
+	}

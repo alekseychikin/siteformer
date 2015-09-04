@@ -1,0 +1,5 @@
+<?
+
+	class SFTypeText extends SFType
+	{
+	}

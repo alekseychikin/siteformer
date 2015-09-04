@@ -1,0 +1,6 @@
+<?
+
+	class SFTypeArray extends SFType
+	{
+
+	}
