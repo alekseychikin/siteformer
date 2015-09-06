@@ -126,7 +126,7 @@ class S3
 	 * @access public
 	 * @static
 	 */
-	public static $useSSLVersion = CURL_SSLVERSION_TLSv1;
+	// public static $useSSLVersion = CURL_SSLVERSION_TLSv1;
 
 	/**
 	 * Use PHP exceptions?
@@ -2142,7 +2142,7 @@ final class S3Request
 		if (S3::$useSSL)
 		{
 			// Set protocol version
-			curl_setopt($curl, CURLOPT_SSLVERSION, S3::$useSSLVersion);
+			// curl_setopt($curl, CURLOPT_SSLVERSION, S3::$useSSLVersion);
 
 			// SSL Validation can now be optional for those with broken OpenSSL installations
 			curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, S3::$useSSLValidation ? 2 : 0);
