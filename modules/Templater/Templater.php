@@ -194,7 +194,7 @@
       if (preg_match_all($regExpForVariables, $template, $replaces, PREG_SET_ORDER)) {
         foreach ($replaces as $replace) {
           $subTemplate = $replace[0];
-          $replace = preg_replace('/([(!?\s\+\-{]\[\()([a-zA-Z0-9_]+)/s', '$1$$2', $subTemplate);
+          $replace = preg_replace('/([\(\)!\?\s\+\-\{\]\[])([a-zA-Z0-9_]+)/s', '$1$$2', $subTemplate);
           $template = str_replace($subTemplate, $replace, $template);
         }
       }
@@ -266,7 +266,6 @@
       // echo ($template)."\n\n\n\n";
       //
       $regExpForVariables = '/(\$[a-zA-Z0-9_]+)(\.[a-zA-Z0-9_]+|\[[a-zA-Z0-9_]+\])+([^a-zA-Z0-9_]?)/s';
-      //335
       if (preg_match_all($regExpForVariables, $template, $replaces, PREG_SET_ORDER)) {
         foreach ($replaces as $replace) {
           $subTemplate = $replace[0];
@@ -290,7 +289,7 @@
         foreach ($replaces as $replace) {
           $subTemplate = $replace[0];
           $replace = str_replace('$', '', $subTemplate);
-          if (in_array($replace, $exclussion) || function_exists($replace) || class_exists($replace) || is_numeric($replace)) {
+          if (in_array($replace, $exclussion) || function_exists($replace) || class_exists($replace) || preg_match('/^\d+$/', $replace)) {
             // $template = str_replace($subTemplate, $replace, $template);
             $varregexp = '/(\\'.$subTemplate.')([^a-zA-Z0-9_])/';
             $template = preg_replace($varregexp, $replace.'$2', $template);
