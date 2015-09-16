@@ -25,8 +25,11 @@
       header('HTTP/1.1 '.$code.' '.self::$code[$code]);
     }
 
+    private static $working = true;
+
     public static function error($status, $message)
     {
+      if (!self::$working) return false;
       self::code($status);
       if (in_array($status, self::$stopsCodes)) {
         die($message);
@@ -38,7 +41,7 @@
         self::set('error', $message);
       }
       self::render();
-      die();
+      self::$working = false;
     }
 
     public static function setStatus($code)
@@ -87,6 +90,7 @@
 
     public static function run($action, $params = array())
     {
+      if (!self::$working) return false;
       if (in_array(substr($action, strlen($action) - 6), self::$types)) {
         $type = substr($action, strlen($action) - 6);
         SFResponse::setType($type);
@@ -118,6 +122,7 @@
 
     public static function isActionExists($action)
     {
+      if (!self::$working) return false;
       if (in_array(substr($action, strlen($action) - 6), self::$types)) {
         $type = substr($action, strlen($action) - 6);
         $action = substr($action, 0, strlen($action) - strlen($type) - 1);
@@ -159,6 +164,7 @@
 
     public static function returnData($content = '')
     {
+      if (!self::$working) return false;
       $type = self::$type;
       if ($type == '__json') {
         echo json_encode(self::$result);
@@ -177,7 +183,7 @@
           }
           else {
             print_r(self::$result);
-            die();
+            self::$working = false;
           }
         }
 
@@ -186,11 +192,13 @@
 
     public static function render($content = '')
     {
+      if (!self::$working) return false;
       self::returnData($content);
     }
 
     public static function redir($path)
     {
+      if (!self::$working) return false;
       $_SESSION['location'] = $path;
       header('Location: /', true, 301);
       die();
@@ -198,6 +206,12 @@
 
     public static function refresh()
     {
+      if (!self::$working) return false;
       self::redir($_SERVER['REQUEST_URI']);
+    }
+
+    public static function close()
+    {
+      self::$working = false;
     }
   }

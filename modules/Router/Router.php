@@ -11,13 +11,18 @@
 
     public static function __after()
     {
+      SFLog::write('Begin __after module SFRouter');
       $result = self::parse();
+      SFLog::write('Done parse');
       if (file_exists(ACTIONS.'__before.php')) {
         SFResponse::run(ACTIONS.'__before');
       }
+      SFLog::write('Done __before.php at module SFRouter');
       if (!$result) return false;
       SFResponse::run($result['path'], $result['params']);
-      die();
+      SFLog::write('Runed ' . $result['path'] . ' at module SFRouter');
+      SFResponse::close();
+      SFLog::write('Ends __after module SFRouter');
     }
 
     public static function addRule($url, $action)
@@ -27,6 +32,7 @@
 
     public static function init($params)
     {
+      SFLog::write('Init module SFRouter');
       self::$routingPath = $params['rotes'];
       if (isset($params['languages'])) {
         self::$languages = $params['languages'];
@@ -40,59 +46,60 @@
         }
       }
       SFResponse::set('uri_items', $uri);
-        self::$uri = $uri;
-        $uri = array();
-        $max = 10;
-        $i = 1;
-        foreach (self::$uri as $key => $val) {
-          if ($i <= $max) {
-            if (!empty($val)) {
-              $uri[] = self::$uri[$key];
-              $i++;
-            }
+      self::$uri = $uri;
+      $uri = array();
+      $max = 10;
+      $i = 1;
+      foreach (self::$uri as $key => $val) {
+        if ($i <= $max) {
+          if (!empty($val)) {
+            $uri[] = self::$uri[$key];
+            $i++;
           }
         }
-        self::$uri = $uri;
-        if (isset(self::$uri[0]) && in_array(self::$uri[0], self::$languages)) {
-          self::$language = self::$uri[0];
-          self::$uri = array_splice(self::$uri, 1);
-          SFResponse::set('lang', '/'.self::$language, true);
+      }
+      self::$uri = $uri;
+      if (isset(self::$uri[0]) && in_array(self::$uri[0], self::$languages)) {
+        self::$language = self::$uri[0];
+        self::$uri = array_splice(self::$uri, 1);
+        SFResponse::set('lang', '/'.self::$language, true);
+      }
+      else if (count(self::$languages)) {
+        self::$language = self::$languages[0];
+      }
+      if (substr(self::uri(self::uriNum() - 1), 0, 2) == '__') {
+        if (in_array(self::uri(self::uriNum() - 1), SFResponse::$types)) {
+          SFResponse::setType(self::uri(self::uriNum() - 1));
+          unset(self::$uri[self::uriNum() - 1]);
+          if (substr($_SERVER['REQUEST_URI'], strlen($_SERVER['REQUEST_URI']) - 1, 1) == '/') {
+            $_SERVER['REQUEST_URI'] = substr($_SERVER['REQUEST_URI'], 0, strlen($_SERVER['REQUEST_URI']) - 1);
+          }
+          $_SERVER['REQUEST_URI'] = substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/')).'/';
         }
-        else if (count(self::$languages)) {
-          self::$language = self::$languages[0];
-        }
-        if (substr(self::uri(self::uriNum() - 1), 0, 2) == '__') {
-          if (in_array(self::uri(self::uriNum() - 1), SFResponse::$types)) {
-            SFResponse::setType(self::uri(self::uriNum() - 1));
-            unset(self::$uri[self::uriNum() - 1]);
-            if (substr($_SERVER['REQUEST_URI'], strlen($_SERVER['REQUEST_URI']) - 1, 1) == '/') {
-              $_SERVER['REQUEST_URI'] = substr($_SERVER['REQUEST_URI'], 0, strlen($_SERVER['REQUEST_URI']) - 1);
-            }
-            $_SERVER['REQUEST_URI'] = substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/')).'/';
+      }
+      // if (preg_match("/^page(\d{1,})$/", self::uri(self::uriNum() - 1))) {
+      // 	self::$num_page = (int) substr(self::uri(self::uriNum() - 1), 4);
+      // 	unset(self::$uri[self::uriNum() - 1]);
+      // }
+      if (strpos($_SERVER['REQUEST_URI'], '?') !== false) {
+        $_SERVER['REQUEST_URI'];
+        $get = substr($_SERVER['REQUEST_URI'], strpos($_SERVER['REQUEST_URI'], '?') + 1);
+        $get = explode('&', $get);
+        foreach ($get as $val) {
+          $key = explode('=', $val);
+          if (isset($key[1])) {
+            $_GET[$key[0]] = $key[1];
+          }
+          else {
+            $_GET[$key[0]] = '';
           }
         }
-        // if (preg_match("/^page(\d{1,})$/", self::uri(self::uriNum() - 1))) {
-        // 	self::$num_page = (int) substr(self::uri(self::uriNum() - 1), 4);
-        // 	unset(self::$uri[self::uriNum() - 1]);
-        // }
-        if (strpos($_SERVER['REQUEST_URI'], '?') !== false) {
-          $_SERVER['REQUEST_URI'];
-          $get = substr($_SERVER['REQUEST_URI'], strpos($_SERVER['REQUEST_URI'], '?') + 1);
-          $get = explode('&', $get);
-          foreach ($get as $val) {
-            $key = explode('=', $val);
-            if (isset($key[1])) {
-              $_GET[$key[0]] = $key[1];
-            }
-            else {
-              $_GET[$key[0]] = '';
-            }
-          }
-        }
-        $_SERVER['REQUEST_URI'] = '/'.implode('/', self::$uri).'/';
-        if ($_SERVER['REQUEST_URI'] == '//') {
-          $_SERVER['REQUEST_URI'] = '/';
-        }
+      }
+      $_SERVER['REQUEST_URI'] = '/'.implode('/', self::$uri).'/';
+      if ($_SERVER['REQUEST_URI'] == '//') {
+        $_SERVER['REQUEST_URI'] = '/';
+      }
+      SFLog::write('Init module SFRouter');
     }
 
     public static function language()

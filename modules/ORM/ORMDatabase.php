@@ -8,6 +8,9 @@
     private static $showError = false;
     private static $lastRes;
     protected static $defaultBase = 'default';
+    private static $reports = false;
+    private static $cachedPrimaryFields = array();
+    private static $cachedFields = array();
 
     protected static function hasConnection($alias = 'default')
     {
@@ -27,11 +30,26 @@
 
     private static function makeException($sqlError)
     {
-      $e = new Exception;
+      $e = new Exception();
       $trace = $e->getTrace();
       echo self::$lastSQL . "\n\n" . $sqlError."\n\n";
       print_r($trace);
       die();
+    }
+
+    private static function putReport($sql, $time)
+    {
+      if (strpos($sql, '__events') === false) {
+        SFPath::mkdir(self::$reports);
+        if (!file_exists(self::$reports.'queries.log')) {
+          $file = fopen(self::$reports.'queries.log', 'w');
+        }
+        else {
+          $file = fopen(self::$reports.'queries.log', 'a');
+        }
+        fputs($file, $sql." ".$time."\n\n");
+        fclose($file);
+      }
     }
 
     protected static function query($sql, $alias = false, $source = false, $saveQuery = true)
@@ -49,6 +67,7 @@
       if ($saveQuery) {
         self::$lastSQL = $sql;
       }
+      $timestart = microtime(true);
       if (defined('PDO::ATTR_DRIVER_NAME')) {
         $res = self::$connections[$alias]->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_SCROLL));
         $res->execute();
@@ -66,6 +85,10 @@
         else {
           $res = mysql_query($sql, self::$connections[$alias]);
         }
+      }
+      $endtime = microtime(true);
+      if (self::$reports !== false) {
+        self::putReport($sql, number_format($endtime - $timestart, 4));
       }
       if ($source) {
         return $res;
@@ -144,6 +167,9 @@
           mysql_select_db($configs['database'], self::$connections[$params['alias']]);
         }
       }
+      if (isset($configs['reports'])) {
+        self::$reports = $configs['reports'];
+      }
     }
 
     private static function fetch($result, $firstRow = false)
@@ -170,6 +196,12 @@
     protected function getPrimaryFields($alias = 'default', $table)
     {
       if (!isset(self::$connections[$alias]) || !self::$connections[$alias]) self::makeException('There is no MySQL connection');
+      if (!isset(self::$cachedPrimaryFields[$alias])) {
+        self::$cachedPrimaryFields[$alias] = array();
+      }
+      if (isset(self::$cachedPrimaryFields[$alias][$table])) {
+        return self::$cachedPrimaryFields[$alias][$table];
+      }
       $primaryFields = array();
       $result = self::query('SELECT * FROM `'.$table.'` LIMIT 1', $alias, true, false);
       if (defined('PDO::ATTR_DRIVER_NAME')) {
@@ -202,12 +234,19 @@
           }
         }
       }
+      self::$cachedPrimaryFields[$alias][$table] = $primaryFields;
       return $primaryFields;
     }
 
     protected function getFields($table, $alias = 'default')
     {
       if (!self::$connections[$alias]) die('There is no MySQL connection');
+      if (!isset(self::$cachedFields[$alias])) {
+        self::$cachedFields[$alias] = array();
+      }
+      if (isset(self::$cachedFields[$alias][$table])) {
+        return self::$cachedFields[$alias][$table];
+      }
       $fields = array();
       $result = self::query('SELECT * FROM `'.$table.'` LIMIT 1', $alias, true, false);
       if (defined('PDO::ATTR_DRIVER_NAME')) {
@@ -236,6 +275,7 @@
           $fields[] = $fieldName;
         }
       }
+      self::$cachedFields[$alias][$table] = $fields;
       return $fields;
     }
   }

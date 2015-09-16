@@ -12,6 +12,7 @@
 
     public static function init($params)
     {
+      SFLog::write('Init module SFTemplater');
       self::$templatePath = $params['path'];
       self::$templateCompilePath = $params['compile_path'];
       define('TEMPLATES', self::$templatePath);
@@ -31,6 +32,7 @@
         }
       }
       self::checkAllTemplatesIsCompiled();
+      SFLog::write('Inited module SFTemplater');
     }
 
     private static function isNeedToCompile($templatePath)
