@@ -24,6 +24,19 @@
         if ($key == 'compile_path' || $key == 'path') continue;
         SFResponse::set($key, $value);
       }
+
+      // $template = "<div>{% if position.categories.sizes[size].bonus != 0 %}</div><div>{% if position.categories.sizes[size].bonus != 0 %}</div>";
+      // $regExp = '/{%.*%}/sU';
+      // $regExpForVariables = '/(\$[a-zA-Z0-9_]+)(\.[a-zA-Z0-9_]+|\[[a-zA-Z0-9_]+\])+([^a-zA-Z0-9_]?)/s';
+      // $regExpForVariables = '/([a-zA-Z0-9_]+)(\.[a-zA-Z0-9_]+|\[[a-zA-Z0-9_]+\])+([^a-zA-Z0-9_]?)/s';
+      // if (preg_match_all($regExp, $template, $replaces, PREG_SET_ORDER)) {
+      //   foreach ($replaces as $replace) {
+      //     $subTemplate = $replace[0];
+      //     echo preg_match($regExpForVariables, $subTemplate);
+      //   }
+      // }
+
+
       $templates = self::recursiveTemplates($params['path']);
       foreach ($templates as $templatePath) {
         if (self::isNeedToCompile($templatePath)) {
@@ -267,12 +280,14 @@
 
       // echo ($template)."\n\n\n\n";
       //
-      $regExpForVariables = '/(\$[a-zA-Z0-9_]+)(\.[a-zA-Z0-9_]+|\[[a-zA-Z0-9_]+\])+([^a-zA-Z0-9_]?)/s';
+      $regExpForVariables = '/(\$[a-zA-Z0-9_]+)(\.[a-zA-Z0-9_]+|\[\$[a-zA-Z0-9_]+\])+([^a-zA-Z0-9_]?)/s';
       if (preg_match_all($regExpForVariables, $template, $replaces, PREG_SET_ORDER)) {
         foreach ($replaces as $replace) {
           $subTemplate = $replace[0];
+          // echo $subTemplate."\n";
           $subelementexp = '/\.([a-zA-Z0-9_]+)([^a-zA-Z0-9_]?)/s';
           $replace = $subTemplate;
+          // echo $replace."\n\n";
           while (preg_match($subelementexp, $replace, $res)) {
             $replace = preg_replace($subelementexp, '[\'$1\']$2', $replace);
           }
