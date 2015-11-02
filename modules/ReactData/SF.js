@@ -7,17 +7,17 @@
   var _urlsParams = {};
   var lastEvent = 0;
 
-  var parsePostData = function (postData, name)
+  function parsePostData (postData, name)
   {
     var str = '';
     var i;
+    var data = [];
     if (typeof postData == 'string' ||
         typeof postData == 'number' ||
         typeof postData == 'boolean') {
       return (name ? name : '') + '=' + postData;
     }
     else if (postData instanceof Array) {
-      var data = [];
       for (i in postData) {
         if (!Object.prototype.hasOwnProperty.call(postData, i)) continue;
         data.push(parsePostData(postData[i], (name ? name + '[' + i + ']' : i)));
@@ -25,7 +25,6 @@
       return data.join('&');
     }
     else if (typeof postData == 'object') {
-      var data = [];
       for (i in postData) {
         if (!Object.prototype.hasOwnProperty.call(postData, i)) continue;
         if (i == '__renderCache' || i == '__renderElement') continue;
@@ -33,15 +32,15 @@
       }
       return data.join('&');
     }
-  };
+  }
 
-  var createXMLHTTPObject = function()
+  function createXMLHTTPObject ()
   {
     var XMLHttpFactories = [
-        function () {return new XMLHttpRequest()},
-        function () {return new ActiveXObject("Msxml2.XMLHTTP")},
-        function () {return new ActiveXObject("Msxml3.XMLHTTP")},
-        function () {return new ActiveXObject("Microsoft.XMLHTTP")}
+        function () {return new XMLHttpRequest();},
+        function () {return new ActiveXObject("Msxml2.XMLHTTP");},
+        function () {return new ActiveXObject("Msxml3.XMLHTTP");},
+        function () {return new ActiveXObject("Microsoft.XMLHTTP");}
     ];
     var xmlhttp = false;
     for (var i = 0; i < XMLHttpFactories.length;i++) {
@@ -54,9 +53,9 @@
       break;
     }
     return xmlhttp;
-  };
+  }
 
-  var template = function ()
+  function template ()
   {
     var cache = {};
     var id;
@@ -104,9 +103,9 @@
       };
       return data ? fn( data ) : fn;
     };
-  };
+  }
 
-  var request = function (url, postData, success, error)
+  function request (url, postData, success, error)
   {
     var req = createXMLHTTPObject();
     if (!req) return false;
@@ -146,7 +145,7 @@
         if (typeof error == 'function') {
           error(req, result);
         }
-        delete req;
+        req = null;
         return;
       }
       // if (!result) {
@@ -155,55 +154,55 @@
       if (typeof success == 'function') {
         success(result, req);
       }
-      delete req;
+      req = null;
     };
     req.send(data);
     return req;
-  };
+  }
 
   request.addDefaultError = function (cb)
   {
     request.__defaultError = cb;
   };
 
-  var prepareCheckEvents = function (result)
+  function prepareCheckEvents (result)
   {
     var extendresult = {};
     for (var item in result) {
       if (item == 'result') continue;
       extendresult[item] = result[item];
     }
-    var resultRows, item, action, eventsOfResults, ev;
+    var resultRows, action, eventsOfResults, ev, i, j;
     var hasOwn = Object.prototype.hasOwnProperty;
     if (result._getLastState && result.result && result._getLastState > lastEvent) {
-      for (var action in result.result) {
+      for (action in result.result) {
         if (!hasOwn.call(result.result, action)) continue;
         eventsOfResults = result.result[action];
         for (ev in eventsOfResults) {
           if (!hasOwn.call(eventsOfResults, ev)) continue;
           switch (ev) {
             case 'insert':
-              for (var i = 0, max = insertEvents.length; i < max; i += 1) {
+              for (i = 0, max = insertEvents.length; i < max; i += 1) {
                 if (action == insertEvents[i].url) {
-                  for (var j = 0, may = eventsOfResults[ev].length; j < may; j += 1) {
+                  for (j = 0, may = eventsOfResults[ev].length; j < may; j += 1) {
                     insertEvents[i].callback(eventsOfResults[ev][j].data, eventsOfResults[ev][j].params, extendresult);
                   }
                 }
               }
               break;
             case 'update':
-              for (var i = 0, max = updateEvents.length; i < max; i += 1) {
+              for (i = 0, max = updateEvents.length; i < max; i += 1) {
                 if (action == updateEvents[i].url) {
-                  for (var j = 0, may = eventsOfResults[ev].length; j < may; j += 1) {
+                  for (j = 0, may = eventsOfResults[ev].length; j < may; j += 1) {
                     updateEvents[i].callback(eventsOfResults[ev][j].data, eventsOfResults[ev][j].params, extendresult);
                   }
                 }
               }
               break;
             case 'delete':
-              for (var i = 0, max = removeEvents.length; i < max; i += 1) {
+              for (i = 0, max = removeEvents.length; i < max; i += 1) {
                 if (action == removeEvents[i].url) {
-                  for (var j = 0, may = eventsOfResults[ev].length; j < may; j += 1) {
+                  for (j = 0, may = eventsOfResults[ev].length; j < may; j += 1) {
                     removeEvents[i].callback(eventsOfResults[ev][j].data, eventsOfResults[ev][j].params, extendresult);
                   }
                 }
@@ -216,9 +215,9 @@
         lastEvent = result._getLastState;
       }
     }
-  };
+  }
 
-  var send = function (url)
+  function send (url)
   {
     var data;
     return {
@@ -239,10 +238,10 @@
           callback.apply(root, (result.result ? result.result : result), error);
         });
       }
-    }
-  };
+    };
+  }
 
-  var listen = function (url)
+  function listen (url)
   {
     if (!url) {
       console.error("url is not defined");
@@ -283,7 +282,7 @@
         return this;
       }
     };
-  };
+  }
 
   var lastTimeOut = 0;
   var checkDataProgressing = false;
@@ -298,15 +297,15 @@
     checkData();
   });
 
-  var stopUpdates = function ()
+  function stopUpdates ()
   {
     if (lastRequest) {
       lastRequest.abort();
     }
     checkDataProgressing = false;
-  };
+  }
 
-  var checkData = function (withDrop)
+  function checkData (withDrop)
   {
     withDrop || (withDrop = false);
     clearTimeout(lastTimeOut);
@@ -314,12 +313,13 @@
       lastRequest.abort();
       checkDataProgressing = false;
     }
+    var url, i, param;
     if ((insertEvents.length || updateEvents.length || removeEvents.length) && !checkDataProgressing) {
       checkDataProgressing = true;
       var arrUrl;
       var data = {check_data: true, __params: {}};
       var hasOwn = Object.prototype.hasOwnProperty;
-      for (var i in _urls) {
+      for (i in _urls) {
         if (hasOwn.call(_urls, i)) {
           data.__params[_urls[i]] || (data.__params[_urls[i]] = {});
           for (url in _urlsParams) {
@@ -362,47 +362,47 @@
     {
       checkData();
     }, timeout);
-  };
+  }
 
-  var param = function ($field)
+  function param ($field)
   {
     return document.getElementById('url_param_' + $field).value;
-  };
+  }
 
-  var clone = function (obj)
+  function clone (obj)
   {
     var copy;
 
     // Handle the 3 simple types, and null or undefined
-    if (null == obj || "object" != typeof obj) return obj;
+    if (null === obj || "object" !== typeof obj) return obj;
 
     // Handle Date
     if (obj instanceof Date) {
-        copy = new Date();
-        copy.setTime(obj.getTime());
-        return copy;
+      copy = new Date();
+      copy.setTime(obj.getTime());
+      return copy;
     }
 
     // Handle Array
     if (obj instanceof Array) {
-        copy = [];
-        for (var i = 0, len = obj.length; i < len; i++) {
-            copy[i] = clone(obj[i]);
-        }
-        return copy;
+      copy = [];
+      for (var i = 0, len = obj.length; i < len; i++) {
+        copy[i] = clone(obj[i]);
+      }
+      return copy;
     }
 
     // Handle Object
     if (obj instanceof Object) {
-        copy = {};
-        for (var attr in obj) {
-            if (obj.hasOwnProperty(attr)) copy[attr] = clone(obj[attr]);
-        }
-        return copy;
+      copy = {};
+      for (var attr in obj) {
+        if (obj.hasOwnProperty(attr)) copy[attr] = clone(obj[attr]);
+      }
+      return copy;
     }
 
     throw new Error("Unable to copy obj! Its type isn't supported.");
-  };
+  }
 
   var SF = {
     template: template(),
@@ -426,7 +426,7 @@
 
   window.float = function (value)
   {
-    value = parseFloat(value);
+    value = parseFloat(value.replace(',', '.'));
     if (isNaN(value)) {
       value = 0;
     }

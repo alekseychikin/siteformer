@@ -114,7 +114,7 @@
         $text .= '<script type="text/html" id="template_'.str_replace('/', '_', $template['template']).'"'.stripcslashes($template['data']).'>'.N;
         $content = file_get_contents(TEMPLATES_C.$template['template'].'.js.tmpl');
         if (!empty($template['item'])) {
-          $content = str_replace($template['item'] .'.', '', $content);
+          $content = preg_replace('/([^\.\[])' . $template['item'] . '([\.\[])/', '$1', $content);
         }
         $text .= $content;
         $text .= '</script>'.N.N;
@@ -230,6 +230,7 @@
         }
       }
 
+      // create ranges
       $regExpForVariables = '/{[{%].*([(!\s\+\-]?)([a-zA-Z0-9_]+).*[%}]}/sU';
       if (preg_match_all($regExpForVariables, $template, $replaces, PREG_SET_ORDER)) {
         foreach ($replaces as $replace) {
@@ -263,14 +264,12 @@
         }
       }
 
-      // echo ($template)."\n\n\n\n";
-      //
+      // make associate arrays
       $regExpForVariables = '/(\$[a-zA-Z0-9_]+)(\.[a-zA-Z0-9_]+|\[[a-zA-Z0-9_]+\])+([^a-zA-Z0-9_]?)/s';
-      //335
       if (preg_match_all($regExpForVariables, $template, $replaces, PREG_SET_ORDER)) {
         foreach ($replaces as $replace) {
           $subTemplate = $replace[0];
-          $subelementexp = '/\.([a-zA-Z0-9_]+)([^a-zA-Z0-9_]?)/s';
+          $subelementexp = '/\.([a-zA-Z]+[a-zA-Z0-9_]*)([^a-zA-Z0-9_]?)/s';
           $replace = $subTemplate;
           while (preg_match($subelementexp, $replace, $res)) {
             $replace = preg_replace($subelementexp, '[\'$1\']$2', $replace);
@@ -286,7 +285,7 @@
       // replace $method to method
       $regExpForVariables = '/(\$[a-zA-Z0-9_]+)/';
       if (preg_match_all($regExpForVariables, $template, $replaces, PREG_SET_ORDER)) {
-        $exclussion = array('increment', 'by', 'endinc', 'if', 'else', 'elseif', 'endif', 'for', 'endfor', 'in', 'revertin', 'include', 'item', 'isset', 'empty', 'require_js', 'require_css', 'require_template', 'controller_page', 'array');
+        $exclussion = array('increment', 'by', 'endinc', 'if', 'else', 'elseif', 'endif', 'for', 'endfor', 'in', 'revertin', 'include', 'item', 'isset', 'empty', 'require_js', 'require_css', 'require_template', 'controller_page', 'array', 'true', 'false');
         foreach ($replaces as $replace) {
           $subTemplate = $replace[0];
           $replace = str_replace('$', '', $subTemplate);
@@ -374,6 +373,20 @@
 
       $ifRegExp = '/{%\s*if\s+(.*)\s*%}/sU';
       if (preg_match_all($ifRegExp, $template, $replaces, PREG_SET_ORDER)) {
+        foreach ($replaces as $replace) {
+          $subTemplate = $replace[0];
+          $subelementexp = '/([a-zA-Z0-9_$]+)\s+in\s+([$a-zA-Z0-9_\.\'"\[\]]+)/s';
+          $replace = $subTemplate;
+          while (preg_match($subelementexp, $replace, $res)) {
+            $var = substr($res[1], 1);
+            $replace = preg_replace($subelementexp, 'isset($2[\''.$var.'\'])', $replace);
+          }
+          $template = str_replace($subTemplate, $replace, $template);
+        }
+      }
+
+      $elseFfRegExp = '/{%\s*elseif\s+(.*)\s*%}/sU';
+      if (preg_match_all($elseFfRegExp, $template, $replaces, PREG_SET_ORDER)) {
         foreach ($replaces as $replace) {
           $subTemplate = $replace[0];
           $subelementexp = '/([a-zA-Z0-9_$]+)\s+in\s+([$a-zA-Z0-9_\.\'"\[\]]+)/s';
@@ -480,6 +493,19 @@
 
       $ifRegExp = '/{%\s*if\s+(.*)\s*%}/sU';
       if (preg_match_all($ifRegExp, $templateReplace, $replaces, PREG_SET_ORDER)) {
+        foreach ($replaces as $replace) {
+          $subTemplate = $replace[0];
+          $subelementexp = '/([a-zA-Z0-9_$]+)\s+in\s+([$a-zA-Z0-9_\.\'"\[\]]+)/s';
+          $replace = $subTemplate;
+          while (preg_match($subelementexp, $replace, $res)) {
+            $replace = preg_replace($subelementexp, '(\'$1\' in $2)', $replace);
+          }
+          $templateReplace = str_replace($subTemplate, $replace, $templateReplace);
+        }
+      }
+
+      $elseifRegExp = '/{%\s*elseif\s+(.*)\s*%}/sU';
+      if (preg_match_all($elseifRegExp, $templateReplace, $replaces, PREG_SET_ORDER)) {
         foreach ($replaces as $replace) {
           $subTemplate = $replace[0];
           $subelementexp = '/([a-zA-Z0-9_$]+)\s+in\s+([$a-zA-Z0-9_\.\'"\[\]]+)/s';
