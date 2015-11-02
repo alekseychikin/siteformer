@@ -35,7 +35,7 @@
       $this->subQuery = $subQuery;
       $sql = 'SELECT ';
       if ($this->subQuery) {
-        $sql .= 'DISTINCT SQL_CALC_FOUND_ROWS ';
+        $sql .= 'DISTINCT ';
       }
       $fields = array();
       $mainTableFields = array();
@@ -524,7 +524,7 @@
       return $this;
     }
 
-    public function from($table, $alias = false)
+    public function from($table, $alias = false, $base = 'default')
     {
       if (gettype($table) === 'string') {
         $this->from = '`' . $table . '`';
@@ -539,7 +539,7 @@
         }
       }
       elseif (gettype($table) === 'object') {
-        $query = $table->getQuery(true);
+        $query = $table->getQuery($base, true);
         $this->from = '(' . $query['sql'] . ') AS `' . $alias . '`'.N;
         $this->fromTable = $alias;
         $this->fromAlias = $alias;

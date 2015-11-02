@@ -12,6 +12,7 @@
 
     public static function init($params)
     {
+      SFLog::write('Init module SFTemplater');
       self::$templatePath = $params['path'];
       self::$templateCompilePath = $params['compile_path'];
 
@@ -30,13 +31,17 @@
         $compileTimes = include $compilePath.'compile_times.php';
       }
       $templates = self::recursiveTemplates($templatePath);
+      $compileSome = false;
       foreach ($templates as $template) {
         if (self::isNeedToCompile($template, $compileTimes, $templatePath, $compilePath)) {
           self::compileTemplate($template, $templatePath, $compilePath);
-          self::checkTemplateIsCompiled($template, $templatePath);
+          self::checkTemplateIsCompiled($template, $templatePath, $compileTimes);
+          $compileSome = true;
         }
       }
-      self::checkAllTemplatesIsCompiled($compilePath);
+      if ($compileSome) {
+        self::checkAllTemplatesIsCompiled($compilePath, $compileTimes);
+      }
     }
 
     private static function isNeedToCompile($templatePath, $compileTimes, $templates, $compiles)
@@ -52,17 +57,17 @@
       return true;
     } // isNeedToCompile
 
-    private static function checkTemplateIsCompiled($templatePath, $templates)
+    private static function checkTemplateIsCompiled($templatePath, $templates, & $compileTimes)
     {
       $templatePath = substr($templatePath, strlen($templates));
-      self::$compileTimes[$templatePath] = filectime($templates.$templatePath);
+      $compileTimes[$templatePath] = filectime($templates.$templatePath);
     } // checkTemplatesIsCompiled
 
-    private static function checkAllTemplatesIsCompiled($compiles)
+    private static function checkAllTemplatesIsCompiled($compiles, $compileTimes)
     {
       $text = '<?php if (!defined(\'ROOT\')) die(\'You can\\\'t just open this file, dude\');'.N.'return array(';
       $arrData = array();
-      foreach (self::$compileTimes as $templatePath => $time) {
+      foreach ($compileTimes as $templatePath => $time) {
         $arrData[] = '"'. $templatePath .'" => '.$time;
       }
       $text .= implode(','.N, $arrData);
@@ -198,7 +203,7 @@
       if (preg_match_all($regExpForVariables, $template, $replaces, PREG_SET_ORDER)) {
         foreach ($replaces as $replace) {
           $subTemplate = $replace[0];
-          $replace = preg_replace('/([(!?\s\+\-{]\[\()([a-zA-Z0-9_]+)/s', '$1$$2', $subTemplate);
+          $replace = preg_replace('/([\(\)!\?\s\+\-\{\]\[])([a-zA-Z0-9_]+)/s', '$1$$2', $subTemplate);
           $template = str_replace($subTemplate, $replace, $template);
         }
       }
@@ -269,13 +274,14 @@
 
       // echo ($template)."\n\n\n\n";
       //
-      $regExpForVariables = '/(\$[a-zA-Z0-9_]+)(\.[a-zA-Z0-9_]+|\[[a-zA-Z0-9_]+\])+([^a-zA-Z0-9_]?)/s';
-      //335
+      $regExpForVariables = '/(\$[a-zA-Z0-9_]+)(\.[a-zA-Z0-9_]+|\[\$[a-zA-Z0-9_]+\])+([^a-zA-Z0-9_]?)/s';
       if (preg_match_all($regExpForVariables, $template, $replaces, PREG_SET_ORDER)) {
         foreach ($replaces as $replace) {
           $subTemplate = $replace[0];
+          // echo $subTemplate."\n";
           $subelementexp = '/\.([a-zA-Z0-9_]+)([^a-zA-Z0-9_]?)/s';
           $replace = $subTemplate;
+          // echo $replace."\n\n";
           while (preg_match($subelementexp, $replace, $res)) {
             $replace = preg_replace($subelementexp, '[\'$1\']$2', $replace);
           }
@@ -294,7 +300,7 @@
         foreach ($replaces as $replace) {
           $subTemplate = $replace[0];
           $replace = str_replace('$', '', $subTemplate);
-          if (in_array($replace, $exclussion) || function_exists($replace) || class_exists($replace) || is_numeric($replace)) {
+          if (in_array($replace, $exclussion) || function_exists($replace) || class_exists($replace) || preg_match('/^\d+$/', $replace)) {
             // $template = str_replace($subTemplate, $replace, $template);
             $varregexp = '/(\\'.$subTemplate.')([^a-zA-Z0-9_])/';
             $template = preg_replace($varregexp, $replace.'$2', $template);
