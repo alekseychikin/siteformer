@@ -1,0 +1,8 @@
+.menu__item {
+  height: 20px;
+  padding: 5px 20px;
+}
+
+.menu__item + .menu__item {
+  margin-top: 10px;
+}

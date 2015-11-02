@@ -1,0 +1,8 @@
+<menu class="menu">
+  {% for sectionsItem in sections %}
+    {% include "menu-item" %}
+  {% endfor %}
+</menu>
+<menu class="menu">
+  <li class="menu__item menu__item--configs{% if section == "configs" %} menu__item--active{% endif %}"><a href="" class="menu__link">Настройки</a></li>
+</menu>

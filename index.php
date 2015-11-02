@@ -29,9 +29,10 @@
     die;
   }
 
+  require_once CLASSES.'log.php';
+  // SFLog::init();
   require_once CLASSES.'S3.php';
   require_once CLASSES.'array.php';
-  require_once CLASSES.'log.php';
   require_once CLASSES.'models.php';
   require_once CLASSES.'response.php';
   require_once CLASSES.'uri.php';
@@ -65,24 +66,35 @@
 
   SFResponse::initRedirData();
 
+  SFLog::write('Requred all needed files');
+
   if (!file_exists($configsPath)) die('Not exists configsPath: '.$configsPath);
   include $configsPath;
 
   SFModules::checkModules();
 
+  SFLog::write('Modules checked');
+
   SFModules::before();
+  SFLog::write('Modules before ends');
   SFModules::after();
+  SFLog::write('Modules after ends');
 
   if (file_exists(ACTIONS.'__before.php')) {
     SFResponse::run(ACTIONS.'__before');
+    SFLog::write('__before.php ends');
   }
 
   $request = substr($_SERVER['REQUEST_URI'], 1, -1);
   SFResponse::run(ACTIONS.$request);
+  SFLog::write('Default action ends');
 
   if (file_exists(ACTIONS.'__after.php')) {
     SFResponse::run(ACTIONS.'__after');
+    SFLog::write('__after ends');
   }
+
+  SFLog::close();
 
   // ORMDatabase::init($mysqlConfigs);
 

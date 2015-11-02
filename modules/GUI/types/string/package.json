@@ -1,3 +1,4 @@
 {
-  "template_index": "item.html"
+  "template_index": "item.html",
+  "name": "Строка"
 }
