@@ -1,0 +1,7 @@
+.form__separate-text {
+  background-color: #FFF;
+  display: inline-block;
+  position: relative;
+  z-index: 2;
+  padding: 0 4px;
+}

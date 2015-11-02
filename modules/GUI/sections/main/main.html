@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>СайтФормер</title>
+  <link rel="stylesheet" href="/sf-engine/modules/GUI/dist/main.css" />
+</head>
+<body>
+  <section class="section">
+    <aside class="aside">
+      <header class="header">
+        {% include "components/user-block/user-block" %}
+      </header>
+      {% include "components/menu/menu" %}
+    </aside>
+    {{ content }}
+  </section>
+  {{ template_includes }}
+  <script src="/sf-engine/modules/GUI/dist/configs/add.js"></script>
+  <!-- <script src="/sf-engine/modules/GUI/libs/jquery/jquery.js"></script> -->
+  <!-- <script src="/sf-engine/modules/GUI/libs/jquery/jquery.role.js"></script> -->
+</body>
+</html>

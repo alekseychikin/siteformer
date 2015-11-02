@@ -4,7 +4,7 @@
   {
     private static $jsTemplates = array();
     private static $templatePath;
-    private static $templateCompilePath;
+    public static $templateCompilePath;
     private static $scripts = array();
     private static $styles = array();
     private static $compileTimes = array();
@@ -14,45 +14,51 @@
     {
       self::$templatePath = $params['path'];
       self::$templateCompilePath = $params['compile_path'];
-      define('TEMPLATES', self::$templatePath);
-      define('TEMPLATES_C', self::$templateCompilePath);
-      if (file_exists(TEMPLATES_C.'compile_times.php')) {
-        self::$compileTimes = include TEMPLATES_C.'compile_times.php';
-      }
-      foreach ($params as $key => $value) {
-        if ($key == 'compile_path' || $key == 'path') continue;
-        SFResponse::set($key, $value);
-      }
-      $templates = self::recursiveTemplates($params['path']);
-      foreach ($templates as $templatePath) {
-        if (self::isNeedToCompile($templatePath)) {
-          self::compileTemplate($templatePath);
-          self::checkTemplateIsCompiled($templatePath);
-        }
-      }
-      self::checkAllTemplatesIsCompiled();
+
+      self::compileTemplates(self::$templatePath, self::$templateCompilePath);
     }
 
-    private static function isNeedToCompile($templatePath)
+    public static function setCompilesPath($compilePath)
     {
-      $templatePath = substr($templatePath, strlen(TEMPLATES));
-      $templatePathCompiled = substr($templatePath, 0, strrpos($templatePath, '.')).'.php.tmpl';
-      if (file_exists(TEMPLATES_C.$templatePathCompiled) && isset(self::$compileTimes[$templatePath])) {
-        $timemodify = filectime(TEMPLATES.$templatePath);
-        if ($timemodify == self::$compileTimes[$templatePath]) {
+      self::$templateCompilePath = $compilePath;
+    }
+
+    public static function compileTemplates($templatePath, $compilePath)
+    {
+      $compileTimes = array();
+      if (file_exists($compilePath.'compile_times.php')) {
+        $compileTimes = include $compilePath.'compile_times.php';
+      }
+      $templates = self::recursiveTemplates($templatePath);
+      foreach ($templates as $template) {
+        if (self::isNeedToCompile($template, $compileTimes, $templatePath, $compilePath)) {
+          self::compileTemplate($template, $templatePath, $compilePath);
+          self::checkTemplateIsCompiled($template, $templatePath);
+        }
+      }
+      self::checkAllTemplatesIsCompiled($compilePath);
+    }
+
+    private static function isNeedToCompile($templatePath, $compileTimes, $templates, $compiles)
+    {
+      $templatePath = substr($templatePath, strlen($templates));
+      $templatePathCompiled = substr($templatePath, 0, strrpos($templatePath, '.')) . '.php.tmpl';
+      if (file_exists($compiles . $templatePathCompiled) && isset($compileTimes[$templatePath])) {
+        $timemodify = filectime($templates . $templatePath);
+        if ($timemodify == $compileTimes[$templatePath]) {
           return false;
         }
       }
       return true;
     } // isNeedToCompile
 
-    private static function checkTemplateIsCompiled($templatePath)
+    private static function checkTemplateIsCompiled($templatePath, $templates)
     {
-      $templatePath = substr($templatePath, strlen(TEMPLATES));
-      self::$compileTimes[$templatePath] = filectime(TEMPLATES.$templatePath);
+      $templatePath = substr($templatePath, strlen($templates));
+      self::$compileTimes[$templatePath] = filectime($templates.$templatePath);
     } // checkTemplatesIsCompiled
 
-    private static function checkAllTemplatesIsCompiled()
+    private static function checkAllTemplatesIsCompiled($compiles)
     {
       $text = '<?php if (!defined(\'ROOT\')) die(\'You can\\\'t just open this file, dude\');'.N.'return array(';
       $arrData = array();
@@ -61,7 +67,7 @@
       }
       $text .= implode(','.N, $arrData);
       $text .= ');'.N.'?>';
-      $file = fopen(TEMPLATES_C.'compile_times.php', 'w');
+      $file = fopen($compiles.'compile_times.php', 'w');
       fputs($file, $text);
       fclose($file);
     } // checkAllTemplatesIsCompiled
@@ -112,7 +118,7 @@
       $text = '';
       foreach (self::$jsTemplates as $template) {
         $text .= '<script type="text/html" id="template_'.str_replace('/', '_', $template['template']).'"'.stripcslashes($template['data']).'>'.N;
-        $content = file_get_contents(TEMPLATES_C.$template['template'].'.js.tmpl');
+        $content = file_get_contents(self::$templateCompilePath.$template['template'].'.js.tmpl');
         if (!empty($template['item'])) {
           $content = str_replace($template['item'] .'.', '', $content);
         }
@@ -134,9 +140,7 @@
     private static function getCSSInclude()
     {
       $text = '';
-      // print_r(self::$jsTemplates);
       foreach (self::$styles as $style) {
-//				echo TEMPLATES_C.$template.N;
         $text .= '<link rel="stylesheet" href="'. SFResponse::get('css_path') . $style['path'] .'" />'.N;
       }
       return $text;
@@ -147,18 +151,18 @@
       return self::$controller;
     }
 
-    private static function compileTemplate($path)
+    private static function compileTemplate($path, $templates, $compiles)
     {
       $template = file_get_contents($path);
       $templateReplace = $template;
 
       $templateReplace = self::compileTemplatePHP($templateReplace);
 
-      $filename = TEMPLATES_C.substr($path, strlen(TEMPLATES), -5);
+      $filename = $compiles.substr($path, strlen($templates), -5);
       SFPath::mkdir(dirname($filename));
       $file = fopen($filename.'.php.tmpl', 'w');
       if ($file) {
-        fputs($file, '<!-- '.substr($filename, strlen(TEMPLATES_C)).' -->'.N.$templateReplace.N.'<!-- \\\\'.substr($filename, strlen(TEMPLATES_C)).' -->'.N);
+        fputs($file, '<!-- '.substr($filename, strlen($compiles)).' -->'.N.$templateReplace.N.'<!-- \\\\'.substr($filename, strlen($compiles)).' -->'.N);
         fclose($file);
       }
 
@@ -339,7 +343,7 @@
       $includeRegExp = '/{%\s*include\s+[\'"]([a-zA-Z0-9\-\/_\.]+)[\'"]\s*%}/sU';
       if (preg_match_all($includeRegExp, $template, $pregTemplates, PREG_SET_ORDER)) {
         foreach ($pregTemplates as $template_) {
-          $template = str_replace($template_[0], '<?php include TEMPLATES_C.\''.$template_[1].'.php.tmpl\' ?>', $template);
+          $template = str_replace($template_[0], '<?php include SFTemplater::$templateCompilePath.\''.$template_[1].'.php.tmpl\' ?>', $template);
         }
       }
 
@@ -533,17 +537,18 @@
       return $templateReplace;
     }
 
-    public static function render($template, $main = '')
+    public static function render($template, $main = null, $compilePath = null)
     {
       $results = SFResponse::getResults();
       foreach ($results as $name => $content) {
         $$name = $content;
       }
       $content = '';
+      if (!$compilePath) $compilePath = self::$templateCompilePath;
       if (!empty($template)) {
         ob_start();
-        if (file_exists(TEMPLATES_C.$template.'.php.tmpl')) {
-          include TEMPLATES_C.$template.'.php.tmpl';
+        if (file_exists($compilePath.$template.'.php.tmpl')) {
+          include $compilePath.$template.'.php.tmpl';
         }
         else {
           ob_end_clean();
@@ -565,9 +570,9 @@
       $variables .= '</script>';
 
       if ($main) {
-        if (file_exists(TEMPLATES_C.$main.'.php.tmpl')) {
+        if (file_exists($compilePath.$main.'.php.tmpl')) {
           ob_start();
-          include TEMPLATES_C.$main.'.php.tmpl';
+          include $compilePath.$main.'.php.tmpl';
           $content = ob_get_contents();
           ob_end_clean();
           return $content;

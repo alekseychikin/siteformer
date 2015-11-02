@@ -1,0 +1,16 @@
+{% for index, field in fields %}
+<tr class="form-table__row" data-key="{{ index }}">
+  <td class="form-table__cell"><input type="text" class="form__inp" name="title" value="{{ field.title }}" role="field-title" /></td>
+  <td class="form-table__cell"><input type="text" class="form__inp" name="alias" value="{{ field.alias }}" role="field-alias" /></td>
+  <td class="form-table__cell"><select name="type" class="form__select" role="field-type">
+    {% for type in types %}
+    <option value="{{ type.alias }}"{% if field.type == type.alias %} selected{% endif %}>{{ type.name }}</option>
+    {% endfor %}
+  </select></td>
+  <td class="form-table__cell">
+    {% if count(fields) > 1 %}
+    <button class="form__btn" type="button" role="btn-remove-field">X</button>
+    {% endif %}
+  </td>
+</tr>
+{% endfor %}
