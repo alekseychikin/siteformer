@@ -1,4 +1,8 @@
 {
   "template_index": "item.html",
-  "name": "Строка"
+  "name": "Строка",
+  "hasSettings": false,
+  "defaultSettings": {
+
+  }
 }

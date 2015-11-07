@@ -1,26 +1,26 @@
-<h1 class="head">Добавить модуль</h1>
-<article class="content">
-  <form action="" class="form">
+<h1 class="head">Добавить раздел</h1>
+<article class="content" role="configs-add">
+  <form action="" class="form" role="configs-add-form">
     <div class="form__item">
       <label for="name" class="form__label">Название</label>
       <div class="form__inp-contain">
-        <input type="text" class="form__inp" value="" name="name" id="name" />
+        <input type="text" class="form__inp" value="{{ title }}" name="name" id="name" role="configs-add-title" />
       </div>
     </div>
     <div class="form__item">
       <label for="alias" class="form__label">Веб-имя</label>
       <div class="form__inp-contain">
-        <input type="text" class="form__inp" value="" name="alias" id="alias" />
+        <input type="text" class="form__inp" value="{{ alias }}" name="alias" id="alias" role="configs-add-alias" />
       </div>
     </div>
     {% if count(modules) %}
     <div class="form__item">
       <label for="module" class="form__label">Модуль</label>
       <div class="form__inp-contain">
-        <select name="module" id="module">
-          <option value="default">Стандартный</option>
+        <select name="module" id="module" role="configs-add-module">
+          <option value="default"{% if module == "default" %} selected{% endif %}>Стандартный</option>
           {% for modulesItem in modules %}
-          <option value="{{ modulesItem }}">{{ modulesItem }}</option>
+          <option value="{{ modulesItem }}"{% if module == modulesItem %} selected{% endif %}>{{ modulesItem }}</option>
           {% endfor %}
         </select>
       </div>
@@ -30,10 +30,11 @@
     <div class="form__table" role="module-fields">
       <table class="form-table">
         <colgroup>
-          <col width="38%" />
-          <col width="38%" />
+          <col width="30%" />
+          <col width="30%" />
           <col width="*" />
-          <col width="30" />
+          <col width="75" />
+          <col width="75" />
         </colgroup>
         <thead>
           <tr class="form-table__row form-table__row--head">
@@ -41,13 +42,16 @@
             <th class="form-table__cell">Веб-имя</th>
             <th class="form-table__cell">Тип</th>
             <th></th>
+            <th></th>
           </tr>
         </thead>
         <tbody role="tbody-module-fields">
           {% include "sections/configs/table-module-fields" %}
         </tbody>
       </table>
-      <div class=""><button role="btn-add-field" class="form__btn" type="button">Добавить поле</button></div>
+      <div class="form__row">
+        <button role="btn-add-field" class="form__btn" type="button">Добавить поле</button>
+      </div>
     </div>
     <div class="form__submit">
       <button class="form__btn form__btn--submit">Сохранить</button>
@@ -55,4 +59,6 @@
     </div>
   </form>
 </article>
+
+{% include "types/image/modal" %}
 {% require_template "sections/configs/table-module-fields" %}

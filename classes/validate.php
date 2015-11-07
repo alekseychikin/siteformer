@@ -16,46 +16,87 @@
       SFResponse::error(422, array('error' => (isset($field['error']) ? str_replace(':value', $source, $field['error']) : 'Error at field `'.$field['name'].'`')));
     }
 
-    public static function parse($fields, $source)
+    public static function parse($fields, $source, & $uniqueCache = array(), $prevName = '', & $skip = false)
     {
       $data = array();
       foreach ($fields as $field) {
-        if (isset($field['require']) && !!$field['require']) { // require
-          if (!isset($source[$field['name']]) || (gettype($source[$field['name']]) === 'string' && strlen($source[$field['name']]) === 0)) {
-            self::returnError($field);
+        if (isset($field['array'])) {
+          $subdata = array();
+          for ($i = 0; $i < count($source[$field['name']]); $i++) {
+            $skip = false;
+            $row = self::parse($field['array'], $source[$field['name']][$i], $uniqueCache, $prevName . '.' . $field['name'], $skip);
+            if (!$skip) {
+              $subdata[] = $row;
+            }
           }
-        }
-        if (isset($field['values']) && isset($source[$field['name']])) {
-          if (!in_array($source[$field['name']], $field['values'])) {
-            self::returnError($field, $source[$field['name']]);
+          if (isset($field['minlength'])) {
+            if (count($subdata) < $field['minlength']) {
+              self::returnError($field);
+            }
           }
-        }
-        if (isset($field['type']) && isset($source[$field['name']])) {
-          if (!preg_match(self::$regexpTypes[$field['type']], $source[$field['name']])) {
-            self::returnError($field, $source[$field['name']]);
-          }
-        }
-        if (isset($field['valid']) && isset($source[$field['name']]) && strlen($source[$field['name']]) > 0) {
-          if (!preg_match($field['valid'], $source[$field['name']])) {
-            self::returnError($field, $source[$field['name']]);
-          }
-        }
-        if (isset($field['default']) && !isset($source[$field['name']])) {
-          $data[$field['name']] = $field['default'];
-        }
-        elseif (isset($source[$field['name']])) {
-          $data[$field['name']] = $source[$field['name']];
+          $data[$field['name']] = $subdata;
         }
         else {
-          $data[$field['name']] = '';
-        }
-        if (isset($field['modify'])) {
-          if (gettype($field['modify']) == 'string') {
-            $data[$field['name']] = call_user_func($field['modify'], $data[$field['name']]);
+          $cacheName = $prevName . '.' . $field['name'];
+          if (isset($field['skip_row_if_empty']) && !!$field['skip_row_if_empty']) {
+            if (!isset($source[$field['name']]) || empty($source[$field['name']])) {
+              $skip = true;
+              return false;
+            }
           }
-          elseif (gettype($field['modify']) == 'object') {
-            $data[$field['name']] = $field['modify']($data[$field['name']]);
+          if (isset($field['require']) && !!$field['require']) { // require
+            if (!isset($source[$field['name']]) || (gettype($source[$field['name']]) === 'string' && strlen($source[$field['name']]) === 0)) {
+              self::returnError($field);
+            }
           }
+          if (isset($field['values']) && isset($source[$field['name']])) {
+            if (!in_array($source[$field['name']], $field['values'])) {
+              self::returnError($field, $source[$field['name']]);
+            }
+          }
+          if (isset($field['type']) && isset($source[$field['name']])) {
+            if (!preg_match(self::$regexpTypes[$field['type']], $source[$field['name']])) {
+              self::returnError($field, $source[$field['name']]);
+            }
+          }
+          if (isset($field['valid']) && isset($source[$field['name']]) && strlen($source[$field['name']]) > 0) {
+            if (!preg_match($field['valid'], $source[$field['name']])) {
+              self::returnError($field, $source[$field['name']]);
+            }
+          }
+          if (isset($field['unique'])) {
+            if (gettype($field['unique']) === 'boolean' && $field['unique'] === true) {
+              if (!isset($uniqueCache[$cacheName])) {
+                $uniqueCache[$cacheName] = array();
+              }
+              if (in_array($source[$field['name']], $uniqueCache[$cacheName])) {
+                self::returnError($field, $source[$field['name']]);
+              }
+            }
+            elseif (gettype($field['unique']) === 'object') {
+              if (!$field['unique']($source[$field['name']])) {
+                self::returnError($field, $source[$field['name']]);
+              }
+            }
+          }
+          if (isset($field['default']) && !isset($source[$field['name']])) {
+            $data[$field['name']] = $field['default'];
+          }
+          elseif (isset($source[$field['name']])) {
+            $data[$field['name']] = $source[$field['name']];
+          }
+          else {
+            $data[$field['name']] = '';
+          }
+          if (isset($field['modify'])) {
+            if (gettype($field['modify']) == 'string') {
+              $data[$field['name']] = call_user_func($field['modify'], $data[$field['name']]);
+            }
+            elseif (gettype($field['modify']) == 'object') {
+              $data[$field['name']] = $field['modify']($data[$field['name']]);
+            }
+          }
+          $uniqueCache[$cacheName][] = $data[$field['name']];
         }
       }
       return $data;

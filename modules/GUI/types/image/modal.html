@@ -1,0 +1,33 @@
+<div class="popup" role="configs-image">
+  <div class="popup__head">Настройки изображения</div>
+  <form action="" class="form" role="configs-form">
+    <input type="hidden" name="index" value="{{ index }}" role="configs-image-index" />
+    <div class="form__item">
+      <label for="" class="form__label">Путь</label>
+      <div class="form__inp-contain">
+        <input type="text" class="form__inp" value="" role="configs-image-path" name="path" />
+      </div>
+    </div>
+    <div class="form__item">
+      <label for="" class="form__label">Уменьшить до размера</label>
+      <div class="form__inp-contain form__inp-contain--full-width">
+        <input type="text" class="form__inp form__inp--very-short" value="" role="configs-image-width" name="width" />
+        <span class="form__between-inp">×</span>
+        <input type="text" class="form__inp form__inp--very-short" value="" role="configs-image-height" name="height" />
+        <div class="form__hint">Если не задать значение, оно будет вычислено пропорционально</div>
+      </div>
+    </div>
+    <div class="form__item">
+      <label for="" class="form__label">Источник</label>
+      <div class="form__inp-contain">
+        <select role="configs-image-source" name="source">
+          <option value="upload">Загрузить изображение</option>
+        </select>
+      </div>
+    </div>
+    <div class="form__submit">
+      <button class="form__btn form__btn--submit">Сохранить</button>
+      <button type="button" class="form__btn popup__cancel">Отменить</button>
+    </div>
+  </form>
+</div>

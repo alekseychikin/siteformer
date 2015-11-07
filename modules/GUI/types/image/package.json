@@ -1,0 +1,11 @@
+{
+  "template_index": "item.html",
+  "name": "Изображение",
+  "hasSettings": true,
+  "defaultSettings": {
+    "path": "/",
+    "width": "200",
+    "height": "",
+    "source": "upload"
+  }
+}

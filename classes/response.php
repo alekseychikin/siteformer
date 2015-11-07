@@ -16,7 +16,7 @@
       '422' => 'Unprocessable Entity'
     );
     private static $stopsCodes = array(
-      '401', '402', '403', '404'
+      '401', '402', '403', '404', '422'
     );
     public static $types = array('__json', '__print', '__xml');
 
@@ -31,14 +31,14 @@
     {
       if (!self::$working) return false;
       self::code($status);
-      if (in_array($status, self::$stopsCodes)) {
-        die($message);
-      }
       if (gettype($message) == 'array') {
         self::$result = array_merge(self::$result, $message);
       }
       else {
         self::set('error', $message);
+      }
+      if (in_array($status, self::$stopsCodes)) {
+        die(json_encode(self::$result));
       }
       self::render();
       self::$working = false;

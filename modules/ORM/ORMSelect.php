@@ -258,9 +258,9 @@
     public function length($base = 'default')
     {
       $query = $this->getQuery($base);
-      $sql = $query['sql'];
+      $sql = 'SELECT COUNT(*) AS `count` FROM (' . $query['sql'] . ') AS U';
       $sourceResult = parent::query($sql, $base);
-      return count($sourceResult);
+      return $sourceResult[0]['count'];
     }
 
     public function get($field, $base = 'default')

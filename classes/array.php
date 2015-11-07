@@ -1,6 +1,6 @@
 <?php if (!defined('ROOT')) die('You can\'t just open this file, dude');
 
-  function arrMap ($arr, $cb)
+  function arrMap($arr, $cb)
   {
     foreach ($arr as $index => $value) {
       $arr[$index] = $cb($value, $index);

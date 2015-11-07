@@ -1,0 +1,29 @@
+.selecter {
+  display: inline-block;
+  vertical-align: top;
+  position: relative;
+  width: 100%;
+  z-index: 3;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.selecter:before {
+  content: '';
+  position: absolute;
+  background: url('selecter-drop-arrow.svg') no-repeat;
+  width: 15px;
+  height: 8px;
+  right: 10px;
+  top: 15px;
+}
+
+select {
+  position: absolute;
+  left: -9999px;
+}
+
+.selecter--focused  {
+  box-shadow: 0 0 5px #3260CA;
+  z-index: 4;
+}

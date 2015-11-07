@@ -1,0 +1,10 @@
+.selecter__item {
+  display: block;
+  padding: 5px 5px;
+  cursor: pointer;
+}
+
+.selecter__item:hover,
+.selecter__item--hover {
+  background-color: #e6e6e6;
+}
