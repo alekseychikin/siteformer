@@ -5,13 +5,18 @@ httpPost = (require "ajax.coffee").httpPost
 
 module.exports = Model "ConfigsAddModel",
   initialState: ->
-    httpGet "/cms/configs/add/__json/"
+    httpGet "#{window.location.pathname}__json/"
       .then (response) ->
-        title: response.title
-        alias: response.alias
-        module: response.module
-        fields: response.fields
-        types: response.types
+        state =
+          title: response.title
+          alias: response.alias
+          module: response.module
+          fields: response.fields
+          types: response.types
+        if response.id
+          state.id = response.id
+        console.log state
+        state
 
   addField: (field) ->
     @set fields: @state.fields.concat [field]
@@ -52,8 +57,12 @@ module.exports = Model "ConfigsAddModel",
     @state.fields[index].settings = form
 
   save: ->
-    httpPost "/cms/configs/save/", @state
-      .then (response) ->
-        console.log response
+    httpPost "/cms/configs/save/__json/", @state
+      .then (response) =>
+        if @state.id?
+          @set fields: response.section.fields
+          @set id: response.section.id
+        else
+          @trigger "onSavedSection", @state.alias
       .catch (response) ->
         console.error response.error

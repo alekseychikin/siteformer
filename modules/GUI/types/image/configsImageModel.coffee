@@ -14,3 +14,5 @@ module.exports = Model "TypeImageModel",
   updateHeight: (value) -> @state.height = value
 
   updateSource: (value) -> @state.source = value
+
+  getState: -> @state

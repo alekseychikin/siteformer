@@ -1,4 +1,4 @@
-AddModal = require "./addModel.coffee"
+AddModel = require "./addModel.coffee"
 AddView = require "./addView.coffee"
 $ = require "jquery-plugins.coffee"
 
@@ -20,5 +20,9 @@ AddView.on "open-configs-modal", (index, field) ->
 for type, view of views
   do (type, view) ->
     view.on "save-configs-modal", (form) ->
-      AddModal.saveFieldConfigs form
+      AddModel.saveFieldConfigs form
       Popup.close()
+
+AddModel.on "onSavedSection", (alias) ->
+  console.log "qwe"
+  window.location.href = "/cms/configs/#{alias}/"

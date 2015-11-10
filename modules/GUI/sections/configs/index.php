@@ -1,8 +1,13 @@
 <?php if (!defined('ROOT')) die('You can\'t just open this file, dude');
 
+  SFResponse::set('page_title', 'Настройки');
+
+  $sections = SFGUI::getSections();
   $modules = SFGUI::getModules();
+
   SFResponse::set('modules', $modules);
-  SFResponse::set('module', 'configs');
-  SFResponse::render(SFTemplater::render('configs/index', 'main', TEMP.'modules/GUI/.compile_templates/'));
+  SFResponse::set('sections', $sections);
+  SFResponse::set('section', 'configs');
+  SFResponse::render(SFTemplater::render('configs/index', 'main/main', TEMP.'modules/GUI/.compile_templates/sections/'));
 
 ?>

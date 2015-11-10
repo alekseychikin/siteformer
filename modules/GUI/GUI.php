@@ -25,11 +25,125 @@
     // It could be news or events or galleries
     public static function getSections()
     {
-      if (!file_exists(CONFIGS . 'modules/GUI/sections.php')) {
-        self::saveSections(array());
-        return array();
+      return SFORM::select()
+        ->from('sections')
+        ->order('id desc')
+        ->exec();
+    }
+
+    // Get section by alias
+    public static function getSection($alias)
+    {
+      $res = SFORM::select()
+        ->from('sections')
+        ->join('section_fields', _expr_('section_fields.section', _field_('sections.id')))
+        ->where('sections.alias', $alias)
+        ->exec();
+      $res = $res[0];
+      $res['fields'] = self::prepareSectionFields($res['section_fields']);
+      unset($res['section_fields']);
+      return $res;
+    }
+
+    // Get section by id
+    public static function getSectionById($id)
+    {
+      $res = SFORM::select()
+        ->from('sections')
+        ->join('section_fields', _expr_('section_fields.section', _field_('sections.id')))
+        ->id($id)
+        ->exec();
+      $res = $res[0];
+      $res['fields'] = self::prepareSectionFields($res['section_fields']);
+      unset($res['section_fields']);
+      return $res;
+    }
+
+    private static function prepareSectionFields($fields)
+    {
+      return arrMap($fields, function($field)
+      {
+        $field['settings'] = json_decode($field['settings'], true);
+        return $field;
+      });
+    }
+
+    // Add section
+    public static function addSection($data)
+    {
+      $idSection = SFORM::insert('sections')
+        ->values(array(
+          'title' => $data['title'],
+          'alias' => $data['alias'],
+          'module' => $data['module']
+        ))
+        ->exec();
+
+      arrMap($data['fields'], function ($field) use ($idSection)
+      {
+        SFORM::insert('section_fields')
+          ->values(array(
+            'section' => $idSection,
+            'title' => $field['title'],
+            'alias' => $field['alias'],
+            'type' => $field['type'],
+            'settings' => $field['settings']
+          ))
+          ->exec();
+      });
+      return $idSection;
+    }
+
+    // Save section
+    public static function saveSection($id, $data)
+    {
+      $source = self::getSectionById($id);
+      SFORM::update('sections')
+        ->values(array(
+          'title' => $data['title'],
+          'alias' => $data['alias'],
+          'module' => $data['module']
+        ))
+        ->id($id)
+        ->exec();
+      $source['fields'] = arrMap($source['fields'], function ($item)
+      {
+        $item['settings'] = json_encode($item['settings']);
+        unset($item['section']);
+        return $item;
+      });
+      $fields = arrDifference($source['fields'], $data['fields']);
+      foreach ($fields as $field) {
+        switch($field['mark']) {
+          case 'added':
+            SFORM::insert('section_fields')
+              ->values(array(
+                'section' => $id,
+                'title' => $field['element']['title'],
+                'alias' => $field['element']['alias'],
+                'type' => $field['element']['type'],
+                'settings' => $field['element']['settings']
+              ))
+              ->exec();
+            break;
+          case 'deleted':
+            SFORM::delete('section_fields')
+              ->id($field['element']['id'])
+              ->exec();
+            break;
+          case 'edited':
+            SFORM::update('section_fields')
+              ->values(array(
+                'title' => $field['element']['created']['title'],
+                'alias' => $field['element']['created']['alias'],
+                'type' => $field['element']['created']['type'],
+                'settings' => $field['element']['created']['settings']
+              ))
+              ->id($field['element']['origin']['id'])
+              ->exec();
+            break;
+        }
       }
-      return include CONFIGS . 'modules/GUI/sections.php';
     }
 
     // Get array of modules
@@ -67,16 +181,6 @@
         return $types;
       }
       return array();
-    }
-
-    private static function saveSections($sections)
-    {
-      $content = '<?php if (!defined(\'ROOT\')) die(\'You can\\\'t just open this file, dude\');' . N;
-      $content .= 'return ' . self::stringifyToArray($sections) . ';' . N;
-      SFPath::mkdir(CONFIGS . 'modules/GUI');
-      $configFile = fopen(CONFIGS . 'modules/GUI/sections.php', 'w');
-      fputs($configFile, $content);
-      fclose($configFile);
     }
 
     private static function stringifyToArray($data, $indent = 1)

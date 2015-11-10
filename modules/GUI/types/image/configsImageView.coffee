@@ -21,13 +21,13 @@ module.exports = View "TypeImageView",
     "popup-close: contain": (e) -> @unbind()
 
   initialRender: (state) ->
-    @configsImageIndex.val state.index
     @configsImagePath.val state.path
     @configsImageWidth.val state.width
     @configsImageHeight.val state.height
     @configsImageSource.val state.source
 
   submitConfigsForm: (e) ->
-    @trigger "save-configs-modal", $(e.target).serializeObject()
+    console.log configsImageModel.getState()
+    @trigger "save-configs-modal", configsImageModel.getState()
     @unbind()
     return false

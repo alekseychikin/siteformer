@@ -1,0 +1,21 @@
+.table {
+  width: 100%;
+  border-collapse: separate;
+}
+
+.table td {
+  font-size: 13px;
+  padding: 10px 20px;
+}
+
+.table thead td {
+  background-color: #EFEFEF;
+}
+
+.table a {
+  color: #000;
+  text-decoration: none;
+  display: block;
+  padding: 10px 20px;
+  margin: -10px -20px;
+}

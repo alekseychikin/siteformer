@@ -8,13 +8,29 @@
     $types[] = $type['alias'];
   });
 
+  $id = false;
+  if (isset($_POST['id'])) {
+    $id = (int)$_POST['id'];
+  }
+
   $data = SFValidate::parse(array(
     array(
       'name' => 'title',
       'require' => true,
       'error' => 'Поле «Название» обязательно для заполнения, должно быть уникальным',
-      'unique' => function ($value) {
-        return !SFORM::select()->from('sections')->where('title', $value)->length();
+      'unique' => function ($value) use ($id) {
+        $res = SFORM::select()
+          ->from('sections');
+        if ($id !== false) {
+          $res = $res->where(_and_(
+            _expr_('title', $value),
+            _expr_('id', '!=', $id)
+          ));
+        }
+        else {
+          $res = $res->where('title', $value);
+        }
+        return !$res->length();
       }
     ),
     array(
@@ -22,8 +38,19 @@
       'require' => true,
       'valid' => '/^[a-zA-Z0-9\-_]+$/i',
       'error' => 'Поле «Веб-имя» обязательно для заполнения, должно содержать символы латинского алфавита, цифр, знака подчеркивания или дефиса',
-      'unique' => function ($value) {
-        return !SFORM::select()->from('sections')->where('alias', $value)->length();
+      'unique' => function ($value) use ($id) {
+        $res = SFORM::select()
+          ->from('sections');
+        if ($id !== false) {
+          $res = $res->where(_and_(
+            _expr_('alias', $value),
+            _expr_('id', '!=', $id)
+          ));
+        }
+        else {
+          $res = $res->where('alias', $value);
+        }
+        return !$res->length();
       }
     ),
     array(
@@ -37,6 +64,12 @@
       'minlength' => 1,
       'error' => 'Не заданы поля',
       'array' => array(
+        array(
+          'name' => 'id',
+          'require' => false,
+          'valid' => '/^\d+$/',
+          'error' => 'Уникальный айди'
+        ),
         array(
           'name' => 'title',
           'require' => true,
@@ -66,25 +99,14 @@
     )
   ), $_POST);
 
-  $idSection = SFORM::insert('sections')
-    ->values(array(
-      'title' => $data['title'],
-      'alias' => $data['alias'],
-      'module' => $data['module']
-    ))
-    ->exec();
-
-  arrMap($data['fields'], function ($field) use ($idSection)
-  {
-    SFORM::insert('section_fields')
-      ->values(array(
-        'section' => $idSection,
-        'title' => $field['title'],
-        'alias' => $field['alias'],
-        'type' => $field['type'],
-        'settings' => $field['settings']
-      ))
-      ->exec();
-  });
+  if ($id === false) {
+    $id = SFGUI::addSection($data);
+    SFResponse::set('section', SFGUI::getSectionById($id));
+  }
+  else {
+    SFGUI::saveSection($id, $data);
+    SFResponse::set('section', SFGUI::getSectionById($id));
+  }
+  SFResponse::render();
 
 ?>

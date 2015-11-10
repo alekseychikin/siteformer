@@ -1,6 +1,6 @@
 <h1 class="head">Добавить раздел</h1>
 <article class="content" role="configs-add">
-  <form action="" class="form" role="configs-add-form">
+  <form action="/cms/configs/{% if id? %}{{ alias }}{% else %}add{% endif %}/" class="form" role="configs-add-form">
     <div class="form__item">
       <label for="name" class="form__label">Название</label>
       <div class="form__inp-contain">
@@ -62,3 +62,4 @@
 
 {% include "types/image/modal" %}
 {% require_template "sections/configs/table-module-fields" %}
+{% controller_page "configs/add.js" %}

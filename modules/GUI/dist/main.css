@@ -38,10 +38,13 @@
 @import url("../components/popup/popup__wrap.css");
 @import url("../components/popup/popup__wrap--open.css");
 @import url("../components/section/section.css");
+@import url("../components/section/section__wrap.css");
 @import url("../components/selecter/selecter.css");
 @import url("../components/selecter/selecter__item.css");
 @import url("../components/selecter/selecter__list.css");
 @import url("../components/selecter/selecter__value.css");
+@import url("../components/table/table.css");
+@import url("../components/table/table__link.css");
 @import url("../components/user-block/user-block.css");
 @import url("../components/user-block/user-block__link.css");
 @import url("../components/user-block/user-block__name.css");

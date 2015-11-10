@@ -17,9 +17,8 @@
   </section>
   {{ template_includes }}
   <script src="/sf-engine/modules/GUI/dist/common-bundle.js"></script>
-  <script src="/sf-engine/modules/GUI/dist/configs/add.js"></script>
-  <!-- <script src="/sf-engine/modules/GUI/dist/configs/example.js"></script> -->
-  <!-- <script src="/sf-engine/modules/GUI/libs/jquery/jquery.js"></script> -->
-  <!-- <script src="/sf-engine/modules/GUI/libs/jquery/jquery.role.js"></script> -->
+  {% if controller %}
+  <script src="/sf-engine/modules/GUI/dist/{{ controller }}"></script>
+  {% endif %}
 </body>
 </html>
