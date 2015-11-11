@@ -3,7 +3,6 @@ configsImageModel = require "image/configsImageModel.coffee"
 
 module.exports = View "TypeImageView",
   model: configsImageModel
-  debug: false
 
   initial: ->
     @configsImagePath = @contain.find "@configs-image-path"
@@ -44,7 +43,6 @@ module.exports = View "TypeImageView",
     @configsImageS3Path.val state.s3Path
 
   submitConfigsForm: (e) ->
-    console.log configsImageModel.getState()
     @trigger "save-configs-modal", configsImageModel.getState()
     @unbind()
     return false

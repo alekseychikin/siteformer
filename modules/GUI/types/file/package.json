@@ -1,8 +1,15 @@
 {
   "template_index": "item.html",
   "name": "Файл",
-  "hasSettings": false,
+  "hasSettings": true,
   "defaultSettings": {
-
+    "storage": "local",
+    "path": "/",
+    "width": "200",
+    "height": "",
+    "s3AccessKey": "",
+    "s3SecretKey": "",
+    "s3Bucket": "",
+    "s3Path": "/"
   }
 }

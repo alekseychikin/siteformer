@@ -1,0 +1,52 @@
+<div class="popup" role="configs-file">
+  <div class="popup__head">Настройки файла</div>
+  <form action="" class="form" role="configs-form">
+    <div class="form__item">
+      <label class="form__label">Хранилище</label>
+      <div class="form__inp-contain">
+        <div class="tabs">
+          <button type="button" class="tabs__item" role="tabs configs-file-storage" data-group="configs-file-modal-storage" data-value="local" data-frame="configs-file-modal-storage-local">Локальное</button>
+          <button type="button" class="tabs__item" role="tabs configs-file-storage" data-group="configs-file-modal-storage" data-value="s3" data-frame="configs-file-modal-storage-s3">S3</button>
+        </div>
+      </div>
+    </div>
+    <div role="configs-file-modal-storage-local configs-file-modal-storage-frame">
+      <div class="form__item">
+        <label for="configs-file-path" class="form__label">Путь</label>
+        <div class="form__inp-contain">
+          <input type="text" class="form__inp" value="" role="configs-file-path" id="configs-file-path" />
+        </div>
+      </div>
+    </div>
+    <div role="configs-file-modal-storage-s3 configs-file-modal-storage-frame">
+      <div class="form__item">
+        <label for="configs-file-s3-access-key" class="form__label">Access key</label>
+        <div class="form__inp-contain">
+          <input type="text" class="form__inp" value="" role="configs-file-s3-access-key" id="configs-file-s3-access-key" />
+        </div>
+      </div>
+      <div class="form__item">
+        <label for="configs-file-s3-secret-key" class="form__label">Secret key</label>
+        <div class="form__inp-contain">
+          <input type="password" class="form__inp" value="" role="configs-file-s3-secret-key" id="configs-file-s3-secret-key" />
+        </div>
+      </div>
+      <div class="form__item">
+        <label for="configs-file-s3-bucket" class="form__label">Bucket</label>
+        <div class="form__inp-contain">
+          <input type="text" class="form__inp" value="" role="configs-file-s3-bucket" id="configs-file-s3-bucket" />
+        </div>
+      </div>
+      <div class="form__item">
+        <label for="configs-file-s3-path" class="form__label">Путь</label>
+        <div class="form__inp-contain">
+          <input type="text" class="form__inp" value="" role="configs-file-s3-path" id="configs-file-s3-path" />
+        </div>
+      </div>
+    </div>
+    <div class="form__submit">
+      <button class="form__btn form__btn--submit">Сохранить</button>
+      <button type="button" class="form__btn popup__cancel">Отменить</button>
+    </div>
+  </form>
+</div>

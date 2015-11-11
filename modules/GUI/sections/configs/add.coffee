@@ -5,10 +5,12 @@ $ = require "jquery-plugins.coffee"
 models =
   image: require "image/ConfigsImageModel.coffee"
   table: require "table/ConfigsTableModel.coffee"
+  file: require "file/ConfigsFileModel.coffee"
 
 views =
   image: require "image/ConfigsImageView.coffee"
   table: require "table/ConfigsTableView.coffee"
+  file: require "file/ConfigsFileView.coffee"
 
 Popup = require "popup"
 
