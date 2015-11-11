@@ -4,9 +4,11 @@ $ = require "jquery-plugins.coffee"
 
 models =
   image: require "image/ConfigsImageModel.coffee"
+  table: require "table/ConfigsTableModel.coffee"
 
 views =
   image: require "image/ConfigsImageView.coffee"
+  table: require "table/ConfigsTableView.coffee"
 
 Popup = require "popup"
 
@@ -24,5 +26,4 @@ for type, view of views
       Popup.close()
 
 AddModel.on "onSavedSection", (alias) ->
-  console.log "qwe"
   window.location.href = "/cms/configs/#{alias}/"

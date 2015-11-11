@@ -1,0 +1,6 @@
+.form__inp-contain--scroll-wrap {
+  overflow: scroll;
+  max-height: 200px;
+  padding: 0 5px;
+  margin: 0 -5px;
+}

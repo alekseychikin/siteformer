@@ -10,3 +10,12 @@
   box-shadow: 0 2px 20px rgba(0,0,0,0.5);
   display: none;
 }
+
+
+.popup:after {
+  content: '';
+  position: absolute;
+  height: 40px;
+  bottom: -40px;
+  width: 1px;
+}

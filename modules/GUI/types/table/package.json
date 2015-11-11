@@ -1,0 +1,14 @@
+{
+  "template_index": "item.html",
+  "name": "Таблица",
+  "hasSettings": true,
+  "defaultSettings": {
+    "columns": 4,
+    "rows": 3,
+    "defaultData": [
+      ["", "", "", ""],
+      ["", "", "", ""],
+      ["", "", "", ""]
+    ]
+  }
+}

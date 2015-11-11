@@ -1,7 +1,5 @@
 @import url("../components/common/reset.css");
 @import url("../components/common/default.css");
-@import url("../components/aside/aside.css");
-@import url("../components/content/content.css");
 @import url("../components/form/form.css");
 @import url("../components/form/form__between-inp.css");
 @import url("../components/form/form__btn.css");
@@ -11,6 +9,7 @@
 @import url("../components/form/form__inp--very-short.css");
 @import url("../components/form/form__inp-contain.css");
 @import url("../components/form/form__inp-contain--full-width.css");
+@import url("../components/form/form__inp-contain--scroll-wrap.css");
 @import url("../components/form/form__input-contain.css");
 @import url("../components/form/form__item.css");
 @import url("../components/form/form__label.css");
@@ -44,9 +43,16 @@
 @import url("../components/selecter/selecter__list.css");
 @import url("../components/selecter/selecter__value.css");
 @import url("../components/table/table.css");
+@import url("../components/table/table--responsive.css");
+@import url("../components/table/table--straight-sides.css");
 @import url("../components/table/table__link.css");
+@import url("../components/tabs/tabs.css");
+@import url("../components/tabs/tabs__item.css");
+@import url("../components/tabs/tabs__item--active.css");
 @import url("../components/user-block/user-block.css");
 @import url("../components/user-block/user-block__link.css");
 @import url("../components/user-block/user-block__name.css");
 @import url("../components/user-block/user-block__nick.css");
 @import url("../components/user-block/user-block__pic.css");
+@import url("../components/content/content.css");
+@import url("../components/aside/aside.css");
