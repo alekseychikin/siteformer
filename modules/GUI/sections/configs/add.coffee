@@ -7,12 +7,14 @@ models =
   table: require "table/ConfigsTableModel.coffee"
   file: require "file/ConfigsFileModel.coffee"
   radio: require "radio/ConfigsRadioModel.coffee"
+  checkbox: require "checkbox/ConfigsCheckboxModel.coffee"
 
 views =
   image: require "image/ConfigsImageView.coffee"
   table: require "table/ConfigsTableView.coffee"
   file: require "file/ConfigsFileView.coffee"
   radio: require "radio/ConfigsRadioView.coffee"
+  checkbox: require "checkbox/ConfigsCheckboxView.coffee"
 
 Popup = require "popup"
 

@@ -1,0 +1,14 @@
+{
+  "template_index": "item.html",
+  "name": "Флажки",
+  "hasSettings": true,
+  "defaultSettings": {
+    "numOptions": 1,
+    "defaultData": [
+      {
+        "label": "",
+        "checked": false
+      }
+    ]
+  }
+}

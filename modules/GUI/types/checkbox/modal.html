@@ -1,0 +1,23 @@
+<div class="popup" role="configs-checkbox">
+  <div class="popup__head">Настройки флажков</div>
+  <form action="" class="form" role="configs-form">
+    <div class="form__item">
+      <label for="configs-checkbox-num-options" class="form__label">Количество вариантов ответа</label>
+      <div class="form__inp-contain">
+        <input type="text" class="form__inp form__inp--very-short" value="" role="configs-checkbox-num-options" id="configs-checkbox-num-options" />
+      </div>
+    </div>
+    <div class="form__item">
+      <label class="form__label">Варианты ответов:</label>
+      <div class="form__inp-contain form__inp-contain--full-width">
+        <div role="configs-checkbox-options-contain"></div>
+      </div>
+    </div>
+    <div class="form__submit">
+      <button class="form__btn form__btn--submit">Сохранить</button>
+      <button type="button" class="form__btn popup__cancel">Отменить</button>
+    </div>
+  </form>
+</div>
+
+{% require_template "types/checkbox/options" %}

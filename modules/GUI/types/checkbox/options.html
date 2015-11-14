@@ -1,0 +1,6 @@
+{% for index, option in options %}
+<div class="form__row-option">
+  <input type="checkbox" class="form__checkbox" role="configs-checkbox-option" value="{{ index }}" data-index="{{ index }}" id="configs-checkbox-option-{{ index }}" name="configs-checkbox-option"{% if option.checked %} checked{% endif %} />
+  <label><input type="text" class="form__inp form__inp--half-width" value="{{ option.label }}" role="configs-checkbox-option-label" data-index="{{ index }}" /></label>
+</div>
+{% endfor %}
