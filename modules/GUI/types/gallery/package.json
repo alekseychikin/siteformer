@@ -1,8 +1,17 @@
 {
   "template_index": "item.html",
   "name": "Галерея",
-  "hasSettings": false,
+  "hasSettings": true,
   "defaultSettings": {
-
+    "storage": "local",
+    "path": "/",
+    "width": "1000",
+    "height": "",
+    "previewWidth": "200",
+    "previewHeight": "",
+    "s3AccessKey": "",
+    "s3SecretKey": "",
+    "s3Bucket": "",
+    "s3Path": "/"
   }
 }

@@ -8,6 +8,7 @@ models =
   file: require "file/ConfigsFileModel.coffee"
   radio: require "radio/ConfigsRadioModel.coffee"
   checkbox: require "checkbox/ConfigsCheckboxModel.coffee"
+  gallery: require "gallery/ConfigsGalleryModel.coffee"
 
 views =
   image: require "image/ConfigsImageView.coffee"
@@ -15,6 +16,7 @@ views =
   file: require "file/ConfigsFileView.coffee"
   radio: require "radio/ConfigsRadioView.coffee"
   checkbox: require "checkbox/ConfigsCheckboxView.coffee"
+  gallery: require "gallery/ConfigsGalleryView.coffee"
 
 Popup = require "popup"
 
