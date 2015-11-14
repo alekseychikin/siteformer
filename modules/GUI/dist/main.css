@@ -6,8 +6,10 @@
 @import url("../components/form/form__between-inp.css");
 @import url("../components/form/form__btn.css");
 @import url("../components/form/form__btn--submit.css");
+@import url("../components/form/form__checkbox.css");
 @import url("../components/form/form__hint.css");
 @import url("../components/form/form__inp.css");
+@import url("../components/form/form__inp--half-width.css");
 @import url("../components/form/form__inp--very-short.css");
 @import url("../components/form/form__inp-contain.css");
 @import url("../components/form/form__inp-contain--full-width.css");
@@ -16,6 +18,7 @@
 @import url("../components/form/form__item.css");
 @import url("../components/form/form__label.css");
 @import url("../components/form/form__row.css");
+@import url("../components/form/form__row-option.css");
 @import url("../components/form/form__select.css");
 @import url("../components/form/form__separate.css");
 @import url("../components/form/form__separate-text.css");
@@ -27,6 +30,11 @@
 @import url("../components/form-table/form-table__row--head.css");
 @import url("../components/head/head.css");
 @import url("../components/header/header.css");
+@import url("../components/menu/menu.css");
+@import url("../components/menu/menu__item.css");
+@import url("../components/menu/menu__item--active.css");
+@import url("../components/menu/menu__item--configs.css");
+@import url("../components/menu/menu__link.css");
 @import url("../components/popup/popup.css");
 @import url("../components/popup/popup--open.css");
 @import url("../components/popup/popup__cancel.css");
@@ -51,8 +59,3 @@
 @import url("../components/user-block/user-block__name.css");
 @import url("../components/user-block/user-block__nick.css");
 @import url("../components/user-block/user-block__pic.css");
-@import url("../components/menu/menu.css");
-@import url("../components/menu/menu__item.css");
-@import url("../components/menu/menu__item--active.css");
-@import url("../components/menu/menu__item--configs.css");
-@import url("../components/menu/menu__link.css");

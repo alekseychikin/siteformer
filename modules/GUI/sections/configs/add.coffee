@@ -6,11 +6,13 @@ models =
   image: require "image/ConfigsImageModel.coffee"
   table: require "table/ConfigsTableModel.coffee"
   file: require "file/ConfigsFileModel.coffee"
+  radio: require "radio/ConfigsRadioModel.coffee"
 
 views =
   image: require "image/ConfigsImageView.coffee"
   table: require "table/ConfigsTableView.coffee"
   file: require "file/ConfigsFileView.coffee"
+  radio: require "radio/ConfigsRadioView.coffee"
 
 Popup = require "popup"
 
