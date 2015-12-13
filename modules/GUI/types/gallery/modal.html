@@ -1,70 +1,68 @@
-<div class="popup" role="configs-gallery">
-  <div class="popup__head">Настройки галереи</div>
-  <form action="" class="form" role="configs-form">
+<div class="popup__head">Настройки галереи</div>
+<form action="" class="form" role="configs-form">
+  <div class="form__item">
+    <label class="form__label">Хранилище</label>
+    <div class="form__inp-contain">
+      <div class="tabs">
+        <button type="button" class="tabs__item{% if storage == 'local' %} tabs__item--active{% endif %}" role="tabs configs-gallery-storage" data-group="configs-gallery-modal-storage" data-value="local" data-frame="configs-gallery-modal-storage-local">Локальное</button>
+        <button type="button" class="tabs__item{% if storage == 's3' %} tabs__item--active{% endif %}" role="tabs configs-gallery-storage" data-group="configs-gallery-modal-storage" data-value="s3" data-frame="configs-gallery-modal-storage-s3">S3</button>
+      </div>
+    </div>
+  </div>
+  <div role="configs-gallery-modal-storage-local configs-gallery-modal-storage-frame" {% if storage != 'local' %} style="display: none"{% endif %}>
     <div class="form__item">
-      <label class="form__label">Хранилище</label>
+      <label for="configs-gallery-path" class="form__label">Путь</label>
       <div class="form__inp-contain">
-        <div class="tabs">
-          <button type="button" class="tabs__item" role="tabs configs-gallery-storage" data-group="configs-gallery-modal-storage" data-value="local" data-frame="configs-gallery-modal-storage-local">Локальное</button>
-          <button type="button" class="tabs__item" role="tabs configs-gallery-storage" data-group="configs-gallery-modal-storage" data-value="s3" data-frame="configs-gallery-modal-storage-s3">S3</button>
-        </div>
+        <input type="text" class="form__inp" value="{{ path }}" role="configs-gallery-path" id="configs-gallery-path" />
       </div>
     </div>
-    <div role="configs-gallery-modal-storage-local configs-gallery-modal-storage-frame">
-      <div class="form__item">
-        <label for="configs-gallery-path" class="form__label">Путь</label>
-        <div class="form__inp-contain">
-          <input type="text" class="form__inp" value="" role="configs-gallery-path" id="configs-gallery-path" />
-        </div>
-      </div>
-    </div>
-    <div role="configs-gallery-modal-storage-s3 configs-gallery-modal-storage-frame">
-      <div class="form__item">
-        <label for="configs-gallery-s3-access-key" class="form__label">Access key</label>
-        <div class="form__inp-contain">
-          <input type="text" class="form__inp" value="" role="configs-gallery-s3-access-key" id="configs-gallery-s3-access-key" />
-        </div>
-      </div>
-      <div class="form__item">
-        <label for="configs-gallery-s3-secret-key" class="form__label">Secret key</label>
-        <div class="form__inp-contain">
-          <input type="password" class="form__inp" value="" role="configs-gallery-s3-secret-key" id="configs-gallery-s3-secret-key" />
-        </div>
-      </div>
-      <div class="form__item">
-        <label for="configs-gallery-s3-bucket" class="form__label">Bucket</label>
-        <div class="form__inp-contain">
-          <input type="text" class="form__inp" value="" role="configs-gallery-s3-bucket" id="configs-gallery-s3-bucket" />
-        </div>
-      </div>
-      <div class="form__item">
-        <label for="configs-gallery-s3-path" class="form__label">Путь</label>
-        <div class="form__inp-contain">
-          <input type="text" class="form__inp" value="" role="configs-gallery-s3-path" id="configs-gallery-s3-path" />
-        </div>
+  </div>
+  <div role="configs-gallery-modal-storage-s3 configs-gallery-modal-storage-frame" {% if storage != 's3' %} style="display: none"{% endif %}>
+    <div class="form__item">
+      <label for="configs-gallery-s3-access-key" class="form__label">Access key</label>
+      <div class="form__inp-contain">
+        <input type="text" class="form__inp" value="{{ s3AccessKey }}" role="configs-gallery-s3-access-key" id="configs-gallery-s3-access-key" />
       </div>
     </div>
     <div class="form__item">
-      <label for="configs-gallery-width" class="form__label">Уменьшить оригинал до размера</label>
-      <div class="form__inp-contain form__inp-contain--full-width">
-        <input type="text" class="form__inp form__inp--very-short" value="" role="configs-gallery-width" id="configs-gallery-width" />
-        <span class="form__between-inp">×</span>
-        <input type="text" class="form__inp form__inp--very-short" value="" role="configs-gallery-height" />
-        <div class="form__hint">Если не задать значение, оно будет вычислено пропорционально</div>
+      <label for="configs-gallery-s3-secret-key" class="form__label">Secret key</label>
+      <div class="form__inp-contain">
+        <input type="password" class="form__inp" value="" role="configs-gallery-s3-secret-key" id="configs-gallery-s3-secret-key" />
       </div>
     </div>
     <div class="form__item">
-      <label for="configs-gallery-width" class="form__label">Размер превью</label>
-      <div class="form__inp-contain form__inp-contain--full-width">
-        <input type="text" class="form__inp form__inp--very-short" value="" role="configs-gallery-preview-width" id="configs-gallery-width" />
-        <span class="form__between-inp">×</span>
-        <input type="text" class="form__inp form__inp--very-short" value="" role="configs-gallery-preview-height" />
-        <div class="form__hint">Если не задать значение, оно будет вычислено пропорционально</div>
+      <label for="configs-gallery-s3-bucket" class="form__label">Bucket</label>
+      <div class="form__inp-contain">
+        <input type="text" class="form__inp" value="{{ s3Bucket }}" role="configs-gallery-s3-bucket" id="configs-gallery-s3-bucket" />
       </div>
     </div>
-    <div class="form__submit">
-      <button class="form__btn form__btn--submit">Сохранить</button>
-      <button type="button" class="form__btn popup__cancel">Отменить</button>
+    <div class="form__item">
+      <label for="configs-gallery-s3-path" class="form__label">Путь</label>
+      <div class="form__inp-contain">
+        <input type="text" class="form__inp" value="{{ s3Path }}" role="configs-gallery-s3-path" id="configs-gallery-s3-path" />
+      </div>
     </div>
-  </form>
-</div>
+  </div>
+  <div class="form__item">
+    <label for="configs-gallery-width" class="form__label">Уменьшить оригинал до размера</label>
+    <div class="form__inp-contain form__inp-contain--full-width">
+      <input type="text" class="form__inp form__inp--very-short" value="{{ width }}" role="configs-gallery-width" id="configs-gallery-width" />
+      <span class="form__between-inp">×</span>
+      <input type="text" class="form__inp form__inp--very-short" value="{{ height }}" role="configs-gallery-height" />
+      <div class="form__hint">Если не задать значение, оно будет вычислено пропорционально</div>
+    </div>
+  </div>
+  <div class="form__item">
+    <label for="configs-gallery-width" class="form__label">Размер превью</label>
+    <div class="form__inp-contain form__inp-contain--full-width">
+      <input type="text" class="form__inp form__inp--very-short" value="{{ previewWidth }}" role="configs-gallery-preview-width" id="configs-gallery-width" />
+      <span class="form__between-inp">×</span>
+      <input type="text" class="form__inp form__inp--very-short" value="{{ previewHeight }}" role="configs-gallery-preview-height" />
+      <div class="form__hint">Если не задать значение, оно будет вычислено пропорционально</div>
+    </div>
+  </div>
+  <div class="form__submit">
+    <button class="form__btn form__btn--submit">Сохранить</button>
+    <button type="button" class="form__btn popup__cancel">Отменить</button>
+  </div>
+</form>

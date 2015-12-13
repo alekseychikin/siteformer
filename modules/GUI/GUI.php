@@ -115,7 +115,7 @@
       $fields = arrDifference($source['fields'], $data['fields']);
       foreach ($fields as $field) {
         switch($field['mark']) {
-          case 'added':
+          case 'add':
             SFORM::insert('section_fields')
               ->values(array(
                 'section' => $id,
@@ -126,20 +126,20 @@
               ))
               ->exec();
             break;
-          case 'deleted':
+          case 'delete':
             SFORM::delete('section_fields')
               ->id($field['element']['id'])
               ->exec();
             break;
-          case 'edited':
+          case 'edit':
             SFORM::update('section_fields')
               ->values(array(
-                'title' => $field['element']['created']['title'],
-                'alias' => $field['element']['created']['alias'],
-                'type' => $field['element']['created']['type'],
-                'settings' => $field['element']['created']['settings']
+                'title' => $field['element']['title'],
+                'alias' => $field['element']['alias'],
+                'type' => $field['element']['type'],
+                'settings' => $field['element']['settings']
               ))
-              ->id($field['element']['origin']['id'])
+              ->id($field['origin']['id'])
               ->exec();
             break;
         }

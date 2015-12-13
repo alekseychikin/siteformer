@@ -29,4 +29,7 @@ module.exports = Model "TypeTableModel",
         @state.defaultData.pop()
     @set rows: value
 
-  updateCellData: (row, column, value) -> @state.defaultData[row][column] = value
+  updateCellData: (row, column, value) ->
+    data = @state.defaultData.slice()
+    data[row][column] = value
+    @set defaultData: data

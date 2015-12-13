@@ -1,9 +1,0 @@
-{% for rowIndex, row in data %}
-<tr>
-  {% for columnIndex, column in row %}
-  <td>
-    <input type="text" class="form__inp form__inp--very-short" value="{{ column }}" role="configs-table-cell" data-row="{{ rowIndex }}" data-column="{{ columnIndex }}" />
-  </td>
-  {% endfor %}
-</tr>
-{% endfor %}

@@ -28,35 +28,50 @@ module.exports = Model "ConfigsAddModel",
       type: "string"
     ]
 
-  updateTitle: (value) -> @state.title = value
-  updateAlias: (value) -> @state.alias = value
-  updateModule: (value) -> @state.module = value
+  updateTitle: (value) -> @set title: value
+  updateAlias: (value) -> @set alias: value
+  updateModule: (value) -> @set module: value
 
-  updateFieldTitle: (index, value) -> @state.fields[index].title = value
-  updateFieldAlias: (index, value) -> @state.fields[index].alias = value
+  updateFieldTitle: (index, value) ->
+    fields = @state.fields.slice()
+    fields[index].title = value
+    @set {fields}
+
+  updateFieldAlias: (index, value) ->
+    fields = @state.fields.slice()
+    fields[index].alias = value
+    @set {fields}
+
   updateFieldType: (index, value) ->
-    @state.fields[index].type = value
+    fields = @state.fields.slice()
+    fields[index].type = value
     @resetSettings index
-    @set fields: @state.fields
+    @set {fields}
 
   resetSettings: (index) ->
-    type = @state.fields[index].type
+    fields = @state.fields.slice()
+    type = fields[index].type
     for typeItem in @state.types
       if typeItem.alias == type
-        @state.fields[index].settings = @clone typeItem.defaultSettings
+        fields[index].settings = @clone typeItem.defaultSettings
+    @set {fields}
 
   removeField: (index) ->
-    @state.fields.splice index, 1
-    @set fields: @state.fields
+    fields = @state.fields.slice()
+    fields.splice index, 1
+    @set {fields}
 
   getFieldByIndex: (index) -> @clone @state.fields[index]
 
   saveFieldConfigs: (form) ->
     index = form.index
     delete form.index
-    @state.fields[index].settings = form
+    fields = @state.fields.slice()
+    fields[index].settings = form
+    @set {fields}
 
   save: ->
+    console.log @state
     httpPost "/cms/configs/save/__json/", @state
       .then (response) =>
         if @state.id?

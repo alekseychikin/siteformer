@@ -21,8 +21,8 @@ views =
 Popup = require "popup"
 
 AddView.on "open-configs-modal", (index, field) ->
-  Popup.open "@configs-#{field.type}"
-  views[field.type].bind ($ "@configs-#{field.type}")
+  Popup.open "@configs-popup"
+  views[field.type].bind ($ "@configs-popup")
 
   field.settings.index = index
   models[field.type].bind field.settings
@@ -35,3 +35,16 @@ for type, view of views
 
 AddModel.on "onSavedSection", (alias) ->
   window.location.href = "/cms/configs/#{alias}/"
+
+# setTimeout =>
+#   ($ "@field-type")
+#   .eq(1)
+#   .val "table"
+#   .trigger "change"
+#   setTimeout =>
+#     ($ "@btn-config-field").trigger "click"
+#     # setTimeout =>
+#     #   ($ "@configs-image-storage").eq(1).trigger "click"
+#     # , 40
+#   , 40
+# , 500

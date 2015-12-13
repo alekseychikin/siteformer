@@ -1,17 +1,17 @@
 Model = require "model.coffee"
 
 module.exports = Model "TypeImageModel",
-  updateStorage: (value) -> @state.storage = value
+  updateStorage: (value) -> @set storage: value
 
-  updatePath: (path) -> @state.path = path
-  updatePath: (value) -> @state.path = value
-  updateWidth: (value) -> @state.width = value
-  updateHeight: (value) -> @state.height = value
-  updateSource: (value) -> @state.source = value
+  updatePath: (value) -> @set path: value
 
-  updateS3AccessKey: (value) -> @state.s3AccessKey = value
-  updateS3SecretKey: (value) -> @state.s3SecretKey = value
-  updateS3Bucket: (value) -> @state.s3Bucket = value
-  updateS3Path: (value) -> @state.s3Path = value
+  updateS3AccessKey: (value) -> @set s3AccessKey: value
+  updateS3SecretKey: (value) -> @set s3SecretKey: value
+  updateS3Bucket: (value) -> @set s3Bucket: value
+  updateS3Path: (value) -> @set s3Path: value
+
+  updateWidth: (value) -> @set width: value
+  updateHeight: (value) -> @set height: value
+  updateSource: (value) -> @set source: value
 
   getState: -> @state

@@ -1,0 +1,52 @@
+.select {
+  border: 1px solid #BEBEBE;
+  border-radius: 3px;
+  font-size: 16px;
+  line-height: 18px;
+  display: inline-block;
+  vertical-align: top;
+  box-sizing: border-box;
+  height: 38px;
+  position: relative;
+  overflow: hidden;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+.select:before {
+  content: '';
+  position: absolute;
+  width: 15px;
+  height: 8px;
+  right: 10px;
+  top: 13px;
+  z-index: 1;
+  background: url('selecter-drop-arrow.svg') no-repeat;
+}
+
+.select select {
+  position: relative;
+  z-index: 2;
+  font-size: 16px;
+  line-height: 20px;
+  padding: 8px 35px 8px 10px;
+  width: 100%;
+  border: none;
+  box-shadow: none;
+  background-color: transparent;
+  cursor: pointer;
+  background-image: none;
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  text-indent: 0.01px;
+  text-overflow: "";
+}
+
+.select select:focus {
+  outline: none;
+}
+
+.select select::-ms-expand {
+  display: none;
+}

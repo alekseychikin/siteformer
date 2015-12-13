@@ -1,69 +1,69 @@
-<div class="popup" role="configs-image">
-  <div class="popup__head">Настройки изображения</div>
-  <form action="" class="form" role="configs-form">
+<div class="popup__head">Настройки изображения</div>
+<form action="" class="form" role="configs-form">
+  <div class="form__item">
+    <label class="form__label">Хранилище</label>
+    <div class="form__inp-contain">
+      <div class="tabs">
+        <button type="button" class="tabs__item{% if storage == 'local' %} tabs__item--active{% endif %}" role="tabs configs-image-storage" data-group="configs-image-modal-storage" data-value="local" data-frame="configs-image-modal-storage-local">Локальное</button>
+        <button type="button" class="tabs__item{% if storage == 's3' %} tabs__item--active{% endif %}" role="tabs configs-image-storage" data-group="configs-image-modal-storage" data-value="s3" data-frame="configs-image-modal-storage-s3">S3</button>
+      </div>
+    </div>
+  </div>
+  <div role="configs-image-modal-storage-local configs-image-modal-storage-frame" {% if storage != 'local' %} style="display: none"{% endif %}>
     <div class="form__item">
-      <label class="form__label">Хранилище</label>
+      <label for="configs-image-path" class="form__label">Путь</label>
       <div class="form__inp-contain">
-        <div class="tabs">
-          <button type="button" class="tabs__item" role="tabs configs-image-storage" data-group="configs-image-modal-storage" data-value="local" data-frame="configs-image-modal-storage-local">Локальное</button>
-          <button type="button" class="tabs__item" role="tabs configs-image-storage" data-group="configs-image-modal-storage" data-value="s3" data-frame="configs-image-modal-storage-s3">S3</button>
-        </div>
+        <input type="text" class="form__inp" value="{{ path }}" role="configs-image-path" id="configs-image-path" />
       </div>
     </div>
-    <div role="configs-image-modal-storage-local configs-image-modal-storage-frame">
-      <div class="form__item">
-        <label for="configs-image-path" class="form__label">Путь</label>
-        <div class="form__inp-contain">
-          <input type="text" class="form__inp" value="" role="configs-image-path" id="configs-image-path" />
-        </div>
-      </div>
-    </div>
-    <div role="configs-image-modal-storage-s3 configs-image-modal-storage-frame">
-      <div class="form__item">
-        <label for="configs-image-s3-access-key" class="form__label">Access key</label>
-        <div class="form__inp-contain">
-          <input type="text" class="form__inp" value="" role="configs-image-s3-access-key" id="configs-image-s3-access-key" />
-        </div>
-      </div>
-      <div class="form__item">
-        <label for="configs-image-s3-secret-key" class="form__label">Secret key</label>
-        <div class="form__inp-contain">
-          <input type="password" class="form__inp" value="" role="configs-image-s3-secret-key" id="configs-image-s3-secret-key" />
-        </div>
-      </div>
-      <div class="form__item">
-        <label for="configs-image-s3-bucket" class="form__label">Bucket</label>
-        <div class="form__inp-contain">
-          <input type="text" class="form__inp" value="" role="configs-image-s3-bucket" id="configs-image-s3-bucket" />
-        </div>
-      </div>
-      <div class="form__item">
-        <label for="configs-image-s3-path" class="form__label">Путь</label>
-        <div class="form__inp-contain">
-          <input type="text" class="form__inp" value="" role="configs-image-s3-path" id="configs-image-s3-path" />
-        </div>
-      </div>
-    </div>
+  </div>
+  <div role="configs-image-modal-storage-s3 configs-image-modal-storage-frame" {% if storage != 's3' %} style="display: none"{% endif %}>
     <div class="form__item">
-      <label for="configs-image-width" class="form__label">Уменьшить до размера</label>
-      <div class="form__inp-contain form__inp-contain--full-width">
-        <input type="text" class="form__inp form__inp--very-short" value="" role="configs-image-width" id="configs-image-width" />
-        <span class="form__between-inp">×</span>
-        <input type="text" class="form__inp form__inp--very-short" value="" role="configs-image-height" />
-        <div class="form__hint">Если не задать значение, оно будет вычислено пропорционально</div>
-      </div>
-    </div>
-    <div class="form__item">
-      <label for="configs-image-source" class="form__label">Источник</label>
+      <label for="configs-image-s3-access-key" class="form__label">Access key</label>
       <div class="form__inp-contain">
+        <input type="text" class="form__inp" value="{{ s3AccessKey? }}" role="configs-image-s3-access-key" id="configs-image-s3-access-key" />
+      </div>
+    </div>
+    <div class="form__item">
+      <label for="configs-image-s3-secret-key" class="form__label">Secret key</label>
+      <div class="form__inp-contain">
+        <input type="password" class="form__inp" value="" role="configs-image-s3-secret-key" id="configs-image-s3-secret-key" />
+      </div>
+    </div>
+    <div class="form__item">
+      <label for="configs-image-s3-bucket" class="form__label">Bucket</label>
+      <div class="form__inp-contain">
+        <input type="text" class="form__inp" value="{{ s3Bucket? }}" role="configs-image-s3-bucket" id="configs-image-s3-bucket" />
+      </div>
+    </div>
+    <div class="form__item">
+      <label for="configs-image-s3-path" class="form__label">Путь</label>
+      <div class="form__inp-contain">
+        <input type="text" class="form__inp" value="{{ s3Path? }}" role="configs-image-s3-path" id="configs-image-s3-path" />
+      </div>
+    </div>
+  </div>
+  <div class="form__item">
+    <label for="configs-image-width" class="form__label">Уменьшить до размера</label>
+    <div class="form__inp-contain form__inp-contain--full-width">
+      <input type="text" class="form__inp form__inp--very-short" value="{{ width? }}" role="configs-image-width" id="configs-image-width" />
+      <span class="form__between-inp">×</span>
+      <input type="text" class="form__inp form__inp--very-short" value="{{ height? }}" role="configs-image-height" />
+      <div class="form__hint">Если не задать значение, оно будет вычислено пропорционально</div>
+    </div>
+  </div>
+  <div class="form__item">
+    <label for="configs-image-source" class="form__label">Источник</label>
+    <div class="form__inp-contain">
+      <label class="select">
         <select role="configs-image-source" id="configs-image-source">
-          <option value="upload">Загрузить изображение</option>
+          <option value="upload"{% if source == 'upload' %} selected{% endif %}>Загрузить изображение</option>
         </select>
-      </div>
+      </label>
     </div>
-    <div class="form__submit">
-      <button class="form__btn form__btn--submit">Сохранить</button>
-      <button type="button" class="form__btn popup__cancel">Отменить</button>
-    </div>
-  </form>
-</div>
+  </div>
+  <div class="form__submit">
+    <button class="form__btn form__btn--submit">Сохранить</button>
+    <button type="button" class="form__btn popup__cancel">Отменить</button>
+  </div>
+</form>

@@ -6,18 +6,23 @@ module.exports = Model "TypeRadioModel",
 
   updateNumOptions: (value) ->
     value = parseInt value, 10
-    defaultData = @state.defaultData
-    if value > @state.numOptions
-      for i in [@state.numOptions + 1..value]
+    numOpts = parseInt @state.numOptions, 10
+    defaultValue = parseInt @state.defaultValue, 10
+    defaultData = @state.defaultData.slice()
+    if value > numOpts
+      for i in [numOpts + 1..value]
         defaultData.push ""
     else
-      for i in [value + 1..@state.numOptions]
+      for i in [value + 1..numOpts]
         defaultData.pop()
-      if @state.defaultValue >= value
-        @set defaultValue: -1
-    @state.numOptions = value
-    @set defaultData: defaultData
+      if defaultValue >= value
+        @set {defaultValue}
+    @set numOptions: value
+    @set {defaultData}
 
-  updateDefaultValue: (value) -> @state.defaultValue = parseInt value, 10
+  updateDefaultValue: (value) -> @set defaultValue: parseInt value, 10
 
-  updateDefaultDataOption: (index, value) -> @state.defaultData[index] = value
+  updateDefaultDataOption: (index, value) ->
+    data = @state.defaultData.slice()
+    data[index] = value
+    @set defaultData: data

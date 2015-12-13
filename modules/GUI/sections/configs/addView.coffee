@@ -1,8 +1,9 @@
 $ = require "jquery-plugins.coffee"
 View = require "view.coffee"
-Render = require "render.coffee"
+Render = require "render"
 Popup = require "popup"
 AddModel = require "./addModel.coffee"
+tableModuleFields = require "sections/configs/table-module-fields.tmpl.js"
 
 module.exports = View "ConfigsAddView",
   debug: false
@@ -21,11 +22,10 @@ module.exports = View "ConfigsAddView",
     "submit: @configs-add-form": "submitConfigsAddForm"
 
   initial: ->
-    @tbodyContain = Render ($ "@tbody-module-fields"), "sections_configs_table-module-fields"
+    @tbodyContain = Render tableModuleFields, ($ "@tbody-module-fields")[0]
 
-  renderFields: (state) ->
-    @tbodyContain.render state
-    $('select').selecter()
+  render: (state) ->
+    @tbodyContain state
 
   getRowIndex: (e) ->
     $parent = ($ e.target).closest "[data-key]"

@@ -1,9 +1,13 @@
 View = require "view.coffee"
-Render = require "render.coffee"
 configsTableModel = require "table/configsTableModel.coffee"
+Render = require "render"
+modalWindowTemplate = require "types/table/modal.tmpl.js"
 
 module.exports = View "TypeTableView",
   model: configsTableModel
+
+  initial: ->
+    @modalContain = Render modalWindowTemplate, @contain[0]
 
   events:
     "submit: @configs-form": "submitConfigsForm"
@@ -26,18 +30,8 @@ module.exports = View "TypeTableView",
   changeConfigsTableRows: (e) -> configsTableModel.updateRows e.target.value
   changeConfigsTableColumns: (e) -> configsTableModel.updateColumns e.target.value
 
-  initial: ->
-    @tbodyContain = Render ($ "@configs-table-tbody"), "types_table_tbody"
-
-  initialRender: (state) ->
-    (@contain.find "@configs-table-columns").val state.columns
-    (@contain.find "@configs-table-rows").val state.rows
-    @renderTable state
-
-  renderColumns: "renderTable"
-  renderRows: "renderTable"
-
-  renderTable: (state) -> @tbodyContain.render data: state.defaultData
+  render: (state) ->
+    @modalContain state
 
   submitConfigsForm: (e) ->
     @trigger "save-configs-modal", configsTableModel.getState()

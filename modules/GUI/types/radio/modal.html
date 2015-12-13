@@ -1,27 +1,30 @@
-<div class="popup" role="configs-radio">
-  <div class="popup__head">Настройки переключателей</div>
-  <form action="" class="form" role="configs-form">
-    <div class="form__item">
-      <label for="configs-radio-num-options" class="form__label">Количество вариантов ответа</label>
-      <div class="form__inp-contain">
-        <input type="text" class="form__inp form__inp--very-short" value="" role="configs-radio-num-options" id="configs-radio-num-options" />
-      </div>
+<div class="popup__head">Настройки переключателей</div>
+<form action="" class="form" role="configs-form">
+  <div class="form__item">
+    <label for="configs-radio-num-options" class="form__label">Количество вариантов ответа</label>
+    <div class="form__inp-contain">
+      <input type="text" class="form__inp form__inp--very-short" value="{{ numOptions }}" role="configs-radio-num-options" id="configs-radio-num-options" />
     </div>
-    <div class="form__item">
-      <label class="form__label">Варианты ответов:</label>
-      <div class="form__inp-contain form__inp-contain--full-width">
+  </div>
+  <div class="form__item">
+    <label class="form__label">Варианты ответов:</label>
+    <div class="form__inp-contain form__inp-contain--full-width">
+      <div class="form__row-option">
+        <input type="radio" class="form__checkbox" role="configs-radio-option" value="-1" id="configs-radio-option--1" name="configs-radio-option"{% if defaultValue == -1 || defaultValue == "-1" %} checked{% endif %} />
+        <label for="configs-radio-option--1"><i>Ничего не выбрано по умолчанию</i></label>
+      </div>
+      <div role="configs-radio-options-contain">
+        {% for i, option in defaultData %}
         <div class="form__row-option">
-          <input type="radio" class="form__checkbox" role="configs-radio-option" value="-1" id="configs-radio-option--1" name="configs-radio-option" />
-          <label for="configs-radio-option--1"><i>Ничего не выбрано по умолчанию</i></label>
+          <input type="radio" class="form__checkbox" role="configs-radio-option" value="{{ i }}" id="configs-radio-option-{{ i }}" name="configs-radio-option"{% if defaultValue == i %} checked{% endif %} />
+          <label><input type="text" class="form__inp form__inp--half-width" value="{{ option }}" role="configs-radio-option-label" data-index="{{ i }}" /></label>
         </div>
-        <div role="configs-radio-options-contain"></div>
+        {% endfor %}
       </div>
     </div>
-    <div class="form__submit">
-      <button class="form__btn form__btn--submit">Сохранить</button>
-      <button type="button" class="form__btn popup__cancel">Отменить</button>
-    </div>
-  </form>
-</div>
-
-{% require_template "types/radio/options" %}
+  </div>
+  <div class="form__submit">
+    <button class="form__btn form__btn--submit">Сохранить</button>
+    <button type="button" class="form__btn popup__cancel">Отменить</button>
+  </div>
+</form>

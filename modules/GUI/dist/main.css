@@ -43,10 +43,7 @@
 @import url("../components/popup/popup__wrap--open.css");
 @import url("../components/section/section.css");
 @import url("../components/section/section__wrap.css");
-@import url("../components/selecter/selecter.css");
-@import url("../components/selecter/selecter__item.css");
-@import url("../components/selecter/selecter__list.css");
-@import url("../components/selecter/selecter__value.css");
+@import url("../components/select/select.css");
 @import url("../components/table/table.css");
 @import url("../components/table/table--responsive.css");
 @import url("../components/table/table--straight-sides.css");

@@ -17,12 +17,14 @@
     <div class="form__item">
       <label for="module" class="form__label">Модуль</label>
       <div class="form__inp-contain">
-        <select name="module" id="module" role="configs-add-module">
-          <option value="default"{% if module == "default" %} selected{% endif %}>Стандартный</option>
-          {% for modulesItem in modules %}
-          <option value="{{ modulesItem }}"{% if module == modulesItem %} selected{% endif %}>{{ modulesItem }}</option>
-          {% endfor %}
-        </select>
+        <label class="select">
+          <select name="module" id="module" role="configs-add-module">
+            <option value="default"{% if module == "default" %} selected{% endif %}>Стандартный</option>
+            {% for modulesItem in modules %}
+            <option value="{{ modulesItem }}"{% if module == modulesItem %} selected{% endif %}>{{ modulesItem }}</option>
+            {% endfor %}
+          </select>
+        </label>
       </div>
     </div>
     {% endif %}
@@ -60,11 +62,6 @@
   </form>
 </article>
 
-{% include "types/image/modal" %}
-{% include "types/table/modal" %}
-{% include "types/file/modal" %}
-{% include "types/radio/modal" %}
-{% include "types/checkbox/modal" %}
-{% include "types/gallery/modal" %}
-{% require_template "sections/configs/table-module-fields" %}
+<div class="popup" role="configs-popup">
+</div>
 {% controller_page "configs/add.js" %}
