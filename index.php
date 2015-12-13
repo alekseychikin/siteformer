@@ -36,7 +36,6 @@
   require_once CLASSES.'models.php';
   require_once CLASSES.'response.php';
   require_once CLASSES.'uri.php';
-  SFURI::init();
   require_once CLASSES.'validate.php';
   require_once CLASSES.'paths.php';
   require_once CLASSES.'text.php';
