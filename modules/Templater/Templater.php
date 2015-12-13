@@ -1,5 +1,9 @@
 <?php if (!defined('ROOT')) die('You can\'t just open this file, dude');
 
+  require_once __dir__.'/parser/parser_engine.php';
+  require_once __dir__.'/parser/php_stringifier.php';
+  require_once __dir__.'/parser/js_stringifier.php';
+
   class SFTemplater
   {
     private static $jsTemplates = array();
@@ -32,11 +36,13 @@
       }
       $templates = self::recursiveTemplates($templatePath);
       $compileSome = false;
+      $i = 1;
       foreach ($templates as $template) {
         if (self::isNeedToCompile($template, $compileTimes, $templatePath, $compilePath)) {
           self::compileTemplate($template, $templatePath, $compilePath);
           self::checkTemplateIsCompiled($template, $templatePath, $compileTimes);
           $compileSome = true;
+          $i++;
         }
       }
       if ($compileSome) {
@@ -44,10 +50,34 @@
       }
     }
 
+    private static function compileTemplate($path, $templates, $compiles)
+    {
+      $filename = $compiles . substr($path, strlen($templates), -5);
+      SFPath::mkdir(dirname($filename));
+
+      $tree = ParserE::parseFile($path);
+
+      $template = PhpStringifier::stringify($tree);
+
+      $file = fopen($filename.'.tmpl.php', 'w');
+      if ($file) {
+        fputs($file, '<!-- '.substr($filename, strlen($compiles)).' -->'.N.$template.N.'<!-- \\\\'.substr($filename, strlen($compiles)).' -->'.N);
+        fclose($file);
+      }
+
+      $template = JsStringifier::stringify($tree, $filename);
+
+      $file = fopen($filename.'.tmpl.js', 'w');
+      if ($file) {
+        fputs($file, $template);
+        fclose($file);
+      }
+    }
+
     private static function isNeedToCompile($templatePath, $compileTimes, $templates, $compiles)
     {
       $templatePath = substr($templatePath, strlen($templates));
-      $templatePathCompiled = substr($templatePath, 0, strrpos($templatePath, '.')) . '.php.tmpl';
+      $templatePathCompiled = substr($templatePath, 0, strrpos($templatePath, '.')) . '.tmpl.php';
       if (file_exists($compiles . $templatePathCompiled) && isset($compileTimes[$templatePath])) {
         $timemodify = filectime($templates . $templatePath);
         if ($timemodify == $compileTimes[$templatePath]) {
@@ -123,7 +153,7 @@
       $text = '';
       foreach (self::$jsTemplates as $template) {
         $text .= '<script type="text/html" id="template_'.str_replace('/', '_', $template['template']).'"'.stripcslashes($template['data']).'>'.N;
-        $content = file_get_contents(self::$templateCompilePath.$template['template'].'.js.tmpl');
+        $content = file_get_contents(self::$templateCompilePath.$template['template'].'.tmpl.js');
         if (!empty($template['item'])) {
           $content = preg_replace('/([^\.\[])' . $template['item'] . '([\.\[])/', '$1', $content);
         }
@@ -156,417 +186,6 @@
       return self::$controller;
     }
 
-    private static function compileTemplate($path, $templates, $compiles)
-    {
-      $template = file_get_contents($path);
-      $templateReplace = $template;
-
-      $templateReplace = self::compileTemplatePHP($templateReplace);
-
-      $filename = $compiles.substr($path, strlen($templates), -5);
-      SFPath::mkdir(dirname($filename));
-      $file = fopen($filename.'.php.tmpl', 'w');
-      if ($file) {
-        fputs($file, '<!-- '.substr($filename, strlen($compiles)).' -->'.N.$templateReplace.N.'<!-- \\\\'.substr($filename, strlen($compiles)).' -->'.N);
-        fclose($file);
-      }
-
-      $templateReplace = self::compileTemplateJS($template);
-
-      $file = fopen($filename.'.js.tmpl', 'w');
-      if ($file) {
-        fputs($file, $templateReplace);
-        fclose($file);
-      }
-    }
-
-    private static function compileTemplatePHP($template)
-    {
-      $arrStrings = array();
-      // replace strings to marks
-      $regExpForVariables = '/{%([^\'"{%]*("|\')([^"\']+)\2[^\'"%}]*)+(%}|}})/sU';
-      if (preg_match_all($regExpForVariables, $template, $replaces, PREG_SET_ORDER)) {
-        foreach ($replaces as $replace) {
-          $subTemplate = $replace[0];
-          $replaceTemplate = $replace[0];
-          preg_match_all('/["\'][^\'"]+[\'"]/s', $subTemplate, $strings);
-          foreach ($strings[0] as $string) {
-            $replaceTemplate = str_replace($string, '{~string'.count($arrStrings).'~}', $replaceTemplate);
-            $arrStrings[] = $string;
-          }
-          $template = str_replace($subTemplate, $replaceTemplate, $template);
-        }
-      }
-
-      // replace string to $string
-      $regExpForVariables = '/{[{%].*?[%}]}/s';
-      if (preg_match_all($regExpForVariables, $template, $replaces, PREG_SET_ORDER)) {
-        foreach ($replaces as $replace) {
-          $subTemplate = $replace[0];
-          $replace = preg_replace('/([\(\)!\?\s\+\-\{\]\[])([a-zA-Z0-9_]+)/s', '$1$$2', $subTemplate);
-          $template = str_replace($subTemplate, $replace, $template);
-        }
-      }
-
-      // replace `" . string` to `" . $string`
-      $regExpForVariables = '/{[{%].*?[%}]}/s';
-      if (preg_match_all($regExpForVariables, $template, $replaces, PREG_SET_ORDER)) {
-        foreach ($replaces as $replace) {
-          $subTemplate = $replace[0];
-          // print_r($subTemplate);
-          $replace = preg_replace('/(~}\s*\.\s*)([a-zA-Z0-9_]+)/s', '$1$$2', $subTemplate);
-          $template = str_replace($subTemplate, $replace, $template);
-        }
-      }
-
-      // replace string? to isset(string)
-      $regExpForVariables = '/{%.*%}/sU';
-      if (preg_match_all($regExpForVariables, $template, $replaces, PREG_SET_ORDER)) {
-        foreach ($replaces as $replace) {
-          $subTemplate = $replace[0];
-          $replace = preg_replace('/([$a-zA-Z0-9_\.\[\]\'"\(\)]+)\?/s', ' isset($1) ', $subTemplate);
-          $template = str_replace($subTemplate, $replace, $template);
-        }
-      }
-
-      //
-      $regExpForVariables = '/{[{%].*([(!\s\+\-]?)([a-zA-Z0-9_]+).*[%}]}/sU';
-      if (preg_match_all($regExpForVariables, $template, $replaces, PREG_SET_ORDER)) {
-        foreach ($replaces as $replace) {
-          $subTemplate = $replace[0];
-          $replace = preg_replace('/([(!\s\+\-])([a-zA-Z0-9_]+)/s', '$1$$2', $subTemplate);
-          $template = str_replace($subTemplate, $replace, $template);
-        }
-      }
-
-      // create ranges
-      $regExpForVariables = '/{[{%].*([(!\s\+\-]?)([a-zA-Z0-9_]+).*[%}]}/sU';
-      if (preg_match_all($regExpForVariables, $template, $replaces, PREG_SET_ORDER)) {
-        foreach ($replaces as $replace) {
-          $subTemplate = $replace[0];
-          $arrexpr = '/\[([a-zA-Z0-9_]+[a-zA-Z0-9_]*((\.[a-zA-Z0-9_]+[^a-zA-Z0-9_\.]*|\[[a-zA-Z0-9_]+[^a-zA-Z0-9_\]\.]*\]))*)\.\.([a-zA-Z0-9_]+[a-zA-Z0-9_]*((\.[a-zA-Z0-9_]+[^a-zA-Z0-9_\.]*|\[[a-zA-Z0-9_]+[^a-zA-Z0-9_\[\.]*\]))*)\]/s';
-          if (preg_match($arrexpr, $subTemplate, $replace_)) {
-            $start = $replace_[1];
-            $end = $replace_[4];
-
-            $subelementexp = '/\[([a-zA-Z0-9_]+[^a-zA-Z0-9_\]\.]*)\]/s';
-            while (preg_match($subelementexp, $start, $res)) {
-              $start = preg_replace($subelementexp, '[\$$1]', $start);
-            }
-            $subelementexp = '/\.([a-zA-Z0-9_]+[^a-zA-Z0-9_\.\[]*)/s';
-            while (preg_match($subelementexp, $start, $res)) {
-              $start = preg_replace($subelementexp, '[\'$1\']', $start);
-            }
-
-            $subelementexp = '/\[([a-zA-Z0-9_]+[^a-zA-Z0-9_\]\.]*)\]/s';
-            while (preg_match($subelementexp, $end, $res)) {
-              $end = preg_replace($subelementexp, '[\$$1]', $end);
-            }
-            $subelementexp = '/\.([a-zA-Z0-9_]+[^a-zA-Z0-9_\.\[]*)/s';
-            while (preg_match($subelementexp, $end, $res)) {
-              $end = preg_replace($subelementexp, '[\'$1\']', $end);
-            }
-
-            $replace = preg_replace($arrexpr, 'makeArray('.(!preg_match('/^\d+$/', $start) ? '$' : '').$start.', '.(!preg_match('/^\d+$/', $end) ? '$' : '').$end.')', $subTemplate);
-            $template = str_replace($subTemplate, $replace, $template);
-          }
-        }
-      }
-
-      // make associate arrays
-      $regExpForVariables = '/(\$[a-zA-Z0-9_]+)(\.[a-zA-Z0-9_]+|\[[a-zA-Z0-9_]+\])+([^a-zA-Z0-9_]?)/s';
-      if (preg_match_all($regExpForVariables, $template, $replaces, PREG_SET_ORDER)) {
-        foreach ($replaces as $replace) {
-          $subTemplate = $replace[0];
-          $subelementexp = '/\.([a-zA-Z]+[a-zA-Z0-9_]*)([^a-zA-Z0-9_]?)/s';
-          $replace = $subTemplate;
-          while (preg_match($subelementexp, $replace, $res)) {
-            $replace = preg_replace($subelementexp, '[\'$1\']$2', $replace);
-          }
-          $subelementexp = '/\[([a-zA-Z0-9_]+)\]/s';
-          while (preg_match($subelementexp, $replace, $res)) {
-            $replace = preg_replace($subelementexp, '[\$$1]', $replace);
-          }
-          $template = str_replace($subTemplate, $replace, $template);
-        }
-      }
-
-      // replace $method to method
-      $regExpForVariables = '/(\$[a-zA-Z0-9_]+)/';
-      if (preg_match_all($regExpForVariables, $template, $replaces, PREG_SET_ORDER)) {
-        $exclussion = array('increment', 'by', 'endinc', 'if', 'else', 'elseif', 'endif', 'for', 'endfor', 'in', 'revertin', 'include', 'item', 'isset', 'empty', 'require_js', 'require_css', 'require_template', 'controller_page', 'array', 'true', 'false');
-        foreach ($replaces as $replace) {
-          $subTemplate = $replace[0];
-          $replace = str_replace('$', '', $subTemplate);
-          if (in_array($replace, $exclussion) || function_exists($replace) || class_exists($replace) || preg_match('/^\d+$/', $replace)) {
-            $varregexp = '/(\\'.$subTemplate.')([^a-zA-Z0-9_])/';
-            $template = preg_replace($varregexp, $replace.'$2', $template);
-          }
-        }
-      }
-      $template = str_replace('$data-$', 'data-', $template);
-
-      foreach ($arrStrings as $index => $item) {
-        $template = str_replace('{~string'.$index.'~}', $item, $template);
-      }
-
-      $replaceRegExp = '/{%\s*require_template\s*[\'"]([a-zA-Z0-9\-\/_\.]+)[\'"](\s+item=[\'"]([a-zA-Z_\-]+)[\'"])?((\s+data\-[a-zA-Z_\-]+=["\'][a-zA-Z\-_\s0-9]+["\'])*)\s*%}/sU';
-      if (preg_match_all($replaceRegExp, $template, $replaces, PREG_SET_ORDER)) {
-        foreach ($replaces as $replace) {
-          $subTemplate = $replace[0];
-          $path_ = $replace[1];
-          $item = (isset($replace[3]) ? $replace[3] : '');
-          $data = (isset($replace[4]) ? $replace[4] : '');
-          $template = str_replace($subTemplate, '<?php SFTemplater::requireTemplate("'. $path_ .'", "'. $item .'", "'. $data .'");?>', $template);
-          // echo $templateReplace;
-        }
-      }
-
-      $requireCSSRegExp = '/{%\s*require_css\s+[\'"]([a-zA-Z0-9\-\/_\.]+)[\'"]([^%]*)\s*%}/sU';
-      if (preg_match_all($requireCSSRegExp, $template, $pregTemplates, PREG_SET_ORDER)) {
-        foreach ($pregTemplates as $template_) {
-          $template = str_replace($template_[0], '<?php SFTemplater::requireCSS("'. $template_[1]. '", "'. addslashes($template_[2]). '"); ?>', $template);
-        }
-      }
-
-      $requireJSRegExp = '/{%\s*require_js\s+[\'"]([a-zA-Z0-9\-\/_\.]+)[\'"]([^%]*)\s*%}/sU';
-      if (preg_match_all($requireJSRegExp, $template, $pregTemplates, PREG_SET_ORDER)) {
-        foreach ($pregTemplates as $template_) {
-          $template = str_replace($template_[0], '<?php SFTemplater::requireJS("'. $template_[1]. '", "'. addslashes($template_[2]). '"); ?>', $template);
-        }
-      }
-
-      $requireJSRegExp = '/{%\s*controller_page\s+[\'"]([a-zA-Z0-9\-\/_\.]+)[\'"]\s*%}/sU';
-      if (preg_match_all($requireJSRegExp, $template, $pregTemplates, PREG_SET_ORDER)) {
-        foreach ($pregTemplates as $template_) {
-          $template = str_replace($template_[0], '<?php SFTemplater::requireControllerPage("'. $template_[1]. '"); ?>', $template);
-        }
-      }
-
-      $includeRegExp = '/{%\s*include\s+[\'"]([a-zA-Z0-9\-\/_\.]+)[\'"]\s*%}/sU';
-      if (preg_match_all($includeRegExp, $template, $pregTemplates, PREG_SET_ORDER)) {
-        foreach ($pregTemplates as $template_) {
-          $template = str_replace($template_[0], '<?php include SFTemplater::$templateCompilePath.\''.$template_[1].'.php.tmpl\' ?>', $template);
-        }
-      }
-
-      $includeRegExp = '/{%\s*increment\s+\$([a-zA-Z0-9\-\/_\.]+)\s+by\s+\$([a-zA-Z0-9\-\/_\.]+)\s*%}/sU';
-      if (preg_match_all($includeRegExp, $template, $pregTemplates, PREG_SET_ORDER)) {
-        foreach ($pregTemplates as $template_) {
-          $template = str_replace($template_[0], '<?php $'.$template_[1].' = -1; while ( $'.$template_[1].' < $'.$template_[2].' - 1) { $'.$template_[1].'++; ?>', $template);
-        }
-      }
-
-      $forRexExp = '/{%\s*for\s+(([\$a-zA-Z0-9_\.]+),\s*)?([\$a-zA-Z0-9_\.]+)\s+(revertin|in)\s+([\$a-zA-Z0-9\(\)_\.,\s\[\]\'\"]+)\s*%}/sU';
-      if (preg_match_all($forRexExp, $template, $pregTemplates, PREG_SET_ORDER)) {
-        foreach ($pregTemplates as $template_) {
-          if (!empty($template_[2])) {
-            if ($template_[4] == 'in') {
-              $template = str_replace($template_[0], '<?php foreach ('.$template_[5].' as '.$template_[2].' => '.$template_[3].') { ?>', $template);
-            }
-            else {
-              $template = str_replace($template_[0], '<?php '.$template_[5].' = array_reverse('.$template_[5].', true); foreach ('.$template_[5].' as '.$template_[2].' => '.$template_[3].') { ?>', $template);
-            }
-          }
-          else {
-            if ($template_[4] == 'in') {
-              $template = str_replace($template_[0], '<?php foreach ('.$template_[5].' as '.$template_[3].') { ?>', $template);
-            }
-            else {
-              $template = str_replace($template_[0], '<?php '.$template_[5].' = array_reverse('.$template_[5].', true); foreach ('.$template_[5].' as '.$template_[3].') { ?>', $template);
-            }
-          }
-        }
-      }
-
-      $ifRegExp = '/{%\s*if\s+(.*)\s*%}/sU';
-      if (preg_match_all($ifRegExp, $template, $replaces, PREG_SET_ORDER)) {
-        foreach ($replaces as $replace) {
-          $subTemplate = $replace[0];
-          $subelementexp = '/([a-zA-Z0-9_$]+)\s+in\s+([$a-zA-Z0-9_\.\'"\[\]]+)/s';
-          $replace = $subTemplate;
-          while (preg_match($subelementexp, $replace, $res)) {
-            $var = substr($res[1], 1);
-            $replace = preg_replace($subelementexp, 'isset($2[\''.$var.'\'])', $replace);
-          }
-          $template = str_replace($subTemplate, $replace, $template);
-        }
-      }
-
-      $elseFfRegExp = '/{%\s*elseif\s+(.*)\s*%}/sU';
-      if (preg_match_all($elseFfRegExp, $template, $replaces, PREG_SET_ORDER)) {
-        foreach ($replaces as $replace) {
-          $subTemplate = $replace[0];
-          $subelementexp = '/([a-zA-Z0-9_$]+)\s+in\s+([$a-zA-Z0-9_\.\'"\[\]]+)/s';
-          $replace = $subTemplate;
-          while (preg_match($subelementexp, $replace, $res)) {
-            $var = substr($res[1], 1);
-            $replace = preg_replace($subelementexp, 'isset($2[\''.$var.'\'])', $replace);
-          }
-          $template = str_replace($subTemplate, $replace, $template);
-        }
-      }
-
-      $assignmentRegExp = '/{%\s*([\$a-zA-Z0-9_\.\-\[\]\'\"]+)\s*=\s*([^%}]+)\s*%}/sU';
-      if (preg_match_all($assignmentRegExp, $template, $pregTemplates, PREG_SET_ORDER)) {
-        foreach ($pregTemplates as $template_) {
-          $template = str_replace($template_[0], '<?php '.$template_[1].' = '.$template_[2].'; ?>', $template);
-        }
-      }
-      /*$template = preg_replace($forRexExp, '<?php foreach ($2 as $1) { ?>', $template);*/
-      $template = preg_replace('/{%\s*for\s+([\$a-zA-Z0-9_\.]+)\s+revertin\s+([\$a-zA-Z0-9_\.\[\]\'\"]+)\s*%}/sU', '<?php $2 = array_reverse($2, true); foreach ($2 as $1) { ?>', $template);
-      $template = preg_replace('/{%\s*endfor\s*%}/sU', '<?php } ?>', $template);
-
-      $template = preg_replace('/{%\s*log\s*(.*)\s*%}/sU', '<?php print_r( $1 ); ?>', $template);
-      $template = preg_replace('/{%\s*if\s+(.*)\s*%}/sU', '<?php if ( $1 ) { ?>', $template);
-      $template = preg_replace('/{%\s*else\s*%}/sU', '<?php } else { ?>', $template);
-      $template = preg_replace('/{%\s*elseif\s+(.*)\s*%}/sU', '<?php } elseif ( $1 ) { ?>', $template);
-      $template = preg_replace('/{%\s*endif\s*%}/sU', '<?php } ?>', $template);
-      $template = preg_replace('/{%\s*endinc\s*%}/sU', '<?php } ?>', $template);
-
-      $echoRegexp = '/{{(~?)\s*([\$\(\)\*\+\-\/a-zA-Z0-9_\.,\'\"\[\]\s]+)(\??)(\|([a-zA-Z_]+))?\s*}}/';
-      if (preg_match_all($echoRegexp, $template, $replaces, PREG_SET_ORDER)) {
-        foreach ($replaces as $replace) {
-          $res = '<?php ';
-          if ($replace[3] == '?') {
-            $res .= 'if (isset(' . $replace[2] . ')) ';
-          }
-          $res .= 'echo ';
-          if ($replace[1] == '~') {
-            $res .= 'htmlspecialchars(';
-          }
-          if (isset($replace[5])) {
-            $res .= $replace[5].'(';
-          }
-          $res .= $replace[2];
-          if (isset($replace[5])) {
-            $res .= ')';
-          }
-          if ($replace[1] == '~') {
-            $res .= ')';
-          }
-          $res .= '; ?>';
-          $template = str_replace($replace[0], $res, $template);
-        }
-      }
-      // echo $template;
-      return $template;
-    }
-
-    private static function compileTemplateJS($template)
-    {
-      $templateReplace = $template;
-
-      $regExpForVariables = '/{%.*?%}/s';
-      if (preg_match_all($regExpForVariables, $templateReplace, $replaces, PREG_SET_ORDER)) {
-        foreach ($replaces as $replace) {
-          if (strpos($replace[0], '?') === false) continue;
-          $subTemplate = $replace[0];
-          $replace = preg_replace('/([$a-zA-Z0-9_\.\[\]\'"\(\)]+)\?/s', '( obj.$1 != undefined && obj.$1.toString().length )', $subTemplate);
-          $templateReplace = str_replace($subTemplate, $replace, $templateReplace);
-        }
-      }
-
-      $regExpForVariables = '/{%.*%}/sU';
-      if (preg_match_all($regExpForVariables, $templateReplace, $replaces, PREG_SET_ORDER)) {
-        foreach ($replaces as $replace) {
-          $subTemplate = $replace[0];
-          $replace = preg_replace('/([\'\"])\s*\.\s*/', '$1 + ', $subTemplate);
-          $replace = preg_replace('/\s*\.\s*([\'\"])/', ' + $1', $replace);
-          $templateReplace = str_replace($subTemplate, $replace, $templateReplace);
-        }
-      }
-
-      $regExpForVariables = '/{%.*%}/sU';
-      if (preg_match_all($regExpForVariables, $templateReplace, $replaces, PREG_SET_ORDER)) {
-        foreach ($replaces as $replace) {
-          $subTemplate = $replace[0];
-          $arrexpr = '/\[([a-zA-Z0-9_]+[a-zA-Z0-9_]*((\.[a-zA-Z0-9_]+[^a-zA-Z0-9_\.]*|\[[a-zA-Z0-9_]+[^a-zA-Z0-9_\]\.]*\]))*)\.\.([a-zA-Z0-9_]+[a-zA-Z0-9_]*((\.[a-zA-Z0-9_]+[^a-zA-Z0-9_\.]*|\[[a-zA-Z0-9_]+[^a-zA-Z0-9_\[\.]*\]))*)\]/s';
-          if (preg_match($arrexpr, $subTemplate, $replace_)) {
-            $start = $replace_[1];
-            $end = $replace_[4];
-
-            $replace = preg_replace($arrexpr, '(function (start, end) {var _arr = []; for (var i = parseInt(start, 10); i <= parseInt(end, 10); i+=1) _arr.push(i); return _arr;})('.$start.', '.$end.')', $subTemplate);
-            $templateReplace = str_replace($subTemplate, $replace, $templateReplace);
-          }
-        }
-      }
-
-      $assignmentRegExp = '/{%\s*([\$a-zA-Z0-9_\.\-\[\]\'\"]+)\s*=\s*([^%}]+)\s*%}/sU';
-      if (preg_match_all($assignmentRegExp, $templateReplace, $replaces, PREG_SET_ORDER)) {
-        foreach ($replaces as $replace) {
-          $templateReplace = str_replace($replace[0], '<% '.$replace[1].' = '.$replace[2].'; %>', $templateReplace);
-        }
-      }
-
-      $ifRegExp = '/{%\s*if\s+(.*)\s*%}/sU';
-      if (preg_match_all($ifRegExp, $templateReplace, $replaces, PREG_SET_ORDER)) {
-        foreach ($replaces as $replace) {
-          $subTemplate = $replace[0];
-          $subelementexp = '/([a-zA-Z0-9_$]+)\s+in\s+([$a-zA-Z0-9_\.\'"\[\]]+)/s';
-          $replace = $subTemplate;
-          while (preg_match($subelementexp, $replace, $res)) {
-            $replace = preg_replace($subelementexp, '(\'$1\' in $2)', $replace);
-          }
-          $templateReplace = str_replace($subTemplate, $replace, $templateReplace);
-        }
-      }
-
-      $elseifRegExp = '/{%\s*elseif\s+(.*)\s*%}/sU';
-      if (preg_match_all($elseifRegExp, $templateReplace, $replaces, PREG_SET_ORDER)) {
-        foreach ($replaces as $replace) {
-          $subTemplate = $replace[0];
-          $subelementexp = '/([a-zA-Z0-9_$]+)\s+in\s+([$a-zA-Z0-9_\.\'"\[\]]+)/s';
-          $replace = $subTemplate;
-          while (preg_match($subelementexp, $replace, $res)) {
-            $replace = preg_replace($subelementexp, '(\'$1\' in $2)', $replace);
-          }
-          $templateReplace = str_replace($subTemplate, $replace, $templateReplace);
-        }
-      }
-
-      $templateReplace = preg_replace('/{%\s*for\s+([a-zA-Z0-9_\.]+)\s+in\s+([a-zA-Z0-9_\.\s\[\]\(\);=\+\-,\{\}<>]+)\s*%}/sU', '<% (function () { var _arr = $2; for ($1 in _arr) { %><% $1 = _arr[$1]; %>', $templateReplace);
-      $templateReplace = preg_replace('/{%\s*for\s+([a-zA-Z0-9_\.]+)\s*,\s*([a-zA-Z0-9_\.]+)\s+in\s+([a-zA-Z0-9_\.]+)\s*%}/sU', '<% (function () { var _arr = $3; for ($1 in _arr) { %><% $2 = _arr[$1]; %>', $templateReplace);
-      $templateReplace = preg_replace('/{%\s*endfor\s*%}/sU', '<% } })(); %>', $templateReplace);
-
-      $templateReplace = preg_replace('/{%\s*log\s*(.+)\s*%}/sU', '<% console.log($1); %>', $templateReplace);
-      $templateReplace = preg_replace('/{%\s*if\s+(.+)\s*%}/sU', '<% if ( $1 ) { %>', $templateReplace);
-      $templateReplace = preg_replace('/{%\s*else\s*%}/sU', '<% } else { %>', $templateReplace);
-      $templateReplace = preg_replace('/{%\s*elseif\s+(.+)\s*%}/sU', '<% } else if ( $1 ) { %>', $templateReplace);
-      $templateReplace = preg_replace('/{%\s*endif\s*%}/sU', '<% } %>', $templateReplace);
-
-      $echoRegexp = '/{{(~?)\s*([\$\(\)\*\+\-a-zA-Z0-9_\.,\'\"\[\]\s]+)(\??)(\|([a-zA-Z_]+))?\s*}}/';
-      if (preg_match_all($echoRegexp, $templateReplace, $replaces, PREG_SET_ORDER)) {
-        foreach ($replaces as $replace) {
-          $res = '<%= ';
-          if ($replace[1] == '~') {
-            $res .= ' escapeHtml(';
-          }
-          if (isset($replace[5])) {
-            $res .= 'window.'.$replace[5].'(';
-          }
-          if ($replace[3] == '?') {
-            $res .= '(obj.' . $replace[2] . ' || window.' . $replace[2] . ' || \'\')';
-          }
-          else {
-            $res .= $replace[2];
-          }
-          if (isset($replace[5])) {
-            $res .= ')';
-          }
-          if ($replace[1] == '~') {
-            $res .= ')';
-          }
-          $res .= ' %>';
-          $templateReplace = str_replace($replace[0], $res, $templateReplace);
-        }
-      }
-
-      $templateReplace = preg_replace('/{{\s*([^\s][a-zA-Z0-9\(\)_\.\s\+\-\*\/]+)\s*}}/sU', '<%= $1 %>', $templateReplace);
-      $templateReplace = preg_replace('/{{\s*([^\s][a-zA-Z0-9\(\)_\.\s\+\-\*\/]+)\?\s*}}/sU', '<%= obj.$1 || window.$1 || \'\' %>', $templateReplace);
-      return $templateReplace;
-    }
-
     public static function render($template, $main = null, $compilePath = null)
     {
       $results = SFResponse::getResults();
@@ -577,12 +196,12 @@
       if (!$compilePath) $compilePath = self::$templateCompilePath;
       if (!empty($template)) {
         ob_start();
-        if (file_exists($compilePath.$template.'.php.tmpl')) {
-          include $compilePath.$template.'.php.tmpl';
+        if (file_exists($compilePath.$template.'.tmpl.php')) {
+          include $compilePath.$template.'.tmpl.php';
         }
         else {
           ob_end_clean();
-          die('template not found: '.$template.'.php.tmpl');
+          die('template not found: '.$template.'.tmpl.php');
         }
         $content = ob_get_contents();
         ob_end_clean();
@@ -600,15 +219,15 @@
       $variables .= '</script>';
 
       if ($main) {
-        if (file_exists($compilePath.$main.'.php.tmpl')) {
+        if (file_exists($compilePath.$main.'.tmpl.php')) {
           ob_start();
-          include $compilePath.$main.'.php.tmpl';
+          include $compilePath.$main.'.tmpl.php';
           $content = ob_get_contents();
           ob_end_clean();
           return $content;
         }
         else {
-          die('main not found: '.$main.'.php.tmpl');
+          die('main not found: '.$main.'.tmpl.php');
         }
       }
       else {
