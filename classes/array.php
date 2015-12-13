@@ -61,19 +61,22 @@
     for ($indexA = 0; $indexA < count($source); $indexA++) {
       if (!isset($dest[$indexB])) {
         // it seems that size array of source is bigger than size array of dest
-        // so mark current source item as deleted
+        // so mark current source item as delete
         if (count($buffer)) {
           $findedIndexB = findSourceIndexInBuffer($buffer['indexesB'], $dest, $source[$indexA]);
           if ($findedIndexB !== false) {
+            // echo $findedIndexB."←\n";
             $indexB = $buffer['indexesB'][$findedIndexB];
+            // print_r($source[$findedIndexB]);
             putBufferElementsInRes($buffer, $res, -$findedIndexB - 1, $source);
+            putElementInResWithMark($res, $dest[$indexB], 'skip');
           }
           else {
-            putElementInResWithMark($res, $source[$indexA], 'deleted');
+            $buffer['indexesA'][] = $indexA;
           }
         }
         else {
-          putElementInResWithMark($res, $source[$indexA], 'deleted');
+          putElementInResWithMark($res, $source[$indexA], 'delete');
         }
       }
       else {
@@ -91,23 +94,20 @@
           // buffer is not empty
           else {
             // if element of dest is equal already skiped element of source
-            // find index and mark the number of elements like edited
-            // and mark other elements like added
+            // find index and mark the number of elements like edit
+            // and mark other elements like add
             $findedIndexA = findSourceIndexInBuffer($buffer['indexesA'], $source, $dest[$indexB]);
             $findedIndexB = findSourceIndexInBuffer($buffer['indexesB'], $dest, $source[$indexA]);
             if ($findedIndexA !== false) {
               $indexA = $buffer['indexesA'][$findedIndexA];
               putBufferElementsInRes($buffer, $res, $findedIndexA, $source);
+              putElementInResWithMark($res, $dest[$indexB], 'skip');
             }
             else if ($findedIndexB !== false) {
-              echo "before ".$indexA." ".$indexB."\n";
-              echo "this branch ".$findedIndexB."\n";
-              print_r($source[$indexA]);
-              print_r($buffer);
               $indexB = $buffer['indexesB'][$findedIndexB];
               $indexA = $indexA;
               putBufferElementsInRes($buffer, $res, -$findedIndexB - 1, $source);
-              echo "after ".$indexA." ".$indexB."\n";
+              putElementInResWithMark($res, $dest[$indexB], 'skip');
             }
             // if index not found
             // add dest element to buffer element
@@ -122,10 +122,11 @@
         // check buffer and do something with it
         else {
           // buffer is not empty and equal elements gets
-          // mark buffer elements as edited
+          // mark buffer elements as edit
           if (count($buffer)) {
             putBufferElementsInRes($buffer, $res, count($buffer['indexesA']), $source);
           }
+          putElementInResWithMark($res, $dest[$indexB], 'skip');
         }
       }
       $indexB++;
@@ -163,7 +164,7 @@
             putBufferElementsInRes($buffer, $res, $findedIndexA, $source);
           }
           else {
-            putBufferElementsInRes($buffer, $res, count($buffer['indexesA']), $source);
+            putBufferElementsInRes($buffer, $res, count($buffer['indexesB']), $source);
           }
         }
       }
@@ -171,12 +172,16 @@
     return $res;
   }
 
-  function putElementInResWithMark(& $res, $element, $mark)
+  function putElementInResWithMark(& $res, $element, $mark, $origin = false)
   {
-    $res[] = array(
+    $element = array(
       'mark' => $mark,
       'element' => $element
     );
+    if ($origin !== false) {
+      $element['origin'] = $origin;
+    }
+    $res[] = $element;
   }
 
   function putBufferElementsInRes(& $buffer, & $res, $index, $source)
@@ -184,24 +189,21 @@
     if ($index < 0) {
       $index = -$index - 1;
       for ($i = 0; $i < $index; $i++) {
-        putElementInResWithMark($res, array(
-          'origin' => $source[$buffer['indexesB'][$i]],
-          'created' => $buffer['elements'][$i]
-        ), 'edited');
+        putElementInResWithMark($res, $buffer['elements'][$i], 'edit', $source[$buffer['indexesB'][$i]]);
       }
-      for ($i = $index; $i < count($buffer['elements']); $i++) {
-        putElementInResWithMark($res, $source[$buffer['indexesA'][$i]], 'deleted');
+      for ($i = $index; $i < count($buffer['indexesA']); $i++) {
+        putElementInResWithMark($res, $source[$buffer['indexesA'][$i]], 'delete');
       }
     }
     else {
       for ($i = 0; $i < $index; $i++) {
-        putElementInResWithMark($res, array(
-          'origin' => $source[$buffer['indexesA'][$i]],
-          'created' => $buffer['elements'][$i]
-        ), 'edited');
+        putElementInResWithMark($res, $buffer['elements'][$i], 'edit', $source[$buffer['indexesA'][$i]]);
       }
       for ($i = $index; $i < count($buffer['elements']); $i++) {
-        putElementInResWithMark($res, $buffer['elements'][$i], 'added');
+        putElementInResWithMark($res, $buffer['elements'][$i], 'add');
+      }
+      for ($i = count($buffer['elements']); $i < count($buffer['indexesA']); $i++) {
+        putElementInResWithMark($res, $source[$buffer['indexesA'][$i]], 'delete');
       }
     }
     $buffer = array();
