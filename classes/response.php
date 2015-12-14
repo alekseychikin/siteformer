@@ -8,6 +8,7 @@
     private static $type = 'redir';
     private static $main;
     private static $propagation = true;
+    private static $working = true;
     private static $code = array(
       '200' => 'OK',
       '401' => 'Unauthorized',
@@ -22,10 +23,8 @@
 
     public static function code($code)
     {
-      header('HTTP/1.1 '.$code.' '.self::$code[$code]);
+      header('HTTP/1.1 ' . $code . ' ' . self::$code[$code]);
     }
-
-    private static $working = true;
 
     public static function error($status, $message)
     {
@@ -46,7 +45,7 @@
 
     public static function setStatus($code)
     {
-      header('HTTP/1.1 '.$code.' '.self::$code[$code]);
+      header('HTTP/1.1 ' . $code . ' ' . self::$code[$code]);
     }
 
     public static function initRedirData()
@@ -55,7 +54,7 @@
         self::$result = array_merge(self::$result, $_SESSION['redir_data']);
         unset($_SESSION['redir_data']);
       }
-    } //
+    }
 
     public static function isPropagation()
     {
@@ -88,34 +87,50 @@
       return self::$toGlobal;
     }
 
+    private static function prepareActionPath($action, & $isFile, & $isDir)
+    {
+      if (substr($action, -1) == '/') {
+        $action = substr($action, 0, -1);
+        $isDir = true;
+      }
+      if (substr($action, -4) == '.php') {
+        $action = substr($action, 0, -4);
+        $isFile = true;
+      }
+      if (strpos($action, '/__') !== false) {
+        $type = substr($action, strrpos($action, '__'));
+        if (in_array($type, self::$types)) {
+          $action = substr($action, 0, strlen($action) - strlen($type) - 1);
+          $isDir = false;
+        }
+      }
+      return $action;
+    }
+
     public static function run($action, $params = array())
     {
       if (!self::$working) return false;
-      if (in_array(substr($action, strlen($action) - 6), self::$types)) {
-        $type = substr($action, strlen($action) - 6);
-        SFResponse::setType($type);
-        $action = substr($action, 0, strlen($action) - strlen($type) - 1);
-      }
+
       $urlParams = array();
       foreach ($params as $field => $value) {
         $$field = $value;
         // $urlParams[] = '<input type="hidden" id="url_param_'. $field .'" role="url_param_'. $field .'" value="'. $value .'" />';
       }
       SFResponse::set('url_params', implode(N, $urlParams));
-      if (file_exists(ACTIONS.$action.'.php')) {
-        return include ACTIONS.$action.'.php';
+      if (file_exists(ACTIONS . $action . '.php')) {
+        return include ACTIONS . $action . '.php';
       }
-      elseif (file_exists($action.'.php')) {
-        return include $action.'.php';
+      elseif (file_exists($action . '.php')) {
+        return include $action . '.php';
       }
-      elseif (file_exists(ACTIONS.$action) && is_dir(ACTIONS.$action) && file_exists(ACTIONS.$action.'/index.php')) {
-        return include ACTIONS.$action.'/index.php';
+      elseif (file_exists(ACTIONS . $action) && is_dir(ACTIONS . $action) && file_exists(ACTIONS . $action . '/index.php')) {
+        return include ACTIONS . $action . '/index.php';
       }
-      elseif (file_exists($action) && is_dir($action) && file_exists($action.'/index.php')) {
-        return include $action.'/index.php';
+      elseif (file_exists($action) && is_dir($action) && file_exists($action . '/index.php')) {
+        return include $action . '/index.php';
       }
       else {
-        self::error(404, 'Action file not find: '.$action.'.php');
+        self::error(404, 'Action file not find: ' . $action . '.php');
         // die('Action file not find: '.$action.'.php');
       }
     }
@@ -123,20 +138,23 @@
     public static function isActionExists($action)
     {
       if (!self::$working) return false;
-      if (in_array(substr($action, strlen($action) - 6), self::$types)) {
-        $type = substr($action, strlen($action) - 6);
-        $action = substr($action, 0, strlen($action) - strlen($type) - 1);
+      $actionsPath = ROOT;
+      if (defined('ACTIONS')) {
+        $actionsPath = ACTIONS;
       }
-      if (file_exists(ACTIONS.$action.'.php')) {
+      $isFile = false;
+      $isDir = false;
+      $action = self::prepareActionPath($action, $isFile, $isDir);
+      if (file_exists($action . '.php') && !$isDir) {
         return true;
       }
-      elseif (file_exists($action.'.php')) {
+      elseif (file_exists($actionsPath . $action . '.php') && !$isDir) {
         return true;
       }
-      elseif (file_exists(ACTIONS.$action) && is_dir(ACTIONS.$action) && file_exists(ACTIONS.$action.'/index.php')) {
+      elseif (file_exists($action) && is_dir($action) && file_exists($action . '/index.php') && !$isFile) {
         return true;
       }
-      elseif (file_exists($action) && is_dir($action) && file_exists($action.'/index.php')) {
+      elseif (file_exists($actionsPath . $action) && is_dir($actionsPath . $action) && file_exists($actionsPath . $action . '/index.php') && !$isFile) {
         return true;
       }
       return false;
@@ -162,7 +180,7 @@
       return self::$result;
     }
 
-    public static function returnData($content = '')
+    private static function returnData($content = '')
     {
       if (!self::$working) return false;
       $type = self::$type;

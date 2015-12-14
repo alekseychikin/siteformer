@@ -1,7 +1,7 @@
 <?php
 
   define('ROOT', __DIR__.'/../../');
-  require_once __DIR__.'/../../classes/uri.php';
+  require_once ROOT.'classes/uri.php';
 
   class SFURITest extends PHPUnit_Framework_TestCase
   {
