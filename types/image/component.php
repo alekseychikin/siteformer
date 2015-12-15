@@ -20,7 +20,7 @@
 				$basename = basename($value);
 				$ext = strtolower(substr(strrchr($basename, '.'), 1));
 				if (in_array($ext, $exts)) {
-					$filename = SFText::translate($basename);
+					$filename = SFText::getTag($basename);
 					$fn       = $filename;
 					$filename = str_replace(array('%Y', '%m', '%d', '%h', '%i', '%s', '%p'),
 						array(date('Y'), date('m'), date('d'), date('h'), date('i'), date('s'), $fn), $filenamePattern);
@@ -54,7 +54,7 @@
 				if (is_uploaded_file($files['tmp_name'])) {
 					$ext = strtolower(substr(strrchr($files['name'], '.'), 1));
 					if (in_array($ext, $exts)) {
-						$filename = SFText::translate($files['name']);
+						$filename = SFText::getTag($files['name']);
 						$fn       = $filename;
 						$filename = str_replace(array('%Y', '%m', '%d', '%h', '%i', '%s', '%p'),
 							array(date('Y'), date('m'), date('d'), date('h'), date('i'), date('s'), $fn), $filenamePattern);

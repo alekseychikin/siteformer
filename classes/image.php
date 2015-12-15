@@ -30,7 +30,7 @@
         if (is_uploaded_file($files['tmp_name'])) {
           $ext = strtolower(substr(strrchr($files['name'], '.'), 1));
           if (in_array($ext, self::$exts)) {
-            $filename = SFText::translate($files['name']);
+            $filename = SFText::getTag($files['name']);
             $fn       = $filename;
             $filename = substr($filename, 0, strlen($filename) - strlen($ext));
             $fn       = $filename.'.'.$ext;

@@ -6,13 +6,13 @@
 
     public function __construct($tableName, $fields = array(), $indexes = array())
     {
-      $sql = "CREATE TABLE IF NOT EXISTS `".$tableName."` (\n";
+      $sql = 'CREATE TABLE IF NOT EXISTS `' . $tableName . '` (' . "\n";
       $fields_ = array();
       foreach ($fields as $field) {
         $field = explode(' ', $field);
         $fieldName = $field[0];
         unset($field[0]);
-        $fields_[] = '`'.$fieldName.'` '.implode(' ', $field);
+        $fields_[] = '`' . $fieldName . '` ' . implode(' ', $field);
       }
       $sql .= implode(",\n", $fields_);
       $indexes_ = array();

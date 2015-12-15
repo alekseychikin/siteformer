@@ -29,6 +29,7 @@
     die;
   }
 
+  require_once CLASSES.'type.php';
   require_once CLASSES.'log.php';
   // SFLog::init();
   require_once CLASSES.'S3.php';
@@ -45,7 +46,6 @@
   require_once CLASSES.'mail.php';
 
   $configsPath = CONFIGS.'configs.php';
-  // require_once CLASSES.'types.php';
   // require_once CLASSES.'data.php';
   // require_once CLASSES.'mysql.php';
   // require_once CLASSES.'orm-database.php';

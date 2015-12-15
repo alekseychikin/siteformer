@@ -24,7 +24,13 @@
           $subdata = array();
           for ($i = 0; $i < count($source[$field['name']]); $i++) {
             $skip = false;
-            $row = self::parse($field['array'], $source[$field['name']][$i], $uniqueCache, $prevName . '.' . $field['name'], $skip);
+            list($key, $value) = each($field['array']);
+            if (gettype($value) === 'array') {
+              $row = self::parse($field['array'], $source[$field['name']][$i], $uniqueCache, $prevName . '.' . $field['name'], $skip);
+            }
+            else {
+              $row = self::parse(array($field['array']), $source[$field['name']][$i], $uniqueCache, $prevName . '.' . $field['name'], $skip);
+            }
             if (!$skip) {
               $subdata[] = $row;
             }
@@ -37,66 +43,110 @@
           $data[$field['name']] = $subdata;
         }
         else {
-          $cacheName = $prevName . '.' . $field['name'];
-          if (isset($field['skip_row_if_empty']) && !!$field['skip_row_if_empty']) {
-            if (!isset($source[$field['name']]) || empty($source[$field['name']])) {
+          $isIssetSource = true;
+          $sourceItem = null;
+          if (gettype($source) === 'array') {
+            $cacheName = $prevName . '.' . $field['name'];
+            $isIssetSource = isset($source[$field['name']]);
+            if ($isIssetSource) {
+              $sourceItem = $source[$field['name']];
+            }
+          }
+          if (gettype($source) !== 'array') {
+            $sourceItem = $source;
+            $cacheName = $prevName;
+          }
+          $isEmptySourceString = (gettype($sourceItem) === 'string' && strlen($sourceItem) === 0);
+
+          if (isset($field['skip_row_if_empty']) && $field['skip_row_if_empty']) {
+            if (!$isIssetSource || empty($sourceItem)) {
               $skip = true;
               return false;
             }
           }
-          if (isset($field['require']) && !!$field['require']) { // require
-            if (!isset($source[$field['name']]) || (gettype($source[$field['name']]) === 'string' && strlen($source[$field['name']]) === 0)) {
+          if (isset($field['require']) && $field['require']) { // require
+            if (!$isIssetSource || $isEmptySourceString) {
               self::returnError($field);
             }
           }
-          if (isset($field['values']) && isset($source[$field['name']])) {
-            if (!in_array($source[$field['name']], $field['values'])) {
-              self::returnError($field, $source[$field['name']]);
+          if (isset($field['values']) && $isIssetSource) {
+            if (!in_array($sourceItem, $field['values'])) {
+              self::returnError($field, $sourceItem);
             }
           }
-          if (isset($field['type']) && isset($source[$field['name']])) {
-            if (!preg_match(self::$regexpTypes[$field['type']], $source[$field['name']])) {
-              self::returnError($field, $source[$field['name']]);
+          if (isset($field['type']) && $isIssetSource) {
+            if (!preg_match(self::$regexpTypes[$field['type']], $sourceItem)) {
+              self::returnError($field, $sourceItem);
             }
           }
-          if (isset($field['valid']) && isset($source[$field['name']]) && strlen($source[$field['name']]) > 0) {
-            if (!preg_match($field['valid'], $source[$field['name']])) {
-              self::returnError($field, $source[$field['name']]);
+          if (isset($field['valid']) && $isIssetSource && !$isEmptySourceString) {
+            if (!preg_match($field['valid'], $sourceItem)) {
+              self::returnError($field, $sourceItem);
             }
           }
           if (isset($field['unique'])) {
-            if (gettype($field['unique']) === 'boolean' && $field['unique'] === true) {
+            if (gettype($field['unique']) === 'boolean' && $field['unique']) {
               if (!isset($uniqueCache[$cacheName])) {
                 $uniqueCache[$cacheName] = array();
               }
-              if (in_array($source[$field['name']], $uniqueCache[$cacheName])) {
-                self::returnError($field, $source[$field['name']]);
+              if (in_array($sourceItem, $uniqueCache[$cacheName])) {
+                self::returnError($field, $sourceItem);
               }
             }
             elseif (gettype($field['unique']) === 'object') {
-              if (!$field['unique']($source[$field['name']])) {
-                self::returnError($field, $source[$field['name']]);
+              if (!$field['unique']($sourceItem)) {
+                self::returnError($field, $sourceItem);
               }
             }
           }
-          if (isset($field['default']) && !isset($source[$field['name']])) {
-            $data[$field['name']] = $field['default'];
+          if (isset($field['default']) && !$isIssetSource) {
+            if (gettype($source) === 'array') {
+              $data[$field['name']] = $field['default'];
+            }
+            else {
+              $data = $field['default'];
+            }
           }
-          elseif (isset($source[$field['name']])) {
-            $data[$field['name']] = $source[$field['name']];
+          elseif ($isIssetSource) {
+            if (gettype($source) === 'array') {
+              $data[$field['name']] = $sourceItem;
+            }
+            else {
+              $data = $sourceItem;
+            }
           }
           else {
-            $data[$field['name']] = '';
+            if (gettype($source) === 'array') {
+              $data[$field['name']] = '';
+            }
+            else {
+              $data = '';
+            }
           }
           if (isset($field['modify'])) {
             if (gettype($field['modify']) == 'string') {
-              $data[$field['name']] = call_user_func($field['modify'], $data[$field['name']]);
+              if (gettype($source) === 'array') {
+                $data[$field['name']] = call_user_func($field['modify'], $data[$field['name']]);
+              }
+              else {
+                $data = call_user_func($field['modify'], $data);
+              }
             }
             elseif (gettype($field['modify']) == 'object') {
-              $data[$field['name']] = $field['modify']($data[$field['name']]);
+              if (gettype($source) === 'array') {
+                $data[$field['name']] = $field['modify']($data[$field['name']]);
+              }
+              else {
+                $data = $field['modify']($data);
+              }
             }
           }
-          $uniqueCache[$cacheName][] = $data[$field['name']];
+          if (gettype($source) === 'array') {
+            $uniqueCache[$cacheName][] = $data[$field['name']];
+          }
+          else {
+            $uniqueCache[$cacheName][] = $data;
+          }
         }
       }
       return $data;

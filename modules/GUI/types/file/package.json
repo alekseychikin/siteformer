@@ -5,8 +5,6 @@
   "defaultSettings": {
     "storage": "local",
     "path": "/",
-    "width": "200",
-    "height": "",
     "s3AccessKey": "",
     "s3SecretKey": "",
     "s3Bucket": "",

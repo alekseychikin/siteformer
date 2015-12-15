@@ -77,7 +77,7 @@ module.exports = Model "ConfigsAddModel",
         if @state.id?
           @set fields: response.section.fields
           @set id: response.section.id
-        else
-          @trigger "onSavedSection", @state.alias
+        # else
+          # @trigger "onSavedSection", @state.alias
       .catch (response) ->
         console.error response.error

@@ -9,6 +9,15 @@
       {
         if (!class_exists($dependence)) die('Need module Router before '. $dependence);
       });
+
+      // append types handlers
+      $dir = opendir(MODULES . 'GUI/types');
+      while($filename = readdir($dir)) {
+        if ($filename != '.' && $filename != '..' && is_dir(MODULES . 'GUI/types/' . $filename) && file_exists(MODULES . 'GUI/types/' . $filename . '/' . $filename . '.php')) {
+          require_once MODULES . 'GUI/types/' . $filename . '/' . $filename . '.php';
+        }
+      }
+
       SFRouter::addRule('/cms/', MODULES . 'GUI/sections/main/index');
       SFRouter::addRule('/cms/configs/', MODULES . 'GUI/sections/configs/index');
       SFRouter::addRule('/cms/configs/add/', MODULES . 'GUI/sections/configs/add');
@@ -68,9 +77,30 @@
       });
     }
 
+    private static function validateSettingsOfData(& $data)
+    {
+      foreach ($data['fields'] as $index => $field) {
+        $className = self::getClassNameByType($field['type']);
+        if (class_exists($className)) {
+          $data['fields'][$index]['settings'] = $className::validateSettings($field['settings'], $data['fields'], $field['alias']);
+        }
+      }
+    }
+
     // Add section
     public static function addSection($data)
     {
+      self::validateSettingsOfData($data);
+
+      $tableFields = array('id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT');
+      $tableIndexes = array('primary id');
+      foreach ($data['fields'] as $field) {
+        $fieldType = self::getSqlFieldType($field);
+        $tableFields[] = $field['alias'] . ' ' . $fieldType;
+      }
+      print_r($tableFields);
+      die();
+
       $idSection = SFORM::insert('sections')
         ->values(array(
           'title' => $data['title'],
@@ -98,6 +128,9 @@
     public static function saveSection($id, $data)
     {
       $source = self::getSectionById($id);
+
+      self::validateSettingsOfData($data);
+
       SFORM::update('sections')
         ->values(array(
           'title' => $data['title'],
@@ -106,12 +139,14 @@
         ))
         ->id($id)
         ->exec();
+
       $source['fields'] = arrMap($source['fields'], function ($item)
       {
         $item['settings'] = json_encode($item['settings']);
         unset($item['section']);
         return $item;
       });
+
       $fields = arrDifference($source['fields'], $data['fields']);
       foreach ($fields as $field) {
         switch($field['mark']) {
@@ -142,8 +177,25 @@
               ->id($field['origin']['id'])
               ->exec();
             break;
+          case 'skip':
+            $fieldType = self::getSqlFieldType($field['element']);
+            break;
         }
       }
+    }
+
+    private static function getSqlFieldType($field)
+    {
+      $className = self::getClassNameByType($field['type']);
+      if (class_exists($className)) {
+        return $className::getSqlField($field['settings']);
+      }
+      return false;
+    }
+
+    private static function getClassNameByType($type)
+    {
+      return 'SFType' . SFText::camelCasefy($type, true);
     }
 
     // Get array of modules
