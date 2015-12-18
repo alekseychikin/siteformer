@@ -1,0 +1,18 @@
+<table class="table">
+  <thead>
+    <tr>
+      <td>Название</td>
+      <td>Веб-имя</td>
+      <td>Модуль</td>
+    </tr>
+  </thead>
+  <tbody>
+    {% for sectionsItem in sections %}
+    <tr class="table__link">
+      <td><a href="/cms/configs/{{ sectionsItem['alias'] }}/">{{ sectionsItem['title'] }}</a></td>
+      <td><a href="/cms/configs/{{ sectionsItem['alias'] }}/">{{ sectionsItem['alias'] }}</a></td>
+      <td><a href="/cms/configs/{{ sectionsItem['alias'] }}/">{{ sectionsItem['module'] }}</a></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>

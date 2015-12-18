@@ -1,0 +1,3 @@
+{% for sectionsItem in sections %}
+  <li class="menu__item"><a href="/cms/sections/{{ sectionsItem['alias'] }}/" class="menu__link">{{ sectionsItem['title'] }}</a></li>
+{% endfor %}
