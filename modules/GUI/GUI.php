@@ -92,14 +92,36 @@
     {
       self::validateSettingsOfData($data);
 
-      $tableFields = array('id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT');
-      $tableIndexes = array('primary id');
+      $defaultField = array(
+        'name' => '',
+        'type' => '',
+        'null' => false,
+        'autoincrement' => false,
+        'default' => 'NULL'
+      );
+
+      $tableFields = array(
+        array(
+          'name' => 'id',
+          'type' => 'INT(11) UNSIGNED',
+          'null' => false,
+          'autoincrement' => true,
+          'default' => false
+        )
+      );
       foreach ($data['fields'] as $field) {
-        $fieldType = self::getSqlFieldType($field);
-        $tableFields[] = $field['alias'] . ' ' . $fieldType;
+        $fieldType = array_merge($defaultField, self::getSqlFieldType($field));
+        $fieldType['name'] = $field['alias'];
+        $tableFields[] = $fieldType;
       }
-      print_r($tableFields);
-      die();
+
+      $table = SFORM::create($data['alias']);
+      foreach ($tableFields as $field) {
+        $table->addField($field);
+      }
+      $table->addKey('id', 'primary key');
+      SFORM::showError();
+      $table->exec();
 
       $idSection = SFORM::insert('sections')
         ->values(array(

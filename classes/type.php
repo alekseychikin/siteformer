@@ -4,7 +4,11 @@
   {
     public static function getSqlField($params)
     {
-      return 'VARCHAR(250) NOT NULL DEFAULT ""';
+      return array(
+        'type' => 'VARCHAR(250)',
+        'null' => 'NULL',
+        'default' => ''
+      );
     }
 
     public static function validateSettings($params, $fields, $currentAlias)

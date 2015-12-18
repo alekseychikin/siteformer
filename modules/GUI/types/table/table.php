@@ -6,6 +6,10 @@
     {
       $params = json_decode($params, true);
       $defaultData = json_encode($params['defaultData']);
-      return 'TEXT DEFAULT "' . $defaultData . '"';
+      return array(
+        'type' => 'TEXT',
+        'default' => $defaultData,
+        'null' => false
+      );
     }
   }

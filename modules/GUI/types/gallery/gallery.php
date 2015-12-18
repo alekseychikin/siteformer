@@ -6,7 +6,10 @@
   {
     public static function getSqlField($params)
     {
-      return 'INT(11) UNSIGNED DEFAULT NULL';
+      return array(
+        'type' => 'INT(11) UNSIGNED',
+        'default' => 'NULL'
+      );
     }
 
     public static function validateSettings($params, $fields, $currentAlias)

@@ -17,7 +17,10 @@
           $defaultValues[] = $paramLabel;
         }
       }
-      return 'SET("' . implode('","', $values) . '") DEFAULT "' . implode(',', $defaultValues) . '"';
+      return array(
+        'type' => 'SET("' . implode('","', $values) . '")',
+        'default' => implode(',', $defaultValues)
+      );
     }
 
     public static function validateSettings($params, $fields, $currentAlias)

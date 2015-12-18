@@ -16,7 +16,10 @@
           $defaultValue = $param;
         }
       }
-      return 'ENUM("' . implode('","', $values) . '") DEFAULT "' . $defaultValue . '"';
+      return array(
+        'type' => 'ENUM("' . implode('","', $values) . '")',
+        'default' => $defaultValue
+      );
     }
 
     public static function validateSettings($params, $fields, $currentAlias)
