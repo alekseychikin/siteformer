@@ -11,7 +11,7 @@
     array(
       'title' => '',
       'alias' => '',
-      'type' => $firstType['alias'],
+      'type' => 'string',
       'settings' => $firstType['defaultSettings']
     )
   );

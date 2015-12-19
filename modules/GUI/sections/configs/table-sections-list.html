@@ -1,6 +1,13 @@
 <table class="table">
+  <colgroup>
+    <col width="20" />
+    <col width="*" />
+    <col width="*" />
+    <col width="*" />
+  </colgroup>
   <thead>
     <tr>
+      <td><input type="checkbox" id="checkall" /><label for="checkall"></label></td>
       <td>Название</td>
       <td>Веб-имя</td>
       <td>Модуль</td>
@@ -9,6 +16,7 @@
   <tbody>
     {% for sectionsItem in sections %}
     <tr class="table__link">
+      <td><input type="checkbox" id="check{{ sectionsItem['id'] }}" /><label for="check{{ sectionsItem['id'] }}"></label></td>
       <td><a href="/cms/configs/{{ sectionsItem['alias'] }}/">{{ sectionsItem['title'] }}</a></td>
       <td><a href="/cms/configs/{{ sectionsItem['alias'] }}/">{{ sectionsItem['alias'] }}</a></td>
       <td><a href="/cms/configs/{{ sectionsItem['alias'] }}/">{{ sectionsItem['module'] }}</a></td>

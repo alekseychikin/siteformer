@@ -8,28 +8,15 @@
     $types[] = $type['alias'];
   });
 
-  $id = false;
-  if (isset($_POST['id'])) {
-    $id = (int)$_POST['id'];
-  }
-
   $data = SFValidate::parse(array(
     array(
       'name' => 'title',
       'require' => true,
       'error' => 'Поле «Название» обязательно для заполнения, должно быть уникальным',
-      'unique' => function ($value) use ($id) {
+      'unique' => function ($value) {
         $res = SFORM::select()
-          ->from('sections');
-        if ($id !== false) {
-          $res = $res->where(_and_(
-            _expr_('title', $value),
-            _expr_('id', '!=', $id)
-          ));
-        }
-        else {
-          $res = $res->where('title', $value);
-        }
+          ->from('sections')
+          ->where('title', $value);
         return !$res->length();
       }
     ),
@@ -38,18 +25,10 @@
       'require' => true,
       'valid' => '/^[a-zA-Z0-9\-_]+$/i',
       'error' => 'Поле «Веб-имя» обязательно для заполнения, должно содержать символы латинского алфавита, цифр, знака подчеркивания или дефиса',
-      'unique' => function ($value) use ($id) {
+      'unique' => function ($value) {
         $res = SFORM::select()
-          ->from('sections');
-        if ($id !== false) {
-          $res = $res->where(_and_(
-            _expr_('alias', $value),
-            _expr_('id', '!=', $id)
-          ));
-        }
-        else {
-          $res = $res->where('alias', $value);
-        }
+          ->from('sections')
+          ->where('alias', $value);
         return !$res->length();
       }
     ),
@@ -99,14 +78,8 @@
     )
   ), $_POST);
 
-  if ($id === false) {
-    $id = SFGUI::addSection($data);
-    SFResponse::set('section', SFGUI::getSectionById($id));
-  }
-  else {
-    SFGUI::saveSection($id, $data);
-    SFResponse::set('section', SFGUI::getSectionById($id));
-  }
+  $id = SFGUI::addSection($data);
+  SFResponse::set('section', SFGUI::getSectionById($id));
   SFResponse::render();
 
 ?>

@@ -10,7 +10,6 @@
   position: relative;
   overflow: hidden;
   background-color: #fff;
-  cursor: pointer;
 }
 
 .select:before {
@@ -45,6 +44,11 @@
 
 .select select:focus {
   outline: none;
+}
+
+.select select:disabled {
+  color: #929292;
+  cursor: default;
 }
 
 .select select::-ms-expand {

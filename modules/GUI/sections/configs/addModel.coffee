@@ -72,12 +72,12 @@ module.exports = Model "ConfigsAddModel",
 
   save: ->
     console.log @state
-    httpPost "/cms/configs/save/__json/", @state
+    httpPost "/cms/configs/action_save/__json/", @state
       .then (response) =>
         if @state.id?
           @set fields: response.section.fields
           @set id: response.section.id
-        # else
-          # @trigger "onSavedSection", @state.alias
+        else
+          @trigger "onSavedSection", @state.alias
       .catch (response) ->
         console.error response.error

@@ -1,7 +1,7 @@
 .table__link:hover td {
-  background-color: #f4f1f1;
+  background-color: #f4f1f1 !important;
 }
 
 .table__link {
-  
+
 }

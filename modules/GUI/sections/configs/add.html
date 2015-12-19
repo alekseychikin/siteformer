@@ -10,7 +10,7 @@
     <div class="form__item">
       <label for="alias" class="form__label">Веб-имя</label>
       <div class="form__inp-contain">
-        <input type="text" class="form__inp" value="{{ alias }}" name="alias" id="alias" role="configs-add-alias" />
+        <input type="text" class="form__inp" value="{{ alias }}" name="alias" id="alias" role="configs-add-alias"{% if id? %} disabled{% endif %} />
       </div>
     </div>
     {% if count(modules) %}
@@ -57,7 +57,7 @@
     </div>
     <div class="form__submit">
       <button class="form__btn form__btn--submit">Сохранить</button>
-      <button type="button" class="form__btn">Отменить</button>
+      <a href="/cms/configs/" class="form__btn">Отменить</a>
     </div>
   </form>
 </article>

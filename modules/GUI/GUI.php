@@ -21,7 +21,7 @@
       SFRouter::addRule('/cms/', MODULES . 'GUI/sections/main/index');
       SFRouter::addRule('/cms/configs/', MODULES . 'GUI/sections/configs/index');
       SFRouter::addRule('/cms/configs/add/', MODULES . 'GUI/sections/configs/add');
-      SFRouter::addRule('/cms/configs/save/', MODULES . 'GUI/sections/configs/save');
+      SFRouter::addRule('/cms/configs/action_save/', MODULES . 'GUI/sections/configs/action_save');
       SFRouter::addRule('/cms/configs/{section}/', MODULES . 'GUI/sections/configs/item');
       SFRouter::addRule('/cms/{section}/', MODULES . 'GUI/sections/module/index');
       SFRouter::addRule('/cms/{section}/{item}/', MODULES . 'GUI/sections/module/item');
@@ -68,25 +68,6 @@
       return $res;
     }
 
-    private static function prepareSectionFields($fields)
-    {
-      return arrMap($fields, function($field)
-      {
-        $field['settings'] = json_decode($field['settings'], true);
-        return $field;
-      });
-    }
-
-    private static function validateSettingsOfData(& $data)
-    {
-      foreach ($data['fields'] as $index => $field) {
-        $className = self::getClassNameByType($field['type']);
-        if (class_exists($className)) {
-          $data['fields'][$index]['settings'] = $className::validateSettings($field['settings'], $data['fields'], $field['alias']);
-        }
-      }
-    }
-
     // Add section
     public static function addSection($data)
     {
@@ -120,7 +101,6 @@
         $table->addField($field);
       }
       $table->addKey('id', 'primary key');
-      SFORM::showError();
       $table->exec();
 
       $idSection = SFORM::insert('sections')
@@ -149,9 +129,68 @@
     // Save section
     public static function saveSection($id, $data)
     {
+      SFORM::showError();
+      $defaultField = array(
+        'name' => '',
+        'type' => '',
+        'null' => false,
+        'autoincrement' => false,
+        'default' => 'NULL'
+      );
+
       $source = self::getSectionById($id);
 
       self::validateSettingsOfData($data);
+
+      // prepare source fields and new data fields for get diff
+      $dataFields = $data['fields'];
+      $sourceFields = $source['fields'];
+      $sourceFields = arrSort($sourceFields, function ($a, $b)
+      {
+        return $a['id'] < $b['id'];
+      });
+      $dataFields = arrSort($dataFields, function ($a, $b)
+      {
+        return $a['id'] < $b['id'];
+      });
+      $sourceFields = arrMap($sourceFields, function ($field)
+      {
+        unset($field['section']);
+        unset($field['title']);
+        $field['settings'] = json_encode($field['settings']);
+        return $field;
+      });
+      $dataFields = arrMap($dataFields, function ($field)
+      {
+        unset($field['title']);
+        return $field;
+      });
+
+      // get diff
+      $arrDiff = arrDifference($sourceFields, $dataFields);
+      foreach ($arrDiff as $field) {
+        switch ($field['mark']) {
+          case 'edit':
+            $fieldType = array_merge($defaultField, self::getSqlFieldType($field['element']));
+            $fieldType['name'] = $field['element']['alias'];
+            SFORM::alter($source['alias'])
+              ->change($field['origin']['alias'], $fieldType)
+              ->exec();
+            break;
+          case 'add':
+            $fieldType = array_merge($defaultField, self::getSqlFieldType($field['element']));
+            $fieldType['name'] = $field['element']['alias'];
+            SFORM::alter($source['alias'])
+              ->add($fieldType)
+              ->exec();
+            break;
+          case 'delete':
+            SFORM::alter($source['alias'])
+              ->drop($field['element']['alias'])
+              ->exec();
+            break;
+        }
+      }
 
       SFORM::update('sections')
         ->values(array(
@@ -204,20 +243,6 @@
             break;
         }
       }
-    }
-
-    private static function getSqlFieldType($field)
-    {
-      $className = self::getClassNameByType($field['type']);
-      if (class_exists($className)) {
-        return $className::getSqlField($field['settings']);
-      }
-      return false;
-    }
-
-    private static function getClassNameByType($type)
-    {
-      return 'SFType' . SFText::camelCasefy($type, true);
     }
 
     // Get array of modules
@@ -299,6 +324,39 @@
         $tabs .= ' ';
       }
       return $tabs;
+    }
+
+    private static function getSqlFieldType($field)
+    {
+      $className = self::getClassNameByType($field['type']);
+      if (class_exists($className)) {
+        return $className::getSqlField($field['settings']);
+      }
+      return false;
+    }
+
+    private static function getClassNameByType($type)
+    {
+      return 'SFType' . SFText::camelCasefy($type, true);
+    }
+
+    private static function prepareSectionFields($fields)
+    {
+      return arrMap($fields, function($field)
+      {
+        $field['settings'] = json_decode($field['settings'], true);
+        return $field;
+      });
+    }
+
+    private static function validateSettingsOfData(& $data)
+    {
+      foreach ($data['fields'] as $index => $field) {
+        $className = self::getClassNameByType($field['type']);
+        if (class_exists($className)) {
+          $data['fields'][$index]['settings'] = $className::validateSettings($field['settings'], $data['fields'], $field['alias']);
+        }
+      }
     }
   }
 

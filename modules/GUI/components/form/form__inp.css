@@ -15,3 +15,7 @@
 .form__inp:focus {
   box-shadow: 0 0 5px #3260CA;
 }
+
+.form__inp:disabled {
+  color: #929292;
+}

@@ -42,6 +42,7 @@
 @import url("../components/popup/popup__wrap.css");
 @import url("../components/popup/popup__wrap--open.css");
 @import url("../components/section/section.css");
+@import url("../components/section/section__row.css");
 @import url("../components/section/section__wrap.css");
 @import url("../components/select/select.css");
 @import url("../components/table/table.css");
