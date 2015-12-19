@@ -2,6 +2,7 @@
 
   require_once $modulePath.'SFDB.php';
   require_once $modulePath.'ORMDatabase.php';
+  require_once $modulePath.'ORMAlter.php';
   require_once $modulePath.'ORMCreate.php';
   require_once $modulePath.'ORMWhere.php';
   require_once $modulePath.'ORMSelect.php';
@@ -14,6 +15,40 @@
   {
     public static $readModifiers = array();
     public static $writeModifiers = array();
+
+    public static function alter($table)
+    {
+      return new SFORMAlter($table);
+    }
+
+    public static function create($table, $fields = array(), $keys = array())
+    {
+      return new SFORMCreate($table, $fields, $keys);
+    }
+
+    public static function insert($table)
+    {
+      return new SFORMInsert($table);
+    }
+
+    public static function select()
+    {
+      $args = '*';
+      if (func_num_args()) {
+        $args = func_get_args();
+      }
+      return new SFORMSelect($args, 'select');
+    }
+
+    public static function update($table)
+    {
+      return new SFORMUpdate($table);
+    }
+
+    public static function delete($table)
+    {
+      return new SFORMDelete($table);
+    }
 
     public static function setBase($base)
     {
@@ -104,35 +139,6 @@
         self::$readModifiers[$table] = array();
       }
       self::$readModifiers[$table][] = array($fieldFrom, $fieldTo, $function);
-    }
-
-    public static function create($table, $fields = array(), $keys = array())
-    {
-      return new SFORMCreate($table, $fields, $keys);
-    }
-
-    public static function insert($table)
-    {
-      return new SFORMInsert($table);
-    }
-
-    public static function select()
-    {
-      $args = '*';
-      if (func_num_args()) {
-        $args = func_get_args();
-      }
-      return new SFORMSelect($args, 'select');
-    }
-
-    public static function update($table)
-    {
-      return new SFORMUpdate($table);
-    }
-
-    public static function delete($table)
-    {
-      return new SFORMDelete($table);
     }
 
     public static function error()

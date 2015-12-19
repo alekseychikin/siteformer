@@ -1,7 +1,5 @@
 <?php if (!defined('ROOT')) die('You can\'t just open this file, dude');
 
-  require_once ENGINE."classes/validate.php";
-  require_once ENGINE."modules/ORM/ORMDatabase.php";
   require_once ENGINE."modules/ORM/ORMDatabase.php";
 
   class SFORMCreate extends SFORMDatabase
@@ -16,45 +14,9 @@
       $this->tableName = $tableName;
     }
 
-    public static function table($tableName)
-    {
-      return new SFORMCreate($tableName);
-    }
-
     public function addField($field)
     {
-      $field = SFValidate::parse(array(
-        array(
-          'name' => 'name',
-          'require' => true,
-          'error' => 'Не задано имя поля'
-        ),
-        array(
-          'name' => 'type',
-          'require' => true,
-          'error' => 'Не задан тип поля'
-        ),
-        array(
-          'name' => 'null',
-          'default' => 'NULL'
-        ),
-        array(
-          'name' => 'autoincrement',
-          'default' => false,
-          'modify' => function ($value)
-          {
-            return ($value ? 'AUTO_INCREMENT' : '');
-          }
-        ),
-        array(
-          'name' => 'default',
-          'default' => 'NULL',
-          'modify' => function ($value)
-          {
-            return $value;
-          }
-        )
-      ), $field);
+      $field = $this->validateField($field);
       $this->fields[] = $field;
       return $this;
     }
@@ -82,10 +44,7 @@
       $sql = 'CREATE TABLE IF NOT EXISTS `' . $this->tableName . '` (' . "\n";
       $fields = array();
       foreach ($this->fields as $field) {
-        $fields[] = '`' . $field['name'] . '` ' . $field['type'] .
-          ($field['null'] !== false ? ' ' . $field['null'] : '') .
-          (strlen($field['autoincrement']) ? ' ' . $field['autoincrement'] : '') .
-          ($field['default'] !== false && mb_strtolower($field['type']) !== 'text' ? ' DEFAULT ' . (mb_strtolower($field['default']) == 'null' ? 'NULL' : $this->quote($field['default'])) : '');
+        $fields[] = $this->makeStringOfField($field);
       }
 
       foreach ($this->keys as $key) {
