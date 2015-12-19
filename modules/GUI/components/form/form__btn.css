@@ -29,3 +29,9 @@
   box-shadow: 0 1px 0 #CACACA inset;
   background-image: linear-gradient(-180deg, #FFFFFF 0%, #f0efef 96%);
 }
+
+.form__btn:disabled {
+  cursor: default;
+  background-image: linear-gradient(-180deg, #FFFFFF 0%, #E8E8E8 96%);
+  color: #9f9f9f;
+}
