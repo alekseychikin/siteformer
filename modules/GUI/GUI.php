@@ -22,6 +22,7 @@
       SFRouter::addRule('/cms/configs/', MODULES . 'GUI/sections/configs/index');
       SFRouter::addRule('/cms/configs/add/', MODULES . 'GUI/sections/configs/add');
       SFRouter::addRule('/cms/configs/action_save/', MODULES . 'GUI/sections/configs/action_save');
+      SFRouter::addRule('/cms/configs/action_delete/', MODULES . 'GUI/sections/configs/action_delete');
       SFRouter::addRule('/cms/configs/{section}/', MODULES . 'GUI/sections/configs/item');
       SFRouter::addRule('/cms/{section}/', MODULES . 'GUI/sections/module/index');
       SFRouter::addRule('/cms/{section}/{item}/', MODULES . 'GUI/sections/module/item');
@@ -37,6 +38,7 @@
       return SFORM::select()
         ->from('sections')
         ->order('id desc')
+        ->where('enable', 1)
         ->exec();
     }
 

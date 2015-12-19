@@ -1,1 +1,3 @@
-console.log "configs index controller"
+IndexModel = require "./indexModel.coffee"
+IndexView = require "./indexView.coffee"
+SectionsMenuView = require "./sectionsMenuView.coffee"

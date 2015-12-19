@@ -10,6 +10,9 @@
 
 .table thead td {
   background-color: #EFEFEF;
+  font-weight: bold;
+  font-size: 14px;
+  color: #5d5d5d;
 }
 
 .table a {

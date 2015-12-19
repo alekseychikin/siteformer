@@ -1,26 +1,40 @@
-<table class="table">
-  <colgroup>
-    <col width="20" />
-    <col width="*" />
-    <col width="*" />
-    <col width="*" />
-  </colgroup>
-  <thead>
-    <tr>
-      <td><input type="checkbox" id="checkall" /><label for="checkall"></label></td>
-      <td>Название</td>
-      <td>Веб-имя</td>
-      <td>Модуль</td>
-    </tr>
-  </thead>
-  <tbody>
-    {% for sectionsItem in sections %}
-    <tr class="table__link">
-      <td><input type="checkbox" id="check{{ sectionsItem['id'] }}" /><label for="check{{ sectionsItem['id'] }}"></label></td>
-      <td><a href="/cms/configs/{{ sectionsItem['alias'] }}/">{{ sectionsItem['title'] }}</a></td>
-      <td><a href="/cms/configs/{{ sectionsItem['alias'] }}/">{{ sectionsItem['alias'] }}</a></td>
-      <td><a href="/cms/configs/{{ sectionsItem['alias'] }}/">{{ sectionsItem['module'] }}</a></td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+<div class="section__row">
+  <a href="/cms/configs/add/" class="form__btn">Добавить раздел</a>
+</div>
+<div class="section__row" role="section-list">
+  {% checkedItems = 0 %}
+  <table class="table">
+    <colgroup>
+      <col width="20" />
+      <col width="*" />
+      <col width="*" />
+      <col width="*" />
+    </colgroup>
+    <thead>
+      <tr>
+        <td><input type="checkbox" id="checkall" role="cbeck-all" /><label for="checkall"></label></td>
+        <td>Название</td>
+        <td>Веб-имя</td>
+        <td>Модуль</td>
+      </tr>
+    </thead>
+    <tbody>
+      {% for i, sectionsItem in sections %}
+        {% if sectionsItem['checked']? && (sectionsItem['checked'] == "true" || sectionsItem['checked'] == true) %}
+          {% checkedItems = checkedItems + 1 %}
+        {% endif %}
+      <tr class="table__link" role="section-row" data-id="{{ i }}">
+        <td><input type="checkbox" id="check{{ sectionsItem['id'] }}" role="check-item"{% if sectionsItem['checked']? && (sectionsItem['checked'] == "true" || sectionsItem['checked'] == true) %} checked{% endif %} /><label for="check{{ sectionsItem['id'] }}"></label></td>
+        <td><a href="/cms/configs/{{ sectionsItem['alias'] }}/">{{ sectionsItem['title'] }}</a></td>
+        <td><a href="/cms/configs/{{ sectionsItem['alias'] }}/">{{ sectionsItem['alias'] }}</a></td>
+        <td><a href="/cms/configs/{{ sectionsItem['alias'] }}/">{{ sectionsItem['module'] }}</a></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+<div class="section__row">
+  <form action="" role="bottom-form">
+    <button class="form__btn" type="submit"{% if checkedItems == 0 %} disabled{% endif %}>Удалить</button>
+  </form>
+</div>
