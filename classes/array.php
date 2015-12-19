@@ -140,6 +140,7 @@
           if (!count($buffer)) {
             $buffer = array(
               'indexesA' => array(),
+              'indexesB' => array(),
               'elements' => array()
             );
           }
