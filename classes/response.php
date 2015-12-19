@@ -37,6 +37,7 @@
         self::set('error', $message);
       }
       if (in_array($status, self::$stopsCodes)) {
+        header('Content-Type: application/json; charset=utf8');
         die(json_encode(self::$result));
       }
       self::render();
@@ -185,6 +186,7 @@
       if (!self::$working) return false;
       $type = self::$type;
       if ($type == '__json') {
+        header('Content-Type: application/json; charset=utf8');
         echo json_encode(self::$result);
       }
       elseif ($type == '__print') {
