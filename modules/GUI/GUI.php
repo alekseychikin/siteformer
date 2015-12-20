@@ -90,6 +90,12 @@
           'null' => false,
           'autoincrement' => true,
           'default' => false
+        ),
+        array(
+          'name' => 'status',
+          'type' => 'ENUM(\'active\', \'inactive\', \'draft\', \'deleted\')',
+          'null' => 'NOT NULL',
+          'default' => 'draft'
         )
       );
 
