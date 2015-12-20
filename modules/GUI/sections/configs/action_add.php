@@ -19,7 +19,7 @@
           ->from('sections')
           ->where(_and_(
             _expr_('title', $value),
-            _expr_('enable', 'IS NOT', 'NULL')
+            _expr_('enable', 'IS NOT', NULL)
           ));
         return !$res->length();
       }
@@ -34,7 +34,7 @@
           ->from('sections')
           ->where(_and_(
             _expr_('alias', $value),
-            _expr_('enable', 'IS NOT', 'NULL')
+            _expr_('enable', 'IS NOT', NULL)
           ));
         return !$res->length();
       }

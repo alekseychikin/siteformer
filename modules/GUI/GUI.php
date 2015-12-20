@@ -80,7 +80,7 @@
         'type' => '',
         'null' => false,
         'autoincrement' => false,
-        'default' => 'NULL'
+        'default' => NULL
       );
 
       $tableFields = array(
@@ -140,7 +140,7 @@
         'type' => '',
         'null' => false,
         'autoincrement' => false,
-        'default' => 'NULL'
+        'default' => NULL
       );
 
       $source = self::getSectionById($id);

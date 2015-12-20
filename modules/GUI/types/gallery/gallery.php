@@ -8,7 +8,7 @@
     {
       return array(
         'type' => 'INT(11) UNSIGNED',
-        'default' => 'NULL'
+        'default' => NULL
       );
     }
 

@@ -10,7 +10,7 @@ SFORM::alter($tablename)
     'type' => 'INT(11) UNSIGNED',
     'null' => 'NULL',
     'autoincrement' => false,
-    'default' => 'NULL'
+    'default' => NULL
   ))
   ->exec($alias);
 ```
@@ -23,7 +23,7 @@ SFORM::alter($tablename)
     'type' => 'INT(11) UNSIGNED',
     'null' => 'NULL',
     'autoincrement' => false,
-    'default' => 'NULL'
+    'default' => NULL
   ), 'exists_field')
   ->exec($alias);
 ```
@@ -37,7 +37,7 @@ SFORM::alter($tablename)
     'type' => 'INT(11) UNSIGNED',
     'null' => 'NULL',
     'autoincrement' => false,
-    'default' => 'NULL'
+    'default' => NULL
   ))
   ->exec();
 ```

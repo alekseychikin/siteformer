@@ -24,7 +24,7 @@
 
   SFORM::update('sections')
     ->values(array(
-      'enable' => 'NULL'
+      'enable' => NULL
     ))
     ->where(_or_($ids))
     ->exec();

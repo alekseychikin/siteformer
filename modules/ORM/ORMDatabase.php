@@ -23,8 +23,7 @@
       ($field['null'] !== false ? ' ' . $field['null'] : '') .
       (strlen($field['autoincrement']) ? ' ' . $field['autoincrement'] : '') .
       ($field['default'] !== false && mb_strtolower($field['type']) !== 'text' ?
-        ' DEFAULT ' . (mb_strtolower($field['default']) == 'null' ? 'NULL' :
-        $this->quote($field['default'])) : ''
+        ' DEFAULT ' . $this->quote($field['default']) : ''
       );
     }
 
@@ -191,10 +190,8 @@
 
     protected function quote($value)
     {
+      if (is_null($value)) return 'NULL';
       if (is_numeric($value)) return $value;
-      if (mb_strtolower($value) === 'null') {
-        return 'NULL';
-      }
       if (self::$supportPDO) {
         list($index, $connection) = each(self::$connections);
         reset(self::$connections);
