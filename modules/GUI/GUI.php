@@ -27,8 +27,8 @@
       SFRouter::addRule('/cms/{section}/', MODULES . 'GUI/sections/module/index');
       SFRouter::addRule('/cms/{section}/{item}/', MODULES . 'GUI/sections/module/item');
 
-      SFTemplater::compileTemplates(MODULES . 'GUI/', TEMP . 'modules/GUI/.compile_templates/');
-      SFTemplater::setCompilesPath(TEMP . 'modules/GUI/.compile_templates/');
+      SFTemplater::compileTemplates(MODULES . 'GUI/', ENGINE . 'temp/modules/GUI/.compile_templates/');
+      SFTemplater::setCompilesPath(ENGINE . 'temp/modules/GUI/.compile_templates/');
     }
 
     // Get array of sections
