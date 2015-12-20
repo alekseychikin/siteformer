@@ -24,10 +24,11 @@
 
   SFORM::update('sections')
     ->values(array(
-      'enable' => 0
+      'enable' => 'NULL'
     ))
     ->where(_or_($ids))
     ->exec();
-  echo SFORM::lastQuery();
+
+  SFResponse::render();
 
 ?>

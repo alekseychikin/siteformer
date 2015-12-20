@@ -8,6 +8,7 @@
     $types[] = $type['alias'];
   });
 
+  SFORM::showError();
   $data = SFValidate::parse(array(
     array(
       'name' => 'title',
@@ -16,7 +17,10 @@
       'unique' => function ($value) {
         $res = SFORM::select()
           ->from('sections')
-          ->where('title', $value);
+          ->where(_and_(
+            _expr_('title', $value),
+            _expr_('enable', 'IS NOT', 'NULL')
+          ));
         return !$res->length();
       }
     ),
@@ -28,7 +32,10 @@
       'unique' => function ($value) {
         $res = SFORM::select()
           ->from('sections')
-          ->where('alias', $value);
+          ->where(_and_(
+            _expr_('alias', $value),
+            _expr_('enable', 'IS NOT', 'NULL')
+          ));
         return !$res->length();
       }
     ),

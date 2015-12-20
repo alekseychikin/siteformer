@@ -92,13 +92,15 @@
           'default' => false
         )
       );
+
       foreach ($data['fields'] as $field) {
         $fieldType = array_merge($defaultField, self::getSqlFieldType($field));
         $fieldType['name'] = $field['alias'];
         $tableFields[] = $fieldType;
       }
 
-      $table = SFORM::create($data['alias']);
+      $data['table'] = self::generateTableNameByAlias($data['alias']);
+      $table = SFORM::create($data['table']);
       foreach ($tableFields as $field) {
         $table->addField($field);
       }
@@ -109,7 +111,8 @@
         ->values(array(
           'title' => $data['title'],
           'alias' => $data['alias'],
-          'module' => $data['module']
+          'module' => $data['module'],
+          'table' => $data['table']
         ))
         ->exec();
 
@@ -175,19 +178,19 @@
           case 'edit':
             $fieldType = array_merge($defaultField, self::getSqlFieldType($field['element']));
             $fieldType['name'] = $field['element']['alias'];
-            SFORM::alter($source['alias'])
+            SFORM::alter($source['table'])
               ->change($field['origin']['alias'], $fieldType)
               ->exec();
             break;
           case 'add':
             $fieldType = array_merge($defaultField, self::getSqlFieldType($field['element']));
             $fieldType['name'] = $field['element']['alias'];
-            SFORM::alter($source['alias'])
+            SFORM::alter($source['table'])
               ->add($fieldType)
               ->exec();
             break;
           case 'delete':
-            SFORM::alter($source['alias'])
+            SFORM::alter($source['table'])
               ->drop($field['element']['alias'])
               ->exec();
             break;
@@ -359,6 +362,17 @@
           $data['fields'][$index]['settings'] = $className::validateSettings($field['settings'], $data['fields'], $field['alias']);
         }
       }
+    }
+
+    private static function generateTableNameByAlias($alias)
+    {
+      $tableList = SFORMDatabase::getTables();
+      $tableName = $alias;
+      $i = 1;
+      while (in_array($tableName, $tableList)) {
+        $tableName = $alias . ($i++);
+      }
+      return $tableName;
     }
   }
 
