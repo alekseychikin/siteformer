@@ -4,7 +4,9 @@
 
   class SFORMDatabase
   {
+    private static $supportPDO;
     private static $connections = array();
+    private static $databases = array();
     private static $inits = array();
     private static $lastSQL;
     private static $showError = false;
@@ -13,6 +15,7 @@
     private static $reports = false;
     private static $cachedPrimaryFields = array();
     private static $cachedFields = array();
+    private static $cachedTables = array();
 
     protected function makeStringOfField($field)
     {
@@ -117,7 +120,7 @@
         self::$lastSQL = $sql;
       }
       $timestart = microtime(true);
-      if (defined('PDO::ATTR_DRIVER_NAME')) {
+      if (self::$supportPDO) {
         $res = self::$connections[$alias]->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_SCROLL));
         $res->execute();
         self::$lastRes = $res;
@@ -148,7 +151,7 @@
         $result[] = $row;
         $firstRow = false;
       }
-      if (defined('PDO::ATTR_DRIVER_NAME')) {
+      if (self::$supportPDO) {
         $res->closeCursor();
         $res = null;
       }
@@ -161,7 +164,7 @@
 
     protected static function close($alias = 'default')
     {
-      if (!defined('PDO::ATTR_DRIVER_NAME')) {
+      if (!self::$supportPDO) {
         mysql_close(self::$connections[$alias]);
       }
       self::$connections[$alias] = null;
@@ -189,7 +192,10 @@
     protected function quote($value)
     {
       if (is_numeric($value)) return $value;
-      if (defined('PDO::ATTR_DRIVER_NAME')) {
+      if (mb_strtolower($value) === 'null') {
+        return 'NULL';
+      }
+      if (self::$supportPDO) {
         list($index, $connection) = each(self::$connections);
         reset(self::$connections);
         return $connection->quote($value);
@@ -201,14 +207,15 @@
 
     public static function init($configs)
     {
+      self::$supportPDO = defined('PDO::ATTR_DRIVER_NAME');
       if (!isset($configs['alias'])) {
         $configs['alias'] = 'default';
       }
       if (isset(self::$connections[$configs['alias']]) && self::$connections[$configs['alias']]) {
         self::close($configs['alias']);
       }
-      if (defined('PDO::ATTR_DRIVER_NAME')) {
-        self::$connections[$configs['alias']] = new PDO('mysql:dbname='.$configs['database'].';'.$configs['host'], $configs['user'], $configs['password']);
+      if (self::$supportPDO) {
+        self::$connections[$configs['alias']] = new PDO('mysql:dbname=' . $configs['database'] . ';' . $configs['host'], $configs['user'], $configs['password']);
       }
       else  {
         self::$connections[$configs['alias']] = mysql_connect($configs['host'], $configs['user'], $configs['password']);
@@ -216,6 +223,7 @@
           mysql_select_db($configs['database'], self::$connections[$params['alias']]);
         }
       }
+      self::$databases[$configs['alias']] = $configs['database'];
       if (isset($configs['reports'])) {
         self::$reports = $configs['reports'];
       }
@@ -253,26 +261,26 @@
       }
       $primaryFields = array();
       $result = self::query('SELECT * FROM `'.$table.'` LIMIT 1', $alias, true, false);
-      if (defined('PDO::ATTR_DRIVER_NAME')) {
+      if (self::$supportPDO) {
         $numFields = $result->columnCount();
       }
       else {
         $numFields = mysql_num_fields($result);
       }
       for ($i = 0; $i < $numFields; $i++) {
-        if (defined('PDO::ATTR_DRIVER_NAME')) {
+        if (self::$supportPDO) {
           $field = $result->getColumnMeta($i);
         }
         else {
           $field = mysql_fetch_field($result, $i);
         }
-        if (defined('PDO::ATTR_DRIVER_NAME')) {
+        if (self::$supportPDO) {
           $fieldName = $field['name'];
         }
         else {
           $fieldName = $field->name;
         }
-        if (defined('PDO::ATTR_DRIVER_NAME')) {
+        if (self::$supportPDO) {
           if (in_array('primary_key', $field['flags'])) {
             $primaryFields[] = $fieldName;
           }
@@ -298,26 +306,26 @@
       }
       $fields = array();
       $result = self::query('SELECT * FROM `'.$table.'` LIMIT 1', $alias, true, false);
-      if (defined('PDO::ATTR_DRIVER_NAME')) {
+      if (self::$supportPDO) {
         $numFields = $result->columnCount();
       }
       else {
         $numFields = mysql_num_fields($result);
       }
       for ($i = 0; $i < $numFields; $i++) {
-        if (defined('PDO::ATTR_DRIVER_NAME')) {
+        if (self::$supportPDO) {
           $field = $result->getColumnMeta($i);
         }
         else {
           $field = mysql_fetch_field($result, $i);
         }
-        if (defined('PDO::ATTR_DRIVER_NAME')) {
+        if (self::$supportPDO) {
           $fieldName = $field['name'];
         }
         else {
           $fieldName = $field->name;
         }
-        if (defined('PDO::ATTR_DRIVER_NAME')) {
+        if (self::$supportPDO) {
           $fields[] = $fieldName;
         }
         else {
@@ -326,6 +334,23 @@
       }
       self::$cachedFields[$alias][$table] = $fields;
       return $fields;
+    }
+
+    public static function getTables($alias = 'default', $force = false)
+    {
+      if (isset(self::$databases[$alias])) {
+        $database = self::$databases[$alias];
+        if (!isset($cachedTables[$database]) || $force) {
+          $tables = array();
+          $result = self::query('SHOW TABLES FROM `' . $database . '`', $alias, false, false);
+          foreach ($result as $item) {
+            list($index, $table) = each($item);
+            $tables[] = $table;
+          }
+          $cachedTables[$database] = $tables;
+        }
+        return $cachedTables[$database];
+      }
     }
   }
 ?>
