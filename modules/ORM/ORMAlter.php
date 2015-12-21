@@ -51,19 +51,16 @@
           case 'edit':
             $sql = 'ALTER TABLE `' . $this->tableName . '` CHANGE `' . $field['sourceField'] . '` ' .
               $this->makeStringOfField($field['field']);
-            echo $sql."\n";
             parent::query($sql, $alias);
             break;
           case 'drop':
             $sql = 'ALTER TABLE `' . $this->tableName . '` DROP `' . $field['field'] . '`';
-            echo $sql."\n";
             parent::query($sql, $alias);
             break;
           case 'add':
             $sql = 'ALTER TABLE `' . $this->tableName . '` ADD ' .
               $this->makeStringOfField($field['field']) .
               ($field['after'] !== false ? ' AFTER `' . $field['after'] . '`' : '');
-            echo $sql."\n";
             parent::query($sql, $alias);
             break;
         }

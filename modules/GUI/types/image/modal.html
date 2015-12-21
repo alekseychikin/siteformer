@@ -58,6 +58,11 @@
       <label class="select">
         <select role="configs-image-source" id="configs-image-source">
           <option value="upload"{% if source == 'upload' %} selected{% endif %}>Загрузить изображение</option>
+          {% if sources? %}
+            {% for sourceItem in sources %}
+              <option value="{{ sourceItem['alias'] }}"{% if source == sourceItem['alias'] %} selected{% endif %}>{{ sourceItem['label'] }}</option>
+            {% endfor %}
+          {% endif %}
         </select>
       </label>
     </div>

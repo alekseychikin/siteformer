@@ -63,6 +63,8 @@ module.exports = Model "ConfigsAddModel",
 
   getFieldByIndex: (index) -> @clone @state.fields[index]
 
+  getFields: -> @state.fields.slice()
+
   saveFieldConfigs: (form) ->
     index = form.index
     delete form.index

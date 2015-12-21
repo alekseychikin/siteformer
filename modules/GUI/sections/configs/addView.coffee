@@ -35,6 +35,7 @@ module.exports = View "ConfigsAddView",
     @trigger "open-configs-modal",
       @getRowIndex e
       AddModel.getFieldByIndex @getRowIndex e
+      AddModel.getFields()
 
   submitConfigsAddForm: (e) ->
     AddModel.save()

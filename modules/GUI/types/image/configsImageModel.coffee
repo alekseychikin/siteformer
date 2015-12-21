@@ -1,6 +1,13 @@
 Model = require "model.coffee"
 
 module.exports = Model "TypeImageModel",
+  setFields: (fields) ->
+    sources = []
+    for field, index in  fields
+      if field.type == "image" && index != @state.index && field.alias.length
+        sources.push alias: field.alias, label: field.title
+    @set {sources}
+
   updateStorage: (value) -> @set storage: value
 
   updatePath: (value) -> @set path: value

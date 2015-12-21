@@ -20,12 +20,13 @@ views =
 
 Popup = require "popup"
 
-AddView.on "open-configs-modal", (index, field) ->
+AddView.on "open-configs-modal", (index, field, fields) ->
   Popup.open "@configs-popup"
   views[field.type].bind ($ "@configs-popup")
 
   field.settings.index = index
   models[field.type].bind field.settings
+  models[field.type].setFields fields if models[field.type].setFields?
 
 for type, view of views
   do (type, view) ->
