@@ -80,7 +80,12 @@
             }
           }
           if (isset($field['valid']) && $isIssetSource && !$isEmptySourceString) {
-            if (!preg_match($field['valid'], $sourceItem)) {
+            if (gettype($field['valid']) === 'object') {
+              if (!$field['valid']($sourceItem)) {
+                self::returnError($field, $sourceItem);
+              }
+            }
+            elseif (!preg_match($field['valid'], $sourceItem)) {
               self::returnError($field, $sourceItem);
             }
           }
