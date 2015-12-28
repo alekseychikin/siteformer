@@ -24,11 +24,14 @@
       SFRouter::addRule('/cms/configs/action_save/', MODULES . 'GUI/sections/configs/action_save');
       SFRouter::addRule('/cms/configs/action_delete/', MODULES . 'GUI/sections/configs/action_delete');
       SFRouter::addRule('/cms/configs/{section}/', MODULES . 'GUI/sections/configs/item');
-      SFRouter::addRule('/cms/{section}/', MODULES . 'GUI/sections/module/index');
-      SFRouter::addRule('/cms/{section}/{item}/', MODULES . 'GUI/sections/module/item');
+      SFRouter::addRule('/cms/{section}/', MODULES . 'GUI/sections/item/index');
+      SFRouter::addRule('/cms/{section}/add/', MODULES . 'GUI/sections/item/add');
+      SFRouter::addRule('/cms/{section}/{item}/', MODULES . 'GUI/sections/item/item');
 
-      SFTemplater::compileTemplates(MODULES . 'GUI/', ENGINE . 'temp/modules/GUI/.compile_templates/');
-      SFTemplater::setCompilesPath(ENGINE . 'temp/modules/GUI/.compile_templates/');
+      define('GUI_COMPILE_TEMPLATES', ENGINE . 'temp/modules/GUI/.compile_templates/');
+
+      SFTemplater::compileTemplates(MODULES . 'GUI/', GUI_COMPILE_TEMPLATES);
+      SFTemplater::setCompilesPath(GUI_COMPILE_TEMPLATES);
     }
 
     // Get array of sections
