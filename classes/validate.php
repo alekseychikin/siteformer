@@ -25,6 +25,7 @@
           for ($i = 0; $i < count($source[$field['name']]); $i++) {
             $skip = false;
             list($key, $value) = each($field['array']);
+            reset($field['array']);
             if (gettype($value) === 'array') {
               $row = self::parse($field['array'], $source[$field['name']][$i], $uniqueCache, $prevName . '.' . $field['name'], $skip);
             }
