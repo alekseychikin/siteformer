@@ -12,13 +12,23 @@ var path = require('path');
 var uglify = require('gulp-uglify');
 var through2 = require('through2');
 var concat = require('gulp-concat');
+var postcss = require('gulp-postcss');
+var assets = require('postcss-assets');
+var csso = require('gulp-csso');
+var sourcemaps = require('gulp-sourcemaps');
+var pimport = require('postcss-import');
+var nested = require('postcss-nested');
+var calc = require('postcss-calc');
+var customProperties = require('postcss-custom-properties');
 
 var requirePaths = [
-  "node_modules",
-  "modules/GUI/libs",
-  "modules/GUI/types",
-  "temp/modules/GUI/.compile_templates"
+  'node_modules',
+  'modules/GUI/libs',
+  'modules/GUI/types',
+  'temp/modules/GUI/.compile_templates'
 ];
+
+gulp.task('default', ['watch']);
 
 gulp.task('watch', ['prepare-css', 'prepare-js', 'prepare-js-lib', 'prepare-images'], function ()
 {
@@ -30,6 +40,7 @@ gulp.task('watch', ['prepare-css', 'prepare-js', 'prepare-js-lib', 'prepare-imag
   gulp.watch('modules/GUI/sections/**/*.{js,coffee}', ['prepare-js']);
   gulp.watch('modules/GUI/types/**/*.{js,coffee}', ['prepare-js']);
   gulp.watch('modules/GUI/libs/**/*.{js,coffee}', ['prepare-js-lib']);
+  gulp.watch('modules/GUI/components/**/*.{png,svg,jpg,jpeg}', ['prepare-images']);
 });
 
 gulp.task('prepare-css', function ()
@@ -40,9 +51,50 @@ gulp.task('prepare-css', function ()
     'modules/GUI/components/common/default.css',
     'modules/GUI/components/**/*.css'
   ])
-  .pipe(cssi('main.css', {prefix: '../', saveEnclosure: 2}))
+  .pipe(cssi('main.css', {prefix: '../', saveEnclosure: 1}))
+  .pipe(sourcemaps.init())
+  .pipe(postcss([
+    pimport(),
+    nested(),
+    assets({basePath: 'modules/GUI/dist'}),
+    customProperties(),
+    calc()
+  ]))
+  .pipe(sourcemaps.write('.'))
+  .on('error', function (err)
+  {
+    console.log(err.toString());
+    gutil.beep();
+    this.emit('end');
+  })
   .pipe(gulp.dest('modules/GUI/dist'))
   .pipe(livereload());
+});
+
+gulp.task('build-css', function ()
+{
+  gulp.src([
+    '!modules/GUI/components/main/main.css',
+    'modules/GUI/components/common/reset.css',
+    'modules/GUI/components/common/default.css',
+    'modules/GUI/components/**/*.css'
+  ])
+  .pipe(cssi('main.css', {prefix: '../', saveEnclosure: 1}))
+  .pipe(postcss([
+    pimport(),
+    nested(),
+    assets({relativeTo: 'modules/GUI/build'}),
+    customProperties(),
+    calc()
+  ]))
+  .on('error', function (err)
+  {
+    console.log(err.toString());
+    gutil.beep();
+    this.emit('end');
+  })
+  .pipe(csso())
+  .pipe(gulp.dest('modules/GUI/dist'));
 });
 
 process.on('uncaughtException', function (er) {
@@ -116,6 +168,7 @@ function browserified (params)
 gulp.task('prepare-js-lib', function ()
 {
   return gulp.src(commonBundle)
+  .pipe(sourcemaps.init())
   .pipe(browserified({
     require: exposeCommonBundle,
     external: exposeCommonBundle,
@@ -123,7 +176,7 @@ gulp.task('prepare-js-lib', function ()
       transform: [
         'coffeeify'
       ],
-      debug: true,
+      debug: false,
       paths: requirePaths
     }
   }))
@@ -139,7 +192,7 @@ gulp.task('prepare-js-lib', function ()
     return file;
   }))
   .pipe(concat('common-bundle.js'))
-  // .pipe(uglify())
+  .pipe(sourcemaps.write('.'))
   .pipe(gulp.dest('modules/GUI/dist'))
   .pipe(livereload());
 });
@@ -172,11 +225,74 @@ gulp.task('prepare-js', function ()
     file.extname = '.js';
     return file;
   }))
-  // .pipe(uglify())
-  // .external('./a.coffee')
   .pipe(gulp.dest('modules/GUI/dist'))
   .pipe(livereload());
 });
+
+
+gulp.task('build-js-lib', function ()
+{
+  return gulp.src(commonBundle)
+  .pipe(browserified({
+    require: exposeCommonBundle,
+    external: exposeCommonBundle,
+    options: {
+      transform: [
+        'coffeeify'
+      ],
+      debug: false,
+      paths: requirePaths
+    }
+  }))
+  .on('error', function (err)
+  {
+    console.log(err.toString());
+    gutil.beep();
+    this.emit('end');
+  })
+  .pipe(rename(function (file)
+  {
+    file.extname = '.js';
+    return file;
+  }))
+  .pipe(concat('common-bundle.js'))
+  .pipe(uglify())
+  .pipe(gulp.dest('modules/GUI/dist'));
+});
+
+gulp.task('build-js', function ()
+{
+  return gulp.src([
+    '!modules/GUI/sections/**/*Model.coffee',
+    '!modules/GUI/sections/**/*View.coffee',
+    'modules/GUI/sections/**/*.coffee'
+  ])
+  .pipe(browserified({
+    options: {
+      transform: [
+        'coffeeify'
+      ],
+      debug: false,
+      paths: requirePaths
+    },
+    external: exposeCommonBundle
+  }))
+  .on('error', function (err)
+  {
+    console.log(err.toString());
+    gutil.beep();
+    this.emit('end');
+  })
+  .pipe(rename(function (file)
+  {
+    file.extname = '.js';
+    return file;
+  }))
+  .pipe(uglify())
+  .pipe(gulp.dest('modules/GUI/dist'));
+});
+
+gulp.task('build', ['build-css', 'build-js-lib', 'build-js']);
 
 gulp.task('prepare-images', function ()
 {
