@@ -13,7 +13,7 @@
   &:before {
     content: '';
     position: absolute;
-    background: url('form__checkbox.svg') no-repeat;
+    background: inline('form__checkbox.svg') no-repeat;
     width: width('form__checkbox.svg');
     height: height('form__checkbox.svg');
     opacity: 0;

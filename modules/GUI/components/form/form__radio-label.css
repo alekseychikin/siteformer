@@ -12,7 +12,7 @@
   &:before {
     content: '';
     position: absolute;
-    background: url('form__radio.svg') no-repeat;
+    background: inline('form__radio.svg') no-repeat;
     width: width('form__radio.svg');
     height: height('form__radio.svg');
     top: 50%;
