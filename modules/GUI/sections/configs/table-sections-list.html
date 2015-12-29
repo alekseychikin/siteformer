@@ -12,7 +12,10 @@
     </colgroup>
     <thead>
       <tr>
-        <td><input type="checkbox" id="checkall" role="cbeck-all" /><label for="checkall"></label></td>
+        <td>
+          <input class="form__checkbox" type="checkbox" id="checkall" role="cbeck-all" />
+          <label class="form__checkbox-label" for="checkall"></label>
+        </td>
         <td>Название</td>
         <td>Веб-имя</td>
         <td>Модуль</td>
@@ -24,7 +27,10 @@
           {% checkedItems = checkedItems + 1 %}
         {% endif %}
       <tr class="table__link" role="section-row" data-id="{{ i }}">
-        <td><input type="checkbox" id="check{{ sectionsItem['id'] }}" role="check-item"{% if sectionsItem['checked']? && (sectionsItem['checked'] == "true" || sectionsItem['checked'] == true) %} checked{% endif %} /><label for="check{{ sectionsItem['id'] }}"></label></td>
+        <td>
+          <input class="form__checkbox" type="checkbox" id="check{{ sectionsItem['id'] }}" role="check-item"{% if sectionsItem['checked']? && (sectionsItem['checked'] == "true" || sectionsItem['checked'] == true) %} checked{% endif %} />
+          <label class="form__checkbox-label" for="check{{ sectionsItem['id'] }}"></label>
+        </td>
         <td><a href="/cms/configs/{{ sectionsItem['alias'] }}/">{{ sectionsItem['title'] }}</a></td>
         <td><a href="/cms/configs/{{ sectionsItem['alias'] }}/">{{ sectionsItem['alias'] }}</a></td>
         <td><a href="/cms/configs/{{ sectionsItem['alias'] }}/">{{ sectionsItem['module'] }}</a></td>

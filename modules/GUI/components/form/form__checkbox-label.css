@@ -9,6 +9,7 @@
   line-height: 38px;
   cursor: pointer;
   position: relative;
+  background-color: #fff;
 
   &:before {
     content: '';
