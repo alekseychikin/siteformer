@@ -10,13 +10,15 @@
     <label class="form__label">Варианты ответов:</label>
     <div class="form__inp-contain form__inp-contain--full-width">
       <div class="form__row-option">
-        <input type="radio" class="form__checkbox" role="configs-radio-option" value="-1" id="configs-radio-option--1" name="configs-radio-option"{% if defaultValue == -1 || defaultValue == "-1" %} checked{% endif %} />
+        <input type="radio" class="form__radio" role="configs-radio-option" value="-1" id="configs-radio-option--1" name="configs-radio-option"{% if defaultValue == -1 || defaultValue == "-1" %} checked{% endif %} />
+        <label class="form__radio-label" for="configs-radio-option--1"></label>
         <label for="configs-radio-option--1"><i>Ничего не выбрано по умолчанию</i></label>
       </div>
       <div role="configs-radio-options-contain">
         {% for i, option in defaultData %}
         <div class="form__row-option">
-          <input type="radio" class="form__checkbox" role="configs-radio-option" value="{{ i }}" id="configs-radio-option-{{ i }}" name="configs-radio-option"{% if defaultValue == i %} checked{% endif %} />
+          <input type="radio" class="form__radio" role="configs-radio-option" value="{{ i }}" id="configs-radio-option-{{ i }}" name="configs-radio-option"{% if defaultValue == i %} checked{% endif %} />
+          <label class="form__radio-label" for="configs-radio-option-{{ i }}"></label>
           <label><input type="text" class="form__inp form__inp--half-width" value="{{ option }}" role="configs-radio-option-label" data-index="{{ i }}" /></label>
         </div>
         {% endfor %}

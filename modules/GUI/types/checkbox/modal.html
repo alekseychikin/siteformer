@@ -13,6 +13,7 @@
         {% for i, option in defaultData %}
         <div class="form__row-option">
           <input type="checkbox" class="form__checkbox" role="configs-checkbox-option" value="{{ i }}" data-index="{{ i }}" id="configs-checkbox-option-{{ i }}" name="configs-checkbox-option"{% if option['checked'] == true || option['checked'] == "true" %} checked{% endif %} />
+          <label for="configs-checkbox-option-{{ i }}" class="form__checkbox-label"></label>
           <label><input type="text" class="form__inp form__inp--half-width" value="{{ option['label'] }}" role="configs-checkbox-option-label" data-index="{{ i }}" /></label>
         </div>
         {% endfor %}

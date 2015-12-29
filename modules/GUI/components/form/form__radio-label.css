@@ -1,0 +1,27 @@
+.form__radio-label {
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 5px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1px solid #888888;
+  position: relative;
+  cursor: pointer;
+
+  &:before {
+    content: '';
+    position: absolute;
+    background: url('form__radio.svg') no-repeat;
+    width: width('form__radio.svg');
+    height: height('form__radio.svg');
+    top: 50%;
+    left: 50%;
+    margin: calc(height('form__radio.svg') / - 2) 0 0 calc(width('form__radio.svg') / - 2);
+    opacity: 0;
+  }
+}
+
+input:checked + .form__radio-label:before {
+  opacity: 1;
+}

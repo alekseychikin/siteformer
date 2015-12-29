@@ -1,5 +1,5 @@
-.form__checkbox {
+.form__radio {
   position: absolute;
-  visibility: hidden;
   left: -9999px;
+  visibility: hidden;
 }
