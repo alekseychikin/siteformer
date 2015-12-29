@@ -1,6 +1,6 @@
 Model = require "model.coffee"
 
-module.exports = Model "TypeGalleryModel",
+module.exports = Model
   updateStorage: (value) -> @set storage: value
 
   updatePath: (value) -> @set path: value

@@ -2,7 +2,7 @@ Model = require "model.coffee"
 httpGet = (require "ajax.coffee").httpGet
 httpPost = (require "ajax.coffee").httpPost
 
-module.exports = Model "indexModel",
+module.exports = Model
   initialState: ->
     httpGet "#{window.location.pathname}__json/"
 

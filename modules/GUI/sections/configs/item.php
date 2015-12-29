@@ -19,6 +19,6 @@
   SFResponse::set('alias', $section['alias']);
   SFResponse::set('module', $section['module']);
   SFResponse::set('fields', $fields);
-  SFResponse::render(SFTemplater::render('configs/add', 'main/main', ENGINE . 'temp/modules/GUI/.compile_templates/sections/'));
+  SFResponse::render(SFTemplater::render('configs/add', 'main/main', GUI_COMPILE_TEMPLATES . 'sections/'));
 
 ?>

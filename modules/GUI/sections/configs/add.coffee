@@ -2,6 +2,10 @@ AddModel = require "./addModel.coffee"
 AddView = require "./addView.coffee"
 $ = require "jquery-plugins.coffee"
 
+addModel = AddModel()
+addView = AddView ($ "@configs-add"), addModel
+
+
 models =
   image: require "image/ConfigsImageModel.coffee"
   table: require "table/ConfigsTableModel.coffee"
@@ -20,21 +24,20 @@ views =
 
 Popup = require "popup"
 
-AddView.on "open-configs-modal", (index, field, fields) ->
+addView.on "open-configs-modal", (index, field, fields) ->
   Popup.open "@configs-popup"
-  views[field.type].bind ($ "@configs-popup")
-
   field.settings.index = index
-  models[field.type].bind field.settings
-  models[field.type].setFields fields if models[field.type].setFields?
 
-for type, view of views
-  do (type, view) ->
-    view.on "save-configs-modal", (form) ->
-      AddModel.saveFieldConfigs form
-      Popup.close()
+  model = models[field.type] field.settings
+  model.setFields fields if model.setFields?
 
-AddModel.on "onSavedSection", (alias) ->
+  view = views[field.type] ($ "@configs-popup"), model
+  view.on "save-configs-modal", (form) ->
+    addModel.saveFieldConfigs form
+    Popup.close()
+    view.destroy()
+
+addModel.on "onSavedSection", (alias) ->
   window.location.href = "/cms/configs/#{alias}/"
 
 # setTimeout =>

@@ -1,7 +1,6 @@
 Model = require "model.coffee"
 
-module.exports = Model "TypeCheckboxModel",
-
+module.exports = Model
   getState: -> @state
 
   updateNumOptions: (value) ->

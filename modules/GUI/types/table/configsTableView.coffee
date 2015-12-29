@@ -1,11 +1,8 @@
 View = require "view.coffee"
-configsTableModel = require "table/configsTableModel.coffee"
 Render = require "render"
 modalWindowTemplate = require "types/table/modal.tmpl.js"
 
-module.exports = View "TypeTableView",
-  model: configsTableModel
-
+module.exports = View
   initial: ->
     @modalContain = Render modalWindowTemplate, @contain[0]
 
@@ -15,7 +12,7 @@ module.exports = View "TypeTableView",
     "change: @configs-table-columns": "changeConfigsTableColumns"
     "change: @configs-table-cell": (e) ->
       $cell = $ e.target
-      configsTableModel.updateCellData ($cell.data "row"), ($cell.data "column"), ($cell.val())
+      @model.updateCellData ($cell.data "row"), ($cell.data "column"), ($cell.val())
 
     "keydown: @configs-table-rows": (e) ->
       @changeConfigsTableRows e
@@ -25,15 +22,14 @@ module.exports = View "TypeTableView",
       @changeConfigsTableColumns e
       if e.keyCode == 13 then e.preventDefault()
 
-    "popup-close: contain": (e) -> @unbind()
+    "popup-close: contain": (e) -> @destroy()
 
-  changeConfigsTableRows: (e) -> configsTableModel.updateRows e.target.value
-  changeConfigsTableColumns: (e) -> configsTableModel.updateColumns e.target.value
+  changeConfigsTableRows: (e) -> @model.updateRows e.target.value
+  changeConfigsTableColumns: (e) -> @model.updateColumns e.target.value
 
   render: (state) ->
     @modalContain state
 
   submitConfigsForm: (e) ->
-    @trigger "save-configs-modal", configsTableModel.getState()
-    @unbind()
+    @trigger "save-configs-modal", @model.getState()
     return false

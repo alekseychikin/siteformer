@@ -3,7 +3,7 @@ Promise = require "q"
 httpGet = (require "ajax.coffee").httpGet
 httpPost = (require "ajax.coffee").httpPost
 
-module.exports = Model "ConfigsAddModel",
+module.exports = Model
   initialState: ->
     httpGet "#{window.location.pathname}__json/"
       .then (response) ->

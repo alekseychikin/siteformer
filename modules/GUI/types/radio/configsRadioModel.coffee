@@ -1,6 +1,6 @@
 Model = require "model.coffee"
 
-module.exports = Model "TypeRadioModel",
+module.exports = Model
 
   getState: -> @state
 

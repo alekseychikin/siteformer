@@ -1,7 +1,6 @@
 Model = require "model.coffee"
 
-module.exports = Model "TypeTableModel",
-
+module.exports = Model
   getState: -> @state
 
   updateColumns: (value) ->

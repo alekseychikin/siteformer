@@ -1,6 +1,6 @@
 Model = require "model.coffee"
 
-module.exports = Model "TypeImageModel",
+module.exports = Model
   setFields: (fields) ->
     sources = []
     for field, index in  fields

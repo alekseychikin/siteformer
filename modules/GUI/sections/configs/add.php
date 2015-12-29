@@ -24,6 +24,6 @@
   SFResponse::set('title', '');
   SFResponse::set('alias', '');
   SFResponse::set('module', 'default');
-  SFResponse::render(SFTemplater::render('configs/add', 'main/main', ENGINE . 'temp/modules/GUI/.compile_templates/sections/'));
+  SFResponse::render(SFTemplater::render('configs/add', 'main/main', GUI_COMPILE_TEMPLATES . 'sections/'));
 
 ?>

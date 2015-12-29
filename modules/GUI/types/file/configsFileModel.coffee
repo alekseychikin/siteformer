@@ -1,6 +1,6 @@
 Model = require "model.coffee"
 
-module.exports = Model "TypeFileModel",
+module.exports = Model
   updateStorage: (value) -> @set storage: value
   updatePath: (value) -> @set path: value
   updateS3AccessKey: (value) -> @set s3AccessKey: value

@@ -2,22 +2,18 @@ $ = require "jquery-plugins.coffee"
 View = require "view.coffee"
 Render = require "render"
 Popup = require "popup"
-AddModel = require "./addModel.coffee"
 tableModuleFields = require "sections/configs/table-module-fields.tmpl.js"
 
-module.exports = View "ConfigsAddView",
-  debug: false
-  contain: $ "@configs-add"
-  model: AddModel
+module.exports = View
   events:
-    "click: @btn-remove-field": (e) -> AddModel.removeField @getRowIndex e
-    "click: @btn-add-field": (e) -> AddModel.addEmptyField()
-    "change: @field-title": (e) -> AddModel.updateFieldTitle (@getRowIndex e), e.target.value
-    "change: @field-alias": (e) -> AddModel.updateFieldAlias (@getRowIndex e), e.target.value
-    "change: @field-type": (e) -> AddModel.updateFieldType (@getRowIndex e), e.target.value
-    "change: @configs-add-title": (e) -> AddModel.updateTitle e.target.value
-    "change: @configs-add-alias": (e) -> AddModel.updateAlias e.target.value
-    "change: @configs-add-module": (e) -> AddModel.updateModule e.target.value
+    "click: @btn-remove-field": (e) -> @model.removeField @getRowIndex e
+    "click: @btn-add-field": (e) -> @model.addEmptyField()
+    "change: @field-title": (e) -> @model.updateFieldTitle (@getRowIndex e), e.target.value
+    "change: @field-alias": (e) -> @model.updateFieldAlias (@getRowIndex e), e.target.value
+    "change: @field-type": (e) -> @model.updateFieldType (@getRowIndex e), e.target.value
+    "change: @configs-add-title": (e) -> @model.updateTitle e.target.value
+    "change: @configs-add-alias": (e) -> @model.updateAlias e.target.value
+    "change: @configs-add-module": (e) -> @model.updateModule e.target.value
     "click: @btn-config-field": "clickBtnConfigField"
     "submit: @configs-add-form": "submitConfigsAddForm"
 
@@ -34,9 +30,9 @@ module.exports = View "ConfigsAddView",
   clickBtnConfigField: (e) ->
     @trigger "open-configs-modal",
       @getRowIndex e
-      AddModel.getFieldByIndex @getRowIndex e
-      AddModel.getFields()
+      @model.getFieldByIndex @getRowIndex e
+      @model.getFields()
 
   submitConfigsAddForm: (e) ->
-    AddModel.save()
+    @model.save()
     return false

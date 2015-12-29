@@ -1,32 +1,28 @@
 View = require "view.coffee"
-configsFileModel = require "file/configsFileModel.coffee"
 Render = require "render"
 modalWindowTemplate = require "types/file/modal.tmpl.js"
 
-module.exports = View "TypeFileView",
-  model: configsFileModel
-
+module.exports = View
   initial: ->
     @modalContain = Render modalWindowTemplate, @contain[0]
 
   events:
     "submit: @configs-form": "submitConfigsForm"
-    "change: @configs-file-storage": (e) -> configsFileModel.updateStorage ($ e.target).data "value"
-    "change: @configs-file-path": (e) -> configsFileModel.updatePath e.target.value
-    "change: @configs-file-width": (e) -> configsFileModel.updateWidth e.target.value
-    "change: @configs-file-height": (e) -> configsFileModel.updateHeight e.target.value
-    "change: @configs-file-source": (e) -> configsFileModel.updateSource e.target.value
-    "change: @configs-file-s3-access-key": (e) -> configsFileModel.updateS3AccessKey e.target.value
-    "change: @configs-file-s3-secret-key": (e) -> configsFileModel.updateS3SecretKey e.target.value
-    "change: @configs-file-s3-bucket": (e) -> configsFileModel.updateS3Bucket e.target.value
-    "change: @configs-file-s3-path": (e) -> configsFileModel.updateS3Path e.target.value
-    "popup-close: contain": (e) -> @unbind()
+    "change: @configs-file-storage": (e) -> @model.updateStorage ($ e.target).data "value"
+    "change: @configs-file-path": (e) -> @model.updatePath e.target.value
+    "change: @configs-file-width": (e) -> @model.updateWidth e.target.value
+    "change: @configs-file-height": (e) -> @model.updateHeight e.target.value
+    "change: @configs-file-source": (e) -> @model.updateSource e.target.value
+    "change: @configs-file-s3-access-key": (e) -> @model.updateS3AccessKey e.target.value
+    "change: @configs-file-s3-secret-key": (e) -> @model.updateS3SecretKey e.target.value
+    "change: @configs-file-s3-bucket": (e) -> @model.updateS3Bucket e.target.value
+    "change: @configs-file-s3-path": (e) -> @model.updateS3Path e.target.value
+    "popup-close: contain": (e) -> @destroy()
 
   render: (state) ->
     @modalContain state
     ($ "@tabs").tabs()
 
   submitConfigsForm: (e) ->
-    @trigger "save-configs-modal", configsFileModel.getState()
-    @unbind()
+    @trigger "save-configs-modal", @model.getState()
     return false
