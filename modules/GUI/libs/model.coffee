@@ -23,10 +23,8 @@ getElement = (root, params) ->
   # [element, lastPath, elementPath]
   # [false, false]
 
-cachedModels = {}
-
 timeout = {}
-modelPrototype =
+ModelPrototype =
   clone: (obj, cachedElements = []) ->
     copy = null
 
@@ -80,7 +78,10 @@ modelPrototype =
     @events[eventName] = [] if !@events[eventName]?
     @events[eventName].push callback
 
-  addRenderListener: (view) -> @views.push view
+  addRenderListener: (view) ->
+    @views.push view
+    if @initializedState
+      @trigger "initialState", @state
 
   triggerUpdate: (elementPath) ->
     if timeout[elementPath]
@@ -100,51 +101,54 @@ modelPrototype =
       @state[key] = value
       @triggerUpdate key
 
-  bind: (state) ->
-    @state = state
-    @trigger "initialState", @state
+Model = ->
+  if @ !instanceof Model
+    return new Model(arguments...)
 
-model = ->
-  if @ !instanceof model
-    return new model(arguments...)
+  params = arguments[0]
 
-  modelName = null
-  if arguments.length == 1
-    params = arguments[0]
-  else if arguments.length > 1
-    modelName = arguments[0]
-    params = arguments[1]
+  return (state) =>
+    return new ModelItem params, state
 
-  if modelName && cachedModels[modelName]
-    return cachedModels[modelName]
-
-  if modelName then @_name = modelName
+ModelItem = (params, state) ->
+  if @ !instanceof ModelItem
+    return new ModelItem(arguments...)
 
   @doRecordInitialTriggers = false
   @initialTriggers = []
   @events = {}
   @views = []
   @state = {}
+  @initializedState = false
+
   for field, item of params
     do (field, item) =>
       @[field] = item
+
+  if state?
+    @state = state
+    @initializedState = true
+    @trigger "initialState", @state
+  else if typeof @initialState == "function"
+    result = @initialState()
+    if typeof result.then == "function"
+      result.then (response) =>
+        @state = response
+        @initializedState = true
+        @trigger "initialState", @state
+    else
+      @state = result
+      @initializedState = true
+      @trigger "initialState", @state
+
   if @initial && (!@autoInit? || @autoInit == true)
     @doRecordInitialTriggers = true
     @initial.call @
     @doRecordInitialTriggers = false
     @trigger "initial"
-  if typeof @initialState == "function"
-    result = @initialState()
-    if typeof result.then == "function"
-      result.then (response) =>
-        @state = response
-        @trigger "initialState", @state
-    else
-      @state = result
-      @trigger "initialState", @state
-  if modelName then cachedModels[modelName] = @
   return @
 
-model.prototype = modelPrototype
 
-module.exports = model
+ModelItem.prototype = ModelPrototype
+
+module.exports = Model

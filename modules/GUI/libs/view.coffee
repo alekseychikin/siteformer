@@ -2,18 +2,11 @@ $ = require "jquery-plugins.coffee"
 $window = ($ window)
 $body = ($ document.body)
 $document = ($ document)
-cachedViews = {}
 
-viewPrototype =
+ViewPrototype =
   debug: false
 
-  bind: ($target, params...) ->
-    @contain = $target
-    @__initial params
-    if @model? && typeof @model.initial == "function"
-      @model.initial.apply @model, params
-
-  unbind: ->
+  destroy: ->
     if @events && @contain
       for item in @cachedEvents
         if item.selector
@@ -85,26 +78,28 @@ viewPrototype =
       for event in @extEvents[eventName]
         event.apply @, values
 
-view = ->
-  if @ !instanceof view
-    return new view(arguments...)
+View = ->
+  if @ !instanceof View
+    return new View(arguments...)
 
-  viewName = null
-  if arguments.length == 1
-    params = arguments[0]
-  else if arguments.length > 1
-    viewName = arguments[0]
-    params = arguments[1]
+  params = arguments[0]
 
-  if viewName && cachedViews[viewName]
-    return cachedViews[viewName]
+  if params.contain
+    return new ViewItem params, params.contain, params.model
+  return (target, model) ->
+    return new ViewItem params, target, model
 
-  if viewName then @_name = viewName
+ViewItem = (params, target, model) ->
+  if @ !instanceof ViewItem
+    return new ViewItem(arguments...)
 
   @cachedEvents = []
+  @contain = target
+  @model = model
   for field, item of params
     do (field, item) =>
       @[field] = item
+
   @__initial()
   self = @
   console.error "There are watchers without contain" if @watchers && !@model && @debug
@@ -112,24 +107,8 @@ view = ->
   if @model
     @model.addRenderListener @
     @model.triggerInitialTriggers()
-  if @model && typeof @render == "function"
-    @model.on "initialState", =>
-      @render.apply @, arguments
-  if @watchers && @model
-    for event, cb of @watchers
-      do (event, cb) =>
-        if typeof cb != "function" && typeof self[cb] == "undefined"
-          console.error "#{cb} does not exists at", self
-        else
-          @model.on event, =>
-            if typeof cb == "function"
-              cb.apply @, arguments
-            else
-              self[cb].apply @, arguments
-    @model.triggerInitialTriggers()
-  if viewName then cachedViews[viewName] = @
   return @
 
-view.prototype = viewPrototype
+ViewItem.prototype = ViewPrototype
 
-module.exports = view
+module.exports = View
