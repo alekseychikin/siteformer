@@ -17,26 +17,6 @@
       return 'include SFTemplater::$templateCompilePath.' . self::handleRecursiveExpression($exprs[1]) . '.".tmpl.php"';
     }
 
-    private static function handleRequireTemplate($exprs)
-    {
-      $values = 'SFTemplater::requireTemplate(' . self::handleRecursiveExpression($exprs[1]);
-      if (isset($exprs[2])) {
-        $values .= ', ' . self::handleRecursiveExpression($exprs[2]->rightPart());
-      }
-      $values .= ');';
-      return $values;
-    }
-
-    private static function handleRequireCSS($exprs)
-    {
-      return 'SFTemplater::requireCSS(' . self::handleRecursiveExpression($exprs[1]) . ');';
-    }
-
-    private static function handleRequireJS($exprs)
-    {
-      return 'SFTemplater::requireJS(' . self::handleRecursiveExpression($exprs[1]) . ');';
-    }
-
     private static function handleControllerPage($exprs)
     {
       return 'SFTemplater::requireControllerPage(' . self::handleRecursiveExpression($exprs[1]) . ');';
@@ -401,7 +381,10 @@
     {
       $exprs = $element->exprs();
       if (get_class($element) === 'LogicNode') {
-        return '<?php ' . self::handleLogicExpressions($exprs) . ' ?>';
+        $text = self::handleLogicExpressions($exprs);
+        if ($text !== false) {
+          return '<?php ' . $text . ' ?>';
+        }
       }
       else if (get_class($element) === 'LogicNodeEcho') {
         return '<?php echo (' . self::handleRecursiveExpressions($exprs->exprs()) . '); ?>';
@@ -437,14 +420,10 @@
               return self::handleEndfor($exprs);
             case 'include':
               return self::handleInclude($exprs);
-            case 'require_template':
-              return self::handleRequireTemplate($exprs);
-            case 'require_js':
-              return self::handleRequireJS($exprs);
-            case 'require_css':
-              return self::handleRequireCSS($exprs);
             case 'controller_page':
               return self::handleControllerPage($exprs);
+            default:
+              return false;
           }
         }
       }

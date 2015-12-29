@@ -4,86 +4,110 @@
   {
     private static $resultString = '';
     private static $arrIndex = 0;
+    private static $currentTabs = 4;
     private static $TOP_BANNER = '(function (factory)
-    {
-      if (typeof module !== \'undefined\' && typeof module.exports !== \'undefined\') {
-        module.exports = factory();
-      }
-      else if (typeof define !== \'undefined\' && typeof define.amd !== \'undefined\') {
-        define(\'first-try\', [], factory());
-      }
-      else {
-        window.';
+{
+  if (typeof module !== \'undefined\' && typeof module.exports !== \'undefined\') {
+    module.exports = factory();
+  }
+  else if (typeof define !== \'undefined\' && typeof define.amd !== \'undefined\') {
+    define(\'first-try\', [], factory());
+  }
+  else {
+    window.';
     private static $TOP_BANNER_TWO = ' = factory();
+  }
+})(function ()
+{
+  var _hasProp = Object.prototype.hasOwnProperty;
+  var _crEl = function (node)
+  {
+    return {type: \'node\', name: node, attrs: [], childs: []};
+  };
+  var _crTN = function (node)
+  {
+    return {type: \'text\', text: node};
+  };
+  function create()
+  {
+    if (arguments.length === 1) {
+      var rootNodes = [];
+      arguments[0](rootNodes);
+      if (rootNodes.length) {
+        for (indexAttr in rootNodes) {
+          if (_hasProp.call(rootNodes, indexAttr)) {
+            if (typeof rootNodes[indexAttr] === \'string\' || typeof rootNodes[indexAttr] === \'boolean\' || typeof rootNodes[indexAttr] === \'number\') {
+              rootNodes[indexAttr] = _crTN(rootNodes[indexAttr]);
+            }
+          }
+        }
       }
-    })(function ()
+      return rootNodes;
+    }
+    else if (arguments.length === 3) {
+      var nodes = [];
+      var parentNode;
+      var indexNode;
+      var node;
+      var indexAttr;
+      var attr;
+      var attrs = arguments[1];
+      arguments[2](nodes);
+      parentNode = _crEl(arguments[0]);
+      if (attrs.length) {
+        for (indexAttr in attrs) {
+          if (_hasProp.call(attrs, indexAttr)) {
+            attr = attrs[indexAttr];
+            parentNode.attrs.push({
+              name: attr[0],
+              value: attr[1]
+            });
+          }
+        }
+      }
+      for (indexNode in nodes) {
+        if (_hasProp.call(nodes, indexNode)) {
+          node = nodes[indexNode];
+          if (typeof node === \'string\' || typeof node === \'boolean\' || typeof node === \'number\') {
+            parentNode.childs.push(_crTN(node));
+          }
+          else {
+            parentNode.childs.push(node);
+          }
+        }
+      }
+      return parentNode;
+    }
+  }
+  var cachedTemplates = {};
+  function cacheRequireTemplate(path, required)
+  {
+    cachedTemplates[path] = required;
+  }
+  function requireTemplate(path, obj)
+  {
+    return cachedTemplates[path](obj);
+  }
+  return function (obj)
+  {
+    return create(function (childs)
     {
-      var _hasProp = Object.prototype.hasOwnProperty;
-      var _crEl = function (node)
-      {
-        return {type: \'node\', name: node, attrs: [], childs: []};
-      };
-      var _crTN = function (node)
-      {
-        return {type: \'text\', text: node};
-      };
-      function create()
-      {
-        if (arguments.length === 1) {
-          var rootNodes = [];
-          arguments[0](rootNodes);
-          if (rootNodes.length) {
-            for (indexAttr in rootNodes) {
-              if (_hasProp.call(rootNodes, indexAttr)) {
-                if (typeof rootNodes[indexAttr] === \'string\' || typeof rootNodes[indexAttr] === \'boolean\' || typeof rootNodes[indexAttr] === \'number\') {
-                  rootNodes[indexAttr] = _crTN(rootNodes[indexAttr]);
-                }
-              }
-            }
-          }
-          return rootNodes;
-        }
-        else if (arguments.length === 3) {
-          var nodes = [];
-          var parentNode;
-          var indexNode;
-          var node;
-          var indexAttr;
-          var attr;
-          var attrs = arguments[1];
-          arguments[2](nodes);
-          parentNode = _crEl(arguments[0]);
-          if (attrs.length) {
-            for (indexAttr in attrs) {
-              if (_hasProp.call(attrs, indexAttr)) {
-                attr = attrs[indexAttr];
-                parentNode.attrs.push({
-                  name: attr[0],
-                  value: attr[1]
-                });
-              }
-            }
-          }
-          for (indexNode in nodes) {
-            if (_hasProp.call(nodes, indexNode)) {
-              node = nodes[indexNode];
-              if (typeof node === \'string\' || typeof node === \'boolean\' || typeof node === \'number\') {
-                parentNode.childs.push(_crTN(node));
-              }
-              else {
-                parentNode.childs.push(node);
-              }
-            }
-          }
-          return parentNode;
-        }
+      with (obj) {';
+    private static $BOTTOM_BANNER = '}
+    });
+  };
+});';
+
+    private static function tabs($count)
+    {
+      $tab = '  ';
+      $text = '';
+      if ($count < 0) return '';
+      while ($count--) {
+        $text .= $tab;
       }
-      return function (obj)
-      {
-        return create(function (childs)
-        {with (obj) {';
-    private static $BOTTOM_BANNER = '}})};
-    });';
+      return $text;
+    }
 
     private static function getProperFilename($filename)
     {
@@ -114,12 +138,38 @@
       self::$resultString = '';
       $filename = self::getProperFilename($filename);
       if ($tree !== false) self::recString($tree);
-      return self::$TOP_BANNER . $filename . self::$TOP_BANNER_TWO . self::$resultString . self::$BOTTOM_BANNER;
+      return self::$TOP_BANNER . $filename . self::$TOP_BANNER_TWO . "\n" . self::$resultString . self::tabs(3) . self::$BOTTOM_BANNER;
+    }
+
+    private static function handleInclude($exprs)
+    {
+      $return = '';
+      if (count($exprs) > 1) {
+        for ($i = 2; $i < count($exprs); $i++) {
+          $return .= self::tabs(self::$currentTabs) . 'obj[\'' . self::handleRecursiveExpression($exprs[$i]->leftPart()) . '\'] = ' . self::handleRecursiveExpression($exprs[$i]->rightPart()) . ";\n";
+        }
+        // $return .= self::tabs(self::$currentTabs) . 'childs.push(requireTemplate(' . self::handleRecursiveExpression($exprs[1]) . ', obj));' . "\n";
+      }
+      $return .= self::tabs(self::$currentTabs) . 'var result = requireTemplate(' . self::handleRecursiveExpression($exprs[1]) . ', obj);' . "\n";
+      $return .= self::tabs(self::$currentTabs) . 'result.map(function(item) {childs.push(item)});' . "\n";
+      return $return;
+    }
+
+    private static function handleRequireTemplate($exprs)
+    {
+      $path = self::handleRecursiveExpression($exprs[1]);
+      if (in_array(substr($path, 0, 1), array('\'', '"'))) {
+        $path = substr($path, 1);
+      }
+      if (in_array(substr($path, -1), array('\'', '"'))) {
+        $path = substr($path, 0, -1);
+      }
+      return self::tabs(self::$currentTabs) . 'cacheRequireTemplate(\'' . $path . '\', require(\'' . $path . '.tmpl.js\'));' . "\n";
     }
 
     private static function handleIf($exprs)
     {
-      $values[] = 'if ( ';
+      $values[] = self::tabs(self::$currentTabs++). 'if ( ';
       foreach ($exprs as $index => $expr) {
         if (!$index) continue;
         $values[] = self::handleRecursiveExpression($expr);
@@ -130,7 +180,7 @@
 
     private static function handleElseIf($exprs)
     {
-      $values[] = '} else if ( ' . "\n";
+      $values[] = self::tabs(self::$currentTabs - 1) . '} else if ( ' . "\n";
       foreach ($exprs as $index => $expr) {
         if (!$index) continue;
         $values[] = self::handleRecursiveExpression($expr);
@@ -141,12 +191,12 @@
 
     private static function handleElse($exprs)
     {
-      return '} else {' . "\n";
+      return self::tabs(self::$currentTabs - 1) . '} else {' . "\n";
     }
 
     private static function handleEndif($exprs)
     {
-      return '}' . "\n";
+      return self::tabs(--self::$currentTabs) . '}' . "\n";
     }
 
     private static function getFirstElementFromConcat($expr)
@@ -162,23 +212,23 @@
     {
       $arr = '';
       if (isset($exprs[3])) {
-        $arr = 'var arr' . self::$arrIndex . ' = ' . self::handleRecursiveExpression($exprs[3]) . '; ';
+        $arr = self::tabs(self::$currentTabs) . 'var arr' . self::$arrIndex . ' = ' . self::handleRecursiveExpression($exprs[3]) . ';' . "\n";
       }
       else {
         $indexes = self::getFirstElementFromConcat($exprs[2])->indexes();
         if (count($indexes) && get_class($indexes[0]) === 'MathIndexRange') {
           $indexes = $indexes[0];
-          $arr = 'var arr' . self::$arrIndex . ' = MakeArray(' . self::handleRecursiveExpression($indexes->leftPart()) .
+          $arr = self::tabs(self::$currentTabs) . 'var arr' . self::$arrIndex . ' = MakeArray(' . self::handleRecursiveExpression($indexes->leftPart()) .
             ', ' .
             self::handleRecursiveExpression($indexes->rightPart()) .
             ');' . "\n";
         }
       }
       if (self::getFirstElementFromConcat($exprs[2])->name() === 'revertin') {
-        $arr .= 'arr' . self::$arrIndex . ' = arr' . self::$arrIndex . '.reverse();' . "\n";
+        $arr .= self::tabs(self::$currentTabs) . 'arr' . self::$arrIndex . ' = arr' . self::$arrIndex . '.reverse();' . "\n";
       }
       $values = $arr;
-      $values .= 'for (';
+      $values .= self::tabs(self::$currentTabs) . 'for (var ';
       $items = array();
       $value = '';
       if (get_class(self::getFirstElementFromConcat($exprs[1])) === 'LogicList') {
@@ -190,11 +240,12 @@
       }
       $values .= $value;
       $values .= ' in arr' . self::$arrIndex . ') if (_hasProp.call(arr' . self::$arrIndex . ', ' . $value . ')) {' . "\n";
+      self::$currentTabs++;
       if (get_class(self::getFirstElementFromConcat($exprs[1])) === 'LogicList') {
-        $values .= self::handleRecursiveExpression($items[1]) . ' = arr' . self::$arrIndex . '[' . self::handleRecursiveExpression($items[0]) . '];' . "\n";
+        $values .= self::tabs(self::$currentTabs) . self::handleRecursiveExpression($items[1]) . ' = arr' . self::$arrIndex . '[' . self::handleRecursiveExpression($items[0]) . '];' . "\n";
       }
       else {
-        $values .= self::handleRecursiveExpression($exprs[1]) . ' = arr' . self::$arrIndex . '[' . self::handleRecursiveExpression($exprs[1]) . '];' . "\n";
+        $values .= self::tabs(self::$currentTabs) . self::handleRecursiveExpression($exprs[1]) . ' = arr' . self::$arrIndex . '[' . self::handleRecursiveExpression($exprs[1]) . '];' . "\n";
       }
       self::$arrIndex++;
       return $values;
@@ -202,7 +253,7 @@
 
     private static function handleEndfor($exprs)
     {
-      return '}';
+      return self::tabs(--self::$currentTabs) . '}' . "\n";
     }
 
     private static function handleRecursiveExpressions($exprs)
@@ -505,6 +556,10 @@
               return self::handleFor($exprs);
             case 'endfor':
               return self::handleEndfor($exprs);
+            case 'include':
+              return self::handleInclude($exprs);
+            case 'require_template':
+              return self::handleRequireTemplate($exprs);
           }
         }
       }
@@ -517,23 +572,23 @@
     {
       if (get_class($attribute) == 'Attribute') {
         $values = $attribute->values();
-        $value = array('(function () {' . "\n" . 'var attr = \'\';' . "\n");
+        $value = array(self::tabs(self::$currentTabs++) . '(function () {' . "\n" . self::tabs(self::$currentTabs) . 'var attr = \'\';' . "\n");
         if (gettype($values) == 'array') {
           foreach ($values as $val) {
             if (gettype($val) == 'object' && (get_class($val) == 'LogicNode')) {
               $value[] = self::handleLogicNode($val);
             }
             elseif (gettype($val) == 'object' && (get_class($val) == 'LogicNodeEcho')) {
-              $value[] = 'attr += ' . self::handleLogicNode($val) . ';' . "\n";
+              $value[] = self::tabs(self::$currentTabs) . 'attr += ' . self::handleLogicNode($val) . ';' . "\n";
             }
             else {
-              $value[] = 'attr += \'' . $val .  '\';' . "\n";
+              $value[] = self::tabs(self::$currentTabs) . 'attr += \'' . $val .  '\';' . "\n";
             }
           }
         }
         return implode('', $value) .
-          'attrs.push([\'' . $attribute->name() . '\', attr]);' . "\n" .
-          '})();' . "\n";
+          self::tabs(self::$currentTabs) . 'attrs.push([\'' . $attribute->name() . '\', attr]);' . "\n" .
+          self::tabs(--self::$currentTabs) . '})();' . "\n";
       }
       elseif (get_class($attribute) == 'LogicNode') {
         return self::handleLogicNode($attribute);
@@ -544,18 +599,18 @@
     private static function prepareTag($element)
     {
       if ($element->type() == 'open') {
-        self::$resultString .= '(function () {' . "\n" . 'var attrs = [];' . "\n";
+        self::$resultString .= self::tabs(self::$currentTabs++) . '(function () {' . "\n" . self::tabs(self::$currentTabs) . 'var attrs = [];' . "\n";
         $attributes = $element->attributes();
         foreach ($attributes as $attribute) {
           self::$resultString .= self::prepareAttribute($attribute);
         }
-        self::$resultString .= 'childs.push(create(\'' . $element->name() . '\', attrs, function (childs) {' . "\n";
+        self::$resultString .= self::tabs(self::$currentTabs++) . 'childs.push(create(\'' . $element->name() . '\', attrs, function (childs) {' . "\n";
         if (in_array($element->name(), array('hr', 'br', 'base', 'col', 'embed', 'img', 'area', 'source', 'track', 'input'))) {
-          self::$resultString .= '}));' . "\n" . '})();' . "\n";
+          self::$resultString .= self::tabs(--self::$currentTabs) . '}));' . "\n" . self::tabs(--self::$currentTabs) . '})();' . "\n";
         }
       }
       else {
-        self::$resultString .= '}));' . "\n" . '})();' . "\n";
+        self::$resultString .= self::tabs(--self::$currentTabs) . '}));' . "\n" . self::tabs(--self::$currentTabs) . '})();' . "\n";
       }
     }
 
@@ -567,7 +622,7 @@
     {
       $text = trim($element->text());
       if (strlen($text)) {
-        self::$resultString .= 'childs.push(\'' . $element->text() . '\');' . "\n";
+        self::$resultString .= self::tabs(self::$currentTabs) . 'childs.push(\'' . $element->text() . '\');' . "\n";
       }
     }
 
@@ -606,7 +661,7 @@
 
     private static function prepareLogicEchoNode($sourceElement)
     {
-      self::$resultString .= 'childs.push(' . self::handleLogicNode($sourceElement) . ')' . "\n";
+      self::$resultString .= self::tabs(self::$currentTabs) . 'childs.push(' . self::handleLogicNode($sourceElement) . ');' . "\n";
     }
 
     private static function recString($tree)
