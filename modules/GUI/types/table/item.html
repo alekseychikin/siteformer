@@ -1,6 +1,9 @@
-<div class="form__item">
-  <label for="{{ item.name }}" class="form__label">{{ item.label }}</label>
-  <div class="form__input-contain">
-    <input type="text" name="{{ item.name }}" id="{{ item.name }}" class="form__inp" value="{{ item.value }}" />
-  </div>
-</div>
+<table class="table">
+{% for rowIndex, row in field['settings']['defaultData'] %}
+  <tr>
+  {% for columnIndex, column in row %}
+    <td><input type="text" class="form__inp" id="{{ field['alias'] }}{{ rowIndex }}_{{ columnIndex }}" role="cell" data-row="{{ rowIndex }}" data-column="{{ columnIndex }}" value="{{ column }}" /></td>
+  {% endfor %}
+  </tr>
+{% endfor %}
+</table>

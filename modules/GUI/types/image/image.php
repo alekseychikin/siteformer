@@ -74,6 +74,9 @@
           'name' => 's3Path'
         )
       ), $params);
+      if ($params['source'] !== 'upload') {
+        $params['hide'] = true;
+      }
       return json_encode($params);
     }
 
