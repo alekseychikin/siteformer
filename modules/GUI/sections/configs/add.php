@@ -6,12 +6,18 @@
   $modules = SFGUI::getModules();
   $types = SFGUI::getTypes();
   list($index, $firstType) = each($types);
+  reset($types);
+  foreach ($types as $type) {
+    if ($type['type'] === 'string') {
+      $firstType = $type;
+    }
+  }
 
   $fields = array(
     array(
       'title' => '',
       'alias' => '',
-      'type' => 'string',
+      'type' => $firstType['type'],
       'settings' => $firstType['defaultSettings']
     )
   );

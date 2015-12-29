@@ -286,7 +286,7 @@
           if (is_dir(MODULES . 'GUI/types/' . $subdir) && !in_array($subdir, array('.', '..'))) {
             if (file_exists(MODULES . 'GUI/types/' . $subdir . '/package.json')) {
               $type = json_decode(file_get_contents(MODULES . 'GUI/types/' . $subdir . '/package.json'), true);
-              $type['alias'] = $subdir;
+              $type['type'] = $subdir;
               $types[] = $type;
             }
           }

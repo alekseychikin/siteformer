@@ -52,7 +52,7 @@ module.exports = Model
     fields = @state.fields.slice()
     type = fields[index].type
     for typeItem in @state.types
-      if typeItem.alias == type
+      if typeItem.type == type
         fields[index].settings = @clone typeItem.defaultSettings
     @set {fields}
 

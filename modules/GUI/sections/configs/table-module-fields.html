@@ -7,8 +7,8 @@
       <select class="form__select" role="field-type">
     {% hasSettings = false %}
     {% for type in types %}
-        <option value="{{ type['alias'] }}"{% if field['type'] == type['alias'] %} selected{% endif %}>{{ type['name'] }}</option>
-      {% if field['type'] == type['alias'] %}
+        <option value="{{ type['type'] }}"{% if field['type'] == type['type'] %} selected{% endif %}>{{ type['name'] }}</option>
+      {% if field['type'] == type['type'] %}
         {% if type['hasSettings'] %}
           {% hasSettings = true %}
         {% endif %}
