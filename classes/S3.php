@@ -126,7 +126,7 @@ class S3
 	 * @access public
 	 * @static
 	 */
-	// public static $useSSLVersion = CURL_SSLVERSION_TLSv1;
+	public static $useSSLVersion = CURL_SSLVERSION_TLSv1;
 
 	/**
 	 * Use PHP exceptions?
