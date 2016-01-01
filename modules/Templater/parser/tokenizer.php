@@ -20,6 +20,15 @@
       }
     }
 
+    public function unshift($rule)
+    {
+      $line = explode('return', $rule);
+      array_unshift($this->lexers, array(
+        'regular' => trim($line[0]),
+        'token' => trim($line[1])
+      ));
+    }
+
     public function nextToken(& $line)
     {
       $line = ($line);

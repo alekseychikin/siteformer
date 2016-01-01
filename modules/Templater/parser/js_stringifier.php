@@ -28,6 +28,14 @@
   {
     return {type: \'text\', text: node};
   };
+  function count(arr)
+  {
+    return arr.length;
+  }
+  function length(str)
+  {
+    return str.length;
+  }
   function create()
   {
     if (arguments.length === 1) {
@@ -148,7 +156,6 @@
         for ($i = 2; $i < count($exprs); $i++) {
           $return .= self::tabs(self::$currentTabs) . 'obj[\'' . self::handleRecursiveExpression($exprs[$i]->leftPart()) . '\'] = ' . self::handleRecursiveExpression($exprs[$i]->rightPart()) . ";\n";
         }
-        // $return .= self::tabs(self::$currentTabs) . 'childs.push(requireTemplate(' . self::handleRecursiveExpression($exprs[1]) . ', obj));' . "\n";
       }
       $return .= self::tabs(self::$currentTabs) . 'var result = requireTemplate(' . self::handleRecursiveExpression($exprs[1]) . ', obj);' . "\n";
       $return .= self::tabs(self::$currentTabs) . 'result.map(function(item) {childs.push(item)});' . "\n";
@@ -211,20 +218,16 @@
     private static function handleFor($exprs)
     {
       $arr = '';
-      if (isset($exprs[3])) {
-        $arr = self::tabs(self::$currentTabs) . 'var arr' . self::$arrIndex . ' = ' . self::handleRecursiveExpression($exprs[3]) . ';' . "\n";
+      if (get_class($exprs[3]) === 'MathIndexRange') {
+        $arr = self::tabs(self::$currentTabs) . 'var arr' . self::$arrIndex . ' = MakeArray(' . self::handleRecursiveExpression($exprs[3]->leftPart()) .
+          ', ' .
+          self::handleRecursiveExpression($exprs[3]->rightPart()) .
+          ');' . "\n";
       }
       else {
-        $indexes = self::getFirstElementFromConcat($exprs[2])->indexes();
-        if (count($indexes) && get_class($indexes[0]) === 'MathIndexRange') {
-          $indexes = $indexes[0];
-          $arr = self::tabs(self::$currentTabs) . 'var arr' . self::$arrIndex . ' = MakeArray(' . self::handleRecursiveExpression($indexes->leftPart()) .
-            ', ' .
-            self::handleRecursiveExpression($indexes->rightPart()) .
-            ');' . "\n";
-        }
+        $arr = self::tabs(self::$currentTabs) . 'var arr' . self::$arrIndex . ' = ' . self::handleRecursiveExpression($exprs[3]) . ';' . "\n";
       }
-      if (self::getFirstElementFromConcat($exprs[2])->name() === 'revertin') {
+      if (self::getFirstElementFromConcat($exprs[2])->get() === 'revertin') {
         $arr .= self::tabs(self::$currentTabs) . 'arr' . self::$arrIndex . ' = arr' . self::$arrIndex . '.reverse();' . "\n";
       }
       $values = $arr;
@@ -532,35 +535,38 @@
 
     private static function handleLogicAssigment($expr)
     {
-      return self::handleRecursiveExpression($expr->leftPart()) .
+      $leftPart = $expr->leftPart();
+      $variable = self::handleRecursiveExpression($leftPart);
+      return  self::tabs(self::$currentTabs) . (!count($leftPart->indexes()) ? 'var ' : '') . $variable .
         ' = ' .
-        self::handleRecursiveExpressions($expr->rightPart()) . ';';
+        self::handleRecursiveExpressions($expr->rightPart()) . ';' . "\n";
     }
 
     private static function handleLogicExpressions($exprs)
     {
       $exprs = $exprs->exprs();
-      if (get_class($exprs[0]) === 'MathConcat') {
-        $elements = $exprs[0]->elements();
-        if (count($elements) === 1) {
-          switch ($elements[0]->name()) {
-            case 'if':
-              return self::handleIf($exprs);
-            case 'else':
-              return self::handleElse($exprs);
-            case 'elseif':
-              return self::handleElseIf($exprs);
-            case 'endif':
-              return self::handleEndif($exprs);
-            case 'for':
-              return self::handleFor($exprs);
-            case 'endfor':
-              return self::handleEndfor($exprs);
-            case 'include':
-              return self::handleInclude($exprs);
-            case 'require_template':
-              return self::handleRequireTemplate($exprs);
-          }
+      $name = false;
+      if (get_class($exprs[0]) === 'ReservedWord') {
+        $name = $exprs[0]->get();
+      }
+      if ($name !== false) {
+        switch ($name) {
+          case 'if':
+            return self::handleIf($exprs);
+          case 'else':
+            return self::handleElse($exprs);
+          case 'elseif':
+            return self::handleElseIf($exprs);
+          case 'endif':
+            return self::handleEndif($exprs);
+          case 'for':
+            return self::handleFor($exprs);
+          case 'endfor':
+            return self::handleEndfor($exprs);
+          case 'include':
+            return self::handleInclude($exprs);
+          case 'require_template':
+            return self::handleRequireTemplate($exprs);
         }
       }
       else if (get_class($exprs[0]) === 'LogicAssigment') {
@@ -622,7 +628,7 @@
     {
       $text = trim($element->text());
       if (strlen($text)) {
-        self::$resultString .= self::tabs(self::$currentTabs) . 'childs.push(\'' . $element->text() . '\');' . "\n";
+        self::$resultString .= self::tabs(self::$currentTabs) . 'childs.push(\'' . str_replace(array("\n"), array('\n'), $element->text()) . '\');' . "\n";
       }
     }
 

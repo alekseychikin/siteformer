@@ -55,7 +55,11 @@
       $filename = $compiles . substr($path, strlen($templates), -5);
       SFPath::mkdir(dirname($filename));
 
-      $tree = ParserE::parseFile($path);
+      $tree = ParserE::parseFile(
+        $path,
+        array('if', 'else', 'endif', 'elseif', 'for', 'in', 'revertin', 'endfor', 'include', 'require_template', 'controller_page'),
+        array()
+      );
 
       $template = PhpStringifier::stringify($tree);
 
@@ -235,19 +239,6 @@
       }
     }
 
-  }
-
-  function makeArray($start, $end)
-  {
-    $arr = array();
-    $start = str_replace(',', '.', $start);
-    $end = str_replace(',', '.', $end);
-    settype($start, 'integer');
-    settype($end, 'integer');
-    for ($i = $start; $i <= $end; $i++) {
-      $arr[] = $i;
-    }
-    return $arr;
   }
 
 ?>

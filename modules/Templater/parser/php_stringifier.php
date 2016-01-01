@@ -66,20 +66,17 @@
     private static function handleFor($exprs)
     {
       $arr = '';
-      if (isset($exprs[3])) {
-        $arr = '$arr' . self::$arrIndex . ' = ' . self::handleRecursiveExpression($exprs[3]) . '; ';
+      $exprs[3] = self::getFirstElementFromConcat($exprs[3]);
+      if (get_class($exprs[3]) === 'MathIndexRange') {
+        $arr = '$arr' . self::$arrIndex . ' = MakeArray(' . self::handleRecursiveExpression($exprs[3]->leftPart()) .
+          ', ' .
+          self::handleRecursiveExpression($exprs[3]->rightPart()) .
+          '); ';
       }
       else {
-        $indexes = self::getFirstElementFromConcat($exprs[2])->indexes();
-        if (count($indexes) && get_class($indexes[0]) === 'MathIndexRange') {
-          $indexes = $indexes[0];
-          $arr = '$arr' . self::$arrIndex . ' = MakeArray(' . self::handleRecursiveExpression($indexes->leftPart()) .
-            ', ' .
-            self::handleRecursiveExpression($indexes->rightPart()) .
-            '); ';
-        }
+        $arr = '$arr' . self::$arrIndex . ' = ' . self::handleRecursiveExpression($exprs[3]) . '; ';
       }
-      if (self::getFirstElementFromConcat($exprs[2])->name() === 'revertin') {
+      if (self::getFirstElementFromConcat($exprs[2])->get() === 'revertin') {
         $arr .= '$arr' . self::$arrIndex . ' = array_reverse($arr' . self::$arrIndex . ', true); ';
       }
       $values = $arr;
@@ -402,29 +399,30 @@
     private static function handleLogicExpressions($exprs)
     {
       $exprs = $exprs->exprs();
-      if (get_class($exprs[0]) === 'MathConcat') {
-        $elements = $exprs[0]->elements();
-        if (count($elements) === 1) {
-          switch ($elements[0]->name()) {
-            case 'if':
-              return self::handleIf($exprs);
-            case 'else':
-              return self::handleElse($exprs);
-            case 'elseif':
-              return self::handleElseIf($exprs);
-            case 'endif':
-              return self::handleEndif($exprs);
-            case 'for':
-              return self::handleFor($exprs);
-            case 'endfor':
-              return self::handleEndfor($exprs);
-            case 'include':
-              return self::handleInclude($exprs);
-            case 'controller_page':
-              return self::handleControllerPage($exprs);
-            default:
-              return false;
-          }
+      $name = false;
+      if (get_class($exprs[0]) === 'ReservedWord') {
+        $name = $exprs[0]->get();
+      }
+      if ($name !== false) {
+        switch ($name) {
+          case 'if':
+            return self::handleIf($exprs);
+          case 'else':
+            return self::handleElse($exprs);
+          case 'elseif':
+            return self::handleElseIf($exprs);
+          case 'endif':
+            return self::handleEndif($exprs);
+          case 'for':
+            return self::handleFor($exprs);
+          case 'endfor':
+            return self::handleEndfor($exprs);
+          case 'include':
+            return self::handleInclude($exprs);
+          case 'require_template':
+            return self::handleRequireTemplate($exprs);
+          case 'controller_page':
+            return self::handleControllerPage($exprs);
         }
       }
       else if (get_class($exprs[0]) === 'LogicAssigment') {
@@ -541,4 +539,22 @@
         self::recString($element);
       }
     }
+  }
+
+  function makeArray($start, $end)
+  {
+    $arr = array();
+    $start = str_replace(',', '.', $start);
+    $end = str_replace(',', '.', $end);
+    settype($start, 'integer');
+    settype($end, 'integer');
+    for ($i = $start; $i <= $end; $i++) {
+      $arr[] = $i;
+    }
+    return $arr;
+  }
+
+  function length($str)
+  {
+    return strlen($str);
   }

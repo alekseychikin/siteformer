@@ -34,6 +34,7 @@
   include_once __dir__."/tokens/math_uminus.php";
   include_once __dir__."/tokens/math_brackets.php";
   include_once __dir__."/tokens/math_index_range.php";
+  include_once __dir__."/tokens/reserved_word.php";
 
   include_once __dir__."/schemes/if.php";
   include_once __dir__."/schemes/for.php";
@@ -66,9 +67,9 @@
      *
      * @return void AST tree
      */
-    public static function parseFile($filepath)
+    public static function parseFile($filepath, $reservedWords, $schemes)
     {
-      return self::parse(file_get_contents($filepath), $filepath);
+      return self::parse(file_get_contents($filepath), $reservedWords, $schemes, $filepath);
     }
 
     /**
@@ -78,8 +79,9 @@
      *
      * @return void AST tree
      */
-    public static function parse($strin, $filename = null)
+    public static function parse($strin, $reservedWords, $schemes, $filename = null)
     {
+      self::$tokens->unshift('(' . implode('\s|', $reservedWords) . '\s) return TK_RESERVED_WORD');
       self::$tree = null;
 
       // if strin empty then return false
