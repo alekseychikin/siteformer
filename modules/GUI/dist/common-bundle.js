@@ -12837,7 +12837,7 @@ module.exports = jQuery;
 },{"jquery":5,"jquery/jquery.modifiers":1,"jquery/jquery.role":2,"jquery/jquery.tabs":3,"jquery/jquery.utils":4}]},{},["jquery-plugins.coffee"]);
 
 require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"view.coffee":[function(require,module,exports){
-var $, $body, $document, $window, View, ViewItem, ViewPrototype,
+var $, $body, $document, $window, View, ViewItem, ViewPrototype, pathTimeout,
   slice = [].slice;
 
 $ = require("jquery-plugins.coffee");
@@ -12847,6 +12847,8 @@ $window = $(window);
 $body = $(document.body);
 
 $document = $(document);
+
+pathTimeout = null;
 
 ViewPrototype = {
   debug: false,
@@ -12993,6 +12995,20 @@ ViewPrototype = {
       }
       return results;
     }
+  },
+  frequency: function(time, cb) {
+    if (pathTimeout) {
+      clearTimeout(pathTimeout);
+      pathTimeout = null;
+    } else {
+      cb();
+    }
+    return pathTimeout = setTimeout((function(_this) {
+      return function() {
+        cb();
+        return pathTimeout = null;
+      };
+    })(this), time);
   }
 };
 
@@ -13191,8 +13207,12 @@ ModelPrototype = {
     results = [];
     for (key in params) {
       value = params[key];
-      this.state[key] = value;
-      results.push(this.triggerUpdate(key));
+      if (typeof value === !'object' || value !== this.state[key]) {
+        this.state[key] = value;
+        results.push(this.triggerUpdate(key));
+      } else {
+        results.push(void 0);
+      }
     }
     return results;
   },
@@ -13827,7 +13847,12 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
           currNode[attr] = true;
         }
         else if (attr === 'value') {
-          currNode.value = destAttrs[attr];
+          if (currNode.nodeName.toLowerCase() === 'option') {
+            currNode.setAttribute('value', destAttrs[attr]);
+          }
+          else if (currNode.value != destAttrs[attr]) {
+            currNode.value = destAttrs[attr];
+          }
         }
         else {
           currNode.setAttribute(attr, destAttrs[attr]);
@@ -13897,13 +13922,20 @@ createXMLHTTPObject = function() {
   return xmlhttp;
 };
 
-httpGet = function(url) {
+httpGet = function(url, data) {
+  if (data == null) {
+    data = null;
+  }
   return Q.Promise(function(resolve, reject) {
     var req;
     req = createXMLHTTPObject();
+    if (data != null) {
+      url += "?" + parsePostData(data);
+    }
     req.open("GET", url, true);
     req.setRequestHeader("X-Requested-With", "XMLHttpRequest");
     req.setRequestHeader("Accept", "application/json, text/javascript, */*; q=0.01");
+    req.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=UTF-8");
     req.onreadystatechange = function() {
       var e, error, result;
       if (req.readyState !== 4) {
@@ -13969,7 +14001,7 @@ parsePostData = function(postData, name) {
   }
   str = '';
   if ((ref = typeof postData) === "string" || ref === "number" || ref === "boolean") {
-    return name + "=" + postData;
+    return name + "=" + (encodeURIComponent(postData));
   } else if (postData instanceof Array) {
     data = [];
     for (i = j = 0, len = postData.length; j < len; i = ++j) {

@@ -1,0 +1,10 @@
+.form__error {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: #fff;
+  border: 1px solid #BEBEBE;
+  border-radius: 3px;
+  padding: 5px 10px;
+  margin-top: 3px;
+}

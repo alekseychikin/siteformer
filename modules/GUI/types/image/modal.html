@@ -1,11 +1,14 @@
 <div class="popup__head">Настройки изображения</div>
+{% isEmpty = !length(s3AccessKey) || !length(s3SecretKey) %}
+{% isS3Auth = s3auth? && (s3auth == true || s3auth == "true") %}
+{% isS3Checking = s3checking? && (s3checking == true || s3checking == "true") %}
 <form action="" class="form" role="configs-form">
   <div class="form__item">
     <label class="form__label">Хранилище</label>
     <div class="form__inp-contain">
       <div class="tabs">
-        <button type="button" class="tabs__item{% if storage == 'local' %} tabs__item--active{% endif %}" role="tabs configs-image-storage" data-group="configs-image-modal-storage" data-value="local" data-frame="configs-image-modal-storage-local">Локальное</button>
-        <button type="button" class="tabs__item{% if storage == 's3' %} tabs__item--active{% endif %}" role="tabs configs-image-storage" data-group="configs-image-modal-storage" data-value="s3" data-frame="configs-image-modal-storage-s3">S3</button>
+        <button type="button" class="tabs__item{% if storage == "local" %} tabs__item--active{% endif %}" role="tabs configs-image-storage" data-group="configs-image-modal-storage" data-value="local" data-frame="configs-image-modal-storage-local">Локальное</button>
+        <button type="button" class="tabs__item{% if storage == "s3" %} tabs__item--active{% endif %}" role="tabs configs-image-storage" data-group="configs-image-modal-storage" data-value="s3" data-frame="configs-image-modal-storage-s3">S3</button>
       </div>
     </div>
   </div>
@@ -14,6 +17,9 @@
       <label for="configs-image-path" class="form__label">Путь</label>
       <div class="form__inp-contain">
         <input type="text" class="form__inp" value="{{ path }}" role="configs-image-path" id="configs-image-path" />
+        {% if pathError? && (pathError) %}
+        <span class="form__error">{{ pathError }}</span>
+        {% endif %}
       </div>
     </div>
   </div>
@@ -31,17 +37,47 @@
       </div>
     </div>
     <div class="form__item">
+      <div class="form__inp-contain">
+        <button type="button" class="form__btn" role="test-connection-s3"{% if isEmpty || isS3Auth || isS3Checking %} disabled{% endif %}>
+          {% if isS3Checking %}
+          Соединение...
+          {% else %}
+            {% if isS3Auth %}
+          Готово
+            {% else %}
+          Подключиться
+            {% endif %}
+          {% endif %}
+        </button>
+      </div>
+    </div>
+    {% if isS3Auth == "true" || isS3Auth == true %}
+    <div class="form__item">
       <label for="configs-image-s3-bucket" class="form__label">Bucket</label>
       <div class="form__inp-contain">
+        {% if buckets? && count(buckets) %}
+        <label class="select">
+          <select role="configs-image-s3-bucket" id="configs-image-s3-bucket">
+            {% for bucket in buckets %}
+            <option value="{{ bucket }}"{% if !!s3Bucket? && (s3Bucket == bucket) %} selected{% endif %}>{{ bucket }}</option>
+            {% endfor %}
+          </select>
+        </label>
+        {% else %}
         <input type="text" class="form__inp" value="{{ s3Bucket? }}" role="configs-image-s3-bucket" id="configs-image-s3-bucket" />
+        {% endif %}
       </div>
     </div>
     <div class="form__item">
       <label for="configs-image-s3-path" class="form__label">Путь</label>
       <div class="form__inp-contain">
         <input type="text" class="form__inp" value="{{ s3Path? }}" role="configs-image-s3-path" id="configs-image-s3-path" />
+        {% if s3PathError? && (s3PathError) %}
+        <span class="form__error">{{ s3PathError }}</span>
+        {% endif %}
       </div>
     </div>
+    {% endif %}
   </div>
   <div class="form__item">
     <label for="configs-image-width" class="form__label">Уменьшить до размера</label>
@@ -68,7 +104,7 @@
     </div>
   </div>
   <div class="form__submit">
-    <button class="form__btn form__btn--submit">Сохранить</button>
+    <button class="form__btn form__btn--submit"{% if (storage == "local" && (pathError? && pathError)) || (storage == "s3" && (!isS3Auth)) %} disabled{% endif %}>Сохранить</button>
     <button type="button" class="form__btn popup__cancel">Отменить</button>
   </div>
 </form>

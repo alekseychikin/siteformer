@@ -3,6 +3,8 @@ $window = ($ window)
 $body = ($ document.body)
 $document = ($ document)
 
+pathTimeout = null
+
 ViewPrototype =
   debug: false
 
@@ -77,6 +79,18 @@ ViewPrototype =
     if @extEvents[eventName]
       for event in @extEvents[eventName]
         event.apply @, values
+
+  frequency: (time, cb) ->
+    if pathTimeout
+      clearTimeout pathTimeout
+      pathTimeout = null
+    else
+      cb()
+    pathTimeout = setTimeout =>
+      cb()
+      pathTimeout = null
+    , time
+
 
 View = ->
   if @ !instanceof View

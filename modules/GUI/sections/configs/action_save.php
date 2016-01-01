@@ -15,7 +15,7 @@
 
     arrMap(SFGUI::getTypes(), function ($type) use (& $types)
     {
-      $types[] = $type['alias'];
+      $types[] = $type['type'];
     });
 
     $data = SFValidate::parse(array(

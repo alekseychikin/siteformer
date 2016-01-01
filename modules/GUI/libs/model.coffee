@@ -93,8 +93,9 @@ ModelPrototype =
 
   set: (params) ->
     for key, value of params
-      @state[key] = value
-      @triggerUpdate key
+      if typeof value is not 'object' || value != @state[key]
+        @state[key] = value
+        @triggerUpdate key
   replace: (params) ->
     @state = {}
     for key, value of params

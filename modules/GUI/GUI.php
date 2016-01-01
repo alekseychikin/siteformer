@@ -24,6 +24,7 @@
       SFRouter::addRule('/cms/configs/action_save/', MODULES . 'GUI/sections/configs/action_save');
       SFRouter::addRule('/cms/configs/action_delete/', MODULES . 'GUI/sections/configs/action_delete');
       SFRouter::addRule('/cms/configs/{section}/', MODULES . 'GUI/sections/configs/item');
+      SFRouter::addRule('/cms/types/{type}/{handle}/', MODULES . 'GUI/sections/main/type');
       SFRouter::addRule('/cms/{section}/', MODULES . 'GUI/sections/item/index');
       SFRouter::addRule('/cms/{section}/add/', MODULES . 'GUI/sections/item/add');
       SFRouter::addRule('/cms/{section}/{item}/', MODULES . 'GUI/sections/item/item');

@@ -125,6 +125,10 @@ body {
   background-image: linear-gradient(-180deg, #89799d 0%, #6f5d85 96%);
   box-shadow: 0 1px 2px #676767 inset;
 }
+
+.form__btn--submit:disabled {
+  background-image: linear-gradient(-180deg, #FFFFFF 0%, #E8E8E8 96%);
+}
 .form__checkbox {
   position: absolute;
   visibility: hidden;
@@ -157,6 +161,16 @@ body {
 
 input:checked + .form__checkbox-label:before {
   opacity: 1;
+}
+.form__error {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: #fff;
+  border: 1px solid #BEBEBE;
+  border-radius: 3px;
+  padding: 5px 10px;
+  margin-top: 3px;
 }
 .form__file {
   position: relative;
@@ -243,6 +257,7 @@ input:checked + .form__checkbox-label:before {
 .form__inp-contain {
   margin-top: 5px;
   width: 50%;
+  position: relative;
 }
 .form__inp-contain--full-width {
   width: 100%;

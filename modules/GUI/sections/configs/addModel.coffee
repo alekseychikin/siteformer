@@ -61,7 +61,7 @@ module.exports = Model
     fields.splice index, 1
     @set {fields}
 
-  getFieldByIndex: (index) -> @clone @state.fields[index]
+  getFieldByIndex: (index) -> @clone @state.fields[+index]
 
   getFields: -> @state.fields.slice()
 

@@ -16,12 +16,15 @@ createXMLHTTPObject = ->
     break
   xmlhttp
 
-httpGet = (url) ->
+httpGet = (url, data = null) ->
   Q.Promise (resolve, reject) ->
     req = createXMLHTTPObject()
+    if data?
+      url += "?" + parsePostData data
     req.open "GET", url, true
     req.setRequestHeader "X-Requested-With", "XMLHttpRequest"
     req.setRequestHeader "Accept", "application/json, text/javascript, */*; q=0.01"
+    req.setRequestHeader "Content-type", "application/x-www-form-urlencoded; charset=UTF-8"
     req.onreadystatechange = ->
       if req.readyState != 4 then return false
       result = false
@@ -59,11 +62,10 @@ httpPost = (url, data) ->
       req = null
     req.send parsePostData data
 
-
 parsePostData = (postData, name = "") ->
   str = ''
   if typeof postData in ["string", "number", "boolean"]
-    return "#{name}=#{postData}"
+    return "#{name}=#{encodeURIComponent postData}"
   else if postData instanceof Array
     data = []
     for attr, i in postData

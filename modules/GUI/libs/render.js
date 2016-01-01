@@ -538,7 +538,12 @@
           currNode[attr] = true;
         }
         else if (attr === 'value') {
-          currNode.value = destAttrs[attr];
+          if (currNode.nodeName.toLowerCase() === 'option') {
+            currNode.setAttribute('value', destAttrs[attr]);
+          }
+          else if (currNode.value != destAttrs[attr]) {
+            currNode.value = destAttrs[attr];
+          }
         }
         else {
           currNode.setAttribute(attr, destAttrs[attr]);
