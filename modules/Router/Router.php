@@ -116,7 +116,7 @@
     {
       $url = self::getUri();
       if (substr($url, -1, 1) == '/') $url = substr($url, 0, -1);
-      if (SFResponse::isActionExists($url)) {
+      if (SFResponse::actionExists($url)) {
         return array('pattern' => '', 'path' => $url, 'params' => array());
       }
       $params = include self::$routingPath;

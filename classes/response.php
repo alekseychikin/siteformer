@@ -118,17 +118,24 @@
         // $urlParams[] = '<input type="hidden" id="url_param_'. $field .'" role="url_param_'. $field .'" value="'. $value .'" />';
       }
       SFResponse::set('url_params', implode(N, $urlParams));
-      if (file_exists(ACTIONS . $action . '.php')) {
-        return include ACTIONS . $action . '.php';
+      $actionsPath = ROOT;
+      if (defined('ACTIONS')) {
+        $actionsPath = ACTIONS;
       }
-      elseif (file_exists($action . '.php')) {
-        return include $action . '.php';
+      $isFile = false;
+      $isDir = false;
+      $action = self::prepareActionPath($action, $isFile, $isDir);
+      if (file_exists($action . '.php') && !$isDir) {
+        include $action . '.php';
       }
-      elseif (file_exists(ACTIONS . $action) && is_dir(ACTIONS . $action) && file_exists(ACTIONS . $action . '/index.php')) {
-        return include ACTIONS . $action . '/index.php';
+      elseif (file_exists($actionsPath . $action . '.php') && !$isDir) {
+        include $actionsPath . $action . '.php';
       }
-      elseif (file_exists($action) && is_dir($action) && file_exists($action . '/index.php')) {
-        return include $action . '/index.php';
+      elseif (file_exists($action) && is_dir($action) && file_exists($action . '/index.php') && !$isFile) {
+        include $action . '/index.php';
+      }
+      elseif (file_exists($actionsPath . $action) && is_dir($actionsPath . $action) && file_exists($actionsPath . $action . '/index.php') && !$isFile) {
+        include $actionsPath . $action . '/index.php';
       }
       else {
         self::error(404, 'Action file not find: ' . $action . '.php');
@@ -136,7 +143,7 @@
       }
     }
 
-    public static function isActionExists($action)
+    public static function actionExists($action)
     {
       if (!self::$working) return false;
       $actionsPath = ROOT;
