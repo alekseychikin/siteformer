@@ -1,0 +1,14 @@
+.form__file-close {
+  position: absolute;
+  background: url('form__file-close.svg') no-repeat;
+  width: width('form__file-close.svg');
+  height: calc(height('form__file-close.svg') / 2);
+  right: calc(width('form__file-close.svg') / - 2);
+  top: calc(height('form__file-close.svg') / - 4);
+  z-index: 1;
+  cursor: pointer;
+
+  &:hover {
+    background-position: 0 calc(height('form__file-close.svg') / - 2);
+  }
+}

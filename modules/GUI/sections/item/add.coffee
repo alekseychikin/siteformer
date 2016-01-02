@@ -16,12 +16,14 @@ models =
   table: require "table/addTableModel.coffee"
   checkbox: require "checkbox/addCheckboxModel.coffee"
   radio: require "radio/addRadioModel.coffee"
+  image: require "image/addImageModel.coffee"
 
 views =
   string: require "string/addStringView.coffee"
   table: require "table/addTableView.coffee"
   checkbox: require "checkbox/addCheckboxView.coffee"
   radio: require "radio/addRadioView.coffee"
+  image: require "image/addImageView.coffee"
 
 httpGet "#{window.location.href}__json/"
 .then (response) ->
@@ -29,7 +31,7 @@ httpGet "#{window.location.href}__json/"
   index = 0
   for field in response.fields
     if models[field.type]?
-      model = models[field.type]()
+      model = models[field.type] {field}
       model.setSettings? field.settings
       views[field.type] $rows.eq(index), model
       addModel.add field.alias, model

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="42px" height="83px" viewBox="0 0 42 83" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
+    <!-- Generator: Sketch 3.4.4 (17249) - http://www.bohemiancoding.com/sketch -->
+    <title>form__file-close</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
+        <g id="form__file-close" sketch:type="MSLayerGroup" transform="translate(1.000000, 1.000000)">
+            <g stroke="#888888" sketch:type="MSShapeGroup">
+                <path d="M20,40 C31.045695,40 40,31.045695 40,20 C40,8.954305 31.045695,0 20,0 C8.954305,0 0,8.954305 0,20 C0,31.045695 8.954305,40 20,40 Z" id="Oval-3" stroke-linejoin="bevel" fill="#FFFFFF"></path>
+                <path d="M28.3847763,12 L12.1213203,28.263456" id="Line" stroke-width="2" stroke-linecap="square"></path>
+                <path d="M12,12 L28.263456,28.263456" id="Line" stroke-width="2" stroke-linecap="square"></path>
+            </g>
+            <g id="form__file-close-copy" transform="translate(0.000000, 41.000000)" sketch:type="MSShapeGroup">
+                <path d="M20,40 C31.045695,40 40,31.045695 40,20 C40,8.954305 31.045695,0 20,0 C8.954305,0 0,8.954305 0,20 C0,31.045695 8.954305,40 20,40 Z" id="Oval-3" stroke="#888888" stroke-linejoin="bevel" fill="#FFFFFF"></path>
+                <path d="M28.3847763,12 L12.1213203,28.263456" id="Line" stroke="#D4595D" stroke-width="2" stroke-linecap="square"></path>
+                <path d="M12,12 L28.263456,28.263456" id="Line" stroke="#D4595D" stroke-width="2" stroke-linecap="square"></path>
+            </g>
+        </g>
+    </g>
+</svg>
