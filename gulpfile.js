@@ -20,6 +20,7 @@ var pimport = require('postcss-import');
 var nested = require('postcss-nested');
 var calc = require('postcss-calc');
 var customProperties = require('postcss-custom-properties');
+var cache = require('gulp-cached');
 
 var requirePaths = [
   'node_modules',
@@ -225,6 +226,7 @@ gulp.task('prepare-js', function ()
     file.extname = '.js';
     return file;
   }))
+  .pipe(cache('prepare-js'))
   .pipe(gulp.dest('modules/GUI/dist'))
   .pipe(livereload());
 });
