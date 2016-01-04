@@ -1,5 +1,4 @@
 Model = require "model.coffee"
-Promise = require "q"
 httpGet = (require "ajax.coffee").httpGet
 httpPost = (require "ajax.coffee").httpPost
 

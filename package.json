@@ -39,6 +39,6 @@
   },
   "dependencies": {
     "jquery": "^1.11.3",
-    "q": "^1.4.1"
+    "promise": "^7.1.1"
   }
 }

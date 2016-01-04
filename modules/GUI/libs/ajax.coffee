@@ -1,4 +1,4 @@
-Q = require "q"
+Promise = require "promise"
 
 createXMLHTTPObject = ->
   XMLHttpFactories = [
@@ -16,8 +16,23 @@ createXMLHTTPObject = ->
     break
   xmlhttp
 
+readyStateChange = (req, resolve, reject) ->
+  ->
+    if req.readyState != 4 then return false
+    result = false
+    try
+      if req.responseText.length
+        result = JSON.parse req.responseText
+    catch e
+      result = req.responseText
+    if req.status != 200 && req.status != 304
+      reject result
+    else
+      resolve result
+    req = null
+
 httpGet = (url, data = null) ->
-  Q.Promise (resolve, reject) ->
+  new Promise (resolve, reject) ->
     req = createXMLHTTPObject()
     if data?
       url += "?" + parsePostData data
@@ -25,42 +40,36 @@ httpGet = (url, data = null) ->
     req.setRequestHeader "X-Requested-With", "XMLHttpRequest"
     req.setRequestHeader "Accept", "application/json, text/javascript, */*; q=0.01"
     req.setRequestHeader "Content-type", "application/x-www-form-urlencoded; charset=UTF-8"
-    req.onreadystatechange = ->
-      if req.readyState != 4 then return false
-      result = false
-      try
-        if req.responseText.length
-          result = JSON.parse req.responseText
-      catch e
-        result = req.responseText
-      if req.status != 200 && req.status != 304
-        reject result
-      else
-        resolve result
-      req = null
+    req.onreadystatechange = readyStateChange req, resolve, reject
     req.send()
 
 httpPost = (url, data) ->
-  Q.Promise (resolve, reject) ->
+  new Promise (resolve, reject) ->
     req = createXMLHTTPObject()
     req.open "POST", url, true
     req.setRequestHeader "X-Requested-With", "XMLHttpRequest"
     req.setRequestHeader "Accept", "application/json, text/javascript, */*; q=0.01"
     req.setRequestHeader "Content-type", "application/x-www-form-urlencoded; charset=UTF-8"
-    req.onreadystatechange = ->
-      if req.readyState != 4 then return false
-      result = false
-      try
-        if req.responseText.length
-          result = JSON.parse req.responseText
-      catch e
-        result = req.responseText
-      if req.status != 200 && req.status != 304
-        reject result
-      else
-        resolve result
-      req = null
+    req.onreadystatechange = readyStateChange req, resolve, reject
     req.send parsePostData data
+
+httpFile = (url, data) ->
+  new Promise (resolve, reject) ->
+    if window.FormData
+      formData = new FormData()
+      for field, input of data
+        if input.getAttribute("type").toLowerCase() == "file"
+          for file, i in input.files
+            formData.append "#{field}[#{i}]", file
+    else
+      console.error "not supporting FormData"
+
+    req = createXMLHTTPObject()
+    req.open "POST", url, true
+    req.setRequestHeader "X-Requested-With", "XMLHttpRequest"
+    req.setRequestHeader "Accept", "application/json, text/javascript, */*; q=0.01"
+    req.onreadystatechange = readyStateChange req, resolve, reject
+    req.send formData
 
 parsePostData = (postData, name = "") ->
   str = ''
@@ -81,3 +90,4 @@ parsePostData = (postData, name = "") ->
 module.exports =
   httpGet: httpGet
   httpPost: httpPost
+  httpFile: httpFile
