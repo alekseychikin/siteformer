@@ -13,7 +13,7 @@
 
     private static function returnError($field, $source = '')
     {
-      SFResponse::error(422, array('error' => (isset($field['error']) ? str_replace(':value', $source, $field['error']) : 'Error at field `'.$field['name'].'`')));
+      SFResponse::error(422, (isset($field['error']) ? str_replace(':value', $source, $field['error']) : 'Error at field `'.$field['name'].'`'));
     }
 
     public static function parse($fields, $source, & $uniqueCache = array(), $prevName = '', & $skip = false)

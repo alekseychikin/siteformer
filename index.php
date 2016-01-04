@@ -1,6 +1,6 @@
 <?php
 
-  $e = new Exception;
+  $e = new Exception();
   $trace = $e->getTrace();
   if (!defined('CONFIGS')) die('Const `CONFIGS` not defined at index.php at root project. '."<br />\n".'For example:'."<br />\n".'define(\'CONFIGS\', \'./configs/\');');
   if (!defined('TEMP')) die('Const `TEMP` not defined at index.php at root project. '."<br />\n".'For example:'."<br />\n".'define(\'TEMP\', \'./temp/\');');
@@ -12,6 +12,12 @@
   date_default_timezone_set('Europe/Moscow');
   header('Content-type: text/html; charset=utf8');
   define('CLASSES', ENGINE.'classes/');
+  require_once CLASSES.'base_exception.php';
+  require_once CLASSES.'page_not_found_exception.php';
+  require_once CLASSES.'error_handler.php';
+  set_error_handler('errorHandler');
+  error_reporting(0);
+
   // define('DATAPTH', ENGINE.'schemes/');
   // define('CONFIGS', ENGINE.'.configs/');
   // define('TYPES', ENGINE.'types/');
@@ -63,37 +69,58 @@
     SFResponse::refresh();
   }
 
-  SFResponse::initRedirData();
+  try {
+    SFResponse::initRedirData();
 
-  SFLog::write('Requred all needed files');
+    SFLog::write('Requred all needed files');
 
-  if (!file_exists($configsPath)) die('Not exists configsPath: '.$configsPath);
-  include $configsPath;
+    if (!file_exists($configsPath)) die('Not exists configsPath: '.$configsPath);
+    include $configsPath;
 
-  SFModules::checkModules();
+    SFModules::checkModules();
 
-  SFLog::write('Modules checked');
+    SFLog::write('Modules checked');
 
-  SFModules::before();
-  SFLog::write('Modules before ends');
-  SFModules::after();
-  SFLog::write('Modules after ends');
+    SFModules::before();
+    SFLog::write('Modules before ends');
+    SFModules::after();
+    SFLog::write('Modules after ends');
 
-  if (file_exists(ACTIONS.'__before.php')) {
-    SFResponse::run(ACTIONS.'__before');
-    SFLog::write('__before.php ends');
+    if (SFResponse::isWorking()) {
+      if (file_exists(ACTIONS . '__before.php')) {
+        SFResponse::run(ACTIONS . '__before');
+        SFLog::write('__before.php ends');
+      }
+
+      $request = substr($_SERVER['REQUEST_URI'], 1, -1);
+      if (!SFResponse::actionExists(ACTIONS . $request)) {
+        throw new PageNotFoundException(ACTIONS . $request);
+      }
+      SFResponse::run(ACTIONS . $request);
+      SFLog::write('Default action ends');
+
+      if (file_exists(ACTIONS . '__after.php')) {
+        SFResponse::run(ACTIONS . '__after');
+        SFLog::write('__after ends');
+      }
+    }
+    SFLog::close();
   }
-
-  $request = substr($_SERVER['REQUEST_URI'], 1, -1);
-  SFResponse::run(ACTIONS.$request);
-  SFLog::write('Default action ends');
-
-  if (file_exists(ACTIONS.'__after.php')) {
-    SFResponse::run(ACTIONS.'__after');
-    SFLog::write('__after ends');
+  catch (PageNotFoundException $e) {
+    SFResponse::code('404');
+    if (SFResponse::actionExists('404')) {
+      SFResponse::run('404');
+    }
+    else {
+      SFResponse::error(404, 'Page not found');
+    }
   }
-
-  SFLog::close();
+  catch (BaseException $e) {
+    SFResponse::error(400, $e->message());
+  }
+  catch (Exception $e) {
+    SFResponse::error(400, $e->getMessage());
+  }
 
   // ORMDatabase::init($mysqlConfigs);
 

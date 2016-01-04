@@ -11,19 +11,25 @@
     private static $working = true;
     private static $code = array(
       '200' => 'OK',
+      '400' => 'Bad Request',
       '401' => 'Unauthorized',
       '403' => 'Forbidden',
       '404' => 'Not Found',
       '422' => 'Unprocessable Entity'
     );
     private static $stopsCodes = array(
-      '401', '402', '403', '404', '422'
+      '400', '401', '402', '403', '404', '422'
     );
     public static $types = array('__json', '__print', '__xml');
 
     public static function code($code)
     {
       header('HTTP/1.1 ' . $code . ' ' . self::$code[$code]);
+    }
+
+    public static function isWorking()
+    {
+      return self::$working;
     }
 
     public static function error($status, $message)
@@ -36,11 +42,11 @@
       else {
         self::set('error', $message);
       }
-      if (in_array($status, self::$stopsCodes)) {
-        header('Content-Type: application/json; charset=utf8');
-        die(json_encode(self::$result));
-      }
-      self::render();
+      ob_start();
+      print_r($message);
+      $message = ob_get_contents();
+      ob_end_clean();
+      self::render($message);
       self::$working = false;
     }
 
@@ -90,11 +96,11 @@
 
     private static function prepareActionPath($action, & $isFile, & $isDir)
     {
-      if (substr($action, -1) == '/') {
+      if (substr($action, -1) === '/') {
         $action = substr($action, 0, -1);
         $isDir = true;
       }
-      if (substr($action, -4) == '.php') {
+      if (substr($action, -4) === '.php') {
         $action = substr($action, 0, -4);
         $isFile = true;
       }
@@ -138,7 +144,7 @@
         include $actionsPath . $action . '/index.php';
       }
       else {
-        self::error(404, 'Action file not find: ' . $action . '.php');
+        throw new BaseException('Action file not find: ' . $action . '.php');
         // die('Action file not find: '.$action.'.php');
       }
     }
@@ -193,7 +199,7 @@
       if (!self::$working) return false;
       $type = self::$type;
       if ($type == '__json') {
-        header('Content-Type: application/json; charset=utf8');
+        header('Content-Type: application/json; charset=utf-8');
         echo json_encode(self::$result);
       }
       elseif ($type == '__print') {

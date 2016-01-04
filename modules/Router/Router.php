@@ -13,12 +13,12 @@
     {
       SFLog::write('Begin __after module SFRouter');
       $result = self::parse();
+      if (!$result) return false;
       SFLog::write('Done parse');
-      if (file_exists(ACTIONS.'__before.php')) {
-        SFResponse::run(ACTIONS.'__before');
+      if (SFResponse::actionExists(ACTIONS . '__before.php')) {
+        SFResponse::run(ACTIONS . '__before');
       }
       SFLog::write('Done __before.php at module SFRouter');
-      if (!$result) return false;
       SFResponse::run($result['path'], $result['params']);
       SFLog::write('Runed ' . $result['path'] . ' at module SFRouter');
       SFResponse::close();

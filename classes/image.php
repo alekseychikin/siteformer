@@ -23,44 +23,52 @@
       $this->filename = $filename;
     }
 
-    public static function upload($filename, $path, & $error = false)
+    public static function upload($filename, $path, $index = false)
     {
       if (isset($_FILES[$filename])) {
         $files = $_FILES[$filename];
-        if (is_uploaded_file($files['tmp_name'])) {
-          $ext = strtolower(substr(strrchr($files['name'], '.'), 1));
+        if ($index !== false) {
+          $tmpName = $files['tmp_name'][$index];
+          $filesName = $files['name'][$index];
+        }
+        else {
+          $tmpName = $files['tmp_name'];
+          $filesName = $files['name'];
+        }
+        if (is_uploaded_file($tmpName)) {
+          $path = SFPath::prepareDir($path, PPD_CLOSE_RIGHT);
+          $ext = strtolower(substr(strrchr($filesName, '.'), 1));
           if (in_array($ext, self::$exts)) {
-            $filename = SFText::getTag($files['name']);
-            $fn       = $filename;
+            $filename = SFText::getTag($filesName);
+            $fn = $filename;
             $filename = substr($filename, 0, strlen($filename) - strlen($ext));
-            $fn       = $filename.'.'.$ext;
-            $outfilename = $path.$fn;
+            $fn = $filename . '.' . $ext;
+            $outfilename = $path . $fn;
             SFPath::mkdir(dirname($outfilename));
-            $i        = 2;
+            $i = 2;
             while (file_exists($outfilename)) {
-              $fn          = $filename.'-'.$i.'.'.$ext;
-              $outfilename = $path.$fn;
+              $fn = $filename . '-' . $i . '.' . $ext;
+              $outfilename = $path . $fn;
               $i++;
             }
-            if (move_uploaded_file($files['tmp_name'], $outfilename)) {
+            if (move_uploaded_file($tmpName, $outfilename)) {
               return new SFImage($outfilename);
             }
             else {
-              $error = 'Ошибка перемещения файла из временного хранилища в папку-приёмник. Возможно недостаточно прав на запись в папке '.$path;
+              throw new BaseException('Ошибка перемещения файла из временного хранилища в папку-приёмник. Возможно недостаточно прав на запись в папке ' . $path);
             }
           }
           else {
-            $error = 'Неправильный тип данных';
+            throw new BaseException('Неправильный тип данных');
           }
         }
         else {
-          $error = 'Ошибка загрузки файла';
+          throw new BaseException('Ошибка загрузки файла');
         }
       }
       else {
-        $error =  'Файл не передан для загрузки';
+        throw new BaseException('Файл не передан для загрузки');
       }
-      return false;
     }
 
     public function crop($params, $extFileName = '')

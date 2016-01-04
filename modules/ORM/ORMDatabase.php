@@ -81,11 +81,7 @@
 
     private static function makeException($sqlError)
     {
-      $e = new Exception();
-      $trace = $e->getTrace();
-      echo self::$lastSQL . "\n\n" . $sqlError."\n\n";
-      print_r($trace);
-      die();
+      throw new BaseException($sqlError);
     }
 
     private static function putReport($sql, $time)
