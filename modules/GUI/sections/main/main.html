@@ -6,15 +6,15 @@
   <link rel="stylesheet" href="/sf-engine/modules/GUI/dist/main.css" />
 </head>
 <body>
-  <section class="section">
-    <aside class="aside">
-      <header class="header">
+  <div class="section">
+    <div class="aside">
+      <div class="header">
         {% include "components/user-block/user-block" %}
-      </header>
+      </div>
       {% include "components/menu/menu" %}
-    </aside>
+    </div>
     {{ content }}
-  </section>
+  </div>
   {{ template_includes }}
   <script src="/sf-engine/modules/GUI/dist/common-bundle.js"></script>
   {% if controller %}

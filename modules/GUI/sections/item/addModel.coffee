@@ -15,5 +15,10 @@ module.exports = Model
   getFields: ->
     result = {}
     @state.fields.map (item) ->
-      result[item.name] = item.model.get()
+      try
+        if typeof item.model.get != "function"
+          throw "#{item.name} has no `get` method"
+        result[item.name] = item.model.get()
+      catch e
+        console.error e
     result

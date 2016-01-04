@@ -1,5 +1,6 @@
 $ = require "jquery-plugins.coffee"
 httpGet = (require "ajax.coffee").httpGet
+Promise = require "promise"
 
 AddModel = require "./addModel.coffee"
 addModel = AddModel()
@@ -9,7 +10,24 @@ AddView = require "./addView.coffee"
 addView = AddView ($ "@item-add-form"), addModel
 
 addView.on "save", (fields) ->
-  console.log fields
+  result = {}
+  promises = []
+  for field, value of fields
+    do (field, value) ->
+      promises.push value
+      if value instanceof Promise
+        value
+        .then (value) ->
+          result[field] = value
+        .catch (error) ->
+          console.error error
+      else
+        result[field] = value
+
+  Promise.all promises
+  .then ->
+    console.log "may save"
+    console.log result
 
 models =
   string: require "string/addStringModel.coffee"

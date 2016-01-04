@@ -58,73 +58,11 @@ body {
   position: fixed;
   width: 200px;
   top: 0;
-  margin-left: -200px;
+  left: 0;
   bottom: 0;
+  z-index: 1;
 }
 .content {
-}
-.form-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-.form-table__cell {
-  text-align: left;
-  padding: 5px 10px;
-}
-
-.form-table__cell:first-child {
-  padding-left: 0;
-}
-
-.form-table__cell:last-child {
-  padding-right: 0;
-}
-.form-table__row {
-  
-}
-.form-table__row--head {
-  color: #353535;
-  font-size: 12px;
-  font-weight: bold;
-}
-.head {
-  color: #000;
-  font-size: 17px;
-  background-color: #F3F3F3;
-  padding: 20px 40px;
-}
-.menu {
-  list-style: none;
-  margin-top: 30px;
-}
-.menu__item {
-  height: 20px;
-  padding: 5px 20px;
-}
-
-.menu__item + .menu__item {
-  margin-top: 10px;
-}
-.menu__item--active {
-  background-color: #393939;
-  position: relative;
-}
-
-.menu__item--active:after {
-  content: '';
-  position: absolute;
-  border-left: 10px solid #393939;
-  border-top: 15px solid transparent;
-  border-bottom: 15px solid transparent;
-  right: -10px;
-  top: 0;
-}
-.menu__item + .menu__item--configs {
-  margin-top: 30px;
-}
-.menu__link {
-  color: #EDEDED;
-  text-decoration: none;
 }
 .form {
   margin-top: 5px;
@@ -450,6 +388,72 @@ input:checked + .form__radio-label:before {
 .form__table {
   padding: 10px 40px;
 }
+.form-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.form-table__cell {
+  text-align: left;
+  padding: 5px 10px;
+}
+
+.form-table__cell:first-child {
+  padding-left: 0;
+}
+
+.form-table__cell:last-child {
+  padding-right: 0;
+}
+.form-table__row {
+  
+}
+.form-table__row--head {
+  color: #353535;
+  font-size: 12px;
+  font-weight: bold;
+}
+.head {
+  color: #000;
+  font-size: 17px;
+  background-color: #F3F3F3;
+  padding: 20px 40px;
+}
+.header {
+  
+}
+.menu {
+  list-style: none;
+  margin-top: 30px;
+}
+.menu__item {
+  height: 20px;
+  padding: 5px 20px;
+}
+
+.menu__item + .menu__item {
+  margin-top: 10px;
+}
+.menu__item--active {
+  background-color: #393939;
+  position: relative;
+}
+
+.menu__item--active:after {
+  content: '';
+  position: absolute;
+  border-left: 10px solid #393939;
+  border-top: 15px solid transparent;
+  border-bottom: 15px solid transparent;
+  right: -10px;
+  top: 0;
+}
+.menu__item + .menu__item--configs {
+  margin-top: 30px;
+}
+.menu__link {
+  color: #EDEDED;
+  text-decoration: none;
+}
 .popup {
   background-color: #fff;
   border-radius: 0 0 3px 3px;
@@ -660,9 +664,6 @@ input:checked + .form__radio-label:before {
 }
 
 .tabs__item--active {
-  
-}
-.header {
   
 }
 .user-block {

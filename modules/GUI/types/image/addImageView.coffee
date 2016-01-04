@@ -1,12 +1,13 @@
 View = require "view.coffee"
 template = require "types/image/item.tmpl.js"
-Render = require "render.js"
+Render = require "render"
 
 module.exports = View
   debug: true
 
   initial: ->
     @template = Render template, @contain[0]
+    @model.setInput @contain.find("@image")[0]
 
   render: (state) ->
     if !state.field.settings.hide
