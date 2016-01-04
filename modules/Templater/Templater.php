@@ -65,7 +65,7 @@
 
       $file = fopen($filename.'.tmpl.php', 'w');
       if ($file) {
-        fputs($file, '<!-- '.substr($filename, strlen($compiles)).' -->'.N.$template.N.'<!-- \\\\'.substr($filename, strlen($compiles)).' -->'.N);
+        fputs($file, $template);
         fclose($file);
       }
 
