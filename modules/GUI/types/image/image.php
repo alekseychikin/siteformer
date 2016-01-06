@@ -26,6 +26,9 @@
           'name' => 'height'
         ),
         array(
+          'name' => 'maxsize'
+        ),
+        array(
           'name' => 'source',
           'valid' => function ($value) use ($fields, $sources)
           {
@@ -78,6 +81,43 @@
         $params['hide'] = true;
       }
       return json_encode($params);
+    }
+
+    public static function detectSource($field)
+    {
+      if (isset($field['settings']) && isset($field['settings']['source']) && $field['settings']['source'] !== 'upload') {
+        return $field['settings']['source'];
+      }
+      return false;
+    }
+
+    public static function prepareData($field, $data)
+    {
+      $settings = $field['settings'];
+      if ($settings['source'] === 'upload') {
+        $value = $data[$field['alias']];
+      }
+      else {
+        $value = $data[$settings['source']];
+      }
+      if (!$value || $value === 'false') return false;
+      $image = new SFImage(ENGINE . 'temp/' . $value);
+      $resizeParams = array();
+      if (isset($settings['width']) && $settings['width']) $resizeParams['width'] = $settings['width'];
+      if (isset($settings['height']) && $settings['height']) $resizeParams['height'] = $settings['height'];
+      if (isset($settings['maxsize']) && $settings['maxsize']) $resizeParams['maxsize'] = $settings['maxsize'];
+      $fieldTempPath = $image->path('filepath') . $field['alias'] . '_' . $image->path('filename');
+      $image = $image->resize($resizeParams, $fieldTempPath);
+      if ($settings['storage'] === 's3') {
+        SFPath::connectS3($settings['s3AccessKey'], $settings['s3SecretKey'], $settings['s3Bucket']);
+        $path = SFPath::prepareDir($settings['s3Path'], PPD_OPEN_LEFT | PPD_CLOSE_RIGHT) . date('Y/m/');
+        return $bucketPath = SFPath::moveToBucket($path, $fieldTempPath);
+      }
+      elseif ($settings['storage'] === 'local') {
+        $path = ROOT . SFPath::prepareDir($settings['path'], PPD_OPEN_LEFT | PPD_CLOSE_RIGHT);
+        return substr(SFPath::move($path . date('Y/m/'), $fieldTempPath), strlen($path));
+      }
+      return false;
     }
 
     private static function getSources($fields, $currentField, $currentAlias)

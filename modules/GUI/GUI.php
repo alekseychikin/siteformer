@@ -27,6 +27,7 @@
       SFRouter::addRule('/cms/types/{type}/{handle}/', MODULES . 'GUI/sections/main/type');
       SFRouter::addRule('/cms/{section}/', MODULES . 'GUI/sections/item/index');
       SFRouter::addRule('/cms/{section}/add/', MODULES . 'GUI/sections/item/add');
+      SFRouter::addRule('/cms/{section}/action_save/', MODULES . 'GUI/sections/item/action_save');
       SFRouter::addRule('/cms/{section}/{item}/', MODULES . 'GUI/sections/item/item');
 
       define('GUI_COMPILE_TEMPLATES', ENGINE . 'temp/modules/GUI/.compile_templates/');
@@ -297,6 +298,11 @@
       return array();
     }
 
+    public static function getClassNameByType($type)
+    {
+      return 'SFType' . SFText::camelCasefy($type, true);
+    }
+
     private static function stringifyToArray($data, $indent = 1)
     {
       if (gettype($data) === 'array') {
@@ -348,11 +354,6 @@
         return $className::getSqlField($field['settings']);
       }
       return false;
-    }
-
-    private static function getClassNameByType($type)
-    {
-      return 'SFType' . SFText::camelCasefy($type, true);
     }
 
     private static function prepareSectionFields($fields)

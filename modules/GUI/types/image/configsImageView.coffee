@@ -18,6 +18,7 @@ module.exports = View
     "change keyup input: @configs-image-s3-path": (e) -> @frequency 500, => @model.updateS3Path e.target.value
     "change: @configs-image-width": (e) -> @model.updateWidth e.target.value
     "change: @configs-image-height": (e) -> @model.updateHeight e.target.value
+    "change: @configs-image-maxsize": (e) -> @model.updateMaxSize e.target.value
     "change: @configs-image-source": (e) -> @model.updateSource e.target.value
     "click: @test-connection-s3": (e) -> @model.testConnectionS3()
     "popup-close: contain": (e) -> @destroy()

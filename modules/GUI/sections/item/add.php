@@ -3,7 +3,6 @@
   SFResponse::set('page_title', 'Добавить запись');
 
   $section = SFGUI::getSection($section);
-  // print_r($section);
 
   $sections = SFGUI::getSections();
   SFResponse::set('sections', $sections);

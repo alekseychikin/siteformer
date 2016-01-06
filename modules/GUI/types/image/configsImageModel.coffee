@@ -89,6 +89,7 @@ module.exports = Model
 
   updateWidth: (value) -> @set width: value
   updateHeight: (value) -> @set height: value
+  updateMaxSize: (value) -> @set maxsize: value
   updateSource: (value) -> @set source: value
 
   getState: ->

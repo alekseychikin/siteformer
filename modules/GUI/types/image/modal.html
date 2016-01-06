@@ -80,12 +80,18 @@
     {% endif %}
   </div>
   <div class="form__item">
-    <label for="configs-image-width" class="form__label">Уменьшить до размера</label>
+    <label for="configs-image-width" class="form__label">Уменьшить до заданных размеров</label>
     <div class="form__inp-contain form__inp-contain--full-width">
       <input type="text" class="form__inp form__inp--very-short" value="{{ width? }}" role="configs-image-width" id="configs-image-width" />
       <span class="form__between-inp">×</span>
       <input type="text" class="form__inp form__inp--very-short" value="{{ height? }}" role="configs-image-height" />
-      <div class="form__hint">Если не задать значение, оно будет вычислено пропорционально</div>
+      <div class="form__hint">Если задать одно значение, второе будет вычислено пропорционально</div>
+    </div>
+  </div>
+  <div class="form__item">
+    <label for="configs-image-maxsize" class="form__label">Или уменьшить до размера по большей стороне</label>
+    <div class="form__inp-contain form__inp-contain--full-width">
+      <input type="text" class="form__inp form__inp--very-short" value="{{ maxsize? }}" role="configs-image-maxsize" id="configs-image-maxsize" />
     </div>
   </div>
   <div class="form__item">

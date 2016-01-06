@@ -12,7 +12,7 @@
           case 'filename':
             return basename($this->filename);
           case 'filepath':
-            return dirname($this->filename).'/';
+            return dirname($this->filename) . '/';
         }
       }
       return $this->filename;

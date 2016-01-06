@@ -5,8 +5,9 @@
   "defaultSettings": {
     "storage": "local",
     "path": "/",
-    "width": "200",
+    "width": "",
     "height": "",
+    "maxsize": "1000",
     "source": "upload",
     "s3AccessKey": "",
     "s3SecretKey": "",

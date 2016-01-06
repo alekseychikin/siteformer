@@ -43,9 +43,9 @@
       }
       $path = '';
       foreach ($elements as $file) {
-        $path .= $file.'/';
-        if (!file_exists(ROOT.$path)) {
-          mkdir(ROOT.$path, 0777);
+        $path .= $file . '/';
+        if (!file_exists(ROOT . $path)) {
+          mkdir(ROOT . $path, 0777);
         }
       }
 
@@ -64,7 +64,7 @@
       self::$bucket = $bucket;
     }
 
-    public static function moveToBuckete($path = '', $filename_)
+    public static function moveToBucket($path = '', $filename_, $removeAfterMove = false)
     {
       if (!self::$s3) {
         self::$s3 = new S3(self::$awsAccessKey, self::$awsSecretKey);
@@ -77,11 +77,32 @@
       while (self::$s3->getObjectInfo(self::$bucket, $path . $fn)) {
         $fn = $filename . '-' . ++$i . '.' . $ext;
       }
+      $path = self::prepareDir($path, PPD_OPEN_LEFT | PPD_CLOSE_RIGHT);
       self::$s3->putObjectFile($filename_, self::$bucket, $path . $fn, S3::ACL_PUBLIC_READ);
-      unlink($filename_);
+      if ($removeAfterMove) {
+        unlink($path . $fn);
+      }
       return $path . $fn;
     }
 
+    public static function move($path, $filename_, $removeAfterMove = false)
+    {
+      $filename = baseName($filename_);
+      $ext = strtolower(substr(strrchr($filename, '.'), 1));
+      $filename = substr($filename, 0, strlen($filename) - strlen($ext) - 1);
+      $fn = $filename . '.' . $ext;
+      $i = 1;
+      while (file_exists($path . $fn)) {
+        $fn = $filename . '-' . ++$i . '.' . $ext;
+      }
+      $path = self::prepareDir($path, PPD_CLOSE_RIGHT);
+      self::mkdir($path);
+      copy($filename_, $path . $fn);
+      if ($removeAfterMove) {
+        unlink($path . $fn);
+      }
+      return $path . $fn;
+    }
   }
 
 ?>

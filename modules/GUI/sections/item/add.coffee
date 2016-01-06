@@ -3,31 +3,8 @@ httpGet = (require "ajax.coffee").httpGet
 Promise = require "promise"
 
 AddModel = require "./addModel.coffee"
-addModel = AddModel()
 
 AddView = require "./addView.coffee"
-
-addView = AddView ($ "@item-add-form"), addModel
-
-addView.on "save", (fields) ->
-  result = {}
-  promises = []
-  for field, value of fields
-    do (field, value) ->
-      promises.push value
-      if value instanceof Promise
-        value
-        .then (value) ->
-          result[field] = value
-        .catch (error) ->
-          console.error error
-      else
-        result[field] = value
-
-  Promise.all promises
-  .then ->
-    console.log "may save"
-    console.log result
 
 models =
   string: require "string/addStringModel.coffee"
@@ -45,13 +22,17 @@ views =
 
 httpGet "#{window.location.href}__json/"
 .then (response) ->
+  addModel = AddModel
+    section: response.section
+    fields: []
+  addView = AddView ($ "@item-add-form"), addModel
   $rows = $ "@input-contain"
   index = 0
   for field in response.fields
     if models[field.type]?
       model = models[field.type] {field}
       model.setSettings? field.settings
-      views[field.type] $rows.eq(index), model
       addModel.add field.alias, model
     if !field.settings.hide? || (field.settings.hide? && !field.settings.hide)
+      views[field.type] $rows.eq(index), model
       index++

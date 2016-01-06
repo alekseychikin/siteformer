@@ -15,4 +15,9 @@
     {
       return $params;
     }
+
+    public static function prepareData($field, $data)
+    {
+      return false;
+    }
   }
