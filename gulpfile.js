@@ -166,7 +166,14 @@ function browserified (params)
   });
 }
 
-gulp.task('prepare-js-lib', function ()
+gulp.task('prepare-html', function ()
+{
+  gulp.src(['modules/GUI/**/*.html'])
+  .pipe(cache('prepare-html'))
+  .pipe(livereload());
+});
+
+gulp.task('prepare-js-lib', ['prepare-html'], function ()
 {
   return gulp.src(commonBundle)
   .pipe(sourcemaps.init())
@@ -198,7 +205,7 @@ gulp.task('prepare-js-lib', function ()
   .pipe(livereload());
 });
 
-gulp.task('prepare-js', function ()
+gulp.task('prepare-js', ['prepare-html'], function ()
 {
   return gulp.src([
     '!modules/GUI/sections/**/*Model.coffee',
