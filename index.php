@@ -2,9 +2,9 @@
 
   $e = new Exception();
   $trace = $e->getTrace();
-  if (!defined('CONFIGS')) die('Const `CONFIGS` not defined at index.php at root project. '."<br />\n".'For example:'."<br />\n".'define(\'CONFIGS\', \'./configs/\');');
+  if (!defined('CONFIGS')) die('Const `CONFIGS` not defined at index.php at root project. '."<br />\n".'For example:'."<br />\n".'define(\'CONFIGS\', \'./configs/configs.php\');');
   if (!defined('TEMP')) die('Const `TEMP` not defined at index.php at root project. '."<br />\n".'For example:'."<br />\n".'define(\'TEMP\', \'./temp/\');');
-  if (!file_exists(CONFIGS)) die('Configs folder does not exists `'.CONFIGS.'`');
+  if (!file_exists(CONFIGS)) die('Configs file does not exists `'.CONFIGS.'`');
   define('ROOT', realpath(dirname($trace[0]['file'])).'/');
   define('ENGINE', realpath(dirname(__FILE__)).'/');
 
@@ -51,7 +51,7 @@
   require_once CLASSES.'image.php';
   require_once CLASSES.'mail.php';
 
-  $configsPath = CONFIGS.'configs.php';
+  $configsPath = CONFIGS;
   // require_once CLASSES.'data.php';
   // require_once CLASSES.'mysql.php';
   // require_once CLASSES.'orm-database.php';
