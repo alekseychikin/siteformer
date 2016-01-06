@@ -14,7 +14,7 @@
 
     private static function handleInclude($exprs)
     {
-      return 'include SFTemplater::$templateCompilePath.' . self::handleRecursiveExpression($exprs[1]) . '.".tmpl.php"';
+      return 'include GUI_COMPILE_TEMPLATES . ' . self::handleRecursiveExpression($exprs[1]) . '.".tmpl.php"';
     }
 
     private static function handleControllerPage($exprs)
