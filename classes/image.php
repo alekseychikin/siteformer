@@ -35,7 +35,7 @@
           $tmpName = $files['tmp_name'];
           $filesName = $files['name'];
         }
-        if (is_uploaded_file($tmpName)) {
+        if (@is_uploaded_file($tmpName)) {
           $path = SFPath::prepareDir($path, PPD_CLOSE_RIGHT);
           $ext = strtolower(substr(strrchr($filesName, '.'), 1));
           if (in_array($ext, self::$exts)) {
@@ -51,7 +51,7 @@
               $outfilename = $path . $fn;
               $i++;
             }
-            if (move_uploaded_file($tmpName, $outfilename)) {
+            if (@move_uploaded_file($tmpName, $outfilename)) {
               return new SFImage($outfilename);
             }
             else {
