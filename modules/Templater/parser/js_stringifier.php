@@ -537,7 +537,7 @@
     {
       $leftPart = $expr->leftPart();
       $variable = self::handleRecursiveExpression($leftPart);
-      return  self::tabs(self::$currentTabs) . (!count($leftPart->indexes()) ? 'var ' : '') . $variable .
+      return  self::tabs(self::$currentTabs) . (!count($leftPart->indexes()) ? 'obj.' . $variable : $variable) .
         ' = ' .
         self::handleRecursiveExpressions($expr->rightPart()) . ';' . "\n";
     }

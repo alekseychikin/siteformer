@@ -33,6 +33,9 @@
       define('GUI_COMPILE_TEMPLATES', ENGINE . 'temp/modules/GUI/.compile_templates/');
 
       SFTemplater::compileTemplates(MODULES . 'GUI/', GUI_COMPILE_TEMPLATES);
+      if (SFURI::getFirstUri() === 'cms') {
+        SFTemplater::setCompilesPath(GUI_COMPILE_TEMPLATES);
+      }
     }
 
     // Get array of sections
