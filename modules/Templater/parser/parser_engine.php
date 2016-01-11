@@ -32,6 +32,7 @@
   include_once __dir__."/tokens/math_plus.php";
   include_once __dir__."/tokens/math_minus.php";
   include_once __dir__."/tokens/math_uminus.php";
+  include_once __dir__."/tokens/math_uplus.php";
   include_once __dir__."/tokens/math_brackets.php";
   include_once __dir__."/tokens/math_index_range.php";
   include_once __dir__."/tokens/reserved_word.php";

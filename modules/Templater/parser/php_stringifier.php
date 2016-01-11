@@ -134,6 +134,8 @@
           return self::handleMathFunction($expr);
         case 'MathPlus':
           return self::handleMathPlus($expr);
+        case 'MathUPlus':
+          return self::handleMathUPlus($expr);
         case 'MathUMinus':
           return self::handleMathUMinus($expr);
         case 'MathMinus':
@@ -217,6 +219,11 @@
     private static function handleMathUMinus($expr)
     {
       return '-' . self::handleRecursiveExpression($expr->expr());
+    }
+
+    private static function handleMathUPlus($expr)
+    {
+      return '+' . self::handleRecursiveExpression($expr->expr());
     }
 
     private static function handleMathMinus($expr)
@@ -324,7 +331,7 @@
         $variableName = '$' . $expr->name();
       }
       if ($isCheckVariable) {
-        $values .= ' isset(' . $variableName . ') ? ';
+        $values .= ' (isset(' . $variableName . ') ? ';
       }
       $indexes = $expr->indexes();
       if (count($indexes)) {
@@ -334,7 +341,7 @@
         $values .= $variableName;
       }
       if ($isCheckVariable) {
-        $values .= ' : \'\' ';
+        $values .= ' : \'\') ';
       }
       return $values;
     }

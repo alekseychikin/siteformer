@@ -196,6 +196,14 @@
       foreach ($results as $name => $content) {
         $$name = $content;
       }
+
+      $variables_ = SFResponse::getGlobal();
+      $variables = '<script type="text/javascript">';
+      foreach ($variables_ as $name => $value) {
+        $variables .= 'var ' . $name . ' = ' . json_encode($value, true) . ';'."\n";
+      }
+      $variables .= '</script>';
+
       $content = '';
       if (!$compilePath) $compilePath = self::$templateCompilePath;
       if (!empty($template)) {
@@ -215,12 +223,6 @@
       $js_includes = self::getJSInclude();
       $css_includes = self::getCSSInclude();
       $controller = self::getControllerPage();
-      $variables_ = SFResponse::getGlobal();
-      $variables = '<script type="text/javascript">';
-      foreach ($variables_ as $name => $value) {
-        $variables .= 'var ' . $name . ' = ' . json_encode($value, true) . ';'."\n";
-      }
-      $variables .= '</script>';
 
       if ($main) {
         if (file_exists($compilePath.$main.'.tmpl.php')) {
