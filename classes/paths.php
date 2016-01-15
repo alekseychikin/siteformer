@@ -59,7 +59,7 @@
     public static function connectS3($awsAccessKey, $awsSecretKey, $bucket)
     {
       S3::$useSSL = false;
-      self::$awsSecretKey = $awsSecretKey;
+      self::$awsAccessKey = $awsAccessKey;
       self::$awsSecretKey = $awsSecretKey;
       self::$bucket = $bucket;
     }

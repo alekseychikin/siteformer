@@ -6,7 +6,9 @@
   {
     public static function factory($model)
     {
-      require_once MODELS.$model.'.php';
+      $path = explode('/', $model);
+      require_once ACTIONS . $model . '.php';
+      $model = $path[count($path) - 1];
       $className = 'SF' . SFText::camelCasefy($model, true);
       return new $className;
     }
