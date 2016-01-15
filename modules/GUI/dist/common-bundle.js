@@ -11716,11 +11716,11 @@ ViewPrototype = {
       clearTimeout(pathTimeout);
       pathTimeout = null;
     } else {
-      cb();
+      cb.call(this);
     }
     return pathTimeout = setTimeout((function(_this) {
       return function() {
-        cb();
+        cb.call(_this);
         return pathTimeout = null;
       };
     })(this), time);

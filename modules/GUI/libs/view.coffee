@@ -85,9 +85,9 @@ ViewPrototype =
       clearTimeout pathTimeout
       pathTimeout = null
     else
-      cb()
+      cb.call @
     pathTimeout = setTimeout =>
-      cb()
+      cb.call @
       pathTimeout = null
     , time
 
