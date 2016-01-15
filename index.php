@@ -7,6 +7,12 @@
   if (!file_exists(CONFIGS) || !is_file(CONFIGS)) die('Configs file does not exists `'.CONFIGS.'`');
   define('ROOT', realpath(dirname($trace[0]['file'])).'/');
   define('ENGINE', realpath(dirname(__FILE__)).'/');
+  if (getenv('APPLICATION_ENV') !== false) {
+    define('APPLICATION_ENV', getenv('APPLICATION_ENV'));
+  }
+  else {
+    define('APPLICATION_ENV', 'production');
+  }
 
   session_start();
   date_default_timezone_set('Europe/Moscow');
