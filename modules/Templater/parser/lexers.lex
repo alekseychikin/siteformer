@@ -10,6 +10,7 @@
 _                       return TK_UNDERSCORE
 \$                      return TK_BAKS
 :                       return TK_COLON
+;                       return TK_SEMICOLON
 \+                      return TK_PLUS
 <=                      return TK_LT_EQUAL
 >=                      return TK_GT_EQUAL
