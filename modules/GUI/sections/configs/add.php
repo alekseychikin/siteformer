@@ -30,6 +30,6 @@
   SFResponse::set('title', '');
   SFResponse::set('alias', '');
   SFResponse::set('module', 'default');
-  SFResponse::render(SFTemplater::render('configs/add', 'main/main', GUI_COMPILE_TEMPLATES . 'sections/'));
+  SFResponse::render(SFTemplater::render('sections/configs/add', 'sections/main/main', GUI_COMPILE_TEMPLATES));
 
 ?>

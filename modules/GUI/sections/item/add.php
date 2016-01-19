@@ -9,6 +9,6 @@
   SFResponse::set('section', $section['alias']);
   SFResponse::set('fields', $section['fields']);
 
-  SFResponse::render(SFTemplater::render('item/add', 'main/main', GUI_COMPILE_TEMPLATES . 'sections/'));
+  SFResponse::render(SFTemplater::render('sections/item/add', 'sections/main/main', GUI_COMPILE_TEMPLATES));
 
 ?>

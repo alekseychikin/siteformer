@@ -8,6 +8,6 @@
   SFResponse::set('modules', $modules);
   SFResponse::set('sections', $sections);
   SFResponse::set('section', 'configs');
-  SFResponse::render(SFTemplater::render('configs/index', 'main/main', GUI_COMPILE_TEMPLATES . 'sections/'));
+  SFResponse::render(SFTemplater::render('sections/configs/index', 'sections/main/main', GUI_COMPILE_TEMPLATES));
 
 ?>
