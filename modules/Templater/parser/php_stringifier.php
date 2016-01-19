@@ -14,7 +14,15 @@
 
     private static function handleInclude($exprs)
     {
-      return 'include SFTemplater::$templateCompilePath . ' . self::handleRecursiveExpression($exprs[1]) . '.".tmpl.php"';
+      $params = '';
+      if (count($exprs) > 2) {
+        $params = array();
+        for ($i = 2; $i < count($exprs); $i++) {
+          $params[] = '\'' . substr(self::handleRecursiveExpression($exprs[$i]->leftPart()), 1) . '\' => ' . self::handleRecursiveExpression($exprs[$i]->rightPart());
+        }
+        $params = ', array(' . implode(', ', $params) . ')';
+      }
+      return 'SFTemplater::inc(' . self::handleRecursiveExpression($exprs[1]) . $params . ');';
     }
 
     private static function handleControllerPage($exprs)
@@ -426,8 +434,6 @@
             return self::handleEndfor($exprs);
           case 'include':
             return self::handleInclude($exprs);
-          case 'require_template':
-            return self::handleRequireTemplate($exprs);
           case 'controller_page':
             return self::handleControllerPage($exprs);
         }

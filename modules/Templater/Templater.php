@@ -9,6 +9,7 @@
     private static $jsTemplates = array();
     private static $templatePath;
     public static $templateCompilePath;
+    private static $lastTemplateCompilePath;
     private static $scripts = array();
     private static $styles = array();
     private static $compileTimes = array();
@@ -192,9 +193,47 @@
 
     public static function render($template, $main = null, $compilePath = null)
     {
+      $content = '';
+      if (!$compilePath) $compilePath = self::$templateCompilePath;
+      self::$lastTemplateCompilePath = $compilePath;
+      if (!empty($template)) {
+        ob_start();
+        if (file_exists($compilePath . $template . '.tmpl.php')) {
+          self::inc($template);
+        }
+        else {
+          ob_end_clean();
+          die('template not found: ' . $template . '.tmpl.php');
+        }
+        $content = ob_get_contents();
+        ob_end_clean();
+      }
+      if ($main) {
+        if (file_exists($compilePath . $main . '.tmpl.php')) {
+          ob_start();
+          self::inc($main, array('content' => $content));
+          $content = ob_get_contents();
+          ob_end_clean();
+          return $content;
+        }
+        else {
+          die('main not found: ' . $main . '.tmpl.php');
+        }
+      }
+      else {
+        return $content;
+      }
+    }
+
+    public static function inc($templatePath, $params = array())
+    {
       $results = SFResponse::getResults();
-      foreach ($results as $name => $content) {
-        $$name = $content;
+      foreach ($results as $name => $value) {
+        $$name = $value;
+      }
+
+      foreach ($params as $name => $value) {
+        $$name = $value;
       }
 
       $variables_ = SFResponse::getGlobal();
@@ -204,41 +243,12 @@
       }
       $variables .= '</script>';
 
-      $content = '';
-      if (!$compilePath) $compilePath = self::$templateCompilePath;
-      if (!empty($template)) {
-        ob_start();
-        if (file_exists($compilePath.$template.'.tmpl.php')) {
-          include $compilePath.$template.'.tmpl.php';
-        }
-        else {
-          ob_end_clean();
-          die('template not found: '.$template.'.tmpl.php');
-        }
-        $content = ob_get_contents();
-        ob_end_clean();
-      }
-
       $template_includes = self::getJSTemplates();
       $js_includes = self::getJSInclude();
       $css_includes = self::getCSSInclude();
       $controller = self::getControllerPage();
 
-      if ($main) {
-        if (file_exists($compilePath.$main.'.tmpl.php')) {
-          ob_start();
-          include $compilePath.$main.'.tmpl.php';
-          $content = ob_get_contents();
-          ob_end_clean();
-          return $content;
-        }
-        else {
-          die('main not found: '.$main.'.tmpl.php');
-        }
-      }
-      else {
-        return $content;
-      }
+      include self::$lastTemplateCompilePath . $templatePath . '.tmpl.php';
     }
 
   }

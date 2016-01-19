@@ -36,8 +36,52 @@
   {
     return str.length;
   }
+  var cloneElements = [];
+  function clone(obj)
+  {
+    cloneElements = [];
+    var copy = null;
+    var elem;
+    var attr;
+    var i;
+
+    if (null == obj || "object" != typeof obj) {
+      return obj;
+    }
+
+    if (obj instanceof Date) {
+      copy = new Date();
+      copy.setTime(obj.getTime());
+      return copy;
+    }
+    if (cloneElements.indexOf(obj) == -1) {
+      cloneElements.push(obj);
+      if (obj instanceof Array) {
+        copy = [];
+        for (i in obj) {
+          if (_hasProp.call(obj, i)) {
+            elem = obj[i];
+            copy[i] = clone(elem);
+          }
+        }
+        return copy;
+      }
+      if (obj instanceof Object) {
+        copy = {};
+        for (i in obj) {
+          if (_hasProp.call(obj, i)) {
+            attr = obj[i];
+            copy[i] = clone(attr);
+          }
+        }
+        return copy;
+      }
+    }
+  }
   function create()
   {
+    var indexAttr;
+
     if (arguments.length === 1) {
       var rootNodes = [];
       arguments[0](rootNodes);
@@ -57,7 +101,6 @@
       var parentNode;
       var indexNode;
       var node;
-      var indexAttr;
       var attr;
       var attrs = arguments[1];
       arguments[2](nodes);
@@ -87,14 +130,16 @@
       return parentNode;
     }
   }
-  var cachedTemplates = {};
+  if (typeof window.__cachedTemplates === \'undefined\') {
+    window.__cachedTemplates = {};
+  }
   function cacheRequireTemplate(path, required)
   {
-    cachedTemplates[path] = required;
+    window.__cachedTemplates[path] = required;
   }
   function requireTemplate(path, obj)
   {
-    return cachedTemplates[path](obj);
+    return window.__cachedTemplates[path](obj);
   }
   return function (obj)
   {
@@ -151,14 +196,16 @@
 
     private static function handleInclude($exprs)
     {
-      $return = '';
-      if (count($exprs) > 1) {
+      $return = self::tabs(self::$currentTabs++) . '(function () {' . "\n";
+      $return .= self::tabs(self::$currentTabs) . 'var newObj = clone(obj);' . "\n";
+      if (count($exprs) > 2) {
         for ($i = 2; $i < count($exprs); $i++) {
-          $return .= self::tabs(self::$currentTabs) . 'obj[\'' . self::handleRecursiveExpression($exprs[$i]->leftPart()) . '\'] = ' . self::handleRecursiveExpression($exprs[$i]->rightPart()) . ";\n";
+          $return .= self::tabs(self::$currentTabs) . 'newObj[\'' . self::handleRecursiveExpression($exprs[$i]->leftPart()) . '\'] = ' . self::handleRecursiveExpression($exprs[$i]->rightPart()) . ";\n";
         }
       }
-      $return .= self::tabs(self::$currentTabs) . 'var result = requireTemplate(' . self::handleRecursiveExpression($exprs[1]) . ', obj);' . "\n";
+      $return .= self::tabs(self::$currentTabs) . 'var result = requireTemplate(' . self::handleRecursiveExpression($exprs[1]) . ', newObj);' . "\n";
       $return .= self::tabs(self::$currentTabs) . 'result.map(function(item) {childs.push(item)});' . "\n";
+      $return .= self::tabs(--self::$currentTabs) . '})();' . "\n";
       return $return;
     }
 
