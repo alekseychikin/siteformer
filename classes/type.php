@@ -18,6 +18,6 @@
 
     public static function prepareData($field, $data)
     {
-      return false;
+      return $data[$field['alias']];
     }
   }

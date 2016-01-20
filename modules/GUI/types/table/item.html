@@ -1,9 +1,11 @@
-<table class="table">
-{% for rowIndex, row in field['settings']['defaultData'] %}
-  <tr>
-  {% for columnIndex, column in row %}
-    <td><input type="text" class="form__inp" id="{{ field['alias'] }}{{ rowIndex }}_{{ columnIndex }}" role="cell" data-row="{{ rowIndex }}" data-column="{{ columnIndex }}" value="{{ column }}" /></td>
+<div class="form__inp-contain" role="input-contain">
+  <table class="table">
+  {% for rowIndex, row in field['settings']['defaultData'] %}
+    <tr>
+    {% for columnIndex, column in row %}
+      <td><input type="text" class="form__inp" id="{{ field['alias'] }}{{ rowIndex }}_{{ columnIndex }}" role="cell" data-row="{{ rowIndex }}" data-column="{{ columnIndex }}" value="{{ column }}" /></td>
+    {% endfor %}
+    </tr>
   {% endfor %}
-  </tr>
-{% endfor %}
-</table>
+  </table>
+</div>

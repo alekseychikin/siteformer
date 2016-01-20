@@ -2,9 +2,7 @@
   {% if !field['settings']['hide']? || (field['settings']['hide']? && !field['settings']['hide']) %}
 <div class="form__item">
   <label for="{{ field['alias'] }}" class="form__label">{{ field['title']}}</label>
-  <div class="form__inp-contain" role="input-contain">
-    {% include "types/".field['type']."/item" field=field %}
-  </div>
+  {% include "types/".field['type']."/item" field=field %}
 </div>
   {% endif %}
 {% endfor %}

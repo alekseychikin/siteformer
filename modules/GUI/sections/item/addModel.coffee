@@ -35,6 +35,7 @@ module.exports = Model
 
     Promise.all promises
     .then =>
+      console.log result
       httpPost "/cms/#{@state.section}/action_save/__json/", data: result
     .then (response) ->
       console.log response

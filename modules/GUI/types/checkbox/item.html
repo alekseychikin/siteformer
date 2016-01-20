@@ -1,3 +1,4 @@
+<div class="form__inp-contain" role="input-contain">
 {% for i, dataItem in field['settings']['defaultData'] %}
 <div class="form__row-option">
   <input class="form__checkbox" type="checkbox" id="{{ field['alias'] }}{{ i }}" role="checkbox" data-index="{{ i }}"{% if dataItem['checked'] == "true" %} checked{% endif %} />
@@ -5,3 +6,4 @@
   <label for="{{ field['alias'] }}{{ i }}">{{ dataItem['label'] }}</label>
 </div>
 {% endfor %}
+</div>

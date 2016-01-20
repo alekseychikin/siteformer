@@ -12,6 +12,7 @@ models =
   checkbox: require "checkbox/addCheckboxModel.coffee"
   radio: require "radio/addRadioModel.coffee"
   image: require "image/addImageModel.coffee"
+  text: require "text/addTextModel.coffee"
 
 views =
   string: require "string/addStringView.coffee"
@@ -19,6 +20,7 @@ views =
   checkbox: require "checkbox/addCheckboxView.coffee"
   radio: require "radio/addRadioView.coffee"
   image: require "image/addImageView.coffee"
+  text: require "text/addTextView.coffee"
 
 httpGet "#{window.location.href}__json/"
 .then (response) ->
