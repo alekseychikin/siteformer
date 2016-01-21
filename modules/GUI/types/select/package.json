@@ -1,0 +1,12 @@
+{
+  "template_index": "item.html",
+  "name": "Выпадайка",
+  "hasSettings": true,
+  "defaultSettings": {
+    "defaultValue": -1,
+    "numOptions": 1,
+    "defaultData": [
+      ""
+    ]
+  }
+}

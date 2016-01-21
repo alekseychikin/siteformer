@@ -2,7 +2,7 @@
 
 require_once ENGINE . 'classes/validate.php';
 
-class SFTypeRadio extends SFType
+class SFTypeSelect extends SFType
 {
   public static function getSqlField($params)
   {

@@ -13,6 +13,7 @@ models =
   radio: require "radio/ConfigsRadioModel.coffee"
   checkbox: require "checkbox/ConfigsCheckboxModel.coffee"
   gallery: require "gallery/ConfigsGalleryModel.coffee"
+  select: require "select/ConfigsSelectModel.coffee"
 
 views =
   image: require "image/ConfigsImageView.coffee"
@@ -21,6 +22,7 @@ views =
   radio: require "radio/ConfigsRadioView.coffee"
   checkbox: require "checkbox/ConfigsCheckboxView.coffee"
   gallery: require "gallery/ConfigsGalleryView.coffee"
+  select: require "select/ConfigsSelectView.coffee"
 
 Popup = require "popup"
 
