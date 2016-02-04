@@ -13,6 +13,7 @@ models =
   radio: require "radio/addRadioModel.coffee"
   image: require "image/addImageModel.coffee"
   text: require "text/addTextModel.coffee"
+  select: require "select/addSelectModel.coffee"
 
 views =
   string: require "string/addStringView.coffee"
@@ -21,6 +22,7 @@ views =
   radio: require "radio/addRadioView.coffee"
   image: require "image/addImageView.coffee"
   text: require "text/addTextView.coffee"
+  select: require "select/addSelectView.coffee"
 
 httpGet "#{window.location.href}__json/"
 .then (response) ->

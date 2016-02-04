@@ -1,6 +1,11 @@
 Model = require "model.coffee"
 
 module.exports = Model
+  initial: ->
+    if + @state.defaultValue == -1
+      defaultData = @state.defaultData.slice(0)
+      defaultData.shift()
+      @set {defaultData}
 
   getState: -> @state
 
