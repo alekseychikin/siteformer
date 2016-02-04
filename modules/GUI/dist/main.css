@@ -57,6 +57,10 @@ button,
 select {
   font: normal 16px/18px 'Arial', sans-serif;
 }
+
+i {
+  font-style: italic;
+}
 .aside {
   background-color: #494949;
   position: fixed;
@@ -302,8 +306,42 @@ input:checked + .form__checkbox-label:before {
 .form__inp:disabled {
 	color: #929292;
 }
+.form__inp--date {
+  width: 160px;
+  background-color: #fff;
+}
+
+.form__inp--date {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+.form__inp--date::-webkit-calendar-picker-indicator,
+.form__inp--date::-webkit-inner-spin-button,
+.form__inp--date::-webkit-clear-button {
+  display: none;
+  -webkit-appearance: none;
+}
 .form__inp--half-width {
   width: 50%;
+}
+.form__inp--time {
+  width: 90px;
+  background-color: #fff;
+}
+
+.form__inp--time {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+.form__inp--time::-webkit-calendar-picker-indicator,
+.form__inp--time::-webkit-inner-spin-button,
+.form__inp--time::-webkit-clear-button {
+  display: none;
+  -webkit-appearance: none;
 }
 .form__inp--very-short {
   width: 60px;

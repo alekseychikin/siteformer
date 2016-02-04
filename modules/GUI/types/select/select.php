@@ -16,6 +16,9 @@ class SFTypeSelect extends SFType
         $defaultValue = $param;
       }
     }
+    if (empty($defaultValue)) {
+      array_splice($values, 0, 0, $defaultValue);
+    }
     return array(
       'type' => 'ENUM("' . implode('","', $values) . '")',
       'default' => $defaultValue
@@ -50,6 +53,9 @@ class SFTypeSelect extends SFType
         )
       )
     ), $params);
+    if ($params['defaultValue'] == -1) {
+      array_splice($params['defaultData'], 0, 0, "");
+    }
     return json_encode($params);
   }
 }

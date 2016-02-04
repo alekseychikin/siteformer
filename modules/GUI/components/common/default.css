@@ -9,3 +9,7 @@ button,
 select {
   font: normal 16px/18px 'Arial', sans-serif;
 }
+
+i {
+  font-style: italic;
+}
