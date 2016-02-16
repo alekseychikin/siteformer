@@ -1,0 +1,17 @@
+.form__inp--time {
+  width: 90px;
+  background-color: #fff;
+}
+
+.form__inp--time {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+.form__inp--time::-webkit-calendar-picker-indicator,
+.form__inp--time::-webkit-inner-spin-button,
+.form__inp--time::-webkit-clear-button {
+  display: none;
+  -webkit-appearance: none;
+}

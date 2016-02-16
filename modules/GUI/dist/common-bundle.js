@@ -1005,6 +1005,75 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
 });
 
 },{}],3:[function(require,module,exports){
+/*
+ * jQuery selectRange plugin v1.0
+ * https://github.com/makingoff/jquery-selectRange
+ *
+ * Copyright (c) 2013 makingoff <mail@makingoff.name>
+ * Licensed under the MIT license.
+ */
+
+(function (factory) {
+  'use strict';
+  if (typeof define === 'function' && define.amd) {
+    define(['jquery'], function ($) {
+      factory($);
+      return $;
+    });
+  } else {
+    factory(window.jQuery);
+  }
+})
+(function ($)
+{
+  $.fn.selectRange = function (range)
+  {
+    var that = $(this).get(0),
+        isie = '\v' == 'v',
+        _start,
+        _end,
+        _text,
+        rg,
+        stored_range;
+    if (range !== undefined) { // set
+      if (typeof range == 'number') { // set cursor at position
+        range = {start: range, end: range};
+      }
+      if (!isie) {
+        that.selectionStart = range.start;
+        that.selectionEnd = range.end;
+        that.focus();
+      }
+      else {
+        rg = that.createTextRange();
+        rg.collapse(true);
+        rg.moveStart('character', range.start);
+        rg.moveEnd('character', range.end - range.start);
+        rg.select();
+      }
+    }
+    else { // get
+      if (!isie) {
+        _start = that.selectionStart;
+        _end = that.selectionEnd;
+        _text = that.value.substring(_start, _end);
+      }
+      else {
+        rg = document.selection.createRange();
+        stored_range = rg.duplicate();
+        stored_range.moveToElementText(that);
+        stored_range.setEndPoint('EndToEnd', rg);
+        _start = stored_range.text.length - rg.text.length;
+        _end = _start + rg.text.length;
+        _text = rg.text;
+      }
+      return {start: _start, end: _end, text: _text};
+    }
+    return false;
+  }
+});
+
+},{}],4:[function(require,module,exports){
 (function (factory)
 {
   if (typeof define === 'function' && define.amd) {
@@ -1056,7 +1125,7 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
   });
 });
 
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 (function (factory)
 {
   if (typeof define === "function" && define.amd) {
@@ -1178,7 +1247,7 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
   })($);
 });
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v1.11.3
  * http://jquery.com/
@@ -11546,10 +11615,12 @@ require("jquery/jquery.utils");
 
 require("jquery/jquery.tabs");
 
+require("jquery/jquery.select-range");
+
 module.exports = jQuery;
 
 
-},{"jquery":5,"jquery/jquery.modifiers":1,"jquery/jquery.role":2,"jquery/jquery.tabs":3,"jquery/jquery.utils":4}]},{},["jquery-plugins.coffee"]);
+},{"jquery":6,"jquery/jquery.modifiers":1,"jquery/jquery.role":2,"jquery/jquery.select-range":3,"jquery/jquery.tabs":4,"jquery/jquery.utils":5}]},{},["jquery-plugins.coffee"]);
 
 require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"view.coffee":[function(require,module,exports){
 var $, $body, $document, $window, View, ViewItem, ViewPrototype, pathTimeout,
@@ -12867,5 +12938,60 @@ $('[data-popup]').each(function () {
 module.exports = Popup;
 
 },{"jquery-plugins.coffee":"jquery-plugins.coffee"}]},{},["popup"]);
+
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+var $, isTouchDevice,
+  indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+
+$ = require("jquery-plugins.coffee");
+
+isTouchDevice = (function(_this) {
+  return function() {
+    return (indexOf.call(window, 'ontouchstart') >= 0) || (navigator.MaxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0);
+  };
+})(this);
+
+if (!isTouchDevice()) {
+  $("[type=date]").each(function() {
+    var $input;
+    $input = $(this);
+    return $input.attr("type", "text");
+  });
+}
+
+
+},{"jquery-plugins.coffee":"jquery-plugins.coffee"}],2:[function(require,module,exports){
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+require("components/form/form__date.coffee");
+
+
+},{"components/form/form__date.coffee":2}],2:[function(require,module,exports){
+var $, isTouchDevice,
+  indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+
+$ = require("jquery-plugins.coffee");
+
+isTouchDevice = (function(_this) {
+  return function() {
+    return (indexOf.call(window, 'ontouchstart') >= 0) || (navigator.MaxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0);
+  };
+})(this);
+
+if (!isTouchDevice()) {
+  $("[type=date]").each(function() {
+    var $input;
+    $input = $(this);
+    return $input.attr("type", "text");
+  });
+}
+
+
+},{"jquery-plugins.coffee":"jquery-plugins.coffee"}]},{},[1]);
+
+},{"components/form/form__date.coffee":1,"jquery-plugins.coffee":"jquery-plugins.coffee"}],3:[function(require,module,exports){
+require("components/form/form");
+
+
+},{"components/form/form":2}]},{},[3]);
 
 //# sourceMappingURL=common-bundle.js.map
