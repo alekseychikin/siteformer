@@ -21,11 +21,14 @@ var nested = require('postcss-nested');
 var calc = require('postcss-calc');
 var customProperties = require('postcss-custom-properties');
 var cache = require('gulp-cached');
+var transform = require('stream').Transform;
 
 var requirePaths = [
   'node_modules',
   'modules/GUI/libs',
   'modules/GUI/types',
+  'modules/GUI/dist',
+  'modules/GUI/',
   'temp/modules/GUI/.compile_templates'
 ];
 
@@ -37,7 +40,7 @@ gulp.task('watch', ['prepare-css', 'prepare-js', 'prepare-js-lib', 'prepare-imag
   gulp.watch('modules/GUI/**/*.html', ['prepare-js']);
   gulp.watch('modules/GUI/components/**/*.css', ['prepare-css']);
   gulp.watch('modules/GUI/sections/**/*.css', ['prepare-css']);
-  gulp.watch('modules/GUI/components/**/*.{js,coffee}', ['prepare-js']);
+  gulp.watch('modules/GUI/components/**/*.{js,coffee}', ['prepare-js-lib']);
   gulp.watch('modules/GUI/sections/**/*.{js,coffee}', ['prepare-js']);
   gulp.watch('modules/GUI/types/**/*.{js,coffee}', ['prepare-js']);
   gulp.watch('modules/GUI/libs/**/*.{js,coffee}', ['prepare-js-lib']);
@@ -103,6 +106,42 @@ process.on('uncaughtException', function (er) {
   this.emit('end');
 });
 
+function filterComponentsEntiries(opts)
+{
+  opts.exts || (opts.exts = ['.js']);
+  var stream = new transform({objectMode: true});
+
+  stream._transform = function (file, encoding, cb)
+  {
+    var ext;
+    var filename;
+    var dirname;
+    if (file.isNull()) {
+      // stream.push(file);
+      cb();
+      return;
+    }
+
+    if (file.isStream()) {
+      return cb(new gutil.PluginError('filter', 'Streaming not supported'));
+    }
+    else {
+      ext = path.extname(file.history);
+      if (~opts.exts.indexOf(ext)) {
+        filename = path.basename(file.history, ext);
+        dirname = path.dirname(file.history).split(path.sep).pop();
+        if (filename === dirname) {
+          file.contents = new Buffer(file.contents);
+          stream.push(file);
+        }
+      }
+      cb();
+    }
+  };
+
+  return stream;
+}
+
 var commonBundle = [
   'node_modules/promise/index.js',
   'modules/GUI/libs/jquery-plugins.coffee',
@@ -110,7 +149,8 @@ var commonBundle = [
   'modules/GUI/libs/model.coffee',
   'modules/GUI/libs/render.js',
   'modules/GUI/libs/ajax.coffee',
-  'modules/GUI/libs/popup.js'
+  'modules/GUI/libs/popup.js',
+  'modules/GUI/libs/components.coffee'
 ];
 var exposeCommonBundle = {
   'node_modules/promise/index.js': 'promise',
@@ -173,7 +213,7 @@ gulp.task('prepare-html', function ()
   .pipe(livereload());
 });
 
-gulp.task('prepare-js-lib', ['prepare-html'], function ()
+gulp.task('prepare-js-lib', ['prepare-html', 'prepare-js-components'], function ()
 {
   return gulp.src(commonBundle)
   .pipe(sourcemaps.init())
@@ -205,7 +245,29 @@ gulp.task('prepare-js-lib', ['prepare-html'], function ()
   .pipe(livereload());
 });
 
-gulp.task('prepare-js', ['prepare-html'], function ()
+gulp.task('prepare-js-components', function ()
+{
+  return gulp.src(['modules/GUI/components/**/*'])
+  .pipe(filterComponentsEntiries({exts: ['.js', '.coffee']}))
+  .pipe(browserified({
+    options: {
+      transform: [
+        'coffeeify'
+      ],
+      debug: false,
+      paths: requirePaths
+    },
+    external: exposeCommonBundle
+  }))
+  .pipe(rename(function (file)
+  {
+    file.extname = '.js';
+    return file;
+  }))
+  .pipe(gulp.dest('modules/GUI/dist/components'));
+});
+
+gulp.task('prepare-js', ['prepare-html', 'prepare-js-components'], function ()
 {
   return gulp.src([
     '!modules/GUI/sections/**/*Model.coffee',
