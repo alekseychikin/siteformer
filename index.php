@@ -69,19 +69,17 @@ if (!file_exists(ROOT . '.htaccess')) {
 try {
   SFResponse::initRedirData();
 
-  SFLog::write('Requred all needed files');
-
   if (!file_exists(CONFIGS)) die('Not exists configsPath: ' . CONFIGS);
   include CONFIGS;
 
   SFModules::checkModules();
   SFModules::before();
+  SFModules::main();
   SFModules::after();
 
   if (SFResponse::isWorking()) {
     if (file_exists(ACTIONS . '__before.php')) {
       SFResponse::run(ACTIONS . '__before');
-      SFLog::write('__before.php ends');
     }
 
     $request = substr($_SERVER['REQUEST_URI'], 1, -1);
@@ -90,16 +88,17 @@ try {
       throw new PageNotFoundException(ACTIONS . $request);
     }
 
+    ob_start();
     SFResponse::run(ACTIONS . $request);
-    SFLog::write('Default action ends');
+    $content = ob_get_contents();
+    ob_end_clean();
+    echo $content;
 
     if (file_exists(ACTIONS . '__after.php')) {
       SFResponse::run(ACTIONS . '__after');
-      SFLog::write('__after ends');
     }
   }
 
-  SFLog::close();
 } catch (PageNotFoundException $e) {
   SFResponse::code('404');
 

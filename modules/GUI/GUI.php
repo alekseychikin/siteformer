@@ -54,11 +54,15 @@ class SFGUI
       ->join('section_fields', _expr_('section_fields.section', _field_('sections.id')))
       ->where('sections.alias', $alias)
       ->exec();
-    $res = $res[0];
-    $res['fields'] = self::prepareSectionFields($res['section_fields']);
-    unset($res['section_fields']);
+    if (count($res)) {
+      $res = $res[0];
+      $res['fields'] = self::prepareSectionFields($res['section_fields']);
+      unset($res['section_fields']);
 
-    return $res;
+      return $res;
+    } else {
+      throw new PageNotFoundException('Section not found');
+    }
   }
 
   // Get section by id

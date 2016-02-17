@@ -86,6 +86,24 @@
       }
     }
 
+    public static function main() {
+      foreach (self::$modules as $module) {
+        $find = false;
+        ob_start();
+
+        if (method_exists('SF' . $module, 'main')) {
+          $find = call_user_func(array('SF' . $module, 'main'));
+        }
+
+        $content = trim(ob_get_contents());
+        ob_end_clean();
+
+        if ($find) {
+          SFResponse::render($content);
+        }
+      }
+    }
+
     public static function after() {
       foreach (self::$modules as $module) {
         if (method_exists('SF' . $module, '__after')) {

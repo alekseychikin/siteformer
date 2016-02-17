@@ -9,17 +9,22 @@ class SFRouter
   public static $languages = [];
   private static $language = '';
 
-  public static function __after() {
+  public static function main() {
     $result = self::parse();
 
     if (!$result) return false;
 
-    if (SFResponse::actionExists(ACTIONS . '__before . php')) {
+    if (SFResponse::actionExists(ACTIONS . '__before.php')) {
       SFResponse::run(ACTIONS . '__before');
     }
 
-    SFResponse::run($result['path'], $result['params']);
-    SFResponse::close();
+    if (SFResponse::actionExists($result['path'])) {
+      SFResponse::run($result['path'], $result['params']);
+
+      return true;
+    }
+
+    return false;
   }
 
   public static function addRule($url, $action) {

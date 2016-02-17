@@ -40,5 +40,3 @@ foreach ($fields as $field) {
 }
 
 print_r($newData);
-
-SFResponse::render();

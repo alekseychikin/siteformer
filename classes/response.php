@@ -199,19 +199,16 @@
       } elseif ($type == '__print') {
         print_r(self::$result);
       } else {
-        if (!empty($content)) {
-          echo $content;
+        if (isset($_SERVER['HTTP_REFERER']) && $_SERVER['REQUEST_METHOD'] === 'POST') {
+          $_SESSION['redir_data'] = self::$result;
+          self::redir($_SERVER['HTTP_REFERER']);
         } else {
-          if (isset($_SERVER['HTTP_REFERER'])) {
-            $_SESSION['redir_data'] = self::$result;
-            self::redir($_SERVER['HTTP_REFERER']);
-          } else {
-            print_r(self::$result);
-            self::$working = false;
-          }
+          echo $content;
         }
       }
-    } // returnData
+
+      self::$working = false;
+    }
 
     public static function render($content = '') {
       if (!self::$working) return false;
@@ -232,9 +229,5 @@
       if (!self::$working) return false;
 
       self::redir($_SERVER['REQUEST_URI']);
-    }
-
-    public static function close() {
-      self::$working = false;
     }
   }
