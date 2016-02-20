@@ -211,6 +211,14 @@ class SFTemplater
     return self::$controller;
   }
 
+  public static function renderArray($params) {
+    if (!isset($params[1])) $params[1] = null;
+
+    if (!isset($params[2])) $params[2] = null;
+
+    return self::render($params[0], $params[1], $params[2]);
+  }
+
   public static function render($template, $main = null, $compilePath = null) {
     $content = '';
 
