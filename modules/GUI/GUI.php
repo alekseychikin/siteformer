@@ -17,17 +17,62 @@ class SFGUI
       }
     }
 
+    SFModels::registerPath(MODULES . 'GUI/models');
+
     SFRouter::addRule('/cms/', MODULES . 'GUI/sections/main/index');
-    SFRouter::addRule('/cms/configs/', MODULES . 'GUI/sections/configs/index');
-    SFRouter::addRule('/cms/configs/add/', MODULES . 'GUI/sections/configs/add');
+    SFRouter::addRule('/cms/configs/', [
+      'data' => [
+        'page_title' => 'gui-scalar?value=Настройки',
+        'section' => 'gui-scalar?value=configs',
+        'sections' => 'gui-sections',
+        'modules' => 'gui-modules'
+      ],
+      'template' => ['sections/configs/index', 'sections/main/main']
+    ]);
+    SFRouter::addRule('/cms/configs/add/', [
+      'data' => [
+        'types' => 'gui-types',
+        'sections' => 'gui-sections',
+        'modules' => 'gui-modules',
+        'fields' => 'gui-fields?section=new',
+        'section' => 'gui-scalar?value=section',
+        'title' => 'gui-scalar?value=',
+        'page_title' => 'gui-scalar?value=Добавить раздел',
+        'alias' => 'gui-scalar?value=',
+        'module' => 'gui-scalar?value=default'
+      ],
+      'template' => ['sections/configs/add', 'sections/main/main']
+    ]);
     SFRouter::addRule('/cms/configs/action_save/', MODULES . 'GUI/sections/configs/action_save');
     SFRouter::addRule('/cms/configs/action_delete/', MODULES . 'GUI/sections/configs/action_delete');
-    SFRouter::addRule('/cms/configs/{section}/', MODULES . 'GUI/sections/configs/item');
+    SFRouter::addRule('/cms/configs/{section}/', [
+      'data' => [
+        'title' => 'gui-sections?section={section}&field=title',
+        'page_title' => 'gui-scalar?value=Редактировать раздел «{title}»',
+        'id' => 'gui-sections?section={section}&field=id',
+        'alias' => 'gui-sections?section={section}&field=alias',
+        'module' => 'gui-sections?section={section}&field=module',
+        'fields' => 'gui-fields?section={section}',
+        'section' => 'gui-scalar?value=configs',
+        'types' => 'gui-types',
+        'sections' => 'gui-sections',
+        'modules' => 'gui-modules'
+      ],
+      'template' => ['sections/configs/add', 'sections/main/main']
+    ]);
     SFRouter::addRule('/cms/types/{type}/{handle}/', MODULES . 'GUI/sections/main/type');
     SFRouter::addRule('/cms/{section}/', MODULES . 'GUI/sections/item/index');
-    SFRouter::addRule('/cms/{section}/add/', MODULES . 'GUI/sections/item/add');
+    SFRouter::addRule('/cms/{section}/add/', [
+      'data' => [
+        'sections' => 'gui-sections',
+        'fields' => 'gui-fields?section={section}',
+        'section' => 'gui-sections?section={section}&field=alias',
+        'page_title' => 'gui-scalar?value=Добавить раздел'
+      ],
+      'template' => ['sections/item/add', 'sections/main/main']
+    ]);
     SFRouter::addRule('/cms/{section}/action_save/', MODULES . 'GUI/sections/item/action_save');
-    SFRouter::addRule('/cms/{section}/{item}/', MODULES . 'GUI/sections/item/item');
+    SFRouter::addRule('/cms/{section}/{item}/', MODULES . 'GUI/sections/item');
 
     define('GUI_COMPILE_TEMPLATES', ENGINE . 'temp/modules/GUI/.compile_templates/');
     SFTemplater::compileTemplates(MODULES . 'GUI/', GUI_COMPILE_TEMPLATES);
@@ -51,9 +96,11 @@ class SFGUI
   public static function getSection($alias) {
     $res = SFORM::select()
       ->from('sections')
-      ->join('section_fields', _expr_('section_fields.section', _field_('sections.id')))
+      ->join('section_fields')
+      ->on('section_fields.section', SFORM::field('sections.id'))
       ->where('sections.alias', $alias)
       ->exec();
+
     if (count($res)) {
       $res = $res[0];
       $res['fields'] = self::prepareSectionFields($res['section_fields']);
@@ -69,7 +116,8 @@ class SFGUI
   public static function getSectionById($id) {
     $res = SFORM::select()
       ->from('sections')
-      ->join('section_fields', _expr_('section_fields.section', _field_('sections.id')))
+      ->join('section_fields')
+      ->on('section_fields.section', SFORM::field('sections.id'))
       ->id($id)
       ->exec();
     $res = $res[0];
@@ -77,6 +125,29 @@ class SFGUI
     unset($res['section_fields']);
 
     return $res;
+  }
+
+  public static function getNewFields () {
+    $types = self::getTypes();
+    list($index, $firstType) = each($types);
+    reset($types);
+
+    foreach ($types as $type) {
+      if ($type['type'] === 'string') {
+        $firstType = $type;
+      }
+    }
+
+    $fields = array(
+      array(
+        'title' => '',
+        'alias' => '',
+        'type' => $firstType['type'],
+        'settings' => $firstType['defaultSettings']
+      )
+    );
+
+    return $fields;
   }
 
   // Add section

@@ -243,7 +243,7 @@
       return self::$connections[$alias]->lastInsertId();
     }
 
-    protected function getPrimaryFields($alias = 'default', $table)
+    protected function getPrimaryFields($table, $alias = 'default')
     {
       if (!isset(self::$connections[$alias]) || !self::$connections[$alias]) self::makeException('There is no MySQL connection');
       if (!isset(self::$cachedPrimaryFields[$alias])) {

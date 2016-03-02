@@ -39,10 +39,10 @@
       }
       $fields = array();
       $mainTableFields = array();
-      $primaryFields = array($this->fromTable => $this->getPrimaryFields($base, $this->fromTable));
+      $primaryFields = array($this->fromTable => $this->getPrimaryFields($this->fromTable, $base));
       if (count($this->join) && !$this->subQuery) {
         foreach ($this->join as $join) {
-          $primaryFields[$join['table']] = $this->getPrimaryFields($base, $join['table']);
+          $primaryFields[$join['table']] = $this->getPrimaryFields($join['table'], $base);
         }
       }
       // echo 'primary'.N;
@@ -144,7 +144,7 @@
         // print_r($mainTableFields);
         $sql .= 'FROM (SELECT '.implode(', ', $mainTableFields).' FROM `'.$this->fromTable.'`'.N;
         if ($this->getById !== false) {
-          $idField = $this->getPrimaryFields($base, $this->fromTable);
+          $idField = $this->getPrimaryFields($this->fromTable, $base);
           $idField = $idField[0];
           $this->where = '`'. $this->fromTable .'`.`'. $idField .'` = '.$this->getById;
         }
@@ -196,7 +196,7 @@
           }
         }
         if ($this->getById !== false) {
-          $idField = $this->getPrimaryFields($base, $this->fromTable);
+          $idField = $this->getPrimaryFields($this->fromTable, $base);
           $idField = $idField[0];
           $this->where = '`'. $this->fromTable .'`.`'. $idField .'` = '.$this->getById;
         }
@@ -415,7 +415,7 @@
               if ($subtable == $this->selectTable) continue;
             }
             if ($hasRow[$subtable]) {
-              $primaryFields = $this->getPrimaryFields($base, $subtableRealName);
+              $primaryFields = $this->getPrimaryFields($subtableRealName, $base);
               $primaryValue = '';
               foreach ($primaryFields as $primaryField) {
                 $primaryValue .= $appendSubRow[$subtable][$primaryField];
@@ -470,7 +470,7 @@
             else {
               if ($subtable == $this->selectTable) continue;
             }
-            $primaryFields = $this->getPrimaryFields($base, $subtableRealName);
+            $primaryFields = $this->getPrimaryFields($subtableRealName, $base);
             $primaryValue = '';
             foreach ($primaryFields as $primaryField) {
               $primaryValue .= $appendSubRow[$subtable][$primaryField];
@@ -618,7 +618,7 @@
     private function getValueByPrimaryFields($row, $base = 'default')
     {
       $value = array();
-      $primaryFields = $this->getPrimaryFields($base, $this->selectTable);
+      $primaryFields = $this->getPrimaryFields($this->selectTable, $base);
       // print_r($primaryFields);
       // Array
       // (
@@ -679,7 +679,7 @@
           if ($to['table'] == $this->fromTable) {
             $fields = array();
             if (gettype($this->select) == 'array') {
-              $primaryFields = $this->getPrimaryFields($base, $fromTable);
+              $primaryFields = $this->getPrimaryFields($fromTable, $base);
               foreach ($primaryFields as $field) {
                 if (!in_array($field, $fields)) {
                   $fields[] = $field;

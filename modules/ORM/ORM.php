@@ -5,16 +5,26 @@ require_once $modulePath . 'ORMDatabase.php';
 require_once $modulePath . 'ORMAlter.php';
 require_once $modulePath . 'ORMCreate.php';
 require_once $modulePath . 'ORMWhere.php';
-require_once $modulePath . 'ORMSelect.php';
+require_once $modulePath . 'ORMSelect2.php';
 require_once $modulePath . 'ORMDelete.php';
 require_once $modulePath . 'ORMUpdate.php';
 require_once $modulePath . 'ORMInsert.php';
 require_once $modulePath . 'ORMMigrate.php';
+require_once $modulePath . 'ORMField.php';
+require_once $modulePath . 'ORMFunc.php';
 
 class SFORM extends SFORMDatabase
 {
   public static $readModifiers = [];
   public static $writeModifiers = [];
+
+  public static function func ($field) {
+    return new SFORMFunc($field);
+  }
+
+  public static function field ($field) {
+    return new SFORMField($field);
+  }
 
   public static function alter($table) {
     return new SFORMAlter($table);
@@ -35,7 +45,7 @@ class SFORM extends SFORMDatabase
       $args = func_get_args();
     }
 
-    return new SFORMSelect($args, 'select');
+    return new SFORMSelect($args);
   }
 
   public static function update($table) {

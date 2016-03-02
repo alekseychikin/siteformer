@@ -79,26 +79,6 @@
     return $orArray;
   }
 
-  class SFORMFunc
-  {
-    private $expr;
-    private $field;
-
-    public function __construct($expr, $field = false)
-    {
-      $this->expr = $expr;
-      $this->field = $field;
-    }
-    public function get()
-    {
-      return $this->expr;
-    }
-    public function field()
-    {
-      return $this->field;
-    }
-  }
-
   class SFORMValue
   {
     private $expr;

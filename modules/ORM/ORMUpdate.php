@@ -36,7 +36,7 @@
       }
       $sql .= implode(', ', $params).N;
       if ($this->getById !== false) {
-        $idField = $this->getPrimaryFields($alias, $this->table);
+        $idField = $this->getPrimaryFields($this->table, $alias);
         $idField = $idField[0];
         $this->where = '`'. $this->table .'`.`'. $idField .'` = '.$this->getById;
       }

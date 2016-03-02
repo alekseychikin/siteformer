@@ -27,62 +27,64 @@ class SFRouter
 
         return true;
       }
-    } elseif (self::$modelsPath !== false) {
-      self::runAction($result['path']);
+    } else {
+      self::runAction($result['path'], $result['params']);
 
       return true;
     }
 
-
     return false;
   }
 
-  private static function runAction($params) {
-    if (isset($params['data'])) {
-      foreach ($params['data'] as $key => $value) {
-        list($model, $options) = self::parseSource($value);
-        SFResponse::set($key, self::getDataFromModel($model, $options), true);
+  private static function runAction ($data, $params) {
+    if (isset($data['data'])) {
+      foreach ($data['data'] as $key => $value) {
+        list($model, $options) = self::parseSource($value, $params);
+        $params[$key] = self::getDataFromModel($model, $options);
+        SFResponse::set($key, $params[$key], true);
       }
     }
 
-    if (isset($params['template'])) {
-      echo SFTemplater::renderArray($params['template']);
+    if (isset($data['template'])) {
+      echo SFTemplater::renderArray($data['template']);
     }
   }
 
   private static function getDataFromModel($model, $params) {
-    $className = 'SF' . SFText::camelCasefy($model, true);
-    $result = '';
-
-    if (file_exists(self::$modelsPath . $model . '.php')) {
-      require_once self::$modelsPath . $model . '.php';
-
-      $result = call_user_func([$className, 'get'], $params);
-    }
-
-    return $result;
+    return SFModels::get($model, $params);
   }
 
-  private static function parseSource($source) {
+  private static function parseSource($source, $params) {
     $model = '';
-    $params = [];
+    $data = [];
+
     if (strpos($source, '?') !== false) {
       $model = substr($source, 0, strpos($source, '?'));
-      $params = substr($source, strpos($source, '?') + 1);
-      $params = explode('&', $params);
-      foreach ($params as $index => $item) {
+      $data = substr($source, strpos($source, '?') + 1);
+      $data = explode('&', $data);
+
+      foreach ($data as $index => $item) {
         $item = explode('=', $item);
-        unset($params[$index]);
-        $params[$item[0]] = '';
+        unset($data[$index]);
+        $data[$item[0]] = '';
+
         if (isset($item[1])) {
-          $params[$item[0]] = $item[1];
+          $value = $item[1];
+
+          foreach ($params as $field => $val) {
+            if (gettype($val) !== 'array' && gettype($val) !== 'object') {
+              $value = str_replace('{' . $field . '}', $val, $value);
+            }
+          }
+
+          $data[$item[0]] = $value;
         }
       }
     } else {
       $model = $source;
     }
 
-    return [$model, $params];
+    return [$model, $data];
   }
 
   public static function addRule($url, $action) {
@@ -93,7 +95,7 @@ class SFRouter
     self::$routingPath = $params['rotes'];
 
     if (isset($params['models'])) {
-      self::$modelsPath = SFPath::prepareDir($params['models']);
+      SFModels::registerPath(SFPath::prepareDir($params['models']));
     }
 
     if (isset($params['languages'])) {
