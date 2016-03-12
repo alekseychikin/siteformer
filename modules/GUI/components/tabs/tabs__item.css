@@ -8,6 +8,10 @@
   padding: 9px 20px;
   cursor: pointer;
   outline: none;
+
+  &:focus {
+    box-shadow: 0 0 6px #699EF5;
+  }
 }
 
 .tabs__item + .tabs__item {
