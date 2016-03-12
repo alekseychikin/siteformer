@@ -56,7 +56,7 @@
       <label for="configs-image-s3-bucket" class="form__label">Bucket</label>
       <div class="form__inp-contain">
         {% if buckets? && count(buckets) %}
-        <label class="select">
+        <label class="form__select">
           <select role="configs-image-s3-bucket" id="configs-image-s3-bucket">
             {% for bucket in buckets %}
             <option value="{{ bucket }}"{% if !!s3Bucket? && (s3Bucket == bucket) %} selected{% endif %}>{{ bucket }}</option>
@@ -97,7 +97,7 @@
   <div class="form__item">
     <label for="configs-image-source" class="form__label">Источник</label>
     <div class="form__inp-contain">
-      <label class="select">
+      <label class="form__select">
         <select role="configs-image-source" id="configs-image-source">
           <option value="upload"{% if source == 'upload' %} selected{% endif %}>Загрузить изображение</option>
           {% if sources? %}

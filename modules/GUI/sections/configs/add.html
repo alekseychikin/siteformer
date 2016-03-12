@@ -17,7 +17,7 @@
     <div class="form__item">
       <label for="module" class="form__label">Модуль</label>
       <div class="form__inp-contain">
-        <label class="select">
+        <label class="form__select">
           <select name="module" id="module" role="configs-add-module">
             <option value="default"{% if module == "default" %} selected{% endif %}>Стандартный</option>
             {% for modulesItem in modules %}
