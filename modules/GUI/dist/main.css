@@ -159,6 +159,86 @@ i {
 .form__btn--submit:disabled {
   background-image: linear-gradient(-180deg, #FFFFFF 0%, #E8E8E8 96%);
 }
+.form__calendar {
+  position: absolute;
+  z-index: 5;
+  background-color: #fff;
+  padding: 7px;
+  border-radius: 3px;
+  box-shadow: 0 2px 15px #969696;
+  margin-left: -12px;
+  opacity: 0;
+  left: -9999px;
+  transform: translate(0, -10px);
+  transition: opacity 0.2s ease-out, transform 0.2s ease-out, left 0.2s step-end;
+}
+.form__calendar:before {
+	content: '';
+	position: absolute;
+	top: -9px;
+	left: 50%;
+	margin-left: -9px;
+	border-left: 9px solid transparent;
+	border-bottom: 9px solid #FFF;
+	border-right: 9px solid transparent;
+}
+.form__calendar--show {
+  opacity: 1;
+  transform: translate(0,0);
+  transition: opacity 0.2s ease-out, transform 0.2s ease-out, left 0s step-start;
+}
+.form__calendar--top:before {
+	border-bottom: 0;
+	border-top: 9px solid #fff;
+	top: auto;
+	bottom: -9px;
+}
+.form__calendar-arrow {
+  position: absolute;
+  top: 5px;
+  cursor: pointer;
+}
+.form__calendar-arrow--left {
+  background: url('form__calendar-arrow--left.svg') center center no-repeat;
+  width: 16px;
+  height: 22px;
+  left: 10px;
+}
+.form__calendar-arrow--right {
+  background: url('form__calendar-arrow--right.svg') center center no-repeat;
+  width: 16px;
+  height: 22px;
+  right: 10px;
+}
+.form__calendar-cell {
+  margin: -4px;
+  padding: 4px;
+  cursor: pointer;
+  display: block;
+}
+.form__calendar-cell:hover {
+	background-color: #dedede;
+}
+.form__calendar-cell--today {
+  background-color: #e9cbb1;
+}
+.form__calendar-month {
+  text-align: center;
+}
+.form__calendar-table {
+  margin-top: 3px;
+}
+.form__calendar-table td,
+  .form__calendar-table th {
+	padding: 4px 5px;
+	font-size: 14px;
+	line-height: 16px;
+	text-align: center;
+}
+.form__calendar-table th {
+	font-size: 11px;
+	text-transform: uppercase;
+}
 .form__checkbox {
   position: absolute;
   visibility: hidden;
@@ -191,6 +271,19 @@ i {
 
 input:checked + .form__checkbox-label:before {
   opacity: 1;
+}
+.form__date-fake {
+  position: absolute;
+  z-index: 4;
+  border: none;
+  margin: 1px;
+  width: 128px;
+  font-size: 16px;
+  line-height: 18px;
+  box-sizing: border-box;
+  height: 36px;
+  padding: 0 10px;
+  outline: none;
 }
 .form__error {
   position: absolute;
@@ -300,7 +393,8 @@ input:checked + .form__checkbox-label:before {
   vertical-align: top;
   outline: none;
 }
-.form__inp:focus {
+.form__inp:focus,
+  .form__inp.focus {
 	box-shadow: 0 0 5px #3260CA;
 }
 .form__inp:disabled {
@@ -360,6 +454,16 @@ input:checked + .form__checkbox-label:before {
   padding: 0 5px;
   margin: 0 -5px;
 }
+.form__inp-empty {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: url('form__inp-empty.svg');
+  width: 16px;
+  height: 17px;
+  z-index: 1;
+  cursor: pointer;
+}
 .form__input-contain {
   
 }
@@ -370,6 +474,9 @@ input:checked + .form__checkbox-label:before {
   color: #353535;
   font-size: 12px;
   font-weight: bold;
+}
+.form__placeholder {
+  position: relative;
 }
 .form__radio {
   position: absolute;

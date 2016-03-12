@@ -1,0 +1,24 @@
+.form__calendar {
+  position: absolute;
+  z-index: 5;
+  background-color: #fff;
+  padding: 7px;
+  border-radius: 3px;
+  box-shadow: 0 2px 15px #969696;
+  margin-left: -12px;
+  opacity: 0;
+  left: -9999px;
+  transform: translate(0, -10px);
+  transition: opacity 0.2s ease-out, transform 0.2s ease-out, left 0.2s step-end;
+
+  &:before {
+    content: '';
+    position: absolute;
+    top: -9px;
+    left: 50%;
+    margin-left: -9px;
+    border-left: 9px solid transparent;
+    border-bottom: 9px solid #FFF;
+    border-right: 9px solid transparent;
+  }
+}

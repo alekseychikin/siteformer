@@ -1,0 +1,10 @@
+.form__calendar-cell {
+  margin: -4px;
+  padding: 4px;
+  cursor: pointer;
+  display: block;
+
+  &:hover {
+    background-color: #dedede;
+  }
+}
