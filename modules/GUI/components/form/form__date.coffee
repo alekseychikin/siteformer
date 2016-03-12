@@ -1,9 +1,9 @@
+$ = require "jquery-plugins.coffee"
+
 $lastFakeInp = null
 stayOpening = false
 lastDate = null
 skipGenerateTable = false
-
-$ = require "jquery-plugins.coffee"
 $body = $ document.body
 template = "<div class='form__calendar'>
   <span class='form__calendar-arrow form__calendar-arrow--left'></span>

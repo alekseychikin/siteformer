@@ -106,7 +106,6 @@ i {
 .form__btn {
   background-image: linear-gradient(-180deg, #FFFFFF 0%, #E8E8E8 96%);
   border: 1px solid #BEBEBE;
-  box-shadow: 0px 1px 0px 0px rgba(199,199,199,0.50);
   color: #000;
   font-size: 15px;
   height: 38px;
@@ -118,6 +117,9 @@ i {
   outline: none;
   text-decoration: none;
   box-sizing: border-box;
+}
+.form__btn:focus {
+	box-shadow: 0 0 5px #3260CA;
 }
 
 .form__btn + .form__btn {
@@ -519,41 +521,63 @@ input:checked + .form__radio-label:before {
   line-height: 38px;
 }
 .form__select {
+  border: 1px solid #BEBEBE;
+  border-radius: 3px;
+  font-size: 16px;
+  line-height: 18px;
   display: inline-block;
   vertical-align: top;
-  border: 1px solid #BEBEBE;
-  border-radius: 2px;
   box-sizing: border-box;
   height: 38px;
-  padding-right: 18px;
   position: relative;
   overflow: hidden;
-  cursor: pointer;
+  background-color: #fff;
 }
+.form__select.focus {
+	box-shadow: 0 0 5px #3260CA;
+}
+
+.form__select:before {
+  content: '';
+  position: absolute;
+  width: 15px;
+  height: 8px;
+  right: 10px;
+  top: 13px;
+  z-index: 1;
+  background: url('form__selecter-drop-arrow.svg') no-repeat;
+}
+
 .form__select select {
-	position: relative;
-	z-index: 2;
-	font-size: 16px;
-	line-height: 18px;
-	padding: 10px;
-	width: 132%;
-	border: none;
-	box-shadow: none;
-	background-color: transparent;
-	cursor: pointer;
-	background-image: none;
-	-webkit-appearance: none;
-	-moz-appearance: none;
-	appearance: none;
-	text-indent: 0.01px;
-	text-overflow: "";
-	box-sizing: border-box;
+  position: relative;
+  z-index: 2;
+  font-size: 16px;
+  line-height: 20px;
+  padding: 8px 35px 8px 10px;
+  width: 100%;
+  border: none;
+  box-shadow: none;
+  background-color: transparent;
+  cursor: pointer;
+  background-image: none;
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  text-indent: 0.01px;
+  text-overflow: "";
 }
+
 .form__select select:focus {
-	outline: none;
+  outline: none;
 }
+
+.form__select select:disabled {
+  color: #929292;
+  cursor: default;
+}
+
 .form__select select::-ms-expand {
-	display: none;
+  display: none;
 }
 .form__separate {
   font-size: 14px;
@@ -717,62 +741,6 @@ input:checked + .form__radio-label:before {
 }
 .section__wrap {
   padding: 30px 40px;
-}
-.select {
-  border: 1px solid #BEBEBE;
-  border-radius: 3px;
-  font-size: 16px;
-  line-height: 18px;
-  display: inline-block;
-  vertical-align: top;
-  box-sizing: border-box;
-  height: 38px;
-  position: relative;
-  overflow: hidden;
-  background-color: #fff;
-}
-
-.select:before {
-  content: '';
-  position: absolute;
-  width: 15px;
-  height: 8px;
-  right: 10px;
-  top: 13px;
-  z-index: 1;
-  background: url('selecter-drop-arrow.svg') no-repeat;
-}
-
-.select select {
-  position: relative;
-  z-index: 2;
-  font-size: 16px;
-  line-height: 20px;
-  padding: 8px 35px 8px 10px;
-  width: 100%;
-  border: none;
-  box-shadow: none;
-  background-color: transparent;
-  cursor: pointer;
-  background-image: none;
-  -webkit-appearance: none;
-     -moz-appearance: none;
-          appearance: none;
-  text-indent: 0.01px;
-  text-overflow: "";
-}
-
-.select select:focus {
-  outline: none;
-}
-
-.select select:disabled {
-  color: #929292;
-  cursor: default;
-}
-
-.select select::-ms-expand {
-  display: none;
 }
 .table {
   width: 100%;

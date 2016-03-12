@@ -1,5 +1,5 @@
 <div class="form__inp-contain" role="input-contain">
-  <label class="select">
+  <label class="form__select">
     <select name="{{ field['alias'] }}" id="{{ field['alias'] }}" role="select">
     {% for i, dataItem in field['settings']['defaultData'] %}
       <option value="{{ i }}"{% if field['settings']['defaultValue'] == i %} selected{% endif %}>{{ dataItem }}</option>

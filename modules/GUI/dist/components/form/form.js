@@ -1,10 +1,14 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 require("components/form/form__date.coffee");
 
+require("components/form/form__select.coffee");
 
-},{"components/form/form__date.coffee":2}],2:[function(require,module,exports){
+
+},{"components/form/form__date.coffee":2,"components/form/form__select.coffee":3}],2:[function(require,module,exports){
 var $, $body, $calendar, $calendarDays, $document, $formCalendarArrowLeft, $formCalendarArrowRight, $formCalendarMonth, $lastFakeInp, INPUT_HEIGHT, MONTHS, formateDate, generateTable, isTouchDevice, lastDate, makeFakeInput, skipGenerateTable, stayOpening, template, updateFakeInputValue,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+
+$ = require("jquery-plugins.coffee");
 
 $lastFakeInp = null;
 
@@ -13,8 +17,6 @@ stayOpening = false;
 lastDate = null;
 
 skipGenerateTable = false;
-
-$ = require("jquery-plugins.coffee");
 
 $body = $(document.body);
 
@@ -252,6 +254,26 @@ if (!isTouchDevice()) {
     });
   });
 }
+
+
+},{"jquery-plugins.coffee":"jquery-plugins.coffee"}],3:[function(require,module,exports){
+var $, $selects;
+
+$ = require("jquery-plugins.coffee");
+
+$selects = $("select");
+
+$selects.each(function() {
+  var $label, $select;
+  $select = $(this);
+  $label = $select.parent();
+  $select.on("focus", function() {
+    return $label.addClass("focus");
+  });
+  return $select.on("blur", function() {
+    return $label.removeClass("focus");
+  });
+});
 
 
 },{"jquery-plugins.coffee":"jquery-plugins.coffee"}]},{},[1]);
