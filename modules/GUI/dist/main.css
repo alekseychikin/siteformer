@@ -72,6 +72,30 @@ i {
 }
 .content {
 }
+.form-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.form-table__cell {
+  text-align: left;
+  padding: 5px 10px;
+}
+
+.form-table__cell:first-child {
+  padding-left: 0;
+}
+
+.form-table__cell:last-child {
+  padding-right: 0;
+}
+.form-table__row {
+  
+}
+.form-table__row--head {
+  color: #353535;
+  font-size: 12px;
+  font-weight: bold;
+}
 .form {
   margin-top: 5px;
 }
@@ -423,7 +447,7 @@ input:checked + .form__checkbox-label:before {
   width: 50%;
 }
 .form__inp--time {
-  width: 90px;
+  width: 100px;
   background-color: #fff;
 }
 
@@ -614,29 +638,18 @@ input:checked + .form__radio-label:before {
 .form__table {
   padding: 10px 40px;
 }
-.form-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-.form-table__cell {
-  text-align: left;
-  padding: 5px 10px;
-}
-
-.form-table__cell:first-child {
-  padding-left: 0;
-}
-
-.form-table__cell:last-child {
-  padding-right: 0;
-}
-.form-table__row {
-  
-}
-.form-table__row--head {
-  color: #353535;
-  font-size: 12px;
-  font-weight: bold;
+.form__time-fake {
+  position: absolute;
+  z-index: 4;
+  border: none;
+  margin: 1px;
+  width: 65px;
+  font-size: 16px;
+  line-height: 18px;
+  box-sizing: border-box;
+  height: 36px;
+  padding: 0 10px;
+  outline: none;
 }
 .head {
   color: #000;

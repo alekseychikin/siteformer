@@ -206,12 +206,14 @@ if !isTouchDevice()
       value = $fakeInp.val()
       $fakeInp.val formateDate value
       value = value.match /^(\d{1,2})[^\d]+(\d{1,2})[^\d]+(\d{4})$/
+
       if value
         value[1] = if value[1].length == 1 then "0#{value[1]}" else value[1]
         value[2] = if value[2].length == 1 then "0#{value[2]}" else value[2]
         $input.val "#{value[3]}-#{value[2]}-#{value[1]}"
       else
         $input.val ""
+
       $input.trigger "change"
       $fakeInp.trigger "blur"
 

@@ -1,10 +1,12 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 require("components/form/form__date.coffee");
 
+require("components/form/form__time.coffee");
+
 require("components/form/form__select.coffee");
 
 
-},{"components/form/form__date.coffee":2,"components/form/form__select.coffee":3}],2:[function(require,module,exports){
+},{"components/form/form__date.coffee":2,"components/form/form__select.coffee":3,"components/form/form__time.coffee":4}],2:[function(require,module,exports){
 var $, $body, $calendar, $calendarDays, $document, $formCalendarArrowLeft, $formCalendarArrowRight, $formCalendarMonth, $lastFakeInp, INPUT_HEIGHT, MONTHS, formateDate, generateTable, isTouchDevice, lastDate, makeFakeInput, skipGenerateTable, stayOpening, template, updateFakeInputValue,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
@@ -274,6 +276,125 @@ $selects.each(function() {
     return $label.removeClass("focus");
   });
 });
+
+
+},{"jquery-plugins.coffee":"jquery-plugins.coffee"}],4:[function(require,module,exports){
+var $, $body, $lastFakeInp, formateDate, isTouchDevice, makeFakeInput, updateFakeInputValue,
+  indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+
+$ = require("jquery-plugins.coffee");
+
+$body = $(document.body);
+
+$lastFakeInp = null;
+
+isTouchDevice = (function(_this) {
+  return function() {
+    return (indexOf.call(window, "ontouchstart") >= 0) || (navigator.MaxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0);
+  };
+})(this);
+
+makeFakeInput = function($src) {
+  var $input;
+  $input = $("<input class='form__time-fake' type='text' />");
+  $body.append($input);
+  return $input;
+};
+
+formateDate = function(date) {
+  var value;
+  value = date.match(/^(\d{1,2})[^\d]+(\d{1,2})$/);
+  if (value) {
+    value[1] = value[1].length === 1 ? "0" + value[1] : value[1];
+    value[2] = value[2].length === 1 ? "0" + value[2] : value[2];
+    return value[1] + ":" + value[2];
+  }
+  return "";
+};
+
+updateFakeInputValue = function($src) {
+  var offset, value;
+  offset = $src.offset();
+  value = $src.val().match(/^(\d{1,2})[^\d]+(\d{1,2})$/);
+  if (value) {
+    $lastFakeInp.val(value[1] + ":" + value[2]);
+  }
+  return $lastFakeInp.css({
+    top: offset.top + "px",
+    left: offset.left + "px"
+  });
+};
+
+if (!isTouchDevice()) {
+  $("[type=time]").each(function() {
+    var $fakeInp, $input;
+    $input = $(this);
+    $fakeInp = makeFakeInput($input);
+    $lastFakeInp = $fakeInp;
+    updateFakeInputValue($input);
+    $input.on("change", function() {
+      return updateFakeInputValue($input);
+    });
+    $input.siblings(".form__inp-empty").on("click", function() {
+      return $fakeInp.val("").trigger("change");
+    });
+    $input.on("focus", function() {
+      return $fakeInp.focus();
+    });
+    $fakeInp.on("focus", function() {
+      return $input.addClass("focus");
+    });
+    $fakeInp.on("blur", function() {
+      return $input.removeClass("focus");
+    });
+    $fakeInp.on("change", function() {
+      var value;
+      value = $fakeInp.val();
+      $fakeInp.val(formateDate(value));
+      value = value.match(/^(\d{1,2})[^\d]+(\d{1,2})$/);
+      if (value) {
+        value[1] = value[1].length === 1 ? "0" + value[1] : value[1];
+        value[2] = value[2].length === 1 ? "0" + value[2] : value[2];
+        $input.val(value[1] + ":" + value[2]);
+      } else {
+        $input.val("");
+      }
+      $input.trigger("change");
+      return $fakeInp.trigger("blur");
+    });
+    return $fakeInp.on("keydown", function(e) {
+      var $inputs, nextInput, prevInput;
+      if (e.keyCode === 9) {
+        $inputs = $body.find("input, select, button");
+        prevInput = $inputs[$inputs.length - 1];
+        nextInput = false;
+        if (e.shiftKey) {
+          $inputs.each(function() {
+            if (this === $input[0]) {
+              $(prevInput).focus();
+              return false;
+            }
+            return prevInput = this;
+          });
+        } else {
+          $inputs.each(function() {
+            if (nextInput) {
+              $(this).focus();
+              return false;
+            }
+            if (this === $input[0]) {
+              return nextInput = this;
+            }
+          });
+          if (!nextInput) {
+            $inputs.first().focus();
+          }
+        }
+        return e.preventDefault();
+      }
+    });
+  });
+}
 
 
 },{"jquery-plugins.coffee":"jquery-plugins.coffee"}]},{},[1]);
