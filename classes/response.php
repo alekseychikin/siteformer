@@ -5,24 +5,26 @@
     private static $result = [];
     private static $toGlobal = [];
     private static $template;
-    private static $type = 'redir';
     private static $main;
     private static $propagation = true;
     private static $working = true;
+    private static $isShowContent = false;
     private static $code = [
       '200' => 'OK',
       '400' => 'Bad Request',
       '401' => 'Unauthorized',
       '403' => 'Forbidden',
       '404' => 'Not Found',
-      '422' => 'Unprocessable Entity'
+      '422' => 'Unprocessable Entity',
+      '500' => 'Internal Server Error'
     ];
     private static $stopsCodes = [
-      '400', '401', '402', '403', '404', '422'
+      '400', '401', '402', '403', '404', '422', '500'
     ];
-    public static $types = ['__json', '__print', '__xml'];
+    private static $error = 200;
 
     public static function code($code) {
+      self::$error = $code;
       header('HTTP/1.1 ' . $code . ' ' . self::$code[$code]);
     }
 
@@ -31,22 +33,19 @@
     }
 
     public static function error($status, $message) {
-      if (!self::$working) return false;
-
       self::code($status);
 
-      if (gettype($message) == 'array') {
-        self::$result = array_merge(self::$result, $message);
-      } else {
-        self::set('error', $message);
-      }
+      $error = new Exception();
+      $trace = $error->getTrace();
 
-      ob_start();
-      print_r($message);
-      $message = ob_get_contents();
+      self::set('error', ['message' => $message, 'trace' => $trace]);
+
+      $content = ob_get_contents();
       ob_end_clean();
-      self::render($message);
-      self::$working = false;
+
+      self::set('content', $content);
+
+      self::render();
     }
 
     public static function setStatus($code) {
@@ -97,15 +96,6 @@
       if (substr($action, -4) === '.php') {
         $action = substr($action, 0, -4);
         $isFile = true;
-      }
-
-      if (strpos($action, '/__') !== false) {
-        $type = substr($action, strrpos($action, '__'));
-
-        if (in_array($type, self::$types)) {
-          $action = substr($action, 0, strlen($action) - strlen($type) - 1);
-          $isDir = false;
-        }
       }
 
       return $action;
@@ -172,10 +162,6 @@
       return false;
     }
 
-    public static function setType($type) {
-      self::$type = $type;
-    }
-
     public static function template($template) {
       self::$template = $template;
     }
@@ -188,32 +174,81 @@
       return self::$result;
     }
 
-    private static function returnData($content = '') {
+    private static function getRequestHeaders() {
+      $headers = array();
+
+      foreach($_SERVER as $key => $value) {
+        if (strtolower(substr($key, 0, 5)) !== 'http_') {
+          continue;
+        }
+
+        $header = str_replace(' ', '-', ucwords(str_replace('_', ' ', strtolower(substr($key, 5)))));
+        $headers[$header] = $value;
+      }
+
+      return $headers;
+    }
+
+    private static function returnData() {
       if (!self::$working) return false;
 
-      $type = self::$type;
+      $content = '';
 
-      if ($type == '__json') {
-        header('Content-Type: application/json; charset=utf-8');
-        echo json_encode(self::$result);
-      } elseif ($type == '__print') {
-        print_r(self::$result);
-      } else {
-        if (isset($_SERVER['HTTP_REFERER']) && $_SERVER['REQUEST_METHOD'] === 'POST') {
-          $_SESSION['redir_data'] = self::$result;
-          self::redir($_SERVER['HTTP_REFERER']);
-        } else {
-          echo $content;
+      if (ob_get_length()) {
+        $content = ob_get_contents();
+
+        if (self::$isShowContent) {
+          self::set('content', $content);
         }
+
+        ob_end_clean();
       }
+
+      $headers = self::getRequestHeaders();
+      $accept = 'text/html';
+
+      if (isset($headers['Accept'])) {
+        $accept = $headers['Accept'];
+      }
+
+      switch ($accept) {
+        case 'application/json':
+          header('Content-Type: application/json; charset=utf-8');
+
+          echo json_encode(self::$result);
+
+          break;
+        case 'text/xml':
+        case 'application/xml':
+        case 'application/xhtml+xml':
+          header('Content-Type: application/xml; charset=utf-8');
+
+          echo '<?xml version="1.0" ?><data>'.self::generateXML(self::$result).'</data>';
+
+          break;
+        default:
+          if (isset($_SERVER['HTTP_REFERER']) && $_SERVER['REQUEST_METHOD'] === 'POST') {
+            $_SESSION['redir_data'] = self::$result;
+            self::redir($_SERVER['HTTP_REFERER']);
+          } else {
+            if (self::$error === 200) {
+              echo $content;
+            } else {
+              $trace = print_r(self::$result['error']['trace'], true);
+              echo self::$result['error']['message'] . "\n" . $trace;
+            }
+          }
+      }
+
+      die();
 
       self::$working = false;
     }
 
-    public static function render($content = '') {
+    public static function render() {
       if (!self::$working) return false;
 
-      self::returnData($content);
+      self::returnData();
     }
 
     public static function redir($path) {
@@ -229,5 +264,27 @@
       if (!self::$working) return false;
 
       self::redir($_SERVER['REQUEST_URI']);
+    }
+
+    public static function showContent() {
+      self::$isShowContent = true;
+    }
+
+    private static function generateXML($data) {
+      if (gettype($data) === 'array') {
+        $result = '';
+
+        foreach($data as $key => $value) {
+          if (gettype($key) === 'integer') {
+            $result .= '<item>'.self::generateXML($value).'</item>';
+          } else {
+            $result .= '<'.$key.'>'.self::generateXML($value).'</'.$key.'>';
+          }
+        }
+
+        return $result;
+      }
+
+      return $data;
     }
   }

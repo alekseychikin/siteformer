@@ -26,7 +26,6 @@
 
     public static function checkData($base = 'default')
     {
-      SFResponse::setType('__json');
       if (!isset($_POST['__actions'])) return;
       if (!isset($_POST['__last_event'])) return;
       $lastEvent = (int) $_POST['__last_event'];

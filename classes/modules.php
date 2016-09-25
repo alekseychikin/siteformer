@@ -13,7 +13,6 @@
       if (!isset($params['domains'])) $params['domains'] = false;
 
       self::$modulesRegisters[] = $params;
-      // print_r(func_get_args());
     }
 
     public static function inc($module, $params = array()) {
@@ -70,7 +69,6 @@
 
         if (!file_exists($modulePath)) die('Not exists module path ('.$module[0].'): '.$modulePath);
 
-        // echo $modulePath.$module[0].'.php'."\n";
         require_once $modulePath.$module[0].'.php';
 
         self::$modules[] = $module[0];
@@ -78,17 +76,10 @@
       }
     } // checkModules
 
-    public static function before() {
-      foreach (self::$modules as $module) {
-        if (method_exists('SF' . $module, '__before')) {
-          call_user_func(array('SF' . $module, '__before'));
-        }
-      }
-    }
-
     public static function main() {
+      $find = false;
+
       foreach (self::$modules as $module) {
-        $find = false;
         ob_start();
 
         if (method_exists('SF' . $module, 'main')) {
@@ -99,16 +90,12 @@
         ob_end_clean();
 
         if ($find) {
-          SFResponse::render($content);
-        }
-      }
-    }
+          echo $content;
 
-    public static function after() {
-      foreach (self::$modules as $module) {
-        if (method_exists('SF' . $module, '__after')) {
-          call_user_func(array('SF' . $module, '__after'));
+          break;
         }
       }
+
+      return $find;
     }
   }

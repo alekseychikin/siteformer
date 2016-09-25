@@ -27,7 +27,11 @@ require_once CLASSES . 'base_exception.php';
 require_once CLASSES . 'page_not_found_exception.php';
 require_once CLASSES . 'error_handler.php';
 
+register_shutdown_function('fatalErrorHandler');
 set_error_handler('errorHandler');
+set_exception_handler('exceptionHandler');
+ini_set('display_errors', 'off');
+error_reporting(E_ALL);
 
 define('MODULES', ENGINE . 'modules/');
 define('N', "\n");
@@ -66,6 +70,8 @@ if (!file_exists(ROOT . '.htaccess')) {
   SFResponse::refresh();
 }
 
+ob_start();
+
 try {
   SFResponse::initRedirData();
 
@@ -73,9 +79,10 @@ try {
   include CONFIGS;
 
   SFModules::checkModules();
-  SFModules::before();
-  SFModules::main();
-  SFModules::after();
+
+  if (SFModules::main()) {
+    SFResponse::render();
+  }
 
   if (SFResponse::isWorking()) {
     if (file_exists(ACTIONS . '__before.php')) {
@@ -88,17 +95,14 @@ try {
       throw new PageNotFoundException(ACTIONS . $request);
     }
 
-    ob_start();
     SFResponse::run(ACTIONS . $request);
-    $content = ob_get_contents();
-    ob_end_clean();
-    echo $content;
 
     if (file_exists(ACTIONS . '__after.php')) {
       SFResponse::run(ACTIONS . '__after');
     }
   }
 
+  SFResponse::render();
 } catch (PageNotFoundException $e) {
   SFResponse::code('404');
 

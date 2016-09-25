@@ -137,19 +137,6 @@ class SFRouter
       self::$language = self::$languages[0];
     }
 
-    if (substr(self::uri(self::uriNum() - 1), 0, 2) == '__') {
-      if (in_array(self::uri(self::uriNum() - 1), SFResponse::$types)) {
-        SFResponse::setType(self::uri(self::uriNum() - 1));
-        unset(self::$uri[self::uriNum() - 1]);
-
-        if (substr($_SERVER['REQUEST_URI'], strlen($_SERVER['REQUEST_URI']) - 1, 1) == '/') {
-          $_SERVER['REQUEST_URI'] = substr($_SERVER['REQUEST_URI'], 0, strlen($_SERVER['REQUEST_URI']) - 1);
-        }
-
-        $_SERVER['REQUEST_URI'] = substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/')) . '/';
-      }
-    }
-
     if (strpos($_SERVER['REQUEST_URI'], '?') !== false) {
       $_SERVER['REQUEST_URI'];
       $get = substr($_SERVER['REQUEST_URI'], strpos($_SERVER['REQUEST_URI'], '?') + 1);
