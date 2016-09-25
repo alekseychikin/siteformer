@@ -1,0 +1,37 @@
+<div class="popup__head">Настройки таблицы</div>
+<form action="" class="form" role="configs-form">
+  <div class="form__item">
+    <label for="configs-table-columns" class="form__label">Колонок по умолчанию</label>
+    <div class="form__inp-contain">
+      <input type="text" class="form__inp form__inp--very-short" value="{ columns }" role="configs-table-columns" id="configs-table-columns" />
+    </div>
+  </div>
+  <div class="form__item">
+    <label for="configs-table-rows" class="form__label">Строк по умолчанию</label>
+    <div class="form__inp-contain">
+      <input type="text" class="form__inp form__inp--very-short" value="{ rows }" role="configs-table-rows" id="configs-table-rows" />
+    </div>
+  </div>
+  <div class="form__item">
+    <label for="configs-table-rows" class="form__label">Шаблон по умолчанию</label>
+    <div class="form__inp-contain form__inp-contain--full-width form__inp-contain--scroll-wrap">
+      <table class="table table--straight-sides table--responsive">
+        <tbody role="configs-table-tbody">
+          { for (rowIndex, row, defaultData) }
+          <tr>
+            { for (columnIndex, column, row) }
+            <td>
+              <input type="text" class="form__inp form__inp--very-short" value="{ column }" role="configs-table-cell" data-row="{ rowIndex }" data-column="{ columnIndex }" />
+            </td>
+            { endfor }
+          </tr>
+          { endfor }
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="form__submit">
+    <button class="form__btn form__btn--submit">Сохранить</button>
+    <button type="button" class="form__btn popup__cancel">Отменить</button>
+  </div>
+</form>

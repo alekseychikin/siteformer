@@ -169,7 +169,7 @@ i {
   border-radius: 3px;
   box-shadow: 0 2px 15px #969696;
   margin-left: -12px;
-  opacity: 0;
+  /*opacity: 0;*/
   left: -9999px;
   transform: translate(0, -10px);
   transition: opacity 0.2s ease-out, transform 0.2s ease-out, left 0.2s step-end;
@@ -251,7 +251,7 @@ i {
   vertical-align: middle;
   width: 24px;
   height: 24px;
-  border: 1px solid #888888;
+  border: 1px solid #BEBEBE;
   border-radius: 2px;
   margin-right: 5px;
   line-height: 38px;
@@ -303,6 +303,7 @@ input:checked + .form__checkbox-label:before {
   height: 220px;
   display: block;
   overflow: hidden;
+  cursor: pointer;
 }
 .form__file input {
 	position: absolute;
@@ -443,7 +444,7 @@ input:checked + .form__checkbox-label:before {
   width: 60px;
 }
 .form__inp-contain {
-  margin-top: 5px;
+  margin-top: 10px;
   width: 50%;
   position: relative;
 }
@@ -476,6 +477,10 @@ input:checked + .form__checkbox-label:before {
   color: #353535;
   font-size: 12px;
   font-weight: bold;
+}
+.form__label-text {
+  display: inline-block;
+  vertical-align: middle;
 }
 .form__placeholder {
   position: relative;
@@ -643,6 +648,34 @@ input:checked + .form__radio-label:before {
 .form-table__cell:last-child {
   padding-right: 0;
 }
+.form-table__cell-fake {
+  display: inline-block;
+  vertical-align: top;
+  font-size: 16px;
+  padding: 5px 10px;
+}
+.form-table__cell-fake:first-child {
+	padding-left: 0;
+}
+.form-table__cell-fake:last-child {
+	padding-right: 0;
+}
+.form-table__line {
+  position: absolute;
+  height: 1px;
+  width: 100%;
+  left: 0;
+  background-color: #FF0000;
+  box-shadow: 0 0 7px #FF0000;
+}
+.form-table__move {
+  cursor: pointer;
+  display: inline-block;
+  height: 38px;
+  vertical-align: top;
+  width: 26px;
+  background: url('form-table__move.svg') center no-repeat;
+}
 .form-table__row {
   
 }
@@ -650,6 +683,16 @@ input:checked + .form__radio-label:before {
   color: #353535;
   font-size: 12px;
   font-weight: bold;
+}
+.form-table__row-fake {
+  position: absolute;
+  font-size: 0;
+  background-color: #fff;
+  box-shadow: 0 0 10px #ddd;
+  opacity: 0.8;
+  padding: 3px 10px;
+  margin: -3px 0 0 -10px;
+  z-index: 10;
 }
 .head {
   color: #000;
@@ -846,11 +889,11 @@ input:checked + .form__radio-label:before {
 .tabs__item--active:hover {
   cursor: default;
   background-image: linear-gradient(to top, #f5f5f5 0%, #E8E8E8 96%);
-  box-shadow: inset 0 1px 0 #d2d2d2;
+  box-shadow: inset 0 1px 0 #d2d2d2, 0 0 6px #699EF5;
 }
 
 .tabs__item--active {
-  
+
 }
 .user-block {
   padding-top: 20px;

@@ -110,14 +110,15 @@ ViewItem = (params, target, model) ->
   @cachedEvents = []
   @contain = target
   @model = model
+
   for field, item of params
     do (field, item) =>
       @[field] = item
 
   @__initial()
   self = @
-  console.error "There are watchers without contain" if @watchers && !@model && @debug
   @extEvents = []
+
   if @model
     @model.addRenderListener @
     @model.triggerInitialTriggers()

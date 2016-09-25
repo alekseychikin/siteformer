@@ -1,5 +1,5 @@
 View = require "view.coffee"
-sectionsTemplate = require "sections/configs/table-sections-list.tmpl.js"
+sectionsTemplate = require "sections/configs/table-sections-list"
 Render = require "render"
 
 module.exports = View

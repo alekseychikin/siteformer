@@ -1,6 +1,6 @@
 View = require "view.coffee"
 Render = require "render"
-modalWindowTemplate = require "types/checkbox/modal.tmpl.js"
+modalWindowTemplate = require "types/checkbox/modal"
 
 module.exports = View
   initial: ->
@@ -9,6 +9,12 @@ module.exports = View
   events:
     "submit: @configs-form": "submitConfigsForm"
     "change: @configs-checkbox-num-options": (e) -> @model.updateNumOptions e.target.value
+    "blur: @configs-checkbox-num-options": (e) -> @model.updateNumOptions e.target.value
+    "keydown: @configs-checkbox-num-options": (e) ->
+      if e.keyCode == 13
+        @model.updateNumOptions e.target.value
+        e.preventDefault()
+
     "change: @configs-checkbox-option": (e) -> @model.updateDefaultDataOptionChecked (@getIndexByEvent e), e.target.checked
     "change: @configs-checkbox-option-label": (e) -> @model.updateDefaultDataOption (@getIndexByEvent e), e.target.value
     "popup-close: contain": (e) -> @destroy()

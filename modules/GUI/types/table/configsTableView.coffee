@@ -1,6 +1,6 @@
 View = require "view.coffee"
 Render = require "render"
-modalWindowTemplate = require "types/table/modal.tmpl.js"
+modalWindowTemplate = require "types/table/modal"
 
 module.exports = View
   initial: ->
@@ -16,10 +16,12 @@ module.exports = View
 
     "keydown: @configs-table-rows": (e) ->
       @changeConfigsTableRows e
+
       if e.keyCode == 13 then e.preventDefault()
 
     "keydown: @configs-table-columns": (e) ->
       @changeConfigsTableColumns e
+
       if e.keyCode == 13 then e.preventDefault()
 
     "popup-close: contain": (e) -> @destroy()

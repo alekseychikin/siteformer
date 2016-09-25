@@ -1,0 +1,15 @@
+{ import(AddForm, './sections/item/add-form') }
+{ import(Main, './sections/main/main') }
+{ import(Scripts, './sections/main/scripts') }
+
+<Main pageTitle="{page_title}" sections={sections} section={section}>
+  <h1 class="head">Добавить запись</h1>
+  <article class="content">
+    <form class="form" action="" role="item-add-form">
+      <AddForm fields={fields} section={section} />
+    </form>
+  </article>
+
+  <Scripts>
+  </Scripts>
+</Main>

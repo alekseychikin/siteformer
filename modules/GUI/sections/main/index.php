@@ -13,6 +13,4 @@
     // SFResponse::redir('/cms/configs/add/');
   }
 
-  SFResponse::render(SFTemplater::render('sections/main/index', 'sections/main/main', GUI_COMPILE_TEMPLATES));
-
-?>
+  echo SFTemplater::render('sections/main/index', 'sections/main/main', GUI_COMPILE_TEMPLATES);

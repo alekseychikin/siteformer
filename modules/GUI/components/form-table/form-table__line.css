@@ -1,0 +1,8 @@
+.form-table__line {
+  position: absolute;
+  height: 1px;
+  width: 100%;
+  left: 0;
+  background-color: #FF0000;
+  box-shadow: 0 0 7px #FF0000;
+}

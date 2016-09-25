@@ -26,7 +26,7 @@
           'name' => 'height'
         ),
         array(
-          'name' => 'maxsize'
+          'name' => 'saveRatio'
         ),
         array(
           'name' => 'source',

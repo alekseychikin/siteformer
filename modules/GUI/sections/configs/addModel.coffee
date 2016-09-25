@@ -4,7 +4,7 @@ httpPost = (require "ajax.coffee").httpPost
 
 module.exports = Model
   initialState: ->
-    httpGet "#{window.location.pathname}__json/"
+    httpGet window.location.pathname
       .then (response) ->
         state =
           title: response.title
@@ -25,6 +25,7 @@ module.exports = Model
       title: ""
       alias: ""
       type: "string"
+      position: @state.fields.length
     ]
 
   updateTitle: (value) -> @set title: value
@@ -71,14 +72,36 @@ module.exports = Model
     fields[index].settings = form
     @set {fields}
 
+  updatePosition: (rowIndex, position) ->
+    fields = @getFields()
+
+    different = rowIndex - position
+
+    if different
+      fields.forEach (field, index) -> field.position += different if index >= position
+      fields[rowIndex].position = position
+      fields.sort (a, b) -> a.position - b.position
+      fields.forEach (field, index) -> field.position = index
+
+      @set {fields}
+
   save: ->
-    console.log @state
-    httpPost "/cms/configs/action_save/__json/", @state
+    data =
+      alias: @state.alias
+      title: @state.title
+      module: @state.module
+      fields: @state.fields
+
+    data.id = @state.id if @state.id?
+
+    httpPost "/cms/configs/action_save/", data
       .then (response) =>
+        console.log response.content if response.content?
         if @state.id?
-          @set fields: response.section.fields
+          # @set fields: response.section.fields
           @set id: response.section.id
         else
           @trigger "onSavedSection", @state.alias
       .catch (response) ->
-        console.error response.error
+        console.log response.content if response.content?
+        console.error response.error if response.error?

@@ -2,7 +2,6 @@ $ = require "jquery-plugins.coffee"
 
 $lastFakeInp = null
 stayOpening = false
-lastDate = null
 skipGenerateTable = false
 $body = $ document.body
 template = "<div class='form__calendar'>
@@ -30,68 +29,6 @@ MONTHS = [
   "Декабрь"
 ]
 
-$calendar = $ template
-$calendarDays = $calendar.find ".form__calendar-days"
-$formCalendarMonth = $calendar.find ".form__calendar-month"
-$formCalendarArrowLeft = $calendar.find ".form__calendar-arrow--left"
-$formCalendarArrowRight = $calendar.find ".form__calendar-arrow--right"
-
-$body.append $calendar
-
-generateTable = (date) ->
-  date = date.match /(\d{4})\-(\d{1,2})\-(\d{1,2})/
-  lastDate = date
-  date[2] = parseInt(date[2], 10) - 1
-
-  currentDate = new Date date[1], date[2], date[3]
-  firstDayOfMonth = new Date date[1], date[2], 1
-
-  d = new Date date[1], date[2] + 1, 0
-  daysInMonth = d.getDate();
-
-  today = new Date()
-
-  dayOfWeek = if currentDate.getDay() == 0 then 7 else currentDate.getDay()
-  firstDayOfWeek = if firstDayOfMonth.getDay() == 0 then 7 else firstDayOfMonth.getDay()
-
-  monthCalendar = "<table class='form__calendar-table'>
-    <tr>
-      <th>Пн</th>
-      <th>Вт</th>
-      <th>Ср</th>
-      <th>Чт</th>
-      <th>Пт</th>
-      <th>Сб</th>
-      <th>Вс</th>
-    </tr>"
-  monthCalendar += "<tr>"
-
-  monthCalendar += "<td></td>" for i in [1...firstDayOfWeek]
-
-  for j in [i..daysInMonth + i]
-    className = 'form__calendar-cell'
-    day = j - i + 1
-    month = date[2] + 1
-
-    if day == today.getDate() &&
-    date[2] == today.getMonth() &&
-    +date[1] == today.getFullYear()
-
-      className += ' form__calendar-cell--today'
-
-    monthCalendar += "<tr>" if (j - 1) % 7 == 0
-    monthCalendar += "<td>
-      <span class='#{className}'
-      data-value='#{day}-#{month}-#{date[1]}'
-      >#{day}</span>
-    </td>"
-    monthCalendar += "</tr>" if j % 7 == 0
-
-  monthCalendar += "</table>"
-
-  $calendarDays.html monthCalendar
-  $formCalendarMonth.html MONTHS[date[2]]
-
 isTouchDevice = =>
   ("ontouchstart" in window) ||
   (navigator.MaxTouchPoints > 0) ||
@@ -102,15 +39,6 @@ makeFakeInput = ($src) ->
   $body.append $input
   $input
 
-updateFakeInputValue = ($src) ->
-  offset = $src.offset()
-  value = $src.val().match /^(\d{4})[^\d]+(\d{1,2})[^\d]+(\d{1,2})$/
-  if value
-    $lastFakeInp.val "#{value[3]}.#{value[2]}.#{value[1]}"
-  $lastFakeInp.css
-    top: "#{offset.top}px"
-    left: "#{offset.left}px"
-
 formateDate = (date) ->
   value = date.match /^(\d{1,2})[^\d]+(\d{1,2})[^\d]+(\d{4})$/
   if value
@@ -119,59 +47,70 @@ formateDate = (date) ->
     return "#{value[1]}.#{value[2]}.#{value[3]}"
   return ""
 
-$calendar.on "mousedown", ".form__calendar-cell", (e) ->
-  stayOpening = true
+class DateControl
+  constructor: (input) ->
+    @$fakeInp = makeFakeInput $input
 
-$calendar.on "click", ".form__calendar-cell", (e) ->
-  $cell = $(this)
-  date = $cell.attr 'data-value'
-  $lastFakeInp.val date
-  $lastFakeInp.trigger "change"
+    @$calendar = $ template
+    @$calendarDays = @$calendar.find ".form__calendar-days"
+    @$formCalendarMonth = @$calendar.find ".form__calendar-month"
+    $formCalendarArrowLeft = @$calendar.find ".form__calendar-arrow--left"
+    $formCalendarArrowRight = @$calendar.find ".form__calendar-arrow--right"
 
-$formCalendarArrowLeft.on "mousedown", ->
-  stayOpening = true
-  skipGenerateTable = true
+    @lastDate
 
-$formCalendarArrowLeft.on "click", ->
-  date = new Date lastDate[1], lastDate[2] - 1, lastDate[3]
-  generateTable "#{date.getFullYear()}-#{date.getMonth() + 1}-#{date.getDate()}"
-  $lastFakeInp.focus()
+    $body.append @$calendar
 
-$formCalendarArrowRight.on "mousedown", ->
-  stayOpening = true
-  skipGenerateTable = true
+    @$calendar.on "mousedown", ".form__calendar-cell", (e) ->
+      stayOpening = true
 
-$formCalendarArrowRight.on "click", ->
-  date = new Date lastDate[1], lastDate[2] + 1, lastDate[3]
-  generateTable "#{date.getFullYear()}-#{date.getMonth() + 1}-#{date.getDate()}"
-  $lastFakeInp.focus()
+    self = @
 
-if !isTouchDevice()
-  $ "[type=date]"
-  .each ->
-    $input = $ this
-    $fakeInp = makeFakeInput $input
-    $lastFakeInp = $fakeInp
+    @$calendar.on "click", ".form__calendar-cell", (e) ->
+      $cell = $(this)
+      date = $cell.attr 'data-value'
+      self.$fakeInp.val date
+      self.$fakeInp.trigger "change"
 
-    updateFakeInputValue $input
+    $formCalendarArrowLeft.on "mousedown", ->
+      stayOpening = true
+      skipGenerateTable = true
 
-    $input.on "change", ->
-      updateFakeInputValue $input
+    $formCalendarArrowLeft.on "click", =>
+      date = new Date @lastDate[1], @lastDate[2] - 1, @lastDate[3]
+      @generateTable "#{date.getFullYear()}-#{date.getMonth() + 1}-#{date.getDate()}"
+      @$fakeInp.focus()
+
+    $formCalendarArrowRight.on "mousedown", ->
+      stayOpening = true
+      skipGenerateTable = true
+
+    $formCalendarArrowRight.on "click", =>
+      date = new Date @lastDate[1], @lastDate[2] + 1, @lastDate[3]
+      @generateTable "#{date.getFullYear()}-#{date.getMonth() + 1}-#{date.getDate()}"
+      @$fakeInp.focus()
+
+    $input = $ input
+
+    @updateFakeInputValue $input
+
+    $input.on "change", =>
+      @updateFakeInputValue $input
 
     $input
     .siblings ".form__inp-empty"
-    .on "click", ->
-      $fakeInp
+    .on "click", =>
+      @$fakeInp
       .val ""
       .trigger "change"
 
-    $input.on "focus", ->
-      $fakeInp.focus()
+    $input.on "focus", =>
+      @$fakeInp.focus()
 
-    $fakeInp.on "focus", ->
+    @$fakeInp.on "focus", =>
       $input.addClass "focus"
       value = $input.val().match /^(\d{4})[^\d]+(\d{1,2})[^\d]+(\d{1,2})$/
-      offset = $fakeInp.offset()
+      offset = @$fakeInp.offset()
 
       if !value
         value = new Date()
@@ -184,27 +123,27 @@ if !isTouchDevice()
       if skipGenerateTable
         skipGenerateTable = false
       else
-        generateTable "#{value[1]}-#{value[2]}-#{value[3]}"
+        @generateTable "#{value[1]}-#{value[2]}-#{value[3]}"
 
-      height = $calendar.outerHeight()
+      height = @$calendar.outerHeight()
 
       if offset.top + height + INPUT_HEIGHT > $document.outerHeight()
-        $calendar
+        @$calendar
         .addClass "form__calendar--top"
         .css
           top: "#{offset.top - height - 15}px"
           left: "#{offset.left}px"
         .addClass "form__calendar--show"
       else
-        $calendar
+        @$calendar
         .removeClass "form__calendar--top"
         .css
           top: "#{offset.top + INPUT_HEIGHT}px"
           left: "#{offset.left}px"
 
-    $fakeInp.on "change", ->
-      value = $fakeInp.val()
-      $fakeInp.val formateDate value
+    @$fakeInp.on "change", =>
+      value = @$fakeInp.val()
+      @$fakeInp.val formateDate value
       value = value.match /^(\d{1,2})[^\d]+(\d{1,2})[^\d]+(\d{4})$/
 
       if value
@@ -215,20 +154,20 @@ if !isTouchDevice()
         $input.val ""
 
       $input.trigger "change"
-      $fakeInp.trigger "blur"
+      @$fakeInp.trigger "blur"
 
-    $fakeInp.on "blur", ->
+    @$fakeInp.on "blur", =>
       setTimeout =>
         if !stayOpening
-          $calendar
+          @$calendar
           .removeClass "form__calendar--show"
           .css
             left: ""
           $input.removeClass "focus"
         stayOpening = false
-      , 100
+      , 10
 
-    $fakeInp.on "keydown", (e) ->
+    @$fakeInp.on "keydown", (e) ->
       if e.keyCode == 9
         $inputs = $body.find "input, select, button"
         prevInput = $inputs[$inputs.length - 1]
@@ -259,3 +198,73 @@ if !isTouchDevice()
             .focus()
 
         e.preventDefault()
+
+  generateTable: (date) ->
+    today = new Date()
+
+    date = date.match /(\d{4})\-(\d{1,2})\-(\d{1,2})/
+
+    date = ["", today.getFullYear(), today.getMonth() + 1, today.getDate()] if !date
+
+    @lastDate = date
+    date[2] = parseInt(date[2], 10) - 1
+
+    currentDate = new Date date[1], date[2], date[3]
+    firstDayOfMonth = new Date date[1], date[2], 1
+
+    d = new Date date[1], date[2] + 1, 0
+    daysInMonth = d.getDate();
+
+    dayOfWeek = if currentDate.getDay() == 0 then 7 else currentDate.getDay()
+    firstDayOfWeek = if firstDayOfMonth.getDay() == 0 then 7 else firstDayOfMonth.getDay()
+
+    monthCalendar = "<table class='form__calendar-table'>
+      <tr>
+        <th>Пн</th>
+        <th>Вт</th>
+        <th>Ср</th>
+        <th>Чт</th>
+        <th>Пт</th>
+        <th>Сб</th>
+        <th>Вс</th>
+      </tr>"
+    monthCalendar += "<tr>"
+
+    monthCalendar += "<td></td>" for i in [1...firstDayOfWeek]
+
+    for j in [i..daysInMonth + i]
+      className = 'form__calendar-cell'
+      day = j - i + 1
+      month = date[2] + 1
+
+      if day == today.getDate() &&
+        date[2] == today.getMonth() &&
+        +date[1] == today.getFullYear()
+
+          className += ' form__calendar-cell--today'
+
+      monthCalendar += "<tr>" if (j - 1) % 7 == 0
+      monthCalendar += "<td>
+        <span class='#{className}'
+        data-value='#{day}-#{month}-#{date[1]}'
+        >#{day}</span>
+      </td>"
+      monthCalendar += "</tr>" if j % 7 == 0
+
+    monthCalendar += "</table>"
+
+    @$calendarDays.html monthCalendar
+    @$formCalendarMonth.html MONTHS[date[2]]
+
+  updateFakeInputValue: ($src) ->
+    offset = $src.offset()
+    value = $src.val().match /^(\d{4})[^\d]+(\d{1,2})[^\d]+(\d{1,2})$/
+
+    @$fakeInp.val "#{value[3]}.#{value[2]}.#{value[1]}" if value
+
+    @$fakeInp.css
+      top: "#{offset.top}px"
+      left: "#{offset.left}px"
+
+if !isTouchDevice()
+  ($ "[type=date]").each -> new DateControl @

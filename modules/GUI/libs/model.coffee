@@ -91,11 +91,18 @@ ModelPrototype =
       @trigger elementPath, @state[elementPath]
     , 1
 
+  __validateState: (defaultState, state) ->
+    for key of defaultState
+      state[key] = defaultState[key] unless state[key]?
+
+    state
+
   set: (params) ->
     for key, value of params
       if typeof value is not 'object' || value != @state[key]
         @state[key] = value
         @triggerUpdate key
+
   replace: (params) ->
     @state = {}
     for key, value of params
@@ -127,18 +134,18 @@ ModelItem = (params, state) ->
       @[field] = item
 
   if state?
-    @state = state
+    @state = if typeof @defaultState == "function" then (@__validateState @defaultState(), state) else state
     @initializedState = true
     @trigger "initialState", @state
   else if typeof @initialState == "function"
     result = @initialState()
     if typeof result.then == "function"
       result.then (response) =>
-        @state = response
+        @state = if typeof @defaultState == "function" then (@__validateState @defaultState(), response) else response
         @initializedState = true
         @trigger "initialState", @state
     else
-      @state = result
+      @state = if typeof @defaultState == "function" then (@__validateState @defaultState(), result) else result
       @initializedState = true
       @trigger "initialState", @state
 

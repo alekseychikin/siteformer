@@ -7,16 +7,20 @@ module.exports = Model
     value = parseInt value, 10
     numOpts = parseInt @state.numOptions, 10
     defaultData = @state.defaultData.slice()
-    if value > numOpts
-      for i in [numOpts + 1..value]
-        defaultData.push
-          label: ""
-          checked: false
-    else
-      for i in [value + 1..numOpts]
-        defaultData.pop()
-    @set numOptions: value
-    @set defaultData: defaultData
+
+    if !isNaN value
+      if value > numOpts
+        for i in [numOpts + 1..value]
+          defaultData.push
+            label: ""
+            checked: false
+      else if value < numOpts
+        for i in [value + 1..numOpts]
+          defaultData.pop()
+
+      @set
+        numOptions: value
+        defaultData: defaultData
 
   updateDefaultDataOptionChecked: (index, value) ->
     data = @state.defaultData.slice()

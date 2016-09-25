@@ -11839,9 +11839,6 @@ ViewItem = function(params, target, model) {
   }
   this.__initial();
   self = this;
-  if (this.watchers && !this.model && this.debug) {
-    console.error("There are watchers without contain");
-  }
   this.extEvents = [];
   if (this.model) {
     this.model.addRenderListener(this);
@@ -11988,6 +11985,15 @@ ModelPrototype = {
       };
     })(this), 1);
   },
+  __validateState: function(defaultState, state) {
+    var key;
+    for (key in defaultState) {
+      if (state[key] == null) {
+        state[key] = defaultState[key];
+      }
+    }
+    return state;
+  },
   set: function(params) {
     var key, results, value;
     results = [];
@@ -12057,7 +12063,7 @@ ModelItem = function(params, state) {
     fn(field, item);
   }
   if (state != null) {
-    this.state = state;
+    this.state = typeof this.defaultState === "function" ? this.__validateState(this.defaultState(), state) : state;
     this.initializedState = true;
     this.trigger("initialState", this.state);
   } else if (typeof this.initialState === "function") {
@@ -12065,13 +12071,13 @@ ModelItem = function(params, state) {
     if (typeof result.then === "function") {
       result.then((function(_this) {
         return function(response) {
-          _this.state = response;
+          _this.state = typeof _this.defaultState === "function" ? _this.__validateState(_this.defaultState(), response) : response;
           _this.initializedState = true;
           return _this.trigger("initialState", _this.state);
         };
       })(this));
     } else {
-      this.state = result;
+      this.state = typeof this.defaultState === "function" ? this.__validateState(this.defaultState(), result) : result;
       this.initializedState = true;
       this.trigger("initialState", this.state);
     }
@@ -12101,501 +12107,625 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
   };
   if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
     module.exports = factory;
-  }
-  else if (typeof define !== 'undefined' && typeof define.amd !== 'undefined') {
+  } else if (typeof define !== 'undefined' && typeof define.amd !== 'undefined') {
     define('render', [], factory);
-  }
-  else {
+  } else {
     window.render = factory;
   }
-})(function (handleFn, node)
+})(function (template, node)
 {
   var _hasProp = Object.prototype.hasOwnProperty;
   var nodeObjects = [];
+  var singleTags = ['hr', 'br', 'base', 'col', 'embed', 'img', 'area', 'source', 'track', 'input', '!DOCTYPE', 'link', 'meta'];
 
-  function cloneObject(obj, cachedElements)
-  {
-    var attr, copy, elem, i, j, len;
-    if (typeof cachedElements === 'undefined') {
-      cachedElements = [];
-    }
-    copy = null;
-    if (null === obj || "object" !== typeof obj) {
-      return obj;
-    }
-    if (obj instanceof Date) {
-      copy = new Date();
-      copy.setTime(obj.getTime());
-      return copy;
-    }
-    if ((cachedElements.indexOf(obj)) === -1) {
-      cachedElements.push(obj);
-      if (obj instanceof Array) {
-        copy = [];
-        for (i = j = 0, len = obj.length; j < len; i = ++j) {
-          elem = obj[i];
-          copy[i] = cloneObject(elem, cachedElements);
-        }
-        return copy;
-      }
-      if (obj instanceof Object) {
-        copy = {};
-        for (i in obj) {
-          attr = obj[i];
-          copy[i] = cloneObject(attr, cachedElements);
-        }
-        return copy;
-      }
-    }
-    else {
-      return obj;
-    }
-  }
+  function isEqual(sourceA, sourceB) {
+    var result;
 
-  function isEqualArrays(sourceA, sourceB)
-  {
+    if (typeof sourceA !== typeof sourceB) {
+      sourceA = null;
+      sourceB = null;
+
+      return false;
+    }
+
+    if (typeof sourceA !== 'object' && typeof sourceB !== 'object') {
+      result = sourceA === sourceB;
+      sourceA = null;
+      sourceB = null;
+
+      return result;
+    }
+
     // each fields of source array and check them at dest array
     // if it not exists or not equals then return false
-    if (!isEqualArraysForeach(sourceA, sourceB)) return false;
+    if (!isEqualArraysForeach(sourceA, sourceB)) {
+      sourceA = null;
+      sourceB = null;
+
+      return false;
+    }
 
     // do the same thing with dest array
     // if dest field not exists in source array
     // or not empty then return false
-    if (!isEqualArraysForeach(sourceB, sourceA)) return false;
+    if (!isEqualArraysForeach(sourceB, sourceA)) {
+      sourceA = null;
+      sourceB = null;
+
+      return false;
+    }
+
+    sourceA = null;
+    sourceB = null;
 
     // if everything fine return true
     // arrays are equals
     return true;
   }
 
-  function isEqualArraysForeach(sourceA, sourceB)
-  {
+  function isEqualArraysForeach(sourceA, sourceB) {
     var key, value;
+
     for (key in sourceA) {
       if (_hasProp.call(sourceA, key)) {
         if (key === 'childs') continue;
-        if (typeof sourceB[key] === 'undefined') return false;
-        value = sourceA[key];
-        if (['string', 'boolean', 'number'].indexOf(typeof value) !== -1) {
-          if (value !== sourceB[key]) return false;
+        if (typeof sourceB[key] === 'undefined') {
+          sourceA = null;
+          sourceB = null;
+
+          return false;
         }
-        else {
-          var diffResult = isEqualArrays(value, sourceB[key]);
-          if (!diffResult) return false;
+
+        value = sourceA[key];
+
+        if (['string', 'boolean', 'number'].indexOf(typeof value) !== -1) {
+          if (value !== sourceB[key]) {
+            sourceA = null;
+            sourceB = null;
+
+            return false;
+          }
+        } else {
+          var diffResult = isEqual(value, sourceB[key]);
+
+          if (!diffResult) {
+            sourceA = null;
+            sourceB = null;
+
+            return false;
+          }
         }
       }
     }
+
+    sourceA = null;
+    sourceB = null;
+
     return true;
   }
 
-  var arrDifference = (function ()
-  {
-    var res;
-    var indexA;
-    var indexB;
-    var buffer;
-    var _hasProp = Object.prototype.hasOwnProperty;
-    var i;
-
-    function putElementInResWithMark(res, element, mark, origin)
-    {
-      element = {
+  var arrDifference = (function () {
+    function putElementInRes(res, element, mark, origin) {
+      var putElement = {
         mark: mark,
         element: element
       };
+
       if (typeof origin !== 'undefined') {
-        element.origin = origin;
+        putElement.origin = origin;
       }
-      res.push(element);
+
+      res.push(putElement);
+      putElement = null;
     }
 
-    function putBufferElementsInRes(buffer, res, index, source)
-    {
-      if (index < 0) {
-        index = -index - 1;
-        for (i = 0; i < index; i++) {
-          putElementInResWithMark(res, buffer.elements[i], 'edit', source[buffer.indexesB[i]]);
+    function putBufferElementsInRes(res, buffer, source, dest) {
+      var i, j, len;
+
+      for (i = 0, len = Math.min(buffer.indexesA.length, buffer.indexesB.length); i < len; i++) {
+        putElementInRes(res, dest[buffer.indexesB[i]], 'edit', source[buffer.indexesA[i]]);
+      }
+
+      if (buffer.indexesA.length > buffer.indexesB.length) {
+        for (j = i; j < buffer.indexesA.length; j++) {
+          putElementInRes(res, source[buffer.indexesA[j]], 'delete');
         }
-        for (i = index; i < buffer.indexesA.length; i++) {
-          putElementInResWithMark(res, source[buffer.indexesA[i]], 'delete');
+      } else {
+        for (j = i; j < buffer.indexesB.length; j++) {
+          putElementInRes(res, dest[buffer.indexesB[j]], 'add');
         }
       }
-      else {
-        for (i = 0; i < index; i++) {
-          putElementInResWithMark(res, buffer.elements[i], 'edit', source[buffer.indexesA[i]]);
-        }
-        for (i = index; i < buffer.elements.length; i++) {
-          putElementInResWithMark(res, buffer.elements[i], 'add');
-        }
-        for (i = buffer.elements.length; i < buffer.indexesA.length; i++) {
-          putElementInResWithMark(res, source[buffer.indexesA[i]], 'delete');
-        }
-      }
+
       buffer.indexesA.splice(0);
       buffer.indexesB.splice(0);
-      buffer.elements.splice(0);
+
+      res = null;
+      buffer = null;
+      source = null;
+      dest = null;
     }
 
-    function findSourceIndexInBuffer(indexes, elements, srcElement)
-    {
-      for (i = 0; i < indexes.length; i++) {
-        if (isEqualArrays(elements[indexes[i]], srcElement)) {
+    function findSourceIndexInBuffer(indexes, elements, srcElement) {
+      var i = 0;
+
+      for (; i < indexes.length; i++) {
+        if (isEqual(elements[indexes[i]], srcElement)) {
+          indexes = null;
+          elements = null;
+          srcElement = null;
+
           return i;
         }
       }
+
+      indexes = null;
+      elements = null;
+      srcElement = null;
+
       return false;
     }
 
-    return function (source, dest)
-    {
-      dest || (dest = []);
-      res = [];
-      indexA = 0;
-      indexB = 0;
-      buffer = {
+    return function (source, dest) {
+      var len;
+      var res = [];
+      var indexA = 0; // for source
+      var indexB = 0; // for dest
+      var findedIndexA;
+      var findedIndexB;
+      var buffer = {
         indexesA: [],
-        indexesB: [],
-        elements: []
+        indexesB: []
       };
+
       if (!source.length) {
-        for (indexB = 0; indexB < dest.length; indexB++) {
-          putElementInResWithMark(res, dest[indexB], 'add');
+        for (; indexB < dest.length; indexB++) {
+          buffer.indexesB.push(indexB);
         }
-      }
-      for (indexA = 0; indexA < source.length; indexA++) {
-        if (typeof dest[indexB] === 'undefined') {
-          // it seems that size array of source is bigger than size array of dest
-          // so mark current source item as delete
-          if (buffer.indexesA.length) {
-            findedIndexB = findSourceIndexInBuffer(buffer.indexesB, dest, source[indexA]);
-            if (findedIndexB !== false) {
-              indexB = buffer.indexesB[findedIndexB];
-              putBufferElementsInRes(buffer, res, -findedIndexB - 1, source);
-              putElementInResWithMark(res, dest[indexB], 'skip', source[indexA]);
-            }
-            else {
-              buffer.indexesA.push(indexA);
-            }
-          }
-          else {
-            putElementInResWithMark(res, source[indexA], 'delete');
-          }
-        }
-        else {
-          // elements are not equal
-          if (!isEqualArrays(source[indexA], dest[indexB])) {
-            // and buffer is empty
-            if (!buffer.indexesA.length) {
-              // create buffer with index and element of dest
-              buffer.indexesA.splice(0);
-              buffer.indexesB.splice(0);
-              buffer.elements.splice(0);
-              buffer.indexesA.push(indexA);
-              buffer.indexesB.push(indexB);
-              buffer.elements.push(dest[indexB]);
-            }
-            // buffer is not empty
-            else {
-              // if element of dest is equal already skiped element of source
-              // find index and mark the number of elements like edit
-              // and mark other elements like add
-              findedIndexA = findSourceIndexInBuffer(buffer.indexesA, source, dest[indexB]);
+      } else {
+        while (indexA < source.length) {
+          if (indexB < dest.length) {
+            if (isEqual(source[indexA], dest[indexB])) {
+              putBufferElementsInRes(res, buffer, source, dest);
+
+              putElementInRes(res, dest[indexB], 'skip', source[indexA]);
+            } else {
               findedIndexB = findSourceIndexInBuffer(buffer.indexesB, dest, source[indexA]);
-              if (findedIndexA !== false) {
-                indexA = buffer.indexesA[findedIndexA];
-                putBufferElementsInRes(buffer, res, findedIndexA, source);
-                putElementInResWithMark(res, dest[indexB], 'skip', source[indexA]);
-              }
-              else if (findedIndexB !== false) {
+              findedIndexA = findSourceIndexInBuffer(buffer.indexesA, source, dest[indexB]);
+
+              if (findedIndexB !== false) {
                 indexB = buffer.indexesB[findedIndexB];
-                indexA = indexA;
-                putBufferElementsInRes(buffer, res, -findedIndexB - 1, source);
-                putElementInResWithMark(res, dest[indexB], 'skip', source[indexA]);
-              }
-              // if index not found
-              // add dest element to buffer element
-              else {
+
+                buffer.indexesB.splice(findedIndexB, buffer.indexesB.length);
+
+                putBufferElementsInRes(res, buffer, source, dest);
+
+                putElementInRes(res, dest[indexB], 'skip', source[indexA]);
+              } else if (findedIndexA !== false) {
+                indexA = buffer.indexesA[findedIndexA];
+
+                buffer.indexesA.splice(findedIndexA, buffer.indexesA.length);
+
+                putBufferElementsInRes(res, buffer, source, dest);
+
+                putElementInRes(res, dest[indexB], 'skip', source[indexA]);
+              } else {
                 buffer.indexesA.push(indexA);
                 buffer.indexesB.push(indexB);
-                buffer.elements.push(dest[indexB]);
               }
             }
+
+            indexA++;
+            indexB++;
           }
-          // elements are equal
-          // check buffer and do something with it
-          else {
-            // buffer is not empty and equal elements gets
-            // mark buffer elements as edit
-            if (buffer.indexesA.length) {
-              putBufferElementsInRes(buffer, res, buffer.indexesA.length, source);
+
+          if (indexA >= source.length || indexB >= dest.length) {
+            for (; indexA < source.length; indexA++) {
+              findedIndexB = findSourceIndexInBuffer(buffer.indexesB, dest, source[indexA]);
+
+              if (findedIndexB !== false) {
+                indexB = buffer.indexesB[findedIndexB];
+
+                buffer.indexesB.splice(findedIndexB, buffer.indexesB.length);
+
+                putBufferElementsInRes(res, buffer, source, dest);
+
+                putElementInRes(res, dest[indexB], 'skip', source[indexA]);
+                indexA++;
+                indexB++;
+
+                break;
+              } else {
+                buffer.indexesA.push(indexA);
+              }
             }
-            putElementInResWithMark(res, dest[indexB], 'skip', source[indexA]);
-          }
-        }
-        indexB++;
-        if (indexA === source.length - 1) {
-          // elements of source are fetched
-          // but elements of dest still exists
-          // because size array of dest is bigger than size array of source
-          findedIndexA = false;
-          if (indexB < dest.length) {
-            // create empty buffer
-            if (!buffer.elements.length) {
-              buffer.indexesA.splice(0);
-              buffer.indexesB.splice(0);
-              buffer.elements.splice(0);
-            }
-            // append rest of elements of dest to buffer
+
             for (; indexB < dest.length; indexB++) {
               findedIndexA = findSourceIndexInBuffer(buffer.indexesA, source, dest[indexB]);
+
               if (findedIndexA !== false) {
+                indexA = buffer.indexesA[findedIndexA];
+
+                buffer.indexesA.splice(findedIndexA, buffer.indexesA.length);
+
+                putBufferElementsInRes(res, buffer, source, dest);
+
+                putElementInRes(res, dest[indexB], 'skip', source[indexA]);
+                indexA++;
+                indexB++;
+
                 break;
+              } else {
+                buffer.indexesB.push(indexB);
               }
-              else {
-                buffer.elements.push(dest[indexB]);
-              }
-            }
-          }
-          // append buffer elements to res
-          // if not found equal element at sources
-          if (buffer.elements.length) {
-            // if equal element found in sources
-            if (findedIndexA !== false) {
-              // do this loop one more time
-              indexA = buffer.indexesA[findedIndexA] - 1;
-              putBufferElementsInRes(buffer, res, findedIndexA, source);
-            }
-            else {
-              putBufferElementsInRes(buffer, res, buffer.indexesB.length, source);
             }
           }
         }
       }
+
+      putBufferElementsInRes(res, buffer, source, dest);
+
+      buffer = null;
+      source = null;
+      dest = null;
+
       return res;
-    };
+    }
   })();
 
-  function getNodeByObject(obj)
-  {
-    var i, len;
-    for (i = 0, len = nodeObjects.length; i < len; i++) {
-      if (nodeObjects[i].obj === obj) return nodeObjects[i].node;
+  function cloneNodeObject(obj, cachedElements) {
+    var attr, copy, elem, i, j, len;
+
+    if (typeof cachedElements === 'undefined') {
+      cachedElements = [];
     }
+
+    copy = null;
+
+    if (null === obj || "object" !== typeof obj) {
+      return obj;
+    }
+
+    if (obj instanceof Date) {
+      copy = new Date();
+      copy.setTime(obj.getTime());
+
+      obj = null;
+      cachedElements = null;
+
+      return copy;
+    }
+
+    if ((cachedElements.indexOf(obj)) === -1) {
+      cachedElements.push(obj);
+
+      if (obj instanceof Array) {
+        copy = [];
+
+        for (i = j = 0, len = obj.length; j < len; i = ++j) {
+          elem = obj[i];
+
+          if (i !== 'childs' && i !== 'attrs') {
+            copy[i] = cloneNodeObject(elem, cachedElements);
+          }
+        }
+
+        obj = null;
+        cachedElements = null;
+
+        return copy;
+      }
+
+      if (obj instanceof Object) {
+        copy = {};
+
+        for (i in obj) {
+          attr = obj[i];
+
+          if (i !== 'childs' && i !== 'attrs') {
+            copy[i] = cloneNodeObject(attr, cachedElements);
+          }
+        }
+
+        obj = null;
+        cachedElements = null;
+
+        return copy;
+      }
+    } else {
+      obj = null;
+      cachedElements = null;
+
+      return obj;
+    }
+  }
+
+  function getNodeByObject(obj) {
+    var i, len;
+
+    for (i = 0, len = nodeObjects.length; i < len; i++) {
+      if (nodeObjects[i].obj === obj) {
+        if (!nodeObjects[i].node) {
+          debugger;
+        }
+
+        return nodeObjects[i].node;
+      }
+    }
+
+    debugger;
+
     return false;
   }
 
-  function rememberNodeByObject(obj, node)
-  {
-    if (!getNodeByObject(obj)) {
-      nodeObjects.push({
-        obj: obj,
-        node: node
-      });
-    }
-    else {
-      for (i = 0, len = nodeObjects.length; i < len; i++) {
-        if (nodeObjects[i].obj === obj) {
-          nodeObjects[i].node = node;
-          return true;
-        }
+  function rememberNodeByObject(obj, node) {
+    var i, len;
+
+    for (i = 0, len = nodeObjects.length; i < len; i++) {
+      if (nodeObjects[i].obj === obj) {
+        nodeObjects[i].node = node;
+
+        return true;
       }
     }
+
+    nodeObjects.push({
+      obj: obj,
+      node: node
+    });
+
     return true;
   }
 
-  function getAttributes(node)
-  {
-    var attrs = [];
-    var attrName;
-    for (attrName in node.attributes) if (_hasProp.call(node.attributes, attrName)) {
-      attrName = node.attributes[attrName].name;
-      attrs.push({
-        name: attrName,
-        value: node.getAttribute(attrName)
-      });
+  function forgotNode(node) {
+    var i, len;
+
+    for (i = 0, len = nodeObjects.length; i < len; i++) {
+      if (nodeObjects[i].node === node) {
+        nodeObjects.splice(i, 1);
+
+        node = null;
+
+        return true;
+      }
     }
+  }
+
+  function getAttributes(node) {
+    var attrs = {};
+    var attrName;
+
+    for (attrName in node.attributes) {
+      if (_hasProp.call(node.attributes, attrName)) {
+        attrName = node.attributes[attrName].name;
+        attrs[attrName] = node.getAttribute(attrName);
+      }
+    }
+
+    node = null;
+
     return attrs;
   }
 
-  function generateObjectByNode(node)
-  {
+  function generateObjectByNode(childs) {
     var obj = [];
     var nodeObj;
-    var childs = node.childNodes;
     var value;
     var child;
-    for (child in childs) if (_hasProp.call(childs, child)) {
-      child = childs[child];
-      switch (child.nodeType) {
-        case 3: // text node
-          value = child.nodeValue;
-          if (!value.trim().length) {
-            continue;
-          }
-          nodeObj = {
-            type: 'text',
-            text: value
-          };
-          obj.push(nodeObj);
-          rememberNodeByObject(nodeObj, child);
-          break;
-        case 1: // tag
-          nodeObj = {
-            attrs: getAttributes(child),
-            name: child.nodeName.toLowerCase(),
-            childs: generateObjectByNode(child),
-            type: 'node'
-          };
-          obj.push(nodeObj);
-          rememberNodeByObject(nodeObj, child);
+
+    for (child in childs) {
+      if (_hasProp.call(childs, child)) {
+        child = childs[child];
+
+        switch (child.nodeType) {
+          case 3: // text node
+            value = child.nodeValue;
+            nodeObj = {
+              type: 'text',
+              text: value
+            };
+            break;
+          case 1: // tag
+            nodeObj = {
+              type: 'node',
+              name: child.nodeName.toLowerCase(),
+              attrs: getAttributes(child),
+              childs: generateObjectByNode(child.childNodes)
+            };
+            break;
+        }
+
+        obj.push(nodeObj);
+        rememberNodeByObject(nodeObj, child);
       }
     }
+
+    childs = null;
+    nodeObj = null;
+    value = null;
+    child = null;
+
     return obj;
   }
 
-  var cacheObj = generateObjectByNode(node);
+  var cacheObj = generateObjectByNode(node.childNodes);
 
   var genObj;
 
-  var singleTags = ['hr', 'br', 'base', 'col', 'embed', 'img', 'area', 'source', 'track', 'input', '!DOCTYPE', 'link', 'meta'];
-
-  function handleChilds(genObj, cacheObj, parentNode)
-  {
+  function handleChilds(cacheObj, genObj, parentNode) {
     var diffResult = arrDifference(cacheObj, genObj);
     var prevNode;
     var currNode;
     var newNode;
-    var diffAttrs;
     var index = 0;
-    var childs;
-    var attrs;
-    diffResult.forEach(function (item)
-    {
+
+    // console.group();
+
+    diffResult.forEach(function (item) {
       switch (item.mark) {
         case 'add':
-          // console.log('add');
           newNode = createNode(item.element);
-          cacheObj.splice(index, 0, cloneObject(item.element));
+          cacheObj.splice(index, 0, cloneNodeObject(item.element));
+
           rememberNodeByObject(cacheObj[index], newNode);
-          if (item.element.type === 'node') {
-            if (!cacheObj[index].attrs) cacheObj[index].attrs = [];
-            cacheObj[index].attrs.splice(0);
-            handleAttrs(item.element.attrs, cacheObj[index].attrs, newNode);
-          }
+
           if (prevNode) {
             if (prevNode.nextSibling) {
               parentNode.insertBefore(newNode, prevNode.nextSibling);
-            }
-            else {
+            } else {
               parentNode.appendChild(newNode);
             }
-          }
-          else {
+          } else {
             if (parentNode.firstChild) {
               parentNode.insertBefore(newNode, parentNode.firstChild);
-            }
-            else {
+            } else {
               parentNode.appendChild(newNode);
             }
           }
+
           prevNode = newNode;
+
           if (item.element.type === 'node') {
+            cacheObj[index].attrs = {};
             cacheObj[index].childs = [];
-            handleChilds(item.element.childs, cacheObj[index].childs, newNode);
+
+            handleAttrs(cacheObj[index].attrs, item.element.attrs, newNode);
+
+            handleChilds(cacheObj[index].childs, item.element.childs, newNode);
           }
+
+          newNode = null;
+
           break;
         case 'skip':
-          // console.log('skip');
-          prevNode = getNodeByObject(item.origin);
-          if (item.element.type === 'node') {
-            handleChilds(item.element.childs, cacheObj[index].childs, prevNode);
+          if (item.origin !== cacheObj[index]) {
+            debugger;
           }
+
+          prevNode = getNodeByObject(item.origin);
+
+          if (item.element.type === 'node') {
+            handleChilds(item.origin.childs, item.element.childs, prevNode);
+          }
+
           break;
         case 'edit':
-          // console.log('edit');
           currNode = getNodeByObject(item.origin);
-          if (
-            item.origin.type !== item.element.type ||
-            item.origin.name !== item.element.name ||
-            (item.origin.type === 'text' && item.origin.type === item.element.type)
-          ) {
-            // create a new node
+
+          if (item.origin !== cacheObj[index]) {
+            debugger;
+          }
+
+          var isSameType = item.origin.type === item.element.type;
+          var isSameName = item.origin.type === 'node' && item.origin.name === item.element.name;
+          var isTwoNodes = item.element.type === 'node' && isSameType;
+
+          // two nodes with different name
+          // two texts
+          if (!isSameType || !isSameName) {
             newNode = createNode(item.element);
 
-            // move all childs to new node
-            if (item.origin.type === 'node' && item.element.type === 'node') {
+            if (isTwoNodes) {
               moveChilds(currNode, newNode);
             }
 
-            // add to DOM a new Node
             parentNode.insertBefore(newNode, currNode);
-
-            // remove an old Node
             parentNode.removeChild(currNode);
+
+            forgotNode(currNode);
+            rememberNodeByObject(item.origin, newNode);
+
+            if (item.element.type === 'text') {
+              item.origin.text = item.element.text;
+              delete item.origin.attrs;
+              delete item.origin.childs;
+              delete item.origin.name;
+            } else {
+              delete item.origin.text;
+
+              if (!isTwoNodes) {
+                item.origin.attrs = {};
+                item.origin.childs = [];
+              }
+
+              if (~singleTags.indexOf(item.element.name)) {
+                item.origin.childs.splice(0);
+                item.element.childs.splice(0);
+              }
+
+              item.origin.name = item.element.name;
+
+              handleAttrs(item.origin.attrs, item.element.attrs, newNode);
+
+              handleChilds(item.origin.childs, item.element.childs, newNode);
+            }
+
+            item.origin.type = item.element.type;
+
             currNode = newNode;
-
-            childs = cacheObj[index].childs;
-            cacheObj[index] = cloneObject(item.element);
-            cacheObj[index].childs = childs;
-
-            // save link to node from object
-            rememberNodeByObject(cacheObj[index], currNode);
-
-            attrs = cacheObj[index].attrs || [];
-            attrs.splice(0);
-            if (item.element.type === 'node'){
-              if (!item.element.attrs) item.element.attrs = [];
-              handleAttrs(item.element.attrs, attrs, currNode);
-            }
-
-            if (typeof cacheObj[index].childs === 'undefined') {
-              cacheObj[index].childs = [];
-            }
-            handleChilds(item.element.childs, cacheObj[index].childs, currNode);
-
             newNode = null;
-          }
-          else
-
-          // change attrs at curr node
-          if (item.element.type === 'node') {
-            attrs = cacheObj[index].attrs || [];
-            handleAttrs(item.element.attrs, attrs, currNode);
-
-            childs = cacheObj[index].childs || [];
-            handleChilds(item.element.childs, childs, currNode);
+          } else {
+            try {
+              handleAttrs(item.origin.attrs, item.element.attrs, currNode);
+            } catch(e) {
+              console.error(e);
+              debugger;
+            }
+            handleChilds(item.origin.childs, item.element.childs, currNode);
           }
 
           prevNode = currNode;
           break;
         case 'delete':
-          // console.log('delete');
           currNode = getNodeByObject(item.element);
-          parentNode.removeChild(currNode);
+
+          try {
+            parentNode.removeChild(currNode);
+          } catch (e) {
+            console.error(e)
+            debugger;
+          }
+
+          forgotNode(currNode);
+
           cacheObj.splice(index, 1);
+
           index--;
+
           break;
       }
       index++;
     });
+
+    cacheObj = null;
+    genObj = null;
+    parentNode = null;
+    diffResult = null;
+    currNode = null;
+
+    // console.groupEnd();
   }
 
-  function moveChilds(sourceNode, destNode)
-  {
+  function moveChilds(sourceNode, destNode) {
     var childs = sourceNode.childNodes;
-    var child;
-    while (childs.length)  {
-      for (child in childs) if (_hasProp.call(childs, child)) {
-        destNode.appendChild(childs[child]);
-        break;
+    var child = 0;
+
+    if (!~singleTags.indexOf(destNode.nodeName.toLowerCase())) {
+      while (childs.length) {
+        destNode.appendChild(childs[0]);
+      }
+    } else {
+      for (child = 0; child < childs.length; child++) {
+        if (_hasProp.call(childs, child)) {
+          forgotNode(childs[child]);
+        }
       }
     }
+
     child = null;
     childs = null;
   }
 
-  function createNode(item)
-  {
+  function createNode(item) {
     switch (item.type) {
       case 'node':
         return document.createElement(item.name);
@@ -12604,81 +12734,56 @@ require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requ
     }
   }
 
-  function sortAttrs(a, b)
-  {
-    return a.name > b.name;
-  }
-
-  function handleAttrsPrepare(attrs)
-  {
-    var obj = {};
-    attrs.forEach(function (item)
-    {
-      obj[item.name] = item.value;
-    });
-    return obj;
-  }
-
   var logicAttrs = ['readonly', 'selected', 'checked', 'disabled', 'autofocus', 'required', 'multiple', 'autoplay', 'controls', 'loop', 'muted'];
 
-  function handleAttrs(elementAttrs, originAttrs, currNode)
-  {
-    var destAttrs = handleAttrsPrepare(elementAttrs);
-    var sourceAttrs = handleAttrsPrepare(originAttrs);
-    originAttrs.splice(0);
+  function handleAttrs(originAttrs, elementAttrs, currNode) {
     var attr;
-    for (attr in destAttrs) {
-      if (_hasProp.call(destAttrs, attr)) {
-        if (logicAttrs.indexOf(attr) !== -1) {
+
+    for (attr in elementAttrs) {
+      if (_hasProp.call(elementAttrs, attr)) {
+        if (~logicAttrs.indexOf(attr)) {
           currNode[attr] = true;
-        }
-        else if (attr === 'value') {
+        } else if (attr === 'value') {
           if (currNode.nodeName.toLowerCase() === 'option') {
-            currNode.setAttribute('value', destAttrs[attr]);
+            currNode.setAttribute('value', elementAttrs[attr]);
+          } else if (currNode.value != elementAttrs[attr]) {
+            currNode.value = elementAttrs[attr];
           }
-          else if (currNode.value != destAttrs[attr]) {
-            currNode.value = destAttrs[attr];
-          }
+        } else {
+          currNode.setAttribute(attr, elementAttrs[attr]);
         }
-        else {
-          currNode.setAttribute(attr, destAttrs[attr]);
-        }
-        originAttrs.push({
-          name: attr,
-          value: destAttrs[attr]
-        });
+
+        originAttrs[attr] = elementAttrs[attr];
       }
     }
-    for (attr in sourceAttrs) {
-      if (_hasProp.call(sourceAttrs, attr)) {
-        if (!destAttrs[attr]) {
-          if (logicAttrs.indexOf(attr) !== -1) {
+
+    for (attr in originAttrs) {
+      if (_hasProp.call(originAttrs, attr)) {
+        if (typeof elementAttrs[attr] === 'undefined') {
+          if (~logicAttrs.indexOf(attr)) {
             currNode[attr] = false;
-          }
-          else if (attr === 'value') {
+          } else if (attr === 'value') {
             currNode.value = '';
-          }
-          else {
+          } else {
             currNode.removeAttribute(attr);
           }
+
+          delete originAttrs[attr];
         }
       }
     }
-    destAttrs = null;
-    sourceAttrs = null;
   }
 
-  return function (obj)
-  {
-    genObj = handleFn(obj);
-    handleChilds(genObj, cacheObj, node);
+  return function (obj) {
+    genObj = template(obj);
+    handleChilds(cacheObj, genObj, node);
   };
 });
 
 },{}]},{},["render"]);
 
 require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"ajax.coffee":[function(require,module,exports){
-var Promise, createXMLHTTPObject, httpFile, httpGet, httpPost, parsePostData, readyStateChange;
+var Promise, createXMLHTTPObject, httpFile, httpGet, httpPost, logicConsts, parsePostData, prepareJsonResponse, readyStateChange;
 
 Promise = require("promise");
 
@@ -12708,6 +12813,24 @@ createXMLHTTPObject = function() {
   return xmlhttp;
 };
 
+logicConsts = ["false", "true"];
+
+prepareJsonResponse = function(response) {
+  var key;
+  for (key in response) {
+    if (~logicConsts.indexOf(response[key])) {
+      response[key] = !!(logicConsts.indexOf(response[key]));
+    }
+    if ((response[key].match != null) && response[key].match(/^\d+$/)) {
+      response[key] = parseInt(response[key], 10);
+    }
+    if (typeof response[key] === "object") {
+      response[key] = prepareJsonResponse(response[key]);
+    }
+  }
+  return response;
+};
+
 readyStateChange = function(req, resolve, reject) {
   return function() {
     var e, error, result;
@@ -12717,7 +12840,7 @@ readyStateChange = function(req, resolve, reject) {
     result = false;
     try {
       if (req.responseText.length) {
-        result = JSON.parse(req.responseText);
+        result = prepareJsonResponse(JSON.parse(req.responseText));
       }
     } catch (error) {
       e = error;
@@ -12744,7 +12867,7 @@ httpGet = function(url, data) {
     }
     req.open("GET", url, true);
     req.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-    req.setRequestHeader("Accept", "application/json, text/javascript, */*; q=0.01");
+    req.setRequestHeader("Accept", "application/json");
     req.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=UTF-8");
     req.onreadystatechange = readyStateChange(req, resolve, reject);
     return req.send();
@@ -12757,7 +12880,7 @@ httpPost = function(url, data) {
     req = createXMLHTTPObject();
     req.open("POST", url, true);
     req.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-    req.setRequestHeader("Accept", "application/json, text/javascript, */*; q=0.01");
+    req.setRequestHeader("Accept", "application/json");
     req.setRequestHeader("Content-type", "application/x-www-form-urlencoded; charset=UTF-8");
     req.onreadystatechange = readyStateChange(req, resolve, reject);
     return req.send(parsePostData(data));
@@ -12858,11 +12981,11 @@ function initial(element)
 {
   initiatedElements.push(element);
   var $element = $(element);
-  $element.find('.popup__close').on('click', function ()
+  $element.on('click', '.popup__close', function ()
   {
     Popup.close(element);
   });
-  $element.find('.popup__cancel').on('click', function ()
+  $element.on('click', '.popup__cancel', function ()
   {
     Popup.close(element);
   });
@@ -12940,7 +13063,7 @@ module.exports = Popup;
 },{"jquery-plugins.coffee":"jquery-plugins.coffee"}]},{},["popup"]);
 
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-var $, $body, $calendar, $calendarDays, $document, $formCalendarArrowLeft, $formCalendarArrowRight, $formCalendarMonth, $lastFakeInp, INPUT_HEIGHT, MONTHS, formateDate, generateTable, isTouchDevice, lastDate, makeFakeInput, skipGenerateTable, stayOpening, template, updateFakeInputValue,
+var $, $body, $document, $lastFakeInp, DateControl, INPUT_HEIGHT, MONTHS, formateDate, isTouchDevice, makeFakeInput, skipGenerateTable, stayOpening, template,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
 $ = require("jquery-plugins.coffee");
@@ -12948,8 +13071,6 @@ $ = require("jquery-plugins.coffee");
 $lastFakeInp = null;
 
 stayOpening = false;
-
-lastDate = null;
 
 skipGenerateTable = false;
 
@@ -12962,55 +13083,6 @@ $document = $(document);
 INPUT_HEIGHT = 50;
 
 MONTHS = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
-
-$calendar = $(template);
-
-$calendarDays = $calendar.find(".form__calendar-days");
-
-$formCalendarMonth = $calendar.find(".form__calendar-month");
-
-$formCalendarArrowLeft = $calendar.find(".form__calendar-arrow--left");
-
-$formCalendarArrowRight = $calendar.find(".form__calendar-arrow--right");
-
-$body.append($calendar);
-
-generateTable = function(date) {
-  var className, currentDate, d, day, dayOfWeek, daysInMonth, firstDayOfMonth, firstDayOfWeek, i, j, k, l, month, monthCalendar, ref, ref1, ref2, today;
-  date = date.match(/(\d{4})\-(\d{1,2})\-(\d{1,2})/);
-  lastDate = date;
-  date[2] = parseInt(date[2], 10) - 1;
-  currentDate = new Date(date[1], date[2], date[3]);
-  firstDayOfMonth = new Date(date[1], date[2], 1);
-  d = new Date(date[1], date[2] + 1, 0);
-  daysInMonth = d.getDate();
-  today = new Date();
-  dayOfWeek = currentDate.getDay() === 0 ? 7 : currentDate.getDay();
-  firstDayOfWeek = firstDayOfMonth.getDay() === 0 ? 7 : firstDayOfMonth.getDay();
-  monthCalendar = "<table class='form__calendar-table'> <tr> <th>Пн</th> <th>Вт</th> <th>Ср</th> <th>Чт</th> <th>Пт</th> <th>Сб</th> <th>Вс</th> </tr>";
-  monthCalendar += "<tr>";
-  for (i = k = 1, ref = firstDayOfWeek; 1 <= ref ? k < ref : k > ref; i = 1 <= ref ? ++k : --k) {
-    monthCalendar += "<td></td>";
-  }
-  for (j = l = ref1 = i, ref2 = daysInMonth + i; ref1 <= ref2 ? l <= ref2 : l >= ref2; j = ref1 <= ref2 ? ++l : --l) {
-    className = 'form__calendar-cell';
-    day = j - i + 1;
-    month = date[2] + 1;
-    if (day === today.getDate() && date[2] === today.getMonth() && +date[1] === today.getFullYear()) {
-      className += ' form__calendar-cell--today';
-    }
-    if ((j - 1) % 7 === 0) {
-      monthCalendar += "<tr>";
-    }
-    monthCalendar += "<td> <span class='" + className + "' data-value='" + day + "-" + month + "-" + date[1] + "' >" + day + "</span> </td>";
-    if (j % 7 === 0) {
-      monthCalendar += "</tr>";
-    }
-  }
-  monthCalendar += "</table>";
-  $calendarDays.html(monthCalendar);
-  return $formCalendarMonth.html(MONTHS[date[2]]);
-};
 
 isTouchDevice = (function(_this) {
   return function() {
@@ -13025,19 +13097,6 @@ makeFakeInput = function($src) {
   return $input;
 };
 
-updateFakeInputValue = function($src) {
-  var offset, value;
-  offset = $src.offset();
-  value = $src.val().match(/^(\d{4})[^\d]+(\d{1,2})[^\d]+(\d{1,2})$/);
-  if (value) {
-    $lastFakeInp.val(value[3] + "." + value[2] + "." + value[1]);
-  }
-  return $lastFakeInp.css({
-    top: offset.top + "px",
-    left: offset.left + "px"
-  });
-};
-
 formateDate = function(date) {
   var value;
   value = date.match(/^(\d{1,2})[^\d]+(\d{1,2})[^\d]+(\d{4})$/);
@@ -13049,114 +13108,129 @@ formateDate = function(date) {
   return "";
 };
 
-$calendar.on("mousedown", ".form__calendar-cell", function(e) {
-  return stayOpening = true;
-});
-
-$calendar.on("click", ".form__calendar-cell", function(e) {
-  var $cell, date;
-  $cell = $(this);
-  date = $cell.attr('data-value');
-  $lastFakeInp.val(date);
-  return $lastFakeInp.trigger("change");
-});
-
-$formCalendarArrowLeft.on("mousedown", function() {
-  stayOpening = true;
-  return skipGenerateTable = true;
-});
-
-$formCalendarArrowLeft.on("click", function() {
-  var date;
-  date = new Date(lastDate[1], lastDate[2] - 1, lastDate[3]);
-  generateTable((date.getFullYear()) + "-" + (date.getMonth() + 1) + "-" + (date.getDate()));
-  return $lastFakeInp.focus();
-});
-
-$formCalendarArrowRight.on("mousedown", function() {
-  stayOpening = true;
-  return skipGenerateTable = true;
-});
-
-$formCalendarArrowRight.on("click", function() {
-  var date;
-  date = new Date(lastDate[1], lastDate[2] + 1, lastDate[3]);
-  generateTable((date.getFullYear()) + "-" + (date.getMonth() + 1) + "-" + (date.getDate()));
-  return $lastFakeInp.focus();
-});
-
-if (!isTouchDevice()) {
-  $("[type=date]").each(function() {
-    var $fakeInp, $input;
-    $input = $(this);
-    $fakeInp = makeFakeInput($input);
-    $lastFakeInp = $fakeInp;
-    updateFakeInputValue($input);
-    $input.on("change", function() {
-      return updateFakeInputValue($input);
+DateControl = (function() {
+  function DateControl(input) {
+    var $formCalendarArrowLeft, $formCalendarArrowRight, $input, self;
+    this.$fakeInp = makeFakeInput($input);
+    this.$calendar = $(template);
+    this.$calendarDays = this.$calendar.find(".form__calendar-days");
+    this.$formCalendarMonth = this.$calendar.find(".form__calendar-month");
+    $formCalendarArrowLeft = this.$calendar.find(".form__calendar-arrow--left");
+    $formCalendarArrowRight = this.$calendar.find(".form__calendar-arrow--right");
+    this.lastDate;
+    $body.append(this.$calendar);
+    this.$calendar.on("mousedown", ".form__calendar-cell", function(e) {
+      return stayOpening = true;
     });
-    $input.siblings(".form__inp-empty").on("click", function() {
-      return $fakeInp.val("").trigger("change");
+    self = this;
+    this.$calendar.on("click", ".form__calendar-cell", function(e) {
+      var $cell, date;
+      $cell = $(this);
+      date = $cell.attr('data-value');
+      self.$fakeInp.val(date);
+      return self.$fakeInp.trigger("change");
     });
-    $input.on("focus", function() {
-      return $fakeInp.focus();
+    $formCalendarArrowLeft.on("mousedown", function() {
+      stayOpening = true;
+      return skipGenerateTable = true;
     });
-    $fakeInp.on("focus", function() {
-      var height, offset, value;
-      $input.addClass("focus");
-      value = $input.val().match(/^(\d{4})[^\d]+(\d{1,2})[^\d]+(\d{1,2})$/);
-      offset = $fakeInp.offset();
-      if (!value) {
-        value = new Date();
-        value = [value.getFullYear(), value.getMonth(), value.getDate()];
-      }
-      if (skipGenerateTable) {
-        skipGenerateTable = false;
-      } else {
-        generateTable(value[1] + "-" + value[2] + "-" + value[3]);
-      }
-      height = $calendar.outerHeight();
-      if (offset.top + height + INPUT_HEIGHT > $document.outerHeight()) {
-        return $calendar.addClass("form__calendar--top").css({
-          top: (offset.top - height - 15) + "px",
-          left: offset.left + "px"
-        }).addClass("form__calendar--show");
-      } else {
-        return $calendar.removeClass("form__calendar--top").css({
-          top: (offset.top + INPUT_HEIGHT) + "px",
-          left: offset.left + "px"
-        });
-      }
+    $formCalendarArrowLeft.on("click", (function(_this) {
+      return function() {
+        var date;
+        date = new Date(_this.lastDate[1], _this.lastDate[2] - 1, _this.lastDate[3]);
+        _this.generateTable((date.getFullYear()) + "-" + (date.getMonth() + 1) + "-" + (date.getDate()));
+        return _this.$fakeInp.focus();
+      };
+    })(this));
+    $formCalendarArrowRight.on("mousedown", function() {
+      stayOpening = true;
+      return skipGenerateTable = true;
     });
-    $fakeInp.on("change", function() {
-      var value;
-      value = $fakeInp.val();
-      $fakeInp.val(formateDate(value));
-      value = value.match(/^(\d{1,2})[^\d]+(\d{1,2})[^\d]+(\d{4})$/);
-      if (value) {
-        value[1] = value[1].length === 1 ? "0" + value[1] : value[1];
-        value[2] = value[2].length === 1 ? "0" + value[2] : value[2];
-        $input.val(value[3] + "-" + value[2] + "-" + value[1]);
-      } else {
-        $input.val("");
-      }
-      $input.trigger("change");
-      return $fakeInp.trigger("blur");
-    });
-    $fakeInp.on("blur", function() {
-      return setTimeout((function(_this) {
-        return function() {
+    $formCalendarArrowRight.on("click", (function(_this) {
+      return function() {
+        var date;
+        date = new Date(_this.lastDate[1], _this.lastDate[2] + 1, _this.lastDate[3]);
+        _this.generateTable((date.getFullYear()) + "-" + (date.getMonth() + 1) + "-" + (date.getDate()));
+        return _this.$fakeInp.focus();
+      };
+    })(this));
+    $input = $(input);
+    this.updateFakeInputValue($input);
+    $input.on("change", (function(_this) {
+      return function() {
+        return _this.updateFakeInputValue($input);
+      };
+    })(this));
+    $input.siblings(".form__inp-empty").on("click", (function(_this) {
+      return function() {
+        return _this.$fakeInp.val("").trigger("change");
+      };
+    })(this));
+    $input.on("focus", (function(_this) {
+      return function() {
+        return _this.$fakeInp.focus();
+      };
+    })(this));
+    this.$fakeInp.on("focus", (function(_this) {
+      return function() {
+        var height, offset, value;
+        $input.addClass("focus");
+        value = $input.val().match(/^(\d{4})[^\d]+(\d{1,2})[^\d]+(\d{1,2})$/);
+        offset = _this.$fakeInp.offset();
+        if (!value) {
+          value = new Date();
+          value = [value.getFullYear(), value.getMonth(), value.getDate()];
+        }
+        if (skipGenerateTable) {
+          skipGenerateTable = false;
+        } else {
+          _this.generateTable(value[1] + "-" + value[2] + "-" + value[3]);
+        }
+        height = _this.$calendar.outerHeight();
+        if (offset.top + height + INPUT_HEIGHT > $document.outerHeight()) {
+          return _this.$calendar.addClass("form__calendar--top").css({
+            top: (offset.top - height - 15) + "px",
+            left: offset.left + "px"
+          }).addClass("form__calendar--show");
+        } else {
+          return _this.$calendar.removeClass("form__calendar--top").css({
+            top: (offset.top + INPUT_HEIGHT) + "px",
+            left: offset.left + "px"
+          });
+        }
+      };
+    })(this));
+    this.$fakeInp.on("change", (function(_this) {
+      return function() {
+        var value;
+        value = _this.$fakeInp.val();
+        _this.$fakeInp.val(formateDate(value));
+        value = value.match(/^(\d{1,2})[^\d]+(\d{1,2})[^\d]+(\d{4})$/);
+        if (value) {
+          value[1] = value[1].length === 1 ? "0" + value[1] : value[1];
+          value[2] = value[2].length === 1 ? "0" + value[2] : value[2];
+          $input.val(value[3] + "-" + value[2] + "-" + value[1]);
+        } else {
+          $input.val("");
+        }
+        $input.trigger("change");
+        return _this.$fakeInp.trigger("blur");
+      };
+    })(this));
+    this.$fakeInp.on("blur", (function(_this) {
+      return function() {
+        return setTimeout(function() {
           if (!stayOpening) {
-            $calendar.removeClass("form__calendar--show").css({
+            _this.$calendar.removeClass("form__calendar--show").css({
               left: ""
             });
             $input.removeClass("focus");
           }
           return stayOpening = false;
-        };
-      })(this), 100);
-    });
-    return $fakeInp.on("keydown", function(e) {
+        }, 10);
+      };
+    })(this));
+    this.$fakeInp.on("keydown", function(e) {
       var $inputs, nextInput, prevInput;
       if (e.keyCode === 9) {
         $inputs = $body.find("input, select, button");
@@ -13187,6 +13261,68 @@ if (!isTouchDevice()) {
         return e.preventDefault();
       }
     });
+  }
+
+  DateControl.prototype.generateTable = function(date) {
+    var className, currentDate, d, day, dayOfWeek, daysInMonth, firstDayOfMonth, firstDayOfWeek, i, j, k, l, month, monthCalendar, ref, ref1, ref2, today;
+    today = new Date();
+    date = date.match(/(\d{4})\-(\d{1,2})\-(\d{1,2})/);
+    if (!date) {
+      date = ["", today.getFullYear(), today.getMonth() + 1, today.getDate()];
+    }
+    this.lastDate = date;
+    date[2] = parseInt(date[2], 10) - 1;
+    currentDate = new Date(date[1], date[2], date[3]);
+    firstDayOfMonth = new Date(date[1], date[2], 1);
+    d = new Date(date[1], date[2] + 1, 0);
+    daysInMonth = d.getDate();
+    dayOfWeek = currentDate.getDay() === 0 ? 7 : currentDate.getDay();
+    firstDayOfWeek = firstDayOfMonth.getDay() === 0 ? 7 : firstDayOfMonth.getDay();
+    monthCalendar = "<table class='form__calendar-table'> <tr> <th>Пн</th> <th>Вт</th> <th>Ср</th> <th>Чт</th> <th>Пт</th> <th>Сб</th> <th>Вс</th> </tr>";
+    monthCalendar += "<tr>";
+    for (i = k = 1, ref = firstDayOfWeek; 1 <= ref ? k < ref : k > ref; i = 1 <= ref ? ++k : --k) {
+      monthCalendar += "<td></td>";
+    }
+    for (j = l = ref1 = i, ref2 = daysInMonth + i; ref1 <= ref2 ? l <= ref2 : l >= ref2; j = ref1 <= ref2 ? ++l : --l) {
+      className = 'form__calendar-cell';
+      day = j - i + 1;
+      month = date[2] + 1;
+      if (day === today.getDate() && date[2] === today.getMonth() && +date[1] === today.getFullYear()) {
+        className += ' form__calendar-cell--today';
+      }
+      if ((j - 1) % 7 === 0) {
+        monthCalendar += "<tr>";
+      }
+      monthCalendar += "<td> <span class='" + className + "' data-value='" + day + "-" + month + "-" + date[1] + "' >" + day + "</span> </td>";
+      if (j % 7 === 0) {
+        monthCalendar += "</tr>";
+      }
+    }
+    monthCalendar += "</table>";
+    this.$calendarDays.html(monthCalendar);
+    return this.$formCalendarMonth.html(MONTHS[date[2]]);
+  };
+
+  DateControl.prototype.updateFakeInputValue = function($src) {
+    var offset, value;
+    offset = $src.offset();
+    value = $src.val().match(/^(\d{4})[^\d]+(\d{1,2})[^\d]+(\d{1,2})$/);
+    if (value) {
+      this.$fakeInp.val(value[3] + "." + value[2] + "." + value[1]);
+    }
+    return this.$fakeInp.css({
+      top: offset.top + "px",
+      left: offset.left + "px"
+    });
+  };
+
+  return DateControl;
+
+})();
+
+if (!isTouchDevice()) {
+  ($("[type=date]")).each(function() {
+    return new DateControl(this);
   });
 }
 
@@ -13212,14 +13348,12 @@ $selects.each(function() {
 
 
 },{"jquery-plugins.coffee":"jquery-plugins.coffee"}],3:[function(require,module,exports){
-var $, $body, $lastFakeInp, formateDate, isTouchDevice, makeFakeInput, updateFakeInputValue,
+var $, $body, TimeControl, formateDate, isTouchDevice, makeFakeInput,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
 $ = require("jquery-plugins.coffee");
 
 $body = $(document.body);
-
-$lastFakeInp = null;
 
 isTouchDevice = (function(_this) {
   return function() {
@@ -13245,87 +13379,109 @@ formateDate = function(date) {
   return "";
 };
 
-updateFakeInputValue = function($src) {
-  var offset, value;
-  offset = $src.offset();
-  value = $src.val().match(/^(\d{1,2})[^\d]+(\d{1,2})$/);
-  if (value) {
-    $lastFakeInp.val(value[1] + ":" + value[2]);
+TimeControl = (function() {
+  function TimeControl(input) {
+    var $input;
+    $input = $(input);
+    this.$fakeInp = makeFakeInput($input);
+    this.updateFakeInputValue($input);
+    $input.on("change", (function(_this) {
+      return function() {
+        return _this.updateFakeInputValue($input);
+      };
+    })(this));
+    $input.siblings(".form__inp-empty").on("click", (function(_this) {
+      return function() {
+        return _this.$fakeInp.val("").trigger("change");
+      };
+    })(this));
+    $input.on("focus", (function(_this) {
+      return function() {
+        return _this.$fakeInp.focus();
+      };
+    })(this));
+    this.$fakeInp.on("focus", (function(_this) {
+      return function() {
+        return _this.$fakeInp.addClass("focus");
+      };
+    })(this));
+    this.$fakeInp.on("blur", (function(_this) {
+      return function() {
+        return _this.$fakeInp.removeClass("focus");
+      };
+    })(this));
+    this.$fakeInp.on("change", (function(_this) {
+      return function() {
+        var value;
+        value = _this.$fakeInp.val();
+        _this.$fakeInp.val(formateDate(value));
+        value = value.match(/^(\d{1,2})[^\d]+(\d{1,2})$/);
+        if (value) {
+          value[1] = value[1].length === 1 ? "0" + value[1] : value[1];
+          value[2] = value[2].length === 1 ? "0" + value[2] : value[2];
+          $input.val(value[1] + ":" + value[2]);
+        } else {
+          $input.val("");
+        }
+        $input.trigger("change");
+        return _this.$fakeInp.trigger("blur");
+      };
+    })(this));
+    this.$fakeInp.on("keydown", (function(_this) {
+      return function(e) {
+        var $inputs, nextInput, prevInput;
+        if (e.keyCode === 9) {
+          $inputs = $body.find("input, select, button");
+          prevInput = $inputs[$inputs.length - 1];
+          nextInput = false;
+          if (e.shiftKey) {
+            $inputs.each(function() {
+              if (this === $input[0]) {
+                $(prevInput).focus();
+                return false;
+              }
+              return prevInput = this;
+            });
+          } else {
+            $inputs.each(function() {
+              if (nextInput) {
+                $(this).focus();
+                return false;
+              }
+              if (this === $input[0]) {
+                return nextInput = this;
+              }
+            });
+            if (!nextInput) {
+              $inputs.first().focus();
+            }
+          }
+          return e.preventDefault();
+        }
+      };
+    })(this));
   }
-  return $lastFakeInp.css({
-    top: offset.top + "px",
-    left: offset.left + "px"
-  });
-};
+
+  TimeControl.prototype.updateFakeInputValue = function($src) {
+    var offset, value;
+    offset = $src.offset();
+    value = $src.val().match(/^(\d{1,2})[^\d]+(\d{1,2})$/);
+    if (value) {
+      this.$fakeInp.val(value[1] + ":" + value[2]);
+    }
+    return this.$fakeInp.css({
+      top: offset.top + "px",
+      left: offset.left + "px"
+    });
+  };
+
+  return TimeControl;
+
+})();
 
 if (!isTouchDevice()) {
-  $("[type=time]").each(function() {
-    var $fakeInp, $input;
-    $input = $(this);
-    $fakeInp = makeFakeInput($input);
-    $lastFakeInp = $fakeInp;
-    updateFakeInputValue($input);
-    $input.on("change", function() {
-      return updateFakeInputValue($input);
-    });
-    $input.siblings(".form__inp-empty").on("click", function() {
-      return $fakeInp.val("").trigger("change");
-    });
-    $input.on("focus", function() {
-      return $fakeInp.focus();
-    });
-    $fakeInp.on("focus", function() {
-      return $input.addClass("focus");
-    });
-    $fakeInp.on("blur", function() {
-      return $input.removeClass("focus");
-    });
-    $fakeInp.on("change", function() {
-      var value;
-      value = $fakeInp.val();
-      $fakeInp.val(formateDate(value));
-      value = value.match(/^(\d{1,2})[^\d]+(\d{1,2})$/);
-      if (value) {
-        value[1] = value[1].length === 1 ? "0" + value[1] : value[1];
-        value[2] = value[2].length === 1 ? "0" + value[2] : value[2];
-        $input.val(value[1] + ":" + value[2]);
-      } else {
-        $input.val("");
-      }
-      $input.trigger("change");
-      return $fakeInp.trigger("blur");
-    });
-    return $fakeInp.on("keydown", function(e) {
-      var $inputs, nextInput, prevInput;
-      if (e.keyCode === 9) {
-        $inputs = $body.find("input, select, button");
-        prevInput = $inputs[$inputs.length - 1];
-        nextInput = false;
-        if (e.shiftKey) {
-          $inputs.each(function() {
-            if (this === $input[0]) {
-              $(prevInput).focus();
-              return false;
-            }
-            return prevInput = this;
-          });
-        } else {
-          $inputs.each(function() {
-            if (nextInput) {
-              $(this).focus();
-              return false;
-            }
-            if (this === $input[0]) {
-              return nextInput = this;
-            }
-          });
-          if (!nextInput) {
-            $inputs.first().focus();
-          }
-        }
-        return e.preventDefault();
-      }
-    });
+  ($("[type=time]")).each(function() {
+    return new TimeControl(this);
   });
 }
 
@@ -13340,7 +13496,7 @@ require("components/form/form__select.coffee");
 
 
 },{"components/form/form__date.coffee":2,"components/form/form__select.coffee":3,"components/form/form__time.coffee":4}],2:[function(require,module,exports){
-var $, $body, $calendar, $calendarDays, $document, $formCalendarArrowLeft, $formCalendarArrowRight, $formCalendarMonth, $lastFakeInp, INPUT_HEIGHT, MONTHS, formateDate, generateTable, isTouchDevice, lastDate, makeFakeInput, skipGenerateTable, stayOpening, template, updateFakeInputValue,
+var $, $body, $document, $lastFakeInp, DateControl, INPUT_HEIGHT, MONTHS, formateDate, isTouchDevice, makeFakeInput, skipGenerateTable, stayOpening, template,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
 $ = require("jquery-plugins.coffee");
@@ -13348,8 +13504,6 @@ $ = require("jquery-plugins.coffee");
 $lastFakeInp = null;
 
 stayOpening = false;
-
-lastDate = null;
 
 skipGenerateTable = false;
 
@@ -13362,55 +13516,6 @@ $document = $(document);
 INPUT_HEIGHT = 50;
 
 MONTHS = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
-
-$calendar = $(template);
-
-$calendarDays = $calendar.find(".form__calendar-days");
-
-$formCalendarMonth = $calendar.find(".form__calendar-month");
-
-$formCalendarArrowLeft = $calendar.find(".form__calendar-arrow--left");
-
-$formCalendarArrowRight = $calendar.find(".form__calendar-arrow--right");
-
-$body.append($calendar);
-
-generateTable = function(date) {
-  var className, currentDate, d, day, dayOfWeek, daysInMonth, firstDayOfMonth, firstDayOfWeek, i, j, k, l, month, monthCalendar, ref, ref1, ref2, today;
-  date = date.match(/(\d{4})\-(\d{1,2})\-(\d{1,2})/);
-  lastDate = date;
-  date[2] = parseInt(date[2], 10) - 1;
-  currentDate = new Date(date[1], date[2], date[3]);
-  firstDayOfMonth = new Date(date[1], date[2], 1);
-  d = new Date(date[1], date[2] + 1, 0);
-  daysInMonth = d.getDate();
-  today = new Date();
-  dayOfWeek = currentDate.getDay() === 0 ? 7 : currentDate.getDay();
-  firstDayOfWeek = firstDayOfMonth.getDay() === 0 ? 7 : firstDayOfMonth.getDay();
-  monthCalendar = "<table class='form__calendar-table'> <tr> <th>Пн</th> <th>Вт</th> <th>Ср</th> <th>Чт</th> <th>Пт</th> <th>Сб</th> <th>Вс</th> </tr>";
-  monthCalendar += "<tr>";
-  for (i = k = 1, ref = firstDayOfWeek; 1 <= ref ? k < ref : k > ref; i = 1 <= ref ? ++k : --k) {
-    monthCalendar += "<td></td>";
-  }
-  for (j = l = ref1 = i, ref2 = daysInMonth + i; ref1 <= ref2 ? l <= ref2 : l >= ref2; j = ref1 <= ref2 ? ++l : --l) {
-    className = 'form__calendar-cell';
-    day = j - i + 1;
-    month = date[2] + 1;
-    if (day === today.getDate() && date[2] === today.getMonth() && +date[1] === today.getFullYear()) {
-      className += ' form__calendar-cell--today';
-    }
-    if ((j - 1) % 7 === 0) {
-      monthCalendar += "<tr>";
-    }
-    monthCalendar += "<td> <span class='" + className + "' data-value='" + day + "-" + month + "-" + date[1] + "' >" + day + "</span> </td>";
-    if (j % 7 === 0) {
-      monthCalendar += "</tr>";
-    }
-  }
-  monthCalendar += "</table>";
-  $calendarDays.html(monthCalendar);
-  return $formCalendarMonth.html(MONTHS[date[2]]);
-};
 
 isTouchDevice = (function(_this) {
   return function() {
@@ -13425,19 +13530,6 @@ makeFakeInput = function($src) {
   return $input;
 };
 
-updateFakeInputValue = function($src) {
-  var offset, value;
-  offset = $src.offset();
-  value = $src.val().match(/^(\d{4})[^\d]+(\d{1,2})[^\d]+(\d{1,2})$/);
-  if (value) {
-    $lastFakeInp.val(value[3] + "." + value[2] + "." + value[1]);
-  }
-  return $lastFakeInp.css({
-    top: offset.top + "px",
-    left: offset.left + "px"
-  });
-};
-
 formateDate = function(date) {
   var value;
   value = date.match(/^(\d{1,2})[^\d]+(\d{1,2})[^\d]+(\d{4})$/);
@@ -13449,114 +13541,129 @@ formateDate = function(date) {
   return "";
 };
 
-$calendar.on("mousedown", ".form__calendar-cell", function(e) {
-  return stayOpening = true;
-});
-
-$calendar.on("click", ".form__calendar-cell", function(e) {
-  var $cell, date;
-  $cell = $(this);
-  date = $cell.attr('data-value');
-  $lastFakeInp.val(date);
-  return $lastFakeInp.trigger("change");
-});
-
-$formCalendarArrowLeft.on("mousedown", function() {
-  stayOpening = true;
-  return skipGenerateTable = true;
-});
-
-$formCalendarArrowLeft.on("click", function() {
-  var date;
-  date = new Date(lastDate[1], lastDate[2] - 1, lastDate[3]);
-  generateTable((date.getFullYear()) + "-" + (date.getMonth() + 1) + "-" + (date.getDate()));
-  return $lastFakeInp.focus();
-});
-
-$formCalendarArrowRight.on("mousedown", function() {
-  stayOpening = true;
-  return skipGenerateTable = true;
-});
-
-$formCalendarArrowRight.on("click", function() {
-  var date;
-  date = new Date(lastDate[1], lastDate[2] + 1, lastDate[3]);
-  generateTable((date.getFullYear()) + "-" + (date.getMonth() + 1) + "-" + (date.getDate()));
-  return $lastFakeInp.focus();
-});
-
-if (!isTouchDevice()) {
-  $("[type=date]").each(function() {
-    var $fakeInp, $input;
-    $input = $(this);
-    $fakeInp = makeFakeInput($input);
-    $lastFakeInp = $fakeInp;
-    updateFakeInputValue($input);
-    $input.on("change", function() {
-      return updateFakeInputValue($input);
+DateControl = (function() {
+  function DateControl(input) {
+    var $formCalendarArrowLeft, $formCalendarArrowRight, $input, self;
+    this.$fakeInp = makeFakeInput($input);
+    this.$calendar = $(template);
+    this.$calendarDays = this.$calendar.find(".form__calendar-days");
+    this.$formCalendarMonth = this.$calendar.find(".form__calendar-month");
+    $formCalendarArrowLeft = this.$calendar.find(".form__calendar-arrow--left");
+    $formCalendarArrowRight = this.$calendar.find(".form__calendar-arrow--right");
+    this.lastDate;
+    $body.append(this.$calendar);
+    this.$calendar.on("mousedown", ".form__calendar-cell", function(e) {
+      return stayOpening = true;
     });
-    $input.siblings(".form__inp-empty").on("click", function() {
-      return $fakeInp.val("").trigger("change");
+    self = this;
+    this.$calendar.on("click", ".form__calendar-cell", function(e) {
+      var $cell, date;
+      $cell = $(this);
+      date = $cell.attr('data-value');
+      self.$fakeInp.val(date);
+      return self.$fakeInp.trigger("change");
     });
-    $input.on("focus", function() {
-      return $fakeInp.focus();
+    $formCalendarArrowLeft.on("mousedown", function() {
+      stayOpening = true;
+      return skipGenerateTable = true;
     });
-    $fakeInp.on("focus", function() {
-      var height, offset, value;
-      $input.addClass("focus");
-      value = $input.val().match(/^(\d{4})[^\d]+(\d{1,2})[^\d]+(\d{1,2})$/);
-      offset = $fakeInp.offset();
-      if (!value) {
-        value = new Date();
-        value = [value.getFullYear(), value.getMonth(), value.getDate()];
-      }
-      if (skipGenerateTable) {
-        skipGenerateTable = false;
-      } else {
-        generateTable(value[1] + "-" + value[2] + "-" + value[3]);
-      }
-      height = $calendar.outerHeight();
-      if (offset.top + height + INPUT_HEIGHT > $document.outerHeight()) {
-        return $calendar.addClass("form__calendar--top").css({
-          top: (offset.top - height - 15) + "px",
-          left: offset.left + "px"
-        }).addClass("form__calendar--show");
-      } else {
-        return $calendar.removeClass("form__calendar--top").css({
-          top: (offset.top + INPUT_HEIGHT) + "px",
-          left: offset.left + "px"
-        });
-      }
+    $formCalendarArrowLeft.on("click", (function(_this) {
+      return function() {
+        var date;
+        date = new Date(_this.lastDate[1], _this.lastDate[2] - 1, _this.lastDate[3]);
+        _this.generateTable((date.getFullYear()) + "-" + (date.getMonth() + 1) + "-" + (date.getDate()));
+        return _this.$fakeInp.focus();
+      };
+    })(this));
+    $formCalendarArrowRight.on("mousedown", function() {
+      stayOpening = true;
+      return skipGenerateTable = true;
     });
-    $fakeInp.on("change", function() {
-      var value;
-      value = $fakeInp.val();
-      $fakeInp.val(formateDate(value));
-      value = value.match(/^(\d{1,2})[^\d]+(\d{1,2})[^\d]+(\d{4})$/);
-      if (value) {
-        value[1] = value[1].length === 1 ? "0" + value[1] : value[1];
-        value[2] = value[2].length === 1 ? "0" + value[2] : value[2];
-        $input.val(value[3] + "-" + value[2] + "-" + value[1]);
-      } else {
-        $input.val("");
-      }
-      $input.trigger("change");
-      return $fakeInp.trigger("blur");
-    });
-    $fakeInp.on("blur", function() {
-      return setTimeout((function(_this) {
-        return function() {
+    $formCalendarArrowRight.on("click", (function(_this) {
+      return function() {
+        var date;
+        date = new Date(_this.lastDate[1], _this.lastDate[2] + 1, _this.lastDate[3]);
+        _this.generateTable((date.getFullYear()) + "-" + (date.getMonth() + 1) + "-" + (date.getDate()));
+        return _this.$fakeInp.focus();
+      };
+    })(this));
+    $input = $(input);
+    this.updateFakeInputValue($input);
+    $input.on("change", (function(_this) {
+      return function() {
+        return _this.updateFakeInputValue($input);
+      };
+    })(this));
+    $input.siblings(".form__inp-empty").on("click", (function(_this) {
+      return function() {
+        return _this.$fakeInp.val("").trigger("change");
+      };
+    })(this));
+    $input.on("focus", (function(_this) {
+      return function() {
+        return _this.$fakeInp.focus();
+      };
+    })(this));
+    this.$fakeInp.on("focus", (function(_this) {
+      return function() {
+        var height, offset, value;
+        $input.addClass("focus");
+        value = $input.val().match(/^(\d{4})[^\d]+(\d{1,2})[^\d]+(\d{1,2})$/);
+        offset = _this.$fakeInp.offset();
+        if (!value) {
+          value = new Date();
+          value = [value.getFullYear(), value.getMonth(), value.getDate()];
+        }
+        if (skipGenerateTable) {
+          skipGenerateTable = false;
+        } else {
+          _this.generateTable(value[1] + "-" + value[2] + "-" + value[3]);
+        }
+        height = _this.$calendar.outerHeight();
+        if (offset.top + height + INPUT_HEIGHT > $document.outerHeight()) {
+          return _this.$calendar.addClass("form__calendar--top").css({
+            top: (offset.top - height - 15) + "px",
+            left: offset.left + "px"
+          }).addClass("form__calendar--show");
+        } else {
+          return _this.$calendar.removeClass("form__calendar--top").css({
+            top: (offset.top + INPUT_HEIGHT) + "px",
+            left: offset.left + "px"
+          });
+        }
+      };
+    })(this));
+    this.$fakeInp.on("change", (function(_this) {
+      return function() {
+        var value;
+        value = _this.$fakeInp.val();
+        _this.$fakeInp.val(formateDate(value));
+        value = value.match(/^(\d{1,2})[^\d]+(\d{1,2})[^\d]+(\d{4})$/);
+        if (value) {
+          value[1] = value[1].length === 1 ? "0" + value[1] : value[1];
+          value[2] = value[2].length === 1 ? "0" + value[2] : value[2];
+          $input.val(value[3] + "-" + value[2] + "-" + value[1]);
+        } else {
+          $input.val("");
+        }
+        $input.trigger("change");
+        return _this.$fakeInp.trigger("blur");
+      };
+    })(this));
+    this.$fakeInp.on("blur", (function(_this) {
+      return function() {
+        return setTimeout(function() {
           if (!stayOpening) {
-            $calendar.removeClass("form__calendar--show").css({
+            _this.$calendar.removeClass("form__calendar--show").css({
               left: ""
             });
             $input.removeClass("focus");
           }
           return stayOpening = false;
-        };
-      })(this), 100);
-    });
-    return $fakeInp.on("keydown", function(e) {
+        }, 10);
+      };
+    })(this));
+    this.$fakeInp.on("keydown", function(e) {
       var $inputs, nextInput, prevInput;
       if (e.keyCode === 9) {
         $inputs = $body.find("input, select, button");
@@ -13587,6 +13694,68 @@ if (!isTouchDevice()) {
         return e.preventDefault();
       }
     });
+  }
+
+  DateControl.prototype.generateTable = function(date) {
+    var className, currentDate, d, day, dayOfWeek, daysInMonth, firstDayOfMonth, firstDayOfWeek, i, j, k, l, month, monthCalendar, ref, ref1, ref2, today;
+    today = new Date();
+    date = date.match(/(\d{4})\-(\d{1,2})\-(\d{1,2})/);
+    if (!date) {
+      date = ["", today.getFullYear(), today.getMonth() + 1, today.getDate()];
+    }
+    this.lastDate = date;
+    date[2] = parseInt(date[2], 10) - 1;
+    currentDate = new Date(date[1], date[2], date[3]);
+    firstDayOfMonth = new Date(date[1], date[2], 1);
+    d = new Date(date[1], date[2] + 1, 0);
+    daysInMonth = d.getDate();
+    dayOfWeek = currentDate.getDay() === 0 ? 7 : currentDate.getDay();
+    firstDayOfWeek = firstDayOfMonth.getDay() === 0 ? 7 : firstDayOfMonth.getDay();
+    monthCalendar = "<table class='form__calendar-table'> <tr> <th>Пн</th> <th>Вт</th> <th>Ср</th> <th>Чт</th> <th>Пт</th> <th>Сб</th> <th>Вс</th> </tr>";
+    monthCalendar += "<tr>";
+    for (i = k = 1, ref = firstDayOfWeek; 1 <= ref ? k < ref : k > ref; i = 1 <= ref ? ++k : --k) {
+      monthCalendar += "<td></td>";
+    }
+    for (j = l = ref1 = i, ref2 = daysInMonth + i; ref1 <= ref2 ? l <= ref2 : l >= ref2; j = ref1 <= ref2 ? ++l : --l) {
+      className = 'form__calendar-cell';
+      day = j - i + 1;
+      month = date[2] + 1;
+      if (day === today.getDate() && date[2] === today.getMonth() && +date[1] === today.getFullYear()) {
+        className += ' form__calendar-cell--today';
+      }
+      if ((j - 1) % 7 === 0) {
+        monthCalendar += "<tr>";
+      }
+      monthCalendar += "<td> <span class='" + className + "' data-value='" + day + "-" + month + "-" + date[1] + "' >" + day + "</span> </td>";
+      if (j % 7 === 0) {
+        monthCalendar += "</tr>";
+      }
+    }
+    monthCalendar += "</table>";
+    this.$calendarDays.html(monthCalendar);
+    return this.$formCalendarMonth.html(MONTHS[date[2]]);
+  };
+
+  DateControl.prototype.updateFakeInputValue = function($src) {
+    var offset, value;
+    offset = $src.offset();
+    value = $src.val().match(/^(\d{4})[^\d]+(\d{1,2})[^\d]+(\d{1,2})$/);
+    if (value) {
+      this.$fakeInp.val(value[3] + "." + value[2] + "." + value[1]);
+    }
+    return this.$fakeInp.css({
+      top: offset.top + "px",
+      left: offset.left + "px"
+    });
+  };
+
+  return DateControl;
+
+})();
+
+if (!isTouchDevice()) {
+  ($("[type=date]")).each(function() {
+    return new DateControl(this);
   });
 }
 
@@ -13612,14 +13781,12 @@ $selects.each(function() {
 
 
 },{"jquery-plugins.coffee":"jquery-plugins.coffee"}],4:[function(require,module,exports){
-var $, $body, $lastFakeInp, formateDate, isTouchDevice, makeFakeInput, updateFakeInputValue,
+var $, $body, TimeControl, formateDate, isTouchDevice, makeFakeInput,
   indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
 $ = require("jquery-plugins.coffee");
 
 $body = $(document.body);
-
-$lastFakeInp = null;
 
 isTouchDevice = (function(_this) {
   return function() {
@@ -13645,87 +13812,109 @@ formateDate = function(date) {
   return "";
 };
 
-updateFakeInputValue = function($src) {
-  var offset, value;
-  offset = $src.offset();
-  value = $src.val().match(/^(\d{1,2})[^\d]+(\d{1,2})$/);
-  if (value) {
-    $lastFakeInp.val(value[1] + ":" + value[2]);
+TimeControl = (function() {
+  function TimeControl(input) {
+    var $input;
+    $input = $(input);
+    this.$fakeInp = makeFakeInput($input);
+    this.updateFakeInputValue($input);
+    $input.on("change", (function(_this) {
+      return function() {
+        return _this.updateFakeInputValue($input);
+      };
+    })(this));
+    $input.siblings(".form__inp-empty").on("click", (function(_this) {
+      return function() {
+        return _this.$fakeInp.val("").trigger("change");
+      };
+    })(this));
+    $input.on("focus", (function(_this) {
+      return function() {
+        return _this.$fakeInp.focus();
+      };
+    })(this));
+    this.$fakeInp.on("focus", (function(_this) {
+      return function() {
+        return _this.$fakeInp.addClass("focus");
+      };
+    })(this));
+    this.$fakeInp.on("blur", (function(_this) {
+      return function() {
+        return _this.$fakeInp.removeClass("focus");
+      };
+    })(this));
+    this.$fakeInp.on("change", (function(_this) {
+      return function() {
+        var value;
+        value = _this.$fakeInp.val();
+        _this.$fakeInp.val(formateDate(value));
+        value = value.match(/^(\d{1,2})[^\d]+(\d{1,2})$/);
+        if (value) {
+          value[1] = value[1].length === 1 ? "0" + value[1] : value[1];
+          value[2] = value[2].length === 1 ? "0" + value[2] : value[2];
+          $input.val(value[1] + ":" + value[2]);
+        } else {
+          $input.val("");
+        }
+        $input.trigger("change");
+        return _this.$fakeInp.trigger("blur");
+      };
+    })(this));
+    this.$fakeInp.on("keydown", (function(_this) {
+      return function(e) {
+        var $inputs, nextInput, prevInput;
+        if (e.keyCode === 9) {
+          $inputs = $body.find("input, select, button");
+          prevInput = $inputs[$inputs.length - 1];
+          nextInput = false;
+          if (e.shiftKey) {
+            $inputs.each(function() {
+              if (this === $input[0]) {
+                $(prevInput).focus();
+                return false;
+              }
+              return prevInput = this;
+            });
+          } else {
+            $inputs.each(function() {
+              if (nextInput) {
+                $(this).focus();
+                return false;
+              }
+              if (this === $input[0]) {
+                return nextInput = this;
+              }
+            });
+            if (!nextInput) {
+              $inputs.first().focus();
+            }
+          }
+          return e.preventDefault();
+        }
+      };
+    })(this));
   }
-  return $lastFakeInp.css({
-    top: offset.top + "px",
-    left: offset.left + "px"
-  });
-};
+
+  TimeControl.prototype.updateFakeInputValue = function($src) {
+    var offset, value;
+    offset = $src.offset();
+    value = $src.val().match(/^(\d{1,2})[^\d]+(\d{1,2})$/);
+    if (value) {
+      this.$fakeInp.val(value[1] + ":" + value[2]);
+    }
+    return this.$fakeInp.css({
+      top: offset.top + "px",
+      left: offset.left + "px"
+    });
+  };
+
+  return TimeControl;
+
+})();
 
 if (!isTouchDevice()) {
-  $("[type=time]").each(function() {
-    var $fakeInp, $input;
-    $input = $(this);
-    $fakeInp = makeFakeInput($input);
-    $lastFakeInp = $fakeInp;
-    updateFakeInputValue($input);
-    $input.on("change", function() {
-      return updateFakeInputValue($input);
-    });
-    $input.siblings(".form__inp-empty").on("click", function() {
-      return $fakeInp.val("").trigger("change");
-    });
-    $input.on("focus", function() {
-      return $fakeInp.focus();
-    });
-    $fakeInp.on("focus", function() {
-      return $input.addClass("focus");
-    });
-    $fakeInp.on("blur", function() {
-      return $input.removeClass("focus");
-    });
-    $fakeInp.on("change", function() {
-      var value;
-      value = $fakeInp.val();
-      $fakeInp.val(formateDate(value));
-      value = value.match(/^(\d{1,2})[^\d]+(\d{1,2})$/);
-      if (value) {
-        value[1] = value[1].length === 1 ? "0" + value[1] : value[1];
-        value[2] = value[2].length === 1 ? "0" + value[2] : value[2];
-        $input.val(value[1] + ":" + value[2]);
-      } else {
-        $input.val("");
-      }
-      $input.trigger("change");
-      return $fakeInp.trigger("blur");
-    });
-    return $fakeInp.on("keydown", function(e) {
-      var $inputs, nextInput, prevInput;
-      if (e.keyCode === 9) {
-        $inputs = $body.find("input, select, button");
-        prevInput = $inputs[$inputs.length - 1];
-        nextInput = false;
-        if (e.shiftKey) {
-          $inputs.each(function() {
-            if (this === $input[0]) {
-              $(prevInput).focus();
-              return false;
-            }
-            return prevInput = this;
-          });
-        } else {
-          $inputs.each(function() {
-            if (nextInput) {
-              $(this).focus();
-              return false;
-            }
-            if (this === $input[0]) {
-              return nextInput = this;
-            }
-          });
-          if (!nextInput) {
-            $inputs.first().focus();
-          }
-        }
-        return e.preventDefault();
-      }
-    });
+  ($("[type=time]")).each(function() {
+    return new TimeControl(this);
   });
 }
 

@@ -1,6 +1,0 @@
-{% for index, option in options %}
-<div class="form__row-option">
-  <input type="radio" class="form__checkbox" role="configs-select-option" value="{{ index }}" id="configs-select-option-{{ index }}" name="configs-select-option"{% if currentValue == index %} checked{% endif %} />
-  <label><input type="text" class="form__inp form__inp--half-width" value="{{ option }}" role="configs-select-option-label" data-index="{{ index }}" /></label>
-</div>
-{% endfor %}

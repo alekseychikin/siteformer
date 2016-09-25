@@ -1,0 +1,78 @@
+{ import(ModuleRow, './sections/configs/table-module-fields') }
+{ import(Main, './sections/main/main') }
+{ import(Scripts, './sections/main/scripts') }
+
+<Main pageTitle="{page_title}" sections={sections} section={section}>
+  <h1 class="head">{ if (id?) }Редактировать{ else }Добавить{ endif } раздел</h1>
+
+  <article class="content" role="configs-add">
+    <form action="/cms/configs/{ if (id?) }{ alias }{ else }add{ endif }/" class="form" role="configs-add-form">
+      <div class="form__item">
+        <label for="name" class="form__label">Название</label>
+        <div class="form__inp-contain">
+          <input type="text" class="form__inp" value="{ title }" name="name" id="name" role="configs-add-title" />
+        </div>
+      </div>
+      <div class="form__item">
+        <label for="alias" class="form__label">Веб-имя</label>
+        <div class="form__inp-contain">
+          <input type="text" class="form__inp" value="{ alias }" name="alias" id="alias" role="configs-add-alias"{ if (id?) } disabled{ endif } />
+        </div>
+      </div>
+      { if (arr_len(modules)) }
+      <div class="form__item">
+        <label for="module" class="form__label">Модуль</label>
+        <div class="form__inp-contain">
+          <label class="form__select">
+            <select name="module" id="module" role="configs-add-module">
+              <option value="default"{ if (module == "default") } selected{ endif }>Стандартный</option>
+              { for (modulesItem, modules) }
+              <option value="{ modulesItem }"{ if (module == modulesItem) } selected{ endif }>{ modulesItem }</option>
+              { endfor }
+            </select>
+          </label>
+        </div>
+      </div>
+      { endif }
+      <div class="form__separate"><span class="form__separate-text">Поля</span></div>
+      <div class="form__table" role="module-fields">
+        <table class="form-table">
+          <colgroup>
+            <col width="30%" />
+            <col width="30%" />
+            <col width="*" />
+            <col width="75" />
+            <col width="75" />
+            <col width="40" />
+          </colgroup>
+          <thead>
+            <tr class="form-table__row form-table__row--head">
+              <th class="form-table__cell">Заголовок</th>
+              <th class="form-table__cell">Веб-имя</th>
+              <th class="form-table__cell">Тип</th>
+              <th></th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody role="tbody-module-fields">
+            <ModuleRow fields={fields} types={types} />
+          </tbody>
+        </table>
+        <div class="form__row">
+          <button role="btn-add-field" class="form__btn" type="button">Добавить поле</button>
+        </div>
+      </div>
+      <div class="form__submit">
+        <button class="form__btn form__btn--submit">Сохранить</button>
+        <a href="/cms/configs/" class="form__btn">Отменить</a>
+      </div>
+    </form>
+  </article>
+
+  <div class="popup" role="configs-popup">
+  </div>
+
+  <Scripts>
+    <script src="/sf-engine/modules/GUI/dist/configs/add.js"></script>
+  </Scripts>
+</Main>

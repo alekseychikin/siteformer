@@ -46,7 +46,7 @@ class SFRouter
     }
 
     if (isset($data['template'])) {
-      echo SFTemplater::renderArray($data['template']);
+      echo SFTemplater::render($data['template'], SFResponse::getResults());
     }
   }
 

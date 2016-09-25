@@ -1,6 +1,6 @@
 View = require "view.coffee"
 Render = require "render"
-modalWindowTemplate = require "types/file/modal.tmpl.js"
+modalWindowTemplate = require "types/file/modal"
 
 module.exports = View
   initial: ->
@@ -8,20 +8,18 @@ module.exports = View
 
   events:
     "submit: @configs-form": "submitConfigsForm"
-    "change: @configs-file-storage": (e) -> @model.updateStorage ($ e.target).data "value"
-    "change: @configs-file-path": (e) -> @model.updatePath e.target.value
-    "change: @configs-file-width": (e) -> @model.updateWidth e.target.value
-    "change: @configs-file-height": (e) -> @model.updateHeight e.target.value
-    "change: @configs-file-source": (e) -> @model.updateSource e.target.value
-    "change: @configs-file-s3-access-key": (e) -> @model.updateS3AccessKey e.target.value
-    "change: @configs-file-s3-secret-key": (e) -> @model.updateS3SecretKey e.target.value
+    "click: @configs-file-storage": (e) -> @model.updateStorage ($ e.target).data "value"
+    "keydown: @configs-file-path": (e) -> @model.resetPath()
+    "keyup input: @configs-file-path": (e) ->  @frequency 500, => @model.updatePath e.target.value
+    "change: @configs-file-path": (e) ->  @model.updatePath e.target.value
+    "change keyup input blur: @configs-file-s3-access-key": (e) -> @frequency 500, => @model.updateS3AccessKey e.target.value
+    "change keyup input blur: @configs-file-s3-secret-key": (e) -> @frequency 500, => @model.updateS3SecretKey e.target.value
     "change: @configs-file-s3-bucket": (e) -> @model.updateS3Bucket e.target.value
-    "change: @configs-file-s3-path": (e) -> @model.updateS3Path e.target.value
+    "change keyup input: @configs-file-s3-path": (e) -> @frequency 500, => @model.updateS3Path e.target.value
+    "click: @test-connection-s3": (e) -> @model.testConnectionS3()
     "popup-close: contain": (e) -> @destroy()
 
-  render: (state) ->
-    @modalContain state
-    ($ "@tabs").tabs()
+  render: (state) -> @modalContain state
 
   submitConfigsForm: (e) ->
     @trigger "save-configs-modal", @model.getState()

@@ -4,7 +4,7 @@ httpPost = (require "ajax.coffee").httpPost
 
 module.exports = Model
   initialState: ->
-    httpGet "#{window.location.pathname}__json/"
+    httpGet window.location.pathname
 
   setCheck: (index, checked) ->
     index = parseInt index, 10
@@ -27,7 +27,7 @@ module.exports = Model
         sections.push section
       else
         deleteSections.push section.id
-    httpPost "#{window.location.pathname}action_delete/__json/", {deleteSections}
+    httpPost "#{window.location.pathname}action_delete/", {deleteSections}
     .catch (response) =>
       console.error response.error
       @set sections: sourceSections

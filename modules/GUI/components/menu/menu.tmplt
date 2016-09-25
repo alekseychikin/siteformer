@@ -1,0 +1,10 @@
+{ import(MenuItems, "./components/menu/menu-items") }
+
+<menu class="menu" role="sections-menu">
+  <MenuItems sections={sections} section={section} />
+</menu>
+<menu class="menu">
+  <li class="menu__item menu__item--configs{ if (section == "configs") } menu__item--active{ endif }">
+    <a href="/cms/configs/" class="menu__link">Настройки</a>
+  </li>
+</menu>

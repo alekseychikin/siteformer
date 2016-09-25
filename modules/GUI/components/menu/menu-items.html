@@ -1,3 +1,0 @@
-{% for sectionsItem in sections %}
-  <li class="menu__item{% if section == sectionsItem['alias'] %} menu__item--active{% endif %}"><a href="/cms/{{ sectionsItem['alias'] }}/" class="menu__link">{{ sectionsItem['title'] }}</a></li>
-{% endfor %}

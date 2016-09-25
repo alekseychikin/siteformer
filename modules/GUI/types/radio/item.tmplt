@@ -1,0 +1,9 @@
+<div class="form__inp-contain" role="input-contain">
+  { for (i, dataItem, field['settings']['defaultData']) }
+  <div class="form__row-option">
+    <input class="form__radio" type="radio" id="{ field['alias'] }{ i }" name="{ field['alias'] }" role="radio" data-index="{ i }"{ if (field['settings']['defaultValue'] == i) } checked{ endif } />
+    <label class="form__radio-label" for="{ field['alias'] }{ i }"></label>
+    <label for="{ field['alias'] }{ i }">{ dataItem }</label>
+  </div>
+  { endfor }
+</div>

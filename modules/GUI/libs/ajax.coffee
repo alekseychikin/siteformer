@@ -16,13 +16,24 @@ createXMLHTTPObject = ->
     break
   xmlhttp
 
+logicConsts = ["false", "true"]
+
+prepareJsonResponse = (response) ->
+  for key of response
+    response[key] = !!(logicConsts.indexOf response[key]) if ~logicConsts.indexOf response[key]
+    response[key] = parseInt(response[key], 10) if response[key].match? && response[key].match /^\d+$/
+    response[key] = prepareJsonResponse response[key] if typeof response[key] == "object"
+  response
+
 readyStateChange = (req, resolve, reject) ->
   ->
     if req.readyState != 4 then return false
+
     result = false
+
     try
       if req.responseText.length
-        result = JSON.parse req.responseText
+        result = prepareJsonResponse JSON.parse req.responseText
     catch e
       result = req.responseText
     if req.status != 200 && req.status != 304
@@ -38,7 +49,7 @@ httpGet = (url, data = null) ->
       url += "?" + parsePostData data
     req.open "GET", url, true
     req.setRequestHeader "X-Requested-With", "XMLHttpRequest"
-    req.setRequestHeader "Accept", "application/json, text/javascript, */*; q=0.01"
+    req.setRequestHeader "Accept", "application/json"
     req.setRequestHeader "Content-type", "application/x-www-form-urlencoded; charset=UTF-8"
     req.onreadystatechange = readyStateChange req, resolve, reject
     req.send()
@@ -48,7 +59,7 @@ httpPost = (url, data) ->
     req = createXMLHTTPObject()
     req.open "POST", url, true
     req.setRequestHeader "X-Requested-With", "XMLHttpRequest"
-    req.setRequestHeader "Accept", "application/json, text/javascript, */*; q=0.01"
+    req.setRequestHeader "Accept", "application/json"
     req.setRequestHeader "Content-type", "application/x-www-form-urlencoded; charset=UTF-8"
     req.onreadystatechange = readyStateChange req, resolve, reject
     req.send parsePostData data

@@ -1,6 +1,5 @@
 $ = require "jquery-plugins.coffee"
 $body = $ document.body
-$lastFakeInp = null
 
 isTouchDevice = =>
   ("ontouchstart" in window) ||
@@ -21,46 +20,34 @@ formateDate = (date) ->
     return "#{value[1]}:#{value[2]}"
   return ""
 
-updateFakeInputValue = ($src) ->
-  offset = $src.offset()
-  value = $src.val().match /^(\d{1,2})[^\d]+(\d{1,2})$/
-  if value
-    $lastFakeInp.val "#{value[1]}:#{value[2]}"
-  $lastFakeInp.css
-    top: "#{offset.top}px"
-    left: "#{offset.left}px"
+class TimeControl
+  constructor: (input) ->
+    $input = $ input
+    @$fakeInp = makeFakeInput $input
 
-if !isTouchDevice()
-  $ "[type=time]"
-  .each ->
-    $input = $ this
-    $fakeInp = makeFakeInput $input
-    $lastFakeInp = $fakeInp
+    @updateFakeInputValue $input
 
-    updateFakeInputValue $input
-
-    $input.on "change", ->
-      updateFakeInputValue $input
+    $input.on "change", => @updateFakeInputValue $input
 
     $input
     .siblings ".form__inp-empty"
-    .on "click", ->
-      $fakeInp
+    .on "click", =>
+      @$fakeInp
       .val ""
       .trigger "change"
 
-    $input.on "focus", ->
-      $fakeInp.focus()
+    $input.on "focus", =>
+      @$fakeInp.focus()
 
-    $fakeInp.on "focus", ->
-      $input.addClass "focus"
+    @$fakeInp.on "focus", =>
+      @$fakeInp.addClass "focus"
 
-    $fakeInp.on "blur", ->
-      $input.removeClass "focus"
+    @$fakeInp.on "blur", =>
+      @$fakeInp.removeClass "focus"
 
-    $fakeInp.on "change", ->
-      value = $fakeInp.val()
-      $fakeInp.val formateDate value
+    @$fakeInp.on "change", =>
+      value = @$fakeInp.val()
+      @$fakeInp.val formateDate value
       value = value.match /^(\d{1,2})[^\d]+(\d{1,2})$/
 
       if value
@@ -71,9 +58,9 @@ if !isTouchDevice()
         $input.val ""
 
       $input.trigger "change"
-      $fakeInp.trigger "blur"
+      @$fakeInp.trigger "blur"
 
-    $fakeInp.on "keydown", (e) ->
+    @$fakeInp.on "keydown", (e) =>
       if e.keyCode == 9
         $inputs = $body.find "input, select, button"
         prevInput = $inputs[$inputs.length - 1]
@@ -95,8 +82,7 @@ if !isTouchDevice()
 
               return false
 
-            if this == $input[0]
-              nextInput = this
+            nextInput = this if this == $input[0]
 
           if !nextInput
             $inputs
@@ -104,3 +90,17 @@ if !isTouchDevice()
             .focus()
 
         e.preventDefault()
+
+  updateFakeInputValue: ($src) ->
+    offset = $src.offset()
+    value = $src.val().match /^(\d{1,2})[^\d]+(\d{1,2})$/
+
+    @$fakeInp.val "#{value[1]}:#{value[2]}" if value
+
+    @$fakeInp.css
+      top: "#{offset.top}px"
+      left: "#{offset.left}px"
+
+
+if !isTouchDevice()
+  ($ "[type=time]").each -> new TimeControl @

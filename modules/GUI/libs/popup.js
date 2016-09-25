@@ -27,11 +27,11 @@ function initial(element)
 {
   initiatedElements.push(element);
   var $element = $(element);
-  $element.find('.popup__close').on('click', function ()
+  $element.on('click', '.popup__close', function ()
   {
     Popup.close(element);
   });
-  $element.find('.popup__cancel').on('click', function ()
+  $element.on('click', '.popup__cancel', function ()
   {
     Popup.close(element);
   });

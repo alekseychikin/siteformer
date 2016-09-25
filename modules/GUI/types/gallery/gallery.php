@@ -8,7 +8,7 @@ class SFTypeGallery extends SFType
   {
     return array(
       'type' => 'INT(11) UNSIGNED',
-      'default' => NULL
+      'default' => null
     );
   }
 

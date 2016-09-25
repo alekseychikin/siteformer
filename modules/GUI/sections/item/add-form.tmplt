@@ -1,0 +1,52 @@
+{ import (Checkbox, './types/checkbox/item') }
+{ import (Date, './types/date/item') }
+{ import (File, './types/file/item') }
+{ import (Gallery, './types/gallery/item') }
+{ import (Image, './types/image/item') }
+{ import (Password, './types/password/item') }
+{ import (Radio, './types/radio/item') }
+{ import (Section, './types/section/item') }
+{ import (Select, './types/select/item') }
+{ import (String, './types/string/item') }
+{ import (Table, './types/table/item') }
+{ import (Tags, './types/tags/item') }
+{ import (Text, './types/text/item') }
+
+{ for (field, fields) }
+  { if (!field['settings']['hide']? || (field['settings']['hide']? && !field['settings']['hide'])) }
+<div class="form__item">
+  <label for="{ field['alias'] }" class="form__label">{ field['title'] }</label>
+  { if (field['type'] == 'checkbox') }
+    <Checkbox field={field} />
+  { elseif (field['type'] == 'date') }
+    <Date  field={field} />
+  { elseif (field['type'] == 'file') }
+    <File  field={field} />
+  { elseif (field['type'] == 'gallery') }
+    <Gallery  field={field} />
+  { elseif (field['type'] == 'image') }
+    <Image  field={field} />
+  { elseif (field['type'] == 'password') }
+    <Password  field={field} />
+  { elseif (field['type'] == 'radio') }
+    <Radio  field={field} />
+  { elseif (field['type'] == 'section') }
+    <Section  field={field} />
+  { elseif (field['type'] == 'select') }
+    <Select  field={field} />
+  { elseif (field['type'] == 'string') }
+    <String  field={field} />
+  { elseif (field['type'] == 'table') }
+    <Table  field={field} />
+  { elseif (field['type'] == 'tags') }
+    <Tags  field={field} />
+  { elseif (field['type'] == 'text') }
+    <Text  field={field} />
+  { endif }
+</div>
+  { endif }
+{ endfor }
+<div class="form__submit">
+  <button class="form__btn form__btn--submit">Создать</button>
+  <a href="/cms/{ section }/" class="form__btn">Отменить</a>
+</div>

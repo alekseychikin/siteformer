@@ -27,7 +27,7 @@ class SFGUI
         'sections' => 'gui-sections',
         'modules' => 'gui-modules'
       ],
-      'template' => ['sections/configs/index', 'sections/main/main']
+      'template' => 'sections/configs/index'
     ]);
     SFRouter::addRule('/cms/configs/add/', [
       'data' => [
@@ -41,7 +41,7 @@ class SFGUI
         'alias' => 'gui-scalar?value=',
         'module' => 'gui-scalar?value=default'
       ],
-      'template' => ['sections/configs/add', 'sections/main/main']
+      'template' => 'sections/configs/add'
     ]);
     SFRouter::addRule('/cms/configs/action_save/', MODULES . 'GUI/sections/configs/action_save');
     SFRouter::addRule('/cms/configs/action_delete/', MODULES . 'GUI/sections/configs/action_delete');
@@ -58,10 +58,16 @@ class SFGUI
         'sections' => 'gui-sections',
         'modules' => 'gui-modules'
       ],
-      'template' => ['sections/configs/add', 'sections/main/main']
+      'template' => 'sections/configs/add'
     ]);
     SFRouter::addRule('/cms/types/{type}/{handle}/', MODULES . 'GUI/sections/main/type');
-    SFRouter::addRule('/cms/{section}/', MODULES . 'GUI/sections/item/index');
+    SFRouter::addRule('/cms/{section}/', [
+      'data' => [
+        'fields' => 'gui-fields?section={section}',
+        'data' => 'gui-item-list?section={section}&offset=0&limit=10'
+      ],
+      'template' => 'sections/item/index'
+    ]);
     SFRouter::addRule('/cms/{section}/add/', [
       'data' => [
         'sections' => 'gui-sections',
@@ -69,13 +75,12 @@ class SFGUI
         'section' => 'gui-sections?section={section}&field=alias',
         'page_title' => 'gui-scalar?value=Добавить раздел'
       ],
-      'template' => ['sections/item/add', 'sections/main/main']
+      'template' => 'sections/item/add'
     ]);
     SFRouter::addRule('/cms/{section}/action_save/', MODULES . 'GUI/sections/item/action_save');
     SFRouter::addRule('/cms/{section}/{item}/', MODULES . 'GUI/sections/item');
 
-    define('GUI_COMPILE_TEMPLATES', ENGINE . 'temp/modules/GUI/.compile_templates/');
-    SFTemplater::compileTemplates(MODULES . 'GUI/', GUI_COMPILE_TEMPLATES);
+    define('GUI_COMPILE_TEMPLATES', ENGINE . 'modules/GUI/dist/');
 
     if (SFURI::getFirstUri() === 'cms') {
       SFTemplater::setCompilesPath(GUI_COMPILE_TEMPLATES);
@@ -118,7 +123,7 @@ class SFGUI
       ->from('sections')
       ->join('section_fields')
       ->on('section_fields.section', SFORM::field('sections.id'))
-      ->id($id)
+      ->where('id', $id)
       ->exec();
     $res = $res[0];
     $res['fields'] = self::prepareSectionFields($res['section_fields']);
@@ -191,6 +196,7 @@ class SFGUI
 
     $table->addKey('id', 'primary key');
     $table->exec();
+
     $idSection = SFORM::insert('sections')
       ->values([
         'title' => $data['title'],
@@ -199,6 +205,7 @@ class SFGUI
         'table' => $data['table']
       ])
       ->exec();
+
     arrMap($data['fields'], function ($field) use ($idSection) {
       SFORM::insert('section_fields')
         ->values([
@@ -206,7 +213,8 @@ class SFGUI
           'title' => $field['title'],
           'alias' => $field['alias'],
           'type' => $field['type'],
-          'settings' => $field['settings']
+          'settings' => $field['settings'],
+          'position' => $field['position']
         ])
         ->exec();
     });
@@ -228,21 +236,40 @@ class SFGUI
     self::validateSettingsOfData($data);
 
     // prepare source fields and new data fields for get diff
+    $source['fields'] = arrMap(arrSort($source['fields'], function ($a, $b) {
+      return $a['id'] < $b['id'];
+    }), function ($field) {
+      $field['position'] = (int)$field['position'];
+
+      return $field;
+    });
+
+    $index = 0;
+
+    $data['fields'] = arrMap(arrSort($data['fields'], function ($a, $b) {
+      return $a['position'] < $b['position'];
+    }), function ($field) use (& $index) {
+      $field['position'] = $index++;
+
+      return $field;
+    });
+
+    $data['fields'] = arrSort($data['fields'], function ($a, $b) {
+      return $a['id'] < $b['id'] && strlen($a['id']) && strlen($b['id']);
+    });
+
     $dataFields = $data['fields'];
     $sourceFields = $source['fields'];
-    $sourceFields = arrSort($sourceFields, function ($a, $b) {
-      return $a['id'] < $b['id'];
-    });
-    $dataFields = arrSort($dataFields, function ($a, $b) {
-      return $a['id'] < $b['id'];
-    });
+
     $sourceFields = arrMap($sourceFields, function ($field) {
       unset($field['section']);
       unset($field['title']);
       $field['settings'] = json_encode($field['settings']);
+      $field['position'] = (int)$field['position'];
 
       return $field;
     });
+
     $dataFields = arrMap($dataFields, function ($field) {
       unset($field['title']);
 
@@ -252,87 +279,111 @@ class SFGUI
     // get diff
     $arrDiff = arrDifference($sourceFields, $dataFields);
 
+    SFResponse::showContent();
+
+    echo "alter tables\n";
     foreach ($arrDiff as $field) {
       switch ($field['mark']) {
         case 'edit':
+          echo "\n"."edit ".$source['table']."\n";
           $fieldType = array_merge($defaultField, self::getSqlFieldType($field['element']));
           $fieldType['name'] = $field['element']['alias'];
           SFORM::alter($source['table'])
             ->change($field['origin']['alias'], $fieldType)
             ->exec();
-          break;
+            // ->getQuery();
 
+          break;
         case 'add':
+          echo "\n"."add ".$source['table']."\n";
           $fieldType = array_merge($defaultField, self::getSqlFieldType($field['element']));
           $fieldType['name'] = $field['element']['alias'];
           SFORM::alter($source['table'])
             ->add($fieldType)
             ->exec();
-          break;
+            // ->getQuery();
 
+          break;
         case 'delete':
+          echo "\n"."delete ".$source['table']."\n";
           SFORM::alter($source['table'])
             ->drop($field['element']['alias'])
             ->exec();
+            // ->getQuery();
 
           break;
       }
     }
 
+    echo "update sections\n";
     SFORM::update('sections')
       ->values([
         'title' => $data['title'],
-        'alias' => $data['alias'],
         'module' => $data['module']
       ])
       ->id($id)
       ->exec();
+      // ->getQuery();
 
-    $source['fields'] = arrMap($source['fields'], function ($item) {
+    $sourceFields = arrMap($source['fields'], function ($item) {
       $item['settings'] = json_encode($item['settings']);
       unset($item['section']);
 
       return $item;
     });
-    $fields = arrDifference($source['fields'], $data['fields']);
 
+    $fields = arrDifference($sourceFields, $data['fields']);
+
+    echo "edit section_fields table\n";
     foreach ($fields as $field) {
       switch($field['mark']) {
         case 'add':
+          echo "add\n";
           SFORM::insert('section_fields')
             ->values([
               'section' => $id,
               'title' => $field['element']['title'],
               'alias' => $field['element']['alias'],
               'type' => $field['element']['type'],
-              'settings' => $field['element']['settings']
+              'settings' => $field['element']['settings'],
+              'position' => $field['element']['position']
             ])
             ->exec();
-          break;
+            // ->getQuery();
 
+          break;
         case 'delete':
+          echo "delete\n";
           SFORM::delete('section_fields')
             ->id($field['element']['id'])
             ->exec();
-          break;
+            // ->getQuery();
 
+          break;
         case 'edit':
+          echo "edit\n";
           SFORM::update('section_fields')
             ->values([
               'title' => $field['element']['title'],
               'alias' => $field['element']['alias'],
               'type' => $field['element']['type'],
-              'settings' => $field['element']['settings']
+              'settings' => $field['element']['settings'],
+              'position' => $field['element']['position']
             ])
             ->id($field['origin']['id'])
             ->exec();
-          break;
+            // ->getQuery();
 
+          break;
         case 'skip':
           $fieldType = self::getSqlFieldType($field['element']);
+
           break;
       }
     }
+
+    $section = self::getSectionById($id);
+    SFResponse::set('fields', $section['fields']);
   }
 
   // Get array of modules
@@ -426,6 +477,7 @@ class SFGUI
 
   private static function getSqlFieldType($field) {
     $className = self::getClassNameByType($field['type']);
+
     if (class_exists($className)) {
       return $className::getSqlField($field['settings']);
     }
@@ -434,10 +486,12 @@ class SFGUI
   }
 
   private static function prepareSectionFields($fields) {
-    return arrMap($fields, function($field) {
+    return arrSort(arrMap($fields, function($field) {
       $field['settings'] = json_decode($field['settings'], true);
 
       return $field;
+    }), function ($a, $b) {
+      return $a['position'] < $b['position'];
     });
   }
 

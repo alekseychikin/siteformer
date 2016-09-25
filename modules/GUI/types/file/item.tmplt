@@ -1,0 +1,6 @@
+<div class="form__item">
+  <label for="{ item['name'] }" class="form__label">{ item['label'] }</label>
+  <div class="form__input-contain">
+    <input type="text" name="{ item['name'] }" id="{ item['name'] }" class="form__inp" value="{ item['value'] }" />
+  </div>
+</div>

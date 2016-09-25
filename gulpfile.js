@@ -22,6 +22,8 @@ var calc = require('postcss-calc');
 var customProperties = require('postcss-custom-properties');
 var cache = require('gulp-cached');
 var transform = require('stream').Transform;
+var chokidar = require('chokidar');
+var templatesTask = require('./tasks/templates');
 
 var requirePaths = [
   'node_modules',
@@ -32,20 +34,33 @@ var requirePaths = [
   'temp/modules/GUI/.compile_templates'
 ];
 
-gulp.task('default', ['watch']);
+function watch(src, tasks) {
+  chokidar.watch(src, {ignoreInitial: true}).on('all', function () {
+    gulp.start(tasks);
+  });
+}
 
-gulp.task('watch', ['prepare-css', 'prepare-js', 'prepare-js-lib', 'prepare-images'], function ()
+gulp.task('default', ['prepare-css', 'prepare-js', 'prepare-js-lib', 'prepare-images']);
+
+gulp.task('watch', ['default'], function ()
 {
   livereload.listen();
-  gulp.watch('modules/GUI/**/*.html', ['prepare-js']);
-  gulp.watch('modules/GUI/components/**/*.css', ['prepare-css']);
-  gulp.watch('modules/GUI/sections/**/*.css', ['prepare-css']);
-  gulp.watch('modules/GUI/components/**/*.{js,coffee}', ['prepare-js-lib']);
-  gulp.watch('modules/GUI/sections/**/*.{js,coffee}', ['prepare-js']);
-  gulp.watch('modules/GUI/types/**/*.{js,coffee}', ['prepare-js']);
-  gulp.watch('modules/GUI/libs/**/*.{js,coffee}', ['prepare-js-lib']);
-  gulp.watch('modules/GUI/components/**/*.{png,svg,jpg,jpeg}', ['prepare-images']);
+  watch('modules/GUI/**/*.html', 'prepare-js');
+  watch('modules/GUI/sections/**/*.css', 'prepare-css');
+  watch('modules/GUI/components/**/*.css', 'prepare-css');
+  watch('modules/GUI/libs/**/*.{js,coffee}', 'prepare-js-lib');
+  watch('modules/GUI/components/**/*.{js,coffee}', 'prepare-js-lib');
+  watch('modules/GUI/sections/**/*.{js,coffee}', 'prepare-js');
+  watch('modules/GUI/types/**/*.{js,coffee}', 'prepare-js');
+  watch('modules/GUI/**/*.tmplt', 'prepare-js');
+  watch('modules/GUI/components/**/*.{png,svg,jpg,jpeg}', 'prepare-images');
 });
+
+gulp.task('templates', templatesTask(
+  'modules/GUI/**/*.tmplt',
+  'modules/GUI/dist',
+  'modules/GUI/dist'
+));
 
 gulp.task('prepare-css', function ()
 {
@@ -267,7 +282,7 @@ gulp.task('prepare-js-components', function ()
   .pipe(gulp.dest('modules/GUI/dist/components'));
 });
 
-gulp.task('prepare-js', ['prepare-html', 'prepare-js-components'], function ()
+gulp.task('prepare-js', ['prepare-html', 'templates', 'prepare-js-components'], function ()
 {
   return gulp.src([
     '!modules/GUI/sections/**/*Model.coffee',

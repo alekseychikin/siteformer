@@ -8,6 +8,7 @@
   height: 220px;
   display: block;
   overflow: hidden;
+  cursor: pointer;
 
   input {
     position: absolute;

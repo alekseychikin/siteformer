@@ -14,8 +14,10 @@
   "license": "ISC",
   "devDependencies": {
     "browserify": "^12.0.1",
+    "buffer": "^4.9.1",
+    "chokidar": "^1.4.3",
     "coffeeify": "^2.0.1",
-    "gulp": "^3.9.0",
+    "gulp": "^3.9.1",
     "gulp-cached": "^1.1.0",
     "gulp-concat": "^2.6.0",
     "gulp-cssi": "0.0.5",
@@ -36,7 +38,7 @@
     "postcss-import": "^7.1.3",
     "postcss-nested": "^1.0.0",
     "stream": "0.0.2",
-    "through2": "^2.0.0"
+    "through2": "^2.0.1"
   },
   "dependencies": {
     "jquery": "^1.11.3",

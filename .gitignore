@@ -21,3 +21,4 @@ CVS
 /temp/
 *.map
 *.log
+/modules/GUI/dist/

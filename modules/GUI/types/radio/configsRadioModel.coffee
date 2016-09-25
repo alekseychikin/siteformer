@@ -1,6 +1,11 @@
 Model = require "model.coffee"
 
 module.exports = Model
+  initial: ->
+    if + @state.defaultValue == -1
+      defaultData = @state.defaultData.slice(0)
+      defaultData.shift()
+      @set {defaultData}
 
   getState: -> @state
 
@@ -9,16 +14,23 @@ module.exports = Model
     numOpts = parseInt @state.numOptions, 10
     defaultValue = parseInt @state.defaultValue, 10
     defaultData = @state.defaultData.slice()
-    if value > numOpts
-      for i in [numOpts + 1..value]
-        defaultData.push ""
-    else
-      for i in [value + 1..numOpts]
-        defaultData.pop()
-      if defaultValue >= value
-        @set {defaultValue}
-    @set numOptions: value
-    @set {defaultData}
+
+    if !isNaN value
+      if value > numOpts
+        for i in [numOpts + 1..value]
+          defaultData.push ""
+      else if value < numOpts
+        for i in [value + 1..numOpts]
+          defaultData.pop()
+        if defaultValue >= value
+          @set {defaultValue}
+
+      defaultValue = -1 if defaultValue + 1 >= value
+
+      @set
+        numOptions: value
+        defaultData: defaultData
+        defaultValue: defaultValue
 
   updateDefaultValue: (value) -> @set defaultValue: parseInt value, 10
 

@@ -1,0 +1,95 @@
+<div class="popup__head">Настройки изображения</div>
+{ isEmpty = !str_len(s3AccessKey) || !str_len(s3SecretKey) }
+<form action="" class="form" role="configs-form">
+  <div class="form__item">
+    <label class="form__label">Хранилище</label>
+    <div class="form__inp-contain">
+      <div class="tabs">
+        <button type="button" class="tabs__item{ if (storage == "local") } tabs__item--active{ endif }" role="configs-gallery-storage" data-value="local">Локальное</button>
+        <button type="button" class="tabs__item{ if (storage == "s3") } tabs__item--active{ endif }" role="configs-gallery-storage" data-value="s3">S3</button>
+      </div>
+    </div>
+  </div>
+  <div role="configs-gallery-modal-storage-local configs-gallery-modal-storage-frame" { if (storage != 'local') } style="display: none"{ endif }>
+    <div class="form__item">
+      <label for="configs-gallery-path" class="form__label">Путь</label>
+      <div class="form__inp-contain">
+        <input type="text" class="form__inp" value="{ path }" role="configs-gallery-path" id="configs-gallery-path" />
+        { if (pathError) }
+        <span class="form__error">{ pathError }</span>
+        { endif }
+      </div>
+    </div>
+  </div>
+  <div role="configs-gallery-modal-storage-s3 configs-gallery-modal-storage-frame" { if (storage != 's3') } style="display: none"{ endif }>
+    <div class="form__item">
+      <label for="configs-gallery-s3-access-key" class="form__label">Access key</label>
+      <div class="form__inp-contain">
+        <input type="text" class="form__inp" value="{ s3AccessKey }" role="configs-gallery-s3-access-key" id="configs-gallery-s3-access-key" />
+      </div>
+    </div>
+    <div class="form__item">
+      <label for="configs-gallery-s3-secret-key" class="form__label">Secret key</label>
+      <div class="form__inp-contain">
+        <input type="password" class="form__inp" value="" role="configs-gallery-s3-secret-key" id="configs-gallery-s3-secret-key" />
+      </div>
+    </div>
+    <div class="form__item">
+      <div class="form__inp-contain">
+        <button type="button" class="form__btn" role="test-connection-s3"{ if (isEmpty || s3auth || isisS3Checking) } disabled{ endif }>
+          { if (isisS3Checking) }
+          Соединение...
+          { elseif (s3auth) }
+          Готово
+          { else }
+          Подключиться
+          { endif }
+        </button>
+      </div>
+    </div>
+    { if (s3auth) }
+      <div class="form__item">
+        <label for="configs-gallery-s3-bucket" class="form__label">Bucket</label>
+        <div class="form__inp-contain">
+        { if (arr_len(buckets)) }
+          <label class="form__select">
+            <select role="configs-gallery-s3-bucket" id="configs-gallery-s3-bucket">
+              { for (bucket, buckets) }
+              <option value="{ bucket }"{ if (s3Bucket == bucket) } selected{ endif }>{ bucket }</option>
+              { endfor }
+            </select>
+          </label>
+        { else }
+          <input type="text" class="form__inp" value="{ s3Bucket }" role="configs-gallery-s3-bucket" id="configs-gallery-s3-bucket" />
+        { endif }
+        </div>
+      </div>
+      <div class="form__item">
+        <label for="configs-gallery-s3-path" class="form__label">Путь</label>
+        <div class="form__inp-contain">
+          <input type="text" class="form__inp" value="{ s3Path }" role="configs-gallery-s3-path" id="configs-gallery-s3-path" />
+        </div>
+      </div>
+    { endif }
+  </div>
+  <div class="form__item">
+    <label for="configs-gallery-width" class="form__label">Уменьшить до заданных размеров (с сохранением пропорций)</label>
+    <div class="form__inp-contain form__inp-contain--full-width">
+      <input type="text" class="form__inp form__inp--very-short" value="{ width }" role="configs-gallery-width" id="configs-gallery-width" />
+      <span class="form__between-inp">×</span>
+      <input type="text" class="form__inp form__inp--very-short" value="{ height }" role="configs-gallery-height" />
+    </div>
+  </div>
+  <div class="form__item">
+    <label for="configs-gallery-width" class="form__label">Уменьшить превью до заданных размеров (с сохранением пропорций)</label>
+    <div class="form__inp-contain form__inp-contain--full-width">
+      <input type="text" class="form__inp form__inp--very-short" value="{ previewWidth }" role="configs-gallery-preview-width" id="configs-gallery-preview-width" />
+      <span class="form__between-inp">×</span>
+      <input type="text" class="form__inp form__inp--very-short" value="{ previewHeight }" role="configs-gallery-preview-height" />
+    </div>
+  </div>
+  <div class="form__submit">
+    <button class="form__btn form__btn--submit"{ if ((storage == "local" && pathError) || (storage == "s3" && (!s3auth))) } disabled{ endif }>Сохранить</button>
+    <button type="button" class="form__btn popup__cancel">Отменить</button>
+  </div>
+</form>

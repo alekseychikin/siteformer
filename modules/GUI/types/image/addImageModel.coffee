@@ -22,13 +22,12 @@ module.exports = Model
   get: ->
     if @state.readyToSave
       @state.uploadedPath
+    else if @input && @state.filename
+      httpFile "/cms/types/image/uploadimage/",
+        image: @input
+      .then (response) =>
+        @set readyToSave: true
+        @set uploadedPath: response.filename
+        response.filename
     else
-      if @input && @state.filename
-        httpFile "/cms/types/image/uploadimage/__json/",
-          image: @input
-        .then (response) =>
-          @set readyToSave: true
-          @set uploadedPath: response.filename
-          response.filename
-      else
-        false
+      false

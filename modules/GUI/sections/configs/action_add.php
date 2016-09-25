@@ -3,9 +3,9 @@
   $modules = SFGUI::getModules();
   $modules[] = 'default';
   $types = array();
-  arrMap(SFGUI::getTypes(), function ($type) use (& $types)
-  {
-    $types[] = $type['alias'];
+
+  arrMap(SFGUI::getTypes(), function ($type) use (& $types) {
+    $types[] = $type['type'];
   });
 
   SFORM::showError();
@@ -17,10 +17,9 @@
       'unique' => function ($value) {
         $res = SFORM::select()
           ->from('sections')
-          ->where(_and_(
-            _expr_('title', $value),
-            _expr_('enable', 'IS NOT', NULL)
-          ));
+          ->where('title', $value)
+          ->andWhere('enable', 'IS NOT', NULL);
+
         return !$res->length();
       }
     ),
@@ -32,10 +31,9 @@
       'unique' => function ($value) {
         $res = SFORM::select()
           ->from('sections')
-          ->where(_and_(
-            _expr_('alias', $value),
-            _expr_('enable', 'IS NOT', NULL)
-          ));
+          ->where('alias', $value)
+          ->andWhere('enable', 'IS NOT', NULL);
+
         return !$res->length();
       }
     ),
@@ -80,6 +78,10 @@
           'modify' => function ($settings) {
             return json_encode($settings);
           }
+        ),
+        array(
+          'name' => 'position',
+          'valid' => '/^\d+$/'
         )
       )
     )

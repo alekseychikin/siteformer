@@ -2,9 +2,49 @@ $ = require "jquery-plugins.coffee"
 View = require "view.coffee"
 Render = require "render"
 Popup = require "popup"
-tableModuleFields = require "sections/configs/table-module-fields.tmpl.js"
+tableModuleFields = require "sections/configs/table-module-fields"
+$body = $ document.body
+
+createDuplicateRow = ($rowRaw) ->
+  $fakeRow = $ "<div class='form-table__row-fake'></div>"
+  @position = $rowRaw.offset()
+  @fakeRowHeight = $rowRaw.height()
+  $tdsRaw = $rowRaw.find ".form-table__cell"
+
+  $tdsRaw.each ->
+    $tdRaw = $ this
+    $tdChildsRaw = $ this.childNodes
+    $fakeCell = $ "<div class='form-table__cell-fake'></div>"
+    $fakeCell.css
+      width: "#{$tdRaw.width()}px"
+      height: "#{$tdRaw.height()}px"
+
+    $tdChildsRaw.each ->
+      $clone = $ this.cloneNode true
+      $fakeCell.append $clone
+
+    $fakeRow.append $fakeCell
+
+  $fakeRow.css
+    left: "#{@position.left}px"
+    top: "#{@position.top}px"
+  $body.append $fakeRow
+  @fakeRow = $fakeRow
+
+createLine = ->
+  @line = $ "<div class='form-table__line'></div>"
+  $body.append @line
 
 module.exports = View
+  initial: ->
+    @dragging = false
+    @fakeRow = null
+    @fakeRowHeight = null
+    @coords = null
+    @line = null
+    @position = null
+    @rowOffsets = []
+
   events:
     "click: @btn-remove-field": (e) -> @model.removeField @getRowIndex e
     "click: @btn-add-field": (e) -> @model.addEmptyField()
@@ -16,16 +56,96 @@ module.exports = View
     "change: @configs-add-module": (e) -> @model.updateModule e.target.value
     "click: @btn-config-field": "clickBtnConfigField"
     "submit: @configs-add-form": "submitConfigsAddForm"
+    "mousedown: @btn-move-row": "mousedownBtnMoveRow"
+    "mousemove: document.body": "mousemoveDocumentBody"
+    "mouseup: document.body": "mouseupDocumentBody"
 
-  initial: ->
-    @tbodyContain = Render tableModuleFields, ($ "@tbody-module-fields")[0]
+  mousedownBtnMoveRow: (e) ->
+    $btn = $ e.target
+    @$row = $btn.closest "@row-module-fields"
 
-  render: (state) ->
-    @tbodyContain state
+    @currentRowIndex = parseInt @$row.data("key"), 10
+
+    createDuplicateRow.call @, @$row
+
+    @dragging = true
+    @rowOffsets = []
+    $rows = @contain.find "@row-module-fields"
+
+    $rows.each (index, element) =>
+      $rowItem = $ element
+      @rowOffsets.push $rowItem.offset().top
+
+    @$row.css display: 'none'
+
+    lastIndex = @rowOffsets.length - 1
+
+    @coords =
+      left: e.pageX
+      top: e.pageY
+
+    createLine.call @, @$row
+    @drawLineByIndex @currentRowIndex
+
+  getIndexByCoords: (e) ->
+    for offset, index in @rowOffsets
+      diff = Math.abs @position.top + (e.pageY - @coords.top) - offset
+
+      if diff <= @fakeRowHeight / 2
+        return index
+
+    if @position.top + (e.pageY - @coords.top) - @fakeRowHeight / 2 > offset
+      return Infinity
+    else
+      return 0
+
+  drawLineByIndex: (index) ->
+    top = 0
+
+    top = @rowOffsets[index] if index != Infinity
+
+    @line.css
+      top: "#{top}px"
+
+  mousemoveDocumentBody: (e) ->
+    if @dragging
+      index = @getIndexByCoords e
+      index = @rowOffsets.length if index == Infinity
+
+      @drawLineByIndex index
+
+      @fakeRow.css
+        left: "#{@position.left + (e.pageX - @coords.left)}px"
+        top: "#{@position.top + (e.pageY - @coords.top)}px"
+
+  mouseupDocumentBody: (e) ->
+    if @dragging
+      index = @getIndexByCoords e
+      index = @rowOffsets.length if index == Infinity
+
+      @$row.css display: ''
+      @fakeRow.remove()
+      @line.remove()
+
+      @model.updatePosition @currentRowIndex, index
+
+      @currentRowIndex = null
+      @dragging = false
+      @fakeRow = null
+      @coords = null
+      @line = null
+      @position = null
+      @fakeRowHeight = null
+      @rowOffsets.splice(0)
+
+  initial: -> @tbodyContain = Render tableModuleFields, ($ "@tbody-module-fields")[0]
+
+  render: (state) -> @tbodyContain state
 
   getRowIndex: (e) ->
     $parent = ($ e.target).closest "[data-key]"
-    return $parent.data "key"
+
+    $parent.data "key"
 
   clickBtnConfigField: (e) ->
     @trigger "open-configs-modal",
