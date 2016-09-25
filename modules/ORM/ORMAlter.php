@@ -1,6 +1,5 @@
 <?php if (!defined('ROOT')) die('You can\'t just open this file, dude');
 
-  require_once ENGINE."classes/validate.php";
   require_once ENGINE."modules/ORM/ORMDatabase.php";
 
   class SFORMAlter extends SFORMDatabase
@@ -44,27 +43,27 @@
       return $this;
     }
 
-    public function exec($alias = 'default')
+    public function getQuery()
     {
       foreach ($this->orderActions as $field) {
         switch ($field['action']) {
           case 'edit':
-            $sql = 'ALTER TABLE `' . $this->tableName . '` CHANGE `' . $field['sourceField'] . '` ' .
+            return 'ALTER TABLE `' . $this->tableName . '` CHANGE `' . $field['sourceField'] . '` ' .
               $this->makeStringOfField($field['field']);
-            parent::query($sql, $alias);
-            break;
           case 'drop':
-            $sql = 'ALTER TABLE `' . $this->tableName . '` DROP `' . $field['field'] . '`';
-            parent::query($sql, $alias);
-            break;
+            return 'ALTER TABLE `' . $this->tableName . '` DROP `' . $field['field'] . '`';
           case 'add':
-            $sql = 'ALTER TABLE `' . $this->tableName . '` ADD ' .
+            return 'ALTER TABLE `' . $this->tableName . '` ADD ' .
               $this->makeStringOfField($field['field']) .
               ($field['after'] !== false ? ' AFTER `' . $field['after'] . '`' : '');
-            parent::query($sql, $alias);
-            break;
         }
       }
+    }
+
+    public function exec($alias = 'default')
+    {
+      $query = $this->getQuery();
+      parent::query($query, $alias);
     }
   }
 

@@ -35,11 +35,11 @@
 
     public function exec($alias = 'default')
     {
-      $sql = $this->getSql();
+      $sql = $this->getQuery();
       parent::query($sql, $alias);
     }
 
-    public function getSql()
+    public function getQuery()
     {
       $sql = 'CREATE TABLE IF NOT EXISTS `' . $this->tableName . '` (' . "\n";
       $fields = array();

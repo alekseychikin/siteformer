@@ -274,7 +274,7 @@
       return $sourceResult[0][$field];
     }
 
-    public function getSql($base = 'default')
+    public function getQuery($base = 'default')
     {
       $query = $this->getQuery($base);
       return $query['sql'];

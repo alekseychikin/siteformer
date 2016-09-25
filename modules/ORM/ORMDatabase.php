@@ -20,11 +20,11 @@
     protected function makeStringOfField($field)
     {
       return '`' . $field['name'] . '` ' . $field['type'] .
-      ($field['null'] !== false ? ' ' . $field['null'] : '') .
-      (strlen($field['autoincrement']) ? ' ' . $field['autoincrement'] : '') .
-      ($field['default'] !== false && mb_strtolower($field['type']) !== 'text' ?
-        ' DEFAULT ' . $this->quote($field['default']) : ''
-      );
+        ($field['null'] !== false ? ' ' . $field['null'] : '') .
+        (strlen($field['autoincrement']) ? ' ' . $field['autoincrement'] : '') .
+        ($field['default'] !== false && mb_strtolower($field['type']) !== 'text' ?
+          ' DEFAULT ' . ($field['default'] === NULL ? 'NULL' : $this->quote($field['default'])) : ''
+        );
     }
 
     protected function validateField($field)
@@ -42,7 +42,7 @@
         ),
         array(
           'name' => 'null',
-          'default' => 'NULL'
+          'default' => NULL
         ),
         array(
           'name' => 'autoincrement',
@@ -54,7 +54,7 @@
         ),
         array(
           'name' => 'default',
-          'default' => 'NULL',
+          'default' => NULL,
           'modify' => function ($value)
           {
             return $value;

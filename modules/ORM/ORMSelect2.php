@@ -6,6 +6,7 @@ class SFORMSelect extends SFORMDatabase
   private $fromTable;
   private $fromTableAlias;
   private $fieldsAliases = [];
+  private $where = [];
   private $joins = [];
   private $joining = false;
   private $order = false;
@@ -19,6 +20,10 @@ class SFORMSelect extends SFORMDatabase
   public function from ($table) {
     $this->fromTable = $table;
     $this->fromTableAlias = $table;
+
+    if (gettype($table) === 'object' && get_class($table) === 'SFORMSelect') {
+      $this->fromTableAlias = 'u';
+    }
 
     if (func_num_args() === 2) {
       $this->fromTableAlias = func_get_arg(1);
@@ -91,43 +96,52 @@ class SFORMSelect extends SFORMDatabase
 
   public function andOn () {
     $params = func_get_args();
-
-    if ($this->joining) {
-      $this->joins[$this->joining]['on'][] = 'AND';
-      $this->joins[$this->joining]['on'][] = $this->handleExpression($params);
-    }
+    $this->joins[$this->joining]['on'][] = 'AND';
+    $this->joins[$this->joining]['on'][] = $this->handleExpression($params);
 
     return $this;
   }
 
   public function orOn () {
     $params = func_get_args();
-
-    if ($this->joining) {
-      $this->joins[$this->joining]['on'][] = 'OR';
-      $this->joins[$this->joining]['on'][] = $this->handleExpression($params);
-    }
+    $this->joins[$this->joining]['on'][] = 'OR';
+    $this->joins[$this->joining]['on'][] = $this->handleExpression($params);
 
     return $this;
   }
 
   public function where () {
+    $params = func_get_args();
+    $this->where[] = $this->handleExpression($params);
+
     return $this;
   }
 
   public function openWhere () {
+    $this->where[] = '(';
+
     return $this;
   }
 
   public function andWhere () {
+    $params = func_get_args();
+    $this->where[] = ' AND ';
+    $this->where[] = $this->handleExpression($params);
+
     return $this;
   }
 
   public function closeWhere () {
+    $this->where[] = ')';
+
     return $this;
   }
 
   public function orWhere () {
+    $params = func_get_args();
+    $this->where[] = ' OR ';
+    $this->where[] = $this->handleExpression($params);
+
     return $this;
   }
 
@@ -159,6 +173,19 @@ class SFORMSelect extends SFORMDatabase
     }
 
     return $this;
+  }
+
+  public function length ($alias = 'default') {
+    $query = SFORM::select([SFORM::func('COUNT(*)'), 'length'])
+      ->from($this)
+      ->getQuery();
+
+    $resultRaw = parent::query($query, $alias);
+    if (isset($resultRaw[0]) && isset($resultRaw[0]['length'])) {
+      return $resultRaw[0]['length'];
+    }
+
+    return 0;
   }
 
   public function exec ($alias = 'default') {
@@ -317,8 +344,12 @@ class SFORMSelect extends SFORMDatabase
       $sql .= N . 'ON ' . $this->generateOn($join['on']);
     }
 
+    if (count($this->where)) {
+      $sql .= N . 'WHERE ' . $this->generateWhere();
+    }
+
     if ($this->order !== false) {
-      $sql .= N. 'ORDER BY ';
+      $sql .= N . 'ORDER BY ';
       $orders = [];
 
       foreach ($this->order as $order) {
@@ -334,6 +365,21 @@ class SFORMSelect extends SFORMDatabase
     }
 
     return $sql;
+  }
+
+  private function generateWhere() {
+    $result = '';
+
+    foreach ($this->where as $option) {
+      if (gettype($option) === 'array') {
+        $result .= $this->generateField($option[0], $this->fromTableAlias, true) .
+          ' ' . $option[1] . ' ' . $this->handleValue($option[2]);
+      } else {
+        $result .= $option;
+      }
+    }
+
+    return $result;
   }
 
   private function generateOn ($params) {
@@ -418,14 +464,16 @@ class SFORMSelect extends SFORMDatabase
         }
       }
 
-      $fromIdFields = $this->getPrimaryFields($this->fromTable, $alias);
+      if (gettype($this->fromTable) !== 'object') {
+        $fromIdFields = $this->getPrimaryFields($this->fromTable, $alias);
 
-      foreach ($fromIdFields as $field) {
-        if (!in_array(
-          $this->generateField($field, $this->fromTableAlias, true),
-          $idFields
-        )) {
-          $fields[] = $this->generateSelectField($field, $this->fromTableAlias);
+        foreach ($fromIdFields as $field) {
+          if (!in_array(
+            $this->generateField($field, $this->fromTableAlias, true),
+            $idFields
+          )) {
+            $fields[] = $this->generateSelectField($field, $this->fromTableAlias);
+          }
         }
       }
 

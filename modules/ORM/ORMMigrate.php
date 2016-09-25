@@ -107,7 +107,7 @@
 
     public function createTable($tableName, $fields, $indexes = array())
     {
-      $sql = SFORM::create($tableName, $fields, $indexes)->getSql();
+      $sql = SFORM::create($tableName, $fields, $indexes)->getQuery();
       self::$currentRules[] = $sql;
       return $this;
     }

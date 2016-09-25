@@ -21,7 +21,7 @@
       return $this->execute($alias);
     }
 
-    public function getSql($alias = 'default')
+    public function getQuery($alias = 'default')
     {
       $sql = 'UPDATE `'.$this->table.'`'.N.'SET ';
       $params = array();
@@ -48,7 +48,7 @@
 
     public function execute($alias = 'default')
     {
-      $sql = $this->getSql($alias);
+      $sql = $this->getQuery($alias);
       return parent::query($sql, $alias, true);
     }
   }

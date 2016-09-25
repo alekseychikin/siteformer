@@ -15,7 +15,7 @@
       return $this->execute($alias);
     }
 
-    public function getSql($alias = 'default')
+    public function getQuery($alias = 'default')
     {
       $sql = 'DELETE FROM `'.$this->table.'`'.N;
       if ($this->getById !== false) {
@@ -31,7 +31,7 @@
 
     public function execute($alias = 'default')
     {
-      $sql = $this->getSql($alias);
+      $sql = $this->getQuery($alias);
       return parent::query($sql, $alias, true);
     }
   }

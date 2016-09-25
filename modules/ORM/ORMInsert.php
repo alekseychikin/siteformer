@@ -21,7 +21,7 @@
       return $this->execute($alias, $getObject);
     }
 
-    public function getSql($alias = 'default', $getObject = false)
+    public function getQuery($alias = 'default', $getObject = false)
     {
       if (gettype($alias) == 'bool') {
         $getObject = $alias;
@@ -47,7 +47,7 @@
 
     public function execute($alias = 'default', $getObject = false)
     {
-      $sql = $this->getSql($alias, $getObject);
+      $sql = $this->getQuery($alias, $getObject);
       parent::query($sql, $alias, true);
       if (!$getObject) {
         return $this->lastId($alias);
