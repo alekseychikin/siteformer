@@ -93,7 +93,7 @@
 
           if (isset($field['valid']) && $isIssetSource && !$isEmptySourceString) {
             if (gettype($field['valid']) === 'object') {
-              if (!$field['valid']($sourceItem)) {
+              if (!$field['valid']($sourceItem, $source)) {
                 self::returnError($field, $sourceItem);
               }
             } elseif (!preg_match($field['valid'], $sourceItem)) {

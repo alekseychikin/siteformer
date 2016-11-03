@@ -5,10 +5,9 @@ require_once ENGINE . 'classes/text.php';
 
 class SFTypeCheckbox extends SFType
 {
-  public static function getSqlField($params)
-  {
+  public static function getSqlField($params) {
     $params = json_decode($params, true);
-    $values = array();
+    $values = [];
     $defaultValues = array();
     foreach ($params['defaultData'] as $param) {
       $paramLabel = SFText::getTag($param['label']);
@@ -17,40 +16,40 @@ class SFTypeCheckbox extends SFType
         $defaultValues[] = $paramLabel;
       }
     }
-    return array(
+    return [
       'type' => 'SET("' . implode('","', $values) . '")',
       'default' => implode(',', $defaultValues)
-    );
+    ];
   }
 
-  public static function validateSettings($params, $fields, $currentAlias)
-  {
+  public static function validateSettings($params, $fields, $currentAlias) {
     $params = json_decode($params, true);
-    $params = SFValidate::parse(array(
-      array(
+    $params = SFValidate::parse([
+      [
         'name' => 'numOptions',
         'type' => 'uzint',
         'require' => true,
         'error' => 'Количество флажков должно быть больше нуля'
-      ),
-      array(
+      ],
+      [
         'name' => 'defaultData',
         'minlength' => 1,
         'error' => 'Не заданы Флажки',
-        'array' => array(
-          array(
+        'array' => [
+          [
             'name' => 'label',
             'require' => true,
             'unique' => true,
             'error' => 'Имя флажка должно быть уникальным',
             'skip_row_if_empty' => true
-          ),
-          array(
+          ],
+          [
             'name' => 'checked'
-          )
-        )
-      )
-    ), $params);
+          ]
+        ]
+      ]
+    ], $params);
+
     return json_encode($params);
   }
 }

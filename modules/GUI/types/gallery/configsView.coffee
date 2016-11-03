@@ -10,12 +10,12 @@ module.exports = View
     "submit: @configs-form": "submitConfigsForm"
     "click: @configs-gallery-storage": (e) -> @model.updateStorage ($ e.target).data "value"
     "keydown: @configs-gallery-path": (e) -> @model.resetPath()
-    "keyup input: @configs-gallery-path": (e) ->  @frequency 500, => @model.updatePath e.target.value
+    "keyup input: @configs-gallery-path": (e) ->  @throttling 500, => @model.updatePath e.target.value
     "change: @configs-gallery-path": (e) ->  @model.updatePath e.target.value
-    "change keyup input blur: @configs-gallery-s3-access-key": (e) -> @frequency 500, => @model.updateS3AccessKey e.target.value
-    "change keyup input blur: @configs-gallery-s3-secret-key": (e) -> @frequency 500, => @model.updateS3SecretKey e.target.value
+    "change keyup input blur: @configs-gallery-s3-access-key": (e) -> @throttling 500, => @model.updateS3AccessKey e.target.value
+    "change keyup input blur: @configs-gallery-s3-secret-key": (e) -> @throttling 500, => @model.updateS3SecretKey e.target.value
     "change: @configs-gallery-s3-bucket": (e) -> @model.updateS3Bucket e.target.value
-    "change keyup input: @configs-gallery-s3-path": (e) -> @frequency 500, => @model.updateS3Path e.target.value
+    "change keyup input: @configs-gallery-s3-path": (e) -> @throttling 500, => @model.updateS3Path e.target.value
     "change: @configs-gallery-width": (e) -> @model.updateWidth e.target.value
     "change: @configs-gallery-height": (e) -> @model.updateHeight e.target.value
     "change: @configs-gallery-maxsize": (e) -> @model.updateMaxSize e.target.value

@@ -1,23 +1,20 @@
 <?php if (!defined('ROOT')) die('You can\'t just open this file, dude');
 
-  class SFType
-  {
-    public static function getSqlField($params)
-    {
-      return array(
-        'type' => 'VARCHAR(250)',
-        'null' => 'NULL',
-        'default' => ''
-      );
-    }
-
-    public static function validateSettings($params, $fields, $currentAlias)
-    {
-      return $params;
-    }
-
-    public static function prepareData($field, $data)
-    {
-      return $data[$field['alias']];
-    }
+class SFType
+{
+  public static function getSqlField($settings) {
+    return [
+      'type' => 'VARCHAR(250)',
+      'null' => 'NULL',
+      'default' => ''
+    ];
   }
+
+  public static function validateSettings($settings, $fields, $currentAlias) {
+    return $settings;
+  }
+
+  public static function prepareData($field, $data) {
+    return $data[$field['alias']];
+  }
+}

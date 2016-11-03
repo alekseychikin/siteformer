@@ -413,8 +413,8 @@ class SFGUI
 
       while ($subdir = readdir($dir)) {
         if (is_dir(MODULES . 'GUI/types/' . $subdir) && !in_array($subdir, ['.', '..'])) {
-          if (file_exists(MODULES . 'GUI/types/' . $subdir . '/package.json')) {
-            $type = json_decode(file_get_contents(MODULES . 'GUI/types/' . $subdir . '/package.json'), true);
+          if (file_exists(MODULES . 'GUI/types/' . $subdir . '/configs.json')) {
+            $type = json_decode(file_get_contents(MODULES . 'GUI/types/' . $subdir . '/configs.json'), true);
             $type['type'] = $subdir;
             $types[] = $type;
           }

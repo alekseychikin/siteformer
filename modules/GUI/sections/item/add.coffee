@@ -7,22 +7,22 @@ AddModel = require "./addModel.coffee"
 AddView = require "./addView.coffee"
 
 models =
-  string: require "string/addStringModel.coffee"
-  table: require "table/addTableModel.coffee"
-  checkbox: require "checkbox/addCheckboxModel.coffee"
-  radio: require "radio/addRadioModel.coffee"
-  image: require "image/addImageModel.coffee"
-  text: require "text/addTextModel.coffee"
-  select: require "select/addSelectModel.coffee"
+  checkbox: require "checkbox/addModel.coffee"
+  image: require "image/addModel.coffee"
+  password: require "password/addModel.coffee"
+  radio: require "radio/addModel.coffee"
+  select: require "select/addModel.coffee"
+  table: require "table/addModel.coffee"
+  text: require "text/addModel.coffee"
 
 views =
-  string: require "string/addStringView.coffee"
-  table: require "table/addTableView.coffee"
-  checkbox: require "checkbox/addCheckboxView.coffee"
-  radio: require "radio/addRadioView.coffee"
-  image: require "image/addImageView.coffee"
-  text: require "text/addTextView.coffee"
-  select: require "select/addSelectView.coffee"
+  checkbox: require "checkbox/addView.coffee"
+  image: require "image/addView.coffee"
+  password: require "password/addView.coffee"
+  radio: require "radio/addView.coffee"
+  select: require "select/addView.coffee"
+  table: require "table/addView.coffee"
+  text: require "text/addView.coffee"
 
 httpGet window.location.href
 .then (response) ->

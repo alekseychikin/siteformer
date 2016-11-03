@@ -83,7 +83,8 @@ httpFile = (url, data) ->
     req.send formData
 
 parsePostData = (postData, name = "") ->
-  str = ''
+  str = ""
+
   if typeof postData in ["string", "number", "boolean"]
     return "#{name}=#{encodeURIComponent postData}"
   else if postData instanceof Array

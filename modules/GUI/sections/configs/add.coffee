@@ -6,22 +6,22 @@ addModel = AddModel()
 addView = AddView ($ "@configs-add"), addModel
 
 models =
-  image: require "image/ConfigsImageModel.coffee"
-  table: require "table/ConfigsTableModel.coffee"
-  file: require "file/ConfigsFileModel.coffee"
-  radio: require "radio/ConfigsRadioModel.coffee"
-  checkbox: require "checkbox/ConfigsCheckboxModel.coffee"
-  gallery: require "gallery/ConfigsGalleryModel.coffee"
-  select: require "select/ConfigsSelectModel.coffee"
+  checkbox: require "checkbox/configsModel.coffee"
+  file: require "file/configsModel.coffee"
+  gallery: require "gallery/configsModel.coffee"
+  image: require "image/configsModel.coffee"
+  radio: require "radio/configsModel.coffee"
+  table: require "table/configsModel.coffee"
+  select: require "select/configsModel.coffee"
 
 views =
-  image: require "image/ConfigsImageView.coffee"
-  table: require "table/ConfigsTableView.coffee"
-  file: require "file/ConfigsFileView.coffee"
-  radio: require "radio/ConfigsRadioView.coffee"
-  checkbox: require "checkbox/ConfigsCheckboxView.coffee"
-  gallery: require "gallery/ConfigsGalleryView.coffee"
-  select: require "select/ConfigsSelectView.coffee"
+  checkbox: require "checkbox/configsView.coffee"
+  file: require "file/configsView.coffee"
+  gallery: require "gallery/configsView.coffee"
+  image: require "image/configsView.coffee"
+  radio: require "radio/configsView.coffee"
+  table: require "table/configsView.coffee"
+  select: require "select/configsView.coffee"
 
 Popup = require "popup"
 

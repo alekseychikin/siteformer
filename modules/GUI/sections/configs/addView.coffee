@@ -76,7 +76,7 @@ module.exports = View
       $rowItem = $ element
       @rowOffsets.push $rowItem.offset().top
 
-    @$row.css display: 'none'
+    @$row.css display: "none"
 
     lastIndex = @rowOffsets.length - 1
 
@@ -123,7 +123,7 @@ module.exports = View
       index = @getIndexByCoords e
       index = @rowOffsets.length if index == Infinity
 
-      @$row.css display: ''
+      @$row.css display: ""
       @fakeRow.remove()
       @line.remove()
 

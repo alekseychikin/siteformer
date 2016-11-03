@@ -6,6 +6,8 @@ module.exports = View
   initial: ->
     @modalContain = Render modalWindowTemplate, @contain[0]
 
+  debug: true
+
   events:
     "submit: @configs-form": "submitConfigsForm"
     "change: @configs-table-rows": "changeConfigsTableRows"
@@ -29,8 +31,7 @@ module.exports = View
   changeConfigsTableRows: (e) -> @model.updateRows e.target.value
   changeConfigsTableColumns: (e) -> @model.updateColumns e.target.value
 
-  render: (state) ->
-    @modalContain state
+  render: (state) -> @modalContain state
 
   submitConfigsForm: (e) ->
     @trigger "save-configs-modal", @model.getState()

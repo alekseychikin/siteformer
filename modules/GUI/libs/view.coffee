@@ -5,7 +5,32 @@ $document = ($ document)
 
 pathTimeout = null
 
-ViewPrototype =
+View = (args...) ->
+  params = args[0]
+
+  if params.contain
+    return new ViewClass params, params.contain, params.model
+  return (target, model) ->
+    return new ViewClass params, target, model
+
+class ViewClass
+  constructor: (params, target, model) ->
+    @cachedEvents = []
+    @contain = target
+    @model = model
+
+    for field, item of params
+      do (field, item) =>
+        @[field] = item
+
+    @__initial()
+    self = @
+    @extEvents = []
+
+    if @model
+      @model.addRenderListener @
+      @model.triggerInitialTriggers()
+
   debug: false
 
   destroy: ->
@@ -15,6 +40,8 @@ ViewPrototype =
           @contain.off item.event, item.selector, item.callback
         else if item.target
           item.target.off item.event, item.callback
+
+      @cachedEvents.splice(0)
 
   generateEvent: (event, selector, cb, target = null) ->
     self = @
@@ -35,7 +62,7 @@ ViewPrototype =
     @cachedEvents.push element
     callback
 
-  addEvent: (selector, event, cb)->
+  addEvent: (selector, event, cb) ->
     target = null
     switch selector
       when "window" then target = window
@@ -80,7 +107,7 @@ ViewPrototype =
       for event in @extEvents[eventName]
         event.apply @, values
 
-  frequency: (time, cb) ->
+  throttling: (time, cb) ->
     if pathTimeout
       clearTimeout pathTimeout
       pathTimeout = null
@@ -90,40 +117,5 @@ ViewPrototype =
       cb.call @
       pathTimeout = null
     , time
-
-
-View = ->
-  if @ !instanceof View
-    return new View(arguments...)
-
-  params = arguments[0]
-
-  if params.contain
-    return new ViewItem params, params.contain, params.model
-  return (target, model) ->
-    return new ViewItem params, target, model
-
-ViewItem = (params, target, model) ->
-  if @ !instanceof ViewItem
-    return new ViewItem(arguments...)
-
-  @cachedEvents = []
-  @contain = target
-  @model = model
-
-  for field, item of params
-    do (field, item) =>
-      @[field] = item
-
-  @__initial()
-  self = @
-  @extEvents = []
-
-  if @model
-    @model.addRenderListener @
-    @model.triggerInitialTriggers()
-  return @
-
-ViewItem.prototype = ViewPrototype
 
 module.exports = View

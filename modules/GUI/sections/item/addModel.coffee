@@ -1,7 +1,6 @@
 Model = require "model.coffee"
 httpGet = (require "ajax.coffee").httpGet
 httpPost = (require "ajax.coffee").httpPost
-Promise = require "promise"
 
 module.exports = Model
   add: (name, model) ->
@@ -24,10 +23,10 @@ module.exports = Model
         do (itemName, value) ->
           if value instanceof Promise
             value
-            .then (value) ->
-              result[itemName] = value
-            .catch (error) ->
-              console.error error
+              .then (value) ->
+                result[itemName] = value
+              .catch (error) ->
+                console.error error
           else
             result[itemName] = value
       catch e

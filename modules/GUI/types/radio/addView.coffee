@@ -3,5 +3,4 @@ View = require "view.coffee"
 module.exports = View
   events:
     "change: @radio": (e) ->
-      $input = $ e.target
-      @model.update $input.data "index"
+      @model.update Number(e.target.getAttribute "data-index")

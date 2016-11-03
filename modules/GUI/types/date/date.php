@@ -2,16 +2,14 @@
 
 class SFTypeDate extends SFType
 {
-  public static function getSqlField($params)
-  {
-    return array(
+  public static function getSqlField($params) {
+    return [
       'type' => 'DATETIME',
       'default' => false
-    );
+    ];
   }
 
-  public static function prepareData($field, $data)
-  {
+  public static function prepareData($field, $data) {
 
   }
 }
