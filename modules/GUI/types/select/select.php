@@ -6,24 +6,10 @@ class SFTypeSelect extends SFType
 {
   public static function getSqlField($params) {
     $params = json_decode($params, true);
-    $values = [];
-    $defaultValue = "";
-
-    foreach ($params['defaultData'] as $index => $param) {
-      $param = SFText::getTag($param);
-      $values[] = $param;
-
-      if ($params['defaultValue'] == $index) {
-        $defaultValue = $param;
-      }
-    }
-
-    if (empty($defaultValue)) {
-      array_splice($values, 0, 0, $defaultValue);
-    }
+    $defaultValue = $params['defaultValue'];
 
     return [
-      'type' => 'ENUM("' . implode('","', $values) . '")',
+      'type' => 'INT(6)',
       'default' => $defaultValue
     ];
   }
@@ -39,7 +25,6 @@ class SFTypeSelect extends SFType
       ],
       [
         'name' => 'defaultValue',
-        'type' => 'int',
         'require' => true,
         'error' => 'Неизвестное значение по умолчанию'
       ],
@@ -61,5 +46,9 @@ class SFTypeSelect extends SFType
     }
 
     return json_encode($params);
+  }
+
+  public static function getDefaultData($settings) {
+    return $settings['defaultValue'];
   }
 }

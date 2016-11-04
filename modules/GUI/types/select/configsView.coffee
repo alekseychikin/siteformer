@@ -2,21 +2,22 @@ View = require "view.coffee"
 Render = require "render"
 modalWindowTemplate = require "types/select/modal"
 
-module.exports = View
+module.exports = new View
   initial: ->
     @optionsContain = Render modalWindowTemplate, @contain[0]
 
   events:
     "submit: @configs-form": "submitConfigsForm"
-    "change: @configs-select-num-options": (e) -> @model.updateNumOptions e.target.value
-    "blur: @configs-select-num-options": (e) -> @model.updateNumOptions e.target.value
+    "change: @configs-select-num-options": (e) -> @model.updateNumOptions parseInt(e.target.value, 10)
+    "blur: @configs-select-num-options": (e) -> @model.updateNumOptions parseInt(e.target.value, 10)
     "keydown: @configs-select-num-options": (e) ->
       if e.keyCode == 13
-        @model.updateNumOptions e.target.value
+        @model.updateNumOptions parseInt(e.target.value, 10)
         e.preventDefault()
 
-    "change: @configs-select-option": (e) -> @model.updateDefaultValue e.target.value
-    "change: @configs-select-option-label": (e) -> @model.updateDefaultDataOption (@getIndexByEvent e), e.target.value
+    "change: @configs-select-option": (e) -> @model.updateDefaultValue parseInt(e.target.value, 10)
+    "change: @configs-select-option-label": (e) ->
+      @model.updateDefaultDataOption (@getIndexByEvent e), e.target.value
     "popup-close: contain": (e) -> @destroy()
 
   getIndexByEvent: (e) ->

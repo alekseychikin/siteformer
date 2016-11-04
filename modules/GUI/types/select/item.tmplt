@@ -2,7 +2,7 @@
   <label class="form__select">
     <select name="{ field['alias'] }" id="{ field['alias'] }" role="select">
     { for (i, dataItem, field['settings']['defaultData']) }
-      <option value="{ i }"{ if (field['settings']['defaultValue'] == i) } selected{ endif }>{ dataItem }</option>
+      <option value="{ i }"{ if (data == i) } selected{ endif }>{ dataItem }</option>
     { endfor }
     </select>
   </label>
