@@ -19,7 +19,6 @@ if (getenv('APPLICATION_ENV') !== false) {
 }
 
 session_start();
-date_default_timezone_set('Europe/Moscow');
 header('Content-type: text/html; charset=utf8');
 define('CLASSES', ENGINE . 'classes/');
 
