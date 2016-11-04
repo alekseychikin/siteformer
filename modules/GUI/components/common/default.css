@@ -13,3 +13,11 @@ select {
 i {
   font-style: italic;
 }
+
+body.g-fix {
+  overflow: hidden;
+}
+
+.g-gray {
+  color: #878787;
+}
