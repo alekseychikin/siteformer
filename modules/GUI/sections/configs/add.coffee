@@ -15,6 +15,7 @@ models =
   table: require "table/configsModel.coffee"
   section: require "section/configsModel.coffee"
   select: require "select/configsModel.coffee"
+  string: require "string/configsModel.coffee"
 
 views =
   checkbox: require "checkbox/configsView.coffee"
@@ -26,6 +27,7 @@ views =
   table: require "table/configsView.coffee"
   section: require "section/configsView.coffee"
   select: require "select/configsView.coffee"
+  string: require "string/configsView.coffee"
 
 Popup = require "popup"
 
