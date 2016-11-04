@@ -1,5 +1,7 @@
 <?php if (!defined('ROOT')) die('You can\'t just open this file, dude');
 
+require_once $modulePath . 'GUIGetItemListFrom.php';
+
 class SFGUI
 {
   public static function init($params) {
@@ -435,6 +437,10 @@ class SFGUI
 
   public static function getClassNameByType($type) {
     return 'SFType' . SFText::camelCasefy($type, true);
+  }
+
+  public static function getItemListFrom($section) {
+    return new SFGUIGetItemListFrom($section);
   }
 
   private static function stringifyToArray($data, $indent = 1) {
