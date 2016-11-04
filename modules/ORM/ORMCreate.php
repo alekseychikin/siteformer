@@ -28,7 +28,7 @@
         $keyName = implode('_', $keyName);
         $fields = implode('`, `', $fields);
       }
-      $fields = mb_strtoupper($type) . ' (`' . $fields . '`)';
+      $fields = mb_strtoupper($type) . ' `' . $keyName .'` (`' . $fields . '`)';
       $this->keys[] = $fields;
       return $this;
     }
