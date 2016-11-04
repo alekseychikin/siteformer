@@ -5,7 +5,7 @@ require_once ENGINE . 'classes/validate.php';
 class SFTypeRadio extends SFType
 {
   public static function getSqlField($params) {
-    $params = json_decode($params, true);
+    $params = parseJSON($params);
     $values = [];
     $defaultValue = "";
 

@@ -6,7 +6,7 @@ require_once ENGINE . 'classes/text.php';
 class SFTypeCheckbox extends SFType
 {
   public static function getSqlField($params) {
-    $params = json_decode($params, true);
+    $params = parseJSON($params);
     $values = [];
     $defaultValues = array();
     foreach ($params['defaultData'] as $param) {

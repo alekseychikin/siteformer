@@ -44,6 +44,7 @@ if (isset($_SESSION['location'])) {
 
 require_once CLASSES . 'type.php';
 require_once CLASSES . 'log.php';
+require_once CLASSES . 'json.php';
 // SFLog::init();
 require_once CLASSES . 'S3.php';
 require_once CLASSES . 'array.php';

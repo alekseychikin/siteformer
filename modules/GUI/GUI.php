@@ -414,7 +414,7 @@ class SFGUI
       while ($subdir = readdir($dir)) {
         if (is_dir(MODULES . 'GUI/types/' . $subdir) && !in_array($subdir, ['.', '..'])) {
           if (file_exists(MODULES . 'GUI/types/' . $subdir . '/configs.json')) {
-            $type = json_decode(file_get_contents(MODULES . 'GUI/types/' . $subdir . '/configs.json'), true);
+            $type = parseJSON(file_get_contents(MODULES . 'GUI/types/' . $subdir . '/configs.json'));
             $type['type'] = $subdir;
             $types[] = $type;
           }
@@ -487,7 +487,7 @@ class SFGUI
 
   private static function prepareSectionFields($fields) {
     return arrSort(arrMap($fields, function($field) {
-      $field['settings'] = json_decode($field['settings'], true);
+      $field['settings'] = parseJSON($field['settings']);
 
       return $field;
     }), function ($a, $b) {

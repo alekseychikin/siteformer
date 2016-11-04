@@ -7,7 +7,7 @@
     public static function validateSettings($params, $fields, $currentAlias) {
       $sources = self::getSources($fields, $params, $currentAlias);
 
-      $params = json_decode($params, true);
+      $params = parseJSON($params);
       $params = SFValidate::parse([
         [
           'name' => 'storage',
