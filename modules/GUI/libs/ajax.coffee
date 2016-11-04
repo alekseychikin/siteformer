@@ -20,6 +20,7 @@ prepareJsonResponse = (response) ->
   for key of response
     response[key] = !!(logicConsts.indexOf response[key]) if ~logicConsts.indexOf response[key]
     response[key] = parseInt(response[key], 10) if response[key].match? && response[key].match /^\d+$/
+    response[key] = {} if response[key] instanceof Array && !response[key].length
     response[key] = prepareJsonResponse response[key] if typeof response[key] == "object"
   response
 
@@ -76,7 +77,7 @@ httpFile = (url, data) ->
     req = createXMLHTTPObject()
     req.open "POST", url, true
     req.setRequestHeader "X-Requested-With", "XMLHttpRequest"
-    req.setRequestHeader "Accept", "application/json, text/javascript, */*; q=0.01"
+    req.setRequestHeader "Accept", "application/json"
     req.onreadystatechange = readyStateChange req, resolve, reject
     req.send formData
 
