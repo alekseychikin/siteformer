@@ -1,8 +1,9 @@
 {
   "template_index": "item.html",
   "name": "Секция",
-  "hasSettings": false,
+  "hasSettings": true,
   "defaultSettings": {
-
+    "section": "",
+    "field": ""
   }
 }

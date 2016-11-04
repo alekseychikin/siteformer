@@ -1,6 +1,23 @@
-<div class="form__item">
-  <label for="{ item['name'] }" class="form__label">{ item['label'] }</label>
-  <div class="form__input-contain">
-    <input type="password" name="{ item['name'] }" id="{ item['name'] }" class="form__inp" value="{ item['value'] }" />
-  </div>
+{ import(Suggest, './components/form-suggests/form-suggests') }
+
+<div class="form__inp-contain" role="input-contain" data-alias={field['alias']}>
+  { rows = [] }
+  { if (searchResult?) }
+    { rows = searchResult }
+  { endif }
+  <Suggest title="{data['title']}" id="{data['id']}" rows={rows}>
+    <input
+      type="text"
+      name="{ field['alias'] }"
+      id="{ field['alias'] }"
+      class="form__inp"
+      value="{ data['title'] }"
+      role="section"
+      autocomplete="off"
+    />
+    { if (data['id'] != '') }
+      <div class="form-suggests__value">{data['title']}</div>
+      <button class="form-suggests__cancel" type="button" data-role="cancel">Отменить</button>
+    { endif }
+  </Suggest>
 </div>

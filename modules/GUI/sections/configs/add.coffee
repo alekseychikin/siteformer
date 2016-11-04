@@ -13,6 +13,7 @@ models =
   image: require "image/configsModel.coffee"
   radio: require "radio/configsModel.coffee"
   table: require "table/configsModel.coffee"
+  section: require "section/configsModel.coffee"
   select: require "select/configsModel.coffee"
 
 views =
@@ -23,6 +24,7 @@ views =
   image: require "image/configsView.coffee"
   radio: require "radio/configsView.coffee"
   table: require "table/configsView.coffee"
+  section: require "section/configsView.coffee"
   select: require "select/configsView.coffee"
 
 Popup = require "popup"
@@ -33,6 +35,8 @@ addView.on "open-configs-modal", (index, field, fields = []) ->
 
   model = models[field.type] field.settings
   model.setFields fields if model.setFields?
+  sections = addModel.getSections().filter (section) -> section.id != field.section
+  model.setSections sections if model.setSections?
 
   ($ "@configs-popup").html ""
   view = views[field.type] ($ "@configs-popup"), model

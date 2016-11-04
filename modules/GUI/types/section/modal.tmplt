@@ -1,0 +1,39 @@
+<div class="popup__head">Настройки секции</div>
+<form action="" class="form" role="configs-form">
+  <div class="form__item">
+    <label for="configs-section-section" class="form__label">Секция</label>
+    <div class="form__inp-contain">
+      <label class="form__select">
+        <select role="configs-section-section" id="configs-section-section">
+          { if (arr_len(sections)) }
+            { for (sectionItem, sections) }
+              <option value="{ sectionItem['alias'] }"{ if (sectionItem['alias'] == section) } selected{ endif }>{ sectionItem['title'] }</option>
+            { endfor }
+          { endif }
+        </select>
+      </label>
+    </div>
+  </div>
+  <div class="form__item">
+    <label for="configs-section-field" class="form__label">Поиск по полю</label>
+    <div class="form__inp-contain">
+      <label class="form__select">
+        <select role="configs-section-field" id="configs-section-field">
+          { if (arr_len(sections)) }
+            { for (sectionIndex, sectionItem, sections) }
+              { if (sectionItem['alias'] == section || (!section && sectionIndex == 0)) }
+                { for (fieldItem, sectionItem['fields']) }
+                  <option value="{ fieldItem['alias'] }"{ if (field == fieldItem['alias']) } selected{ endif }>{ fieldItem['title'] }</option>
+                { endfor }
+              { endif }
+            { endfor }
+          { endif }
+        </select>
+      </label>
+    </div>
+  </div>
+  <div class="form__submit">
+    <button class="form__btn form__btn--submit">Сохранить</button>
+    <button type="button" class="form__btn popup__cancel">Отменить</button>
+  </div>
+</form>
