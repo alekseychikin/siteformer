@@ -4,7 +4,7 @@
   <td class="form-table__cell"><input type="text" class="form__inp" value="{ field['alias'] }" role="field-alias" /></td>
   <td class="form-table__cell">
     <label class="form__select">
-      <select class="form__select" role="field-type">
+      <select role="field-type">
     { hasSettings = false }
     { for (type, types) }
         <option value="{ type['type'] }"{ if (field['type'] == type['type']) } selected{ endif }>{ type['name'] }</option>

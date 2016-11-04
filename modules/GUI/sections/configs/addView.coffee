@@ -47,7 +47,12 @@ module.exports = View
 
   events:
     "click: @btn-remove-field": (e) -> @model.removeField @getRowIndex e
-    "click: @btn-add-field": (e) -> @model.addEmptyField()
+    "click: @btn-add-field": (e) ->
+      @model.addEmptyField()
+
+      setTimeout =>
+        @contain.find("@row-module-fields:last-child @field-title").focus()
+      , 50
     "change: @field-title": (e) -> @model.updateFieldTitle (@getRowIndex e), e.target.value
     "change: @field-alias": (e) -> @model.updateFieldAlias (@getRowIndex e), e.target.value
     "change: @field-type": (e) -> @model.updateFieldType (@getRowIndex e), e.target.value
@@ -145,7 +150,7 @@ module.exports = View
   getRowIndex: (e) ->
     $parent = ($ e.target).closest "[data-key]"
 
-    $parent.data "key"
+    Number($parent.data "key")
 
   clickBtnConfigField: (e) ->
     @trigger "open-configs-modal",
@@ -155,4 +160,5 @@ module.exports = View
 
   submitConfigsAddForm: (e) ->
     @model.save()
+    e.preventDefault()
     return false

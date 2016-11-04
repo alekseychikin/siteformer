@@ -12,8 +12,8 @@ module.exports = Model
           module: response.module
           fields: response.fields
           types: response.types
-        if response.id
-          state.id = response.id
+          sections: response.sections
+        state.id = response.id if response.id
         console.log state
         state
 
@@ -21,12 +21,19 @@ module.exports = Model
     @set fields: @state.fields.concat [field]
 
   addEmptyField: ->
-    @set fields: @state.fields.concat [
+    field = [
       title: ""
       alias: ""
       type: "string"
       position: @state.fields.length
+      section: @state.id
     ]
+
+    for typeItem in @state.types
+      if typeItem.type == "string"
+        field[0].settings = @clone typeItem.defaultSettings
+
+    @set fields: @state.fields.concat field
 
   updateTitle: (value) -> @set title: value
   updateAlias: (value) -> @set alias: value
@@ -61,7 +68,7 @@ module.exports = Model
     fields.splice index, 1
     @set {fields}
 
-  getFieldByIndex: (index) -> @clone @state.fields[+index]
+  getFieldByIndex: (index) -> @clone @state.fields[index]
 
   getFields: -> @state.fields.slice()
 
@@ -94,6 +101,8 @@ module.exports = Model
 
     data.id = @state.id if @state.id?
 
+    console.log data
+
     httpPost "/cms/configs/action_save/", data
       .then (response) =>
         console.log response.content if response.content?
@@ -105,3 +114,5 @@ module.exports = Model
       .catch (response) ->
         console.log response.content if response.content?
         console.error response.error if response.error?
+
+  getSections: -> @state.sections

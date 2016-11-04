@@ -25,14 +25,12 @@ if ($id === false) {
       'error' => 'Поле «Название» обязательно для заполнения, должно быть уникальным',
       'unique' => function ($value) use ($id) {
         $res = SFORM::select()
-          ->from('sections');
+          ->from('sections')
+          ->where('title', $value)
+          ->andWhere('enable', 1);
 
         if ($id !== false) {
-          $res = $res
-            ->where('title', $value)
-            ->andWhere('id', '!=', $id);
-        } else {
-          $res = $res->where('title', $value);
+          $res = $res->andWhere('id', '!=', $id);
         }
 
         return !$res->length();
@@ -45,13 +43,12 @@ if ($id === false) {
       'error' => 'Поле «Веб-имя» обязательно для заполнения, должно содержать символы латинского алфавита, цифр, знака подчеркивания или дефиса',
       'unique' => function ($value) use ($id) {
         $res = SFORM::select()
-          ->from('sections');
+          ->from('sections')
+          ->where('alias', $value)
+          ->andWhere('enable', 1);
 
         if ($id !== false) {
-          $res = $res->where('alias', $value)
-            ->andWhere('id', '!=', $id);
-        } else {
-          $res = $res->where('alias', $value);
+          $res = $res->andWhere('id', '!=', $id);
         }
 
         return !$res->length();

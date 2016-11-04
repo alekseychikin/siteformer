@@ -8,6 +8,7 @@ arrMap(SFGUI::getTypes(), function ($type) use (& $types) {
   $types[] = $type['type'];
 });
 
+SFResponse::showContent();
 SFORM::showError();
 $data = SFValidate::parse([
   [
