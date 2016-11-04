@@ -1,0 +1,26 @@
+<div class="editarea">
+  <div class="editarea__buttons">
+    <button class="editarea__button" type="button" title="Заголовок H2" data-handler="header2">h2</button>
+    <button class="editarea__button" type="button" title="Заголовок H3" data-handler="header3">h3</button>
+    <button class="editarea__button editarea__button--bold" type="button" title="Жирный" data-handler="bold">bold</button>
+    <button class="editarea__button editarea__button--italic" type="button" title="Курсивный" data-handler="italic">italic</button>
+    <button class="editarea__button" type="button" title="SPAN" data-handler="span">span</button>
+    <button class="editarea__button" type="button" title="Абзац" data-handler="paragraph">paragraph</button>
+    <button class="editarea__button" type="button" title="Ссылка" data-handler="link">link</button>
+    <button class="editarea__button" type="button" title="Изображение" data-handler="img">img</button>
+    <button class="editarea__button" type="button" title="Аббревиатура" data-handler="abbr">abbr</button>
+    <button class="editarea__button" type="button" title="Разделитель Кат" data-handler="cut">cut</button>
+    <button class="editarea__button" type="button" title="Маркерованный список" data-handler="ul">ul</button>
+    <button class="editarea__button" type="button" title="Нумерованный список" data-handler="ol">ol</button>
+    <button class="editarea__button" type="button" title="Элемент списка" data-handler="li">li</button>
+    <button class="editarea__button" type="button" title="Типографировать" data-handler="typograph">ѣ</button>
+  </div>
+  <textarea
+    class="editarea__input"
+    cols="30"
+    rows="10"
+    name="{name}"
+    role="{role}"
+    id="{id}"
+  >{ value }</textarea>
+</div>
