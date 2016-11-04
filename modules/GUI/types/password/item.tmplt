@@ -1,6 +1,3 @@
-<div class="form__item">
-  <label for="{ item['name'] }" class="form__label">{ item['label'] }</label>
-  <div class="form__input-contain">
-    <input type="password" name="{ item['name'] }" id="{ item['name'] }" class="form__inp" value="{ item['value'] }" />
-  </div>
+<div class="form__inp-contain" role="input-contain">
+  <input type="password" name="{ field['alias'] }" id="{ field['alias'] }" class="form__inp" value="" role="password" />
 </div>
