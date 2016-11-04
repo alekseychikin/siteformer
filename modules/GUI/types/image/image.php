@@ -32,7 +32,6 @@
           'valid' => function ($value) use ($fields, $sources) {
             $usedSource = array($value);
             while (true) {
-              // echo "value " . $value . "\n";
               if ($value === 'upload') return true;
               if (!in_array($value, $sources)) return false;
 
@@ -106,7 +105,7 @@
 
       if (!$value || $value === 'false') return false;
 
-      $image = new SFImage(ENGINE . 'temp/' . $value);
+      $image = new SFImage(ENGINE_TEMP . $value);
       $resizeParams = [];
 
       if (isset($settings['width']) && $settings['width']) $resizeParams['width'] = $settings['width'];

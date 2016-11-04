@@ -80,14 +80,6 @@
       <span class="form__between-inp">×</span>
 
       <input type="text" class="form__inp form__inp--very-short" value="{ height }" role="configs-image-height" />
-
-      <div class="form__hint" data-checked="{saveRatio}">
-        <input class="form__checkbox" type="checkbox" role="configs-image-save-ratio" id="configs-image-save-ratio"{if (saveRatio)} checked{endif} />
-
-        <label class="form__checkbox-label" for="configs-image-save-ratio"></label>
-
-        <label class="form__label-text" for="configs-image-save-ratio">Сохранить пропорции<br/>при уменьшении</label>
-      </div>
     </div>
   </div>
   <div class="form__item">
