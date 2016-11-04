@@ -1,15 +1,15 @@
 Model = require "model.coffee"
 
 module.exports = Model
-  setSettings: (settings) ->
-    data = []
-    data = settings.defaultData.slice()
-    settings.defaultData.slice().map (item, index) -> if (typeof item.checked) == "string" then data[index] = item.checked == "true" else data[index] = item.checked
-    @set {data}
+  defaultState: () -> data: []
 
   update: (index, checked) ->
     data = @state.data.slice()
-    data[index] = checked
+    data[index].checked = checked
     @set {data}
 
-  get: -> @state.data
+  get: ->
+    @state.data
+      .map (item, index) -> if item.checked then 1 << index else null
+      .filter (item) -> item != null
+      .reduce (a, b) -> a | b

@@ -1,5 +1,5 @@
 <div class="form__inp-contain" role="input-contain">
-  { for (i, dataItem, field['settings']['defaultData']) }
+  { for (i, dataItem, data) }
     <div class="form__row-option">
       <input
         class="form__checkbox"

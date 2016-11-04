@@ -8,17 +8,19 @@ class SFTypeCheckbox extends SFType
   public static function getSqlField($params) {
     $params = parseJSON($params);
     $values = [];
-    $defaultValues = array();
-    foreach ($params['defaultData'] as $param) {
-      $paramLabel = SFText::getTag($param['label']);
-      $values[] = $paramLabel;
+    $defaultValue = 0;
+
+    foreach ($params['defaultData'] as $index => $param) {
       if ($param['checked'] == "true") {
-        $defaultValues[] = $paramLabel;
+        $defaultValue |= 1 << $index;
       }
     }
+
+    SFResponse::showContent();
+
     return [
-      'type' => 'SET("' . implode('","', $values) . '")',
-      'default' => implode(',', $defaultValues)
+      'type' => 'INT(60)',
+      'default' => $defaultValue
     ];
   }
 
@@ -51,5 +53,26 @@ class SFTypeCheckbox extends SFType
     ], $params);
 
     return json_encode($params);
+  }
+
+  public static function prepareData($field, $data) {
+    return $data[$field['alias']];
+  }
+
+  public static function getDefaultData($settings) {
+    return $settings['defaultData'];
+  }
+
+  public static function prepareDataForEditForm($value, $settings) {
+    $data = [];
+
+    foreach ($settings['defaultData'] as $index => $row) {
+      $data[] = [
+        'label' => $row['label'],
+        'checked' => $index & $value
+      ];
+    }
+
+    return $data;
   }
 }
