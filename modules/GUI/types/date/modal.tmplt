@@ -1,0 +1,40 @@
+<div class="popup__head">Настройки даты</div>
+<form action="" class="form" role="configs-form">
+  <div class="form__item">
+    <div class="form__inp-contain form__inp-contain--full-width form__inp-contain--flex">
+      <input
+        class="form__checkbox"
+        type="checkbox"
+        role="configs-date-use-time"
+        id="configs-date-use-time"
+        name="configs-date-use-time"
+        {if (useTime)} checked{endif}
+      >
+      <label class="form__checkbox-label" for="configs-date-use-time"></label>
+      <label class="form__label-text" for="configs-date-use-time">
+        Сохранять время
+      </label>
+    </div>
+  </div>
+
+  <div class="form__item">
+    <div class="form__inp-contain form__inp-contain--full-width form__inp-contain--flex">
+      <input
+        class="form__checkbox"
+        type="checkbox"
+        role="configs-date-use-current-date"
+        id="configs-date-use-current-date"
+        name="configs-date-use-current-date"
+        {if (useCurrentDate)} checked{endif}
+      >
+      <label class="form__checkbox-label" for="configs-date-use-current-date"></label>
+      <label class="form__label-text" for="configs-date-use-current-date">
+        Использовать текущую дату по умолчанию
+      </label>
+    </div>
+  </div>
+  <div class="form__submit">
+    <button class="form__btn form__btn--submit">Сохранить</button>
+    <button type="button" class="form__btn popup__cancel">Отменить</button>
+  </div>
+</form>
