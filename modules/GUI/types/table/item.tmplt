@@ -1,9 +1,19 @@
 <div class="form__inp-contain" role="input-contain">
   <table class="table">
-  { for (rowIndex, row, field['settings']['defaultData']) }
+  { for (rowIndex, row, data) }
     <tr>
     { for (columnIndex, column, row) }
-      <td><input type="text" class="form__inp" id="{ field['alias'] }{ rowIndex }_{ columnIndex }" role="cell" data-row="{ rowIndex }" data-column="{ columnIndex }" value="{ column }" /></td>
+      <td>
+        <input
+          class="form__inp"
+          type="text"
+          id="{ field['alias'] }{ rowIndex }_{ columnIndex }"
+          role="cell"
+          value="{ column }"
+          data-row="{ rowIndex }"
+          data-column="{ columnIndex }"
+        />
+      </td>
     { endfor }
     </tr>
   { endfor }

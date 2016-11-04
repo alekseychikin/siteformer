@@ -12,4 +12,12 @@ class SFTypeTable extends SFType
       'null' => false
     );
   }
+
+  public static function getDefaultData($settings) {
+    return $settings['defaultData'];
+  }
+
+  public static function prepareData($field, $data) {
+    return json_encode($data[$field['alias']], true);
+  }
 }
