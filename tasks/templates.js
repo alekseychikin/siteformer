@@ -4,6 +4,7 @@ var through = require('through2');
 var Buffer = require('buffer').Buffer
 var parser = require('html-parser');
 var using = require('gulp-using');
+var cache = require('gulp-cached');
 
 module.exports = (function (src, pwd, dest) {
   return function () {
@@ -11,6 +12,7 @@ module.exports = (function (src, pwd, dest) {
 
     gulp
       .src(src)
+      .pipe(cache('templates'))
       .pipe(using({}))
       .pipe(through.obj(function (file, enc, next) {
         results[file.path] = parser.parse(file.contents.toString(), file.path, pwd).strings()

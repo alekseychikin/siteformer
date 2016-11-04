@@ -279,6 +279,7 @@ gulp.task('prepare-js-components', function ()
     file.extname = '.js';
     return file;
   }))
+  .pipe(cache('js-components'))
   .pipe(gulp.dest('modules/GUI/dist/components'));
 });
 
