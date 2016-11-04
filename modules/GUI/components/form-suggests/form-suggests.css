@@ -1,0 +1,48 @@
+.form-suggests {
+  position: relative;
+}
+
+.form-suggests__results {
+  position: absolute;
+  top: 42px;
+  left: 0;
+  border: 1px solid #d0cfcf;
+  border-radius: 2px;
+}
+
+.form-suggests__item {
+  padding: 5px 10px;
+  cursor: pointer;
+  background-color: #fff;
+}
+
+.form-suggests__item:hover {
+  color: #fff;
+  background-color: #9781b1;
+}
+
+.form-suggests__value {
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  left: 1px;
+  padding: 9px 10px;
+  box-sizing: border-box;
+  height: 36px;
+  font-size: 16px;
+  line-height: 18px;
+  background-color: #fff;
+}
+
+.form-suggests__cancel {
+  position: absolute;
+  z-index: 1;
+  top: 10px;
+  right: 15px;
+  width: 16px;
+  height: 17px;
+  border: none;
+  cursor: pointer;
+  font-size: 0;
+  background: url('form__inp-empty.svg');
+}
