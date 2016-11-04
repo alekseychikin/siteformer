@@ -1,4 +1,5 @@
 .form__label-text {
   display: inline-block;
   vertical-align: middle;
+  flex-grow: 1;
 }

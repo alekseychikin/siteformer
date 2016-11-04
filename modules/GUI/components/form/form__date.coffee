@@ -68,7 +68,7 @@ class DateControl
 
     @$calendar.on "click", ".form__calendar-cell", (e) ->
       $cell = $(this)
-      date = $cell.attr 'data-value'
+      date = $cell.attr "data-value"
       self.$fakeInp.val date
       self.$fakeInp.trigger "change"
 
@@ -233,7 +233,7 @@ class DateControl
     monthCalendar += "<td></td>" for i in [1...firstDayOfWeek]
 
     for j in [i..daysInMonth + i]
-      className = 'form__calendar-cell'
+      className = "form__calendar-cell"
       day = j - i + 1
       month = date[2] + 1
 
@@ -241,7 +241,7 @@ class DateControl
         date[2] == today.getMonth() &&
         +date[1] == today.getFullYear()
 
-          className += ' form__calendar-cell--today'
+          className += " form__calendar-cell--today"
 
       monthCalendar += "<tr>" if (j - 1) % 7 == 0
       monthCalendar += "<td>

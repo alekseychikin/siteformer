@@ -5,11 +5,12 @@
   height: 24px;
   border: 1px solid #BEBEBE;
   border-radius: 2px;
-  margin-right: 5px;
+  margin-right: 10px;
   line-height: 38px;
   cursor: pointer;
   position: relative;
   background-color: #fff;
+  flex-shrink: 0;
 
   &:before {
     content: '';
