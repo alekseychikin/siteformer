@@ -6,20 +6,10 @@ class SFTypeRadio extends SFType
 {
   public static function getSqlField($params) {
     $params = parseJSON($params);
-    $values = [];
-    $defaultValue = "";
-
-    foreach ($params['defaultData'] as $index => $param) {
-      $param = SFText::getTag($param);
-      $values[] = $param;
-
-      if ($params['defaultValue'] == $index) {
-        $defaultValue = $param;
-      }
-    }
+    $defaultValue = $params['defaultValue'];
 
     return [
-      'type' => 'ENUM("' . implode('","', $values) . '")',
+      'type' => 'INT(6)',
       'default' => $defaultValue
     ];
   }
@@ -52,5 +42,9 @@ class SFTypeRadio extends SFType
       ]
     ], $params);
     return json_encode($params);
+  }
+
+  public static function getDefaultData($settings) {
+    return $settings['defaultValue'];
   }
 }
