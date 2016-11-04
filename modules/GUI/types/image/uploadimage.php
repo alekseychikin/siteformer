@@ -3,9 +3,9 @@
 try {
   if (isset($_FILES['image']) && isset($_FILES['image']['name'])) {
     for ($i = 0; $i < count ($_FILES['image']['name']); $i++) {
-      $tmpPath = ENGINE . 'temp/types/image/';
+      $tmpPath = ENGINE_TEMP . 'types/image/';
       $filename = SFImage::upload('image', $tmpPath, $i);
-      SFResponse::set('filename', substr($filename->path(), strlen(ENGINE) + 5));
+      SFResponse::set('filename', substr($filename->path(), strlen(ENGINE_TEMP)));
     }
   }
 } catch (BaseException $e) {

@@ -11,6 +11,8 @@ if (!file_exists(CONFIGS) || !is_file(CONFIGS)) die('Configs file does not exist
 
 define('ROOT', realpath(dirname($trace[0]['file'])) . '/');
 define('ENGINE', realpath(dirname(__FILE__)) . '/');
+define('ENGINE_TEMP', ENGINE . 'temp/');
+
 
 if (getenv('APPLICATION_ENV') !== false) {
   define('APPLICATION_ENV', getenv('APPLICATION_ENV'));
@@ -22,6 +24,7 @@ session_start();
 header('Content-type: text/html; charset=utf8');
 define('CLASSES', ENGINE . 'classes/');
 
+require_once CLASSES . 'clear_cache.php';
 require_once CLASSES . 'base_exception.php';
 require_once CLASSES . 'page_not_found_exception.php';
 require_once CLASSES . 'error_handler.php';
@@ -31,6 +34,8 @@ set_error_handler('errorHandler');
 set_exception_handler('exceptionHandler');
 ini_set('display_errors', 'off');
 error_reporting(E_ALL);
+
+ClearCache::clear();
 
 define('MODULES', ENGINE . 'modules/');
 define('N', "\n");
