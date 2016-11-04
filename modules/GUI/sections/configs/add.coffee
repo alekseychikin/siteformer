@@ -7,6 +7,7 @@ addView = AddView ($ "@configs-add"), addModel
 
 models =
   checkbox: require "checkbox/configsModel.coffee"
+  date: require "date/configsModel.coffee"
   file: require "file/configsModel.coffee"
   gallery: require "gallery/configsModel.coffee"
   image: require "image/configsModel.coffee"
@@ -16,6 +17,7 @@ models =
 
 views =
   checkbox: require "checkbox/configsView.coffee"
+  date: require "date/configsView.coffee"
   file: require "file/configsView.coffee"
   gallery: require "gallery/configsView.coffee"
   image: require "image/configsView.coffee"

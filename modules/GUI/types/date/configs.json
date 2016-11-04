@@ -1,8 +1,9 @@
 {
   "template_index": "item.html",
   "name": "Дата",
-  "hasSettings": false,
+  "hasSettings": true,
   "defaultSettings": {
-
+    "useTime": false,
+    "useCurrentDate": false
   }
 }
