@@ -439,6 +439,15 @@ class SFGUI
     return 'SFType' . SFText::camelCasefy($type, true);
   }
 
+  public static function removeSection($id) {
+    $request = SFORM::update('sections')
+      ->values(array(
+        'enable' => NULL
+      ))
+      ->where('id', $id)
+      ->exec();
+  }
+
   public static function getItemListFrom($section) {
     return new SFGUIGetItemListFrom($section);
   }

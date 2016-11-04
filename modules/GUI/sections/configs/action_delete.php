@@ -15,15 +15,6 @@ $deleteSections = SFValidate::parse([
   ]
 ], $_POST);
 
-$ids = array();
-
-foreach ($deleteSections as $id) {
-  $ids[] = _expr_('id', $id);
+foreach ($deleteSections['deleteSections'] as $id) {
+  SFGUI::removeSection($id);
 }
-
-SFORM::update('sections')
-  ->values(array(
-    'enable' => NULL
-  ))
-  ->where(_or_($ids))
-  ->exec();
