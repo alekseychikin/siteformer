@@ -117,6 +117,18 @@ class SFORMSelect extends SFORMDatabase
     return $this;
   }
 
+  public function andOpenWhere () {
+    $this->where[] = ' AND (';
+
+    return $this;
+  }
+
+  public function orOpenWhere () {
+    $this->where[] = ' OR (';
+
+    return $this;
+  }
+
   public function openWhere () {
     $this->where[] = '(';
 
