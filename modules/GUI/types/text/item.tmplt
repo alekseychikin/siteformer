@@ -1,3 +1,10 @@
+{ import (EditArea, './components/editarea/editarea') }
+
 <div class="form__inp-contain form__inp-contain--full-width" role="input-contain">
-  <textarea class="form__area" cols="30" rows="10" role="area"></textarea>
+  <EditArea
+    id="{field['alias']}"
+    role="area"
+    name="{field['alias']}"
+    value={data}
+  />
 </div>

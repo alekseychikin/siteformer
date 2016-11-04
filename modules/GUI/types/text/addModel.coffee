@@ -1,9 +1,8 @@
 Model = require "model.coffee"
 
 module.exports = Model
-  setSettings: (settings) ->
-    @set value: ""
+  defaultState: -> data: ""
 
-  update: (value) -> @set {value}
+  update: (data) -> @set {data}
 
-  get: -> @state.value
+  get: -> @state.data

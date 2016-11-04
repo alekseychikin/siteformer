@@ -9,4 +9,8 @@ class SFTypeText extends SFType
       'type' => 'TEXT'
     );
   }
+
+  public static function getDefaultData($settings) {
+    return $settings['defaultText'];
+  }
 }

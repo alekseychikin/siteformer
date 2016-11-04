@@ -1,8 +1,8 @@
 {
   "template_index": "item.html",
   "name": "Текст",
-  "hasSettings": false,
+  "hasSettings": true,
   "defaultSettings": {
-
+    "defaultText": ""
   }
 }
