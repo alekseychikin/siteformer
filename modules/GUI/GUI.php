@@ -14,6 +14,12 @@ class SFGUI
     while($filename = readdir($dir)) {
       if ($filename != '.' && $filename != '..' && is_dir(MODULES . 'GUI/types/' . $filename) && file_exists(MODULES . 'GUI/types/' . $filename . '/' . $filename . '.php')) {
         require_once MODULES . 'GUI/types/' . $filename . '/' . $filename . '.php';
+
+        $className = self::getClassNameByType($filename);
+
+        if (method_exists($className, 'prepareDatabase')) {
+          $className::prepareDatabase();
+        }
       }
     }
 
