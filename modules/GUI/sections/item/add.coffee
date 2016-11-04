@@ -1,6 +1,5 @@
 $ = require "jquery-plugins.coffee"
 httpGet = (require "ajax.coffee").httpGet
-Promise = require "promise"
 
 AddModel = require "./addModel.coffee"
 

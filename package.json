@@ -41,7 +41,6 @@
     "through2": "^2.0.1"
   },
   "dependencies": {
-    "jquery": "^1.11.3",
-    "promise": "^7.1.1"
+    "jquery": "^1.11.3"
   }
 }

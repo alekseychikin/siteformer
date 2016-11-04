@@ -1,5 +1,3 @@
-Promise = require "promise"
-
 createXMLHTTPObject = ->
   XMLHttpFactories = [
     -> new XMLHttpRequest()

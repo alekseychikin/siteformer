@@ -1,5 +1,4 @@
 Model = require "model.coffee"
-Promise = require "promise"
 httpFile = (require "ajax.coffee").httpFile
 
 module.exports = Model
