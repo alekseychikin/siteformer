@@ -12,6 +12,7 @@ require_once $modulePath . 'ORMInsert.php';
 require_once $modulePath . 'ORMMigrate.php';
 require_once $modulePath . 'ORMField.php';
 require_once $modulePath . 'ORMFunc.php';
+require_once $modulePath . 'ORMCustomValue.php';
 
 class SFORM extends SFORMDatabase
 {
@@ -173,5 +174,9 @@ class SFORM extends SFORMDatabase
 
   public static function close($alias = 'default') {
     parent::close($alias);
+  }
+
+  public static function generateValue($pattern, $params) {
+    return new SFORMCustomValue($pattern, $params);
   }
 }

@@ -383,7 +383,10 @@ class SFORMSelect extends SFORMDatabase
     $result = '';
 
     foreach ($this->where as $option) {
-      if (gettype($option) === 'array') {
+      if (gettype($option) === 'object' && $option instanceof SFORMCustomValue) {
+        $option->set('field', $this->generateField($option->get('field'), $this->fromTableAlias, true));
+        $result .= $option->value();
+      } elseif (gettype($option) === 'array') {
         $result .= $this->generateField($option[0], $this->fromTableAlias, true) .
           ' ' . $option[1] . ' ' . $this->handleValue($option[2]);
       } else {
@@ -565,6 +568,10 @@ class SFORMSelect extends SFORMDatabase
   }
 
   private function handleExpression ($params) {
+    if (gettype($params[0]) === 'object' && $params[0] instanceof SFORMCustomValue) {
+      return $params[0];
+    }
+
     $field = '';
     $rel = '';
     $value = '';
