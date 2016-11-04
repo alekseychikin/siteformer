@@ -3,13 +3,14 @@
 { import(Scripts, './sections/main/scripts') }
 
 <Main pageTitle="{page_title}" sections={sections} section={section}>
-  <h1 class="head">Добавить запись</h1>
+  <h1 class="head">Добавить запись в «{sectionName}»</h1>
   <article class="content">
     <form class="form" action="" role="item-add-form">
-      <AddForm fields={fields} section={section} />
+      <AddForm fields={fields} section={section} data={data} />
     </form>
   </article>
 
   <Scripts>
+    <script src="/sf-engine/modules/GUI/dist/item/add.js"></script>
   </Scripts>
 </Main>

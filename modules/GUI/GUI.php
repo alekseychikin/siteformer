@@ -81,7 +81,9 @@ class SFGUI
         'sections' => 'gui-sections',
         'fields' => 'gui-fields?section={section}',
         'section' => 'gui-sections?section={section}&field=alias',
-        'page_title' => 'gui-scalar?value=Добавить раздел'
+        'sectionName' => 'gui-sections?section={section}&field=title',
+        'page_title' => 'gui-scalar?value=Добавить запивь в «{sectionName}»',
+        'data' => 'gui-section-data?section={section}'
       ],
       'template' => 'sections/item/add'
     ]);
@@ -98,11 +100,24 @@ class SFGUI
   // Get array of sections
   // It could be news or events or galleries
   public static function getSections() {
-    return SFORM::select()
+    $res = SFORM::select()
       ->from('sections')
-      ->order('id desc')
-      ->where('enable', 1)
+      ->join('section_fields')
+      ->on('section_fields.section', SFORM::field('sections.id'))
+      ->order('sections.id desc')
+      ->where('sections.enable', 1)
       ->exec();
+
+    if (count($res)) {
+      $res = arrMap($res, function ($item) {
+        $item['fields'] = self::prepareSectionFields($item['section_fields']);
+        unset($item['section_fields']);
+
+        return $item;
+      });
+    }
+
+    return $res;
   }
 
   // Get section by alias
@@ -112,6 +127,7 @@ class SFGUI
       ->join('section_fields')
       ->on('section_fields.section', SFORM::field('sections.id'))
       ->where('sections.alias', $alias)
+      ->andWhere('sections.enable', 1)
       ->exec();
 
     if (count($res)) {
@@ -120,8 +136,6 @@ class SFGUI
       unset($res['section_fields']);
 
       return $res;
-    } else {
-      throw new PageNotFoundException('Section not found');
     }
   }
 
@@ -132,6 +146,7 @@ class SFGUI
       ->join('section_fields')
       ->on('section_fields.section', SFORM::field('sections.id'))
       ->where('id', $id)
+      ->andWhere('sections.enable', 1)
       ->exec();
     $res = $res[0];
     $res['fields'] = self::prepareSectionFields($res['section_fields']);
