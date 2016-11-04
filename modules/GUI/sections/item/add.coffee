@@ -11,8 +11,11 @@ models =
   image: require "image/addModel.coffee"
   password: require "password/addModel.coffee"
   radio: require "radio/addModel.coffee"
+  section: require "section/addModel.coffee"
   select: require "select/addModel.coffee"
+  string: require "string/addModel.coffee"
   table: require "table/addModel.coffee"
+  tags: require "tags/addModel.coffee"
   text: require "text/addModel.coffee"
 
 views =
@@ -21,8 +24,11 @@ views =
   image: require "image/addView.coffee"
   password: require "password/addView.coffee"
   radio: require "radio/addView.coffee"
+  section: require "section/addView.coffee"
   select: require "select/addView.coffee"
+  string: require "string/addView.coffee"
   table: require "table/addView.coffee"
+  tags: require "tags/addView.coffee"
   text: require "text/addView.coffee"
 
 httpGet window.location.href

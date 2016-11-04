@@ -39,4 +39,5 @@ foreach ($fields as $field) {
   $newData[$field['alias']] = $className::prepareData($field, $data);
 }
 
+SFResponse::showContent();
 print_r($newData);
