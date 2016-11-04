@@ -54,6 +54,15 @@ ModelPrototype =
 
     throw new Error "Unable to copy obj! Its type isn't supported."
 
+  extends: Object.assign || (target) ->
+    for i in arguments
+      source = arguments[i]
+
+      for key of source
+        target[key] = source[key]
+
+    target
+
   triggerInitialTriggers: ->
     for event in @initialTriggers
       params = [event.eventName]
