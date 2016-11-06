@@ -106,11 +106,14 @@ ModelPrototype =
 
     state
 
-  set: (params) ->
+  set: (params, currentState = @state) ->
     for key, value of params
-      if typeof value is not 'object' || value != @state[key]
-        @state[key] = value
-        @triggerUpdate key
+      if typeof value is "object" && !(value instanceof Array)
+        @set value, @state[key]
+      else if value != @state[key]
+        currentState[key] = value
+
+      @triggerUpdate key if currentState == @state
 
   replace: (params) ->
     @state = {}
