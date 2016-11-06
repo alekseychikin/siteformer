@@ -86,7 +86,10 @@
           }
 
           if (isset($field['type']) && $isIssetSource) {
-            if (!preg_match(self::$regexpTypes[$field['type']], $sourceItem)) {
+            $isBoolean = gettype($sourceItem) === 'boolean';
+            $isMatch = preg_match(self::$regexpTypes[$field['type']], $sourceItem);
+
+            if (!$isBoolean && !$isMatch) {
               self::returnError($field, $sourceItem);
             }
           }
