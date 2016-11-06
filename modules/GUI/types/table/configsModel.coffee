@@ -1,6 +1,9 @@
 Model = require "model.coffee"
+configs = require "types/table/configs.json"
 
 module.exports = Model
+  defaultState: -> configs.defaultSettings
+
   getState: -> @state
 
   updateColumns: (value) ->

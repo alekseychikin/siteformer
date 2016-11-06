@@ -1,6 +1,9 @@
 Model = require "model.coffee"
+configs = require "types/radio/configs.json"
 
 module.exports = Model
+  defaultState: -> configs.defaultSettings
+
   getState: -> @state
 
   updateNumOptions: (value) ->

@@ -1,4 +1,5 @@
 Model = require "model.coffee"
+configs = require "types/string/configs.json"
 
 module.exports = Model
   getState: ->
@@ -17,12 +18,7 @@ module.exports = Model
 
     @set {copyValueOfSources}
 
-  defaultState: ->
-    copyValueOfSources: []
-    copyValueOf: false
-    copyValueOfValue: ""
-    removePunctuation: false
-    translit: false
+  defaultState: -> configs.defaultSettings
 
   updateCopyValueOf: (copyValueOf) -> @set {copyValueOf}
 

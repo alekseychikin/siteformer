@@ -1,16 +1,15 @@
 Model = require "model.coffee"
+configs = require "types/section/configs.json"
 
 module.exports = Model
+  defaultState: -> configs.defaultSettings
+
   getState: ->
     section: @state.section
     field: @state.field
     index: @state.index
 
   setSections: (sections) -> @set {sections}
-
-  defaultState: ->
-    section: false
-    field: false
 
   updateSection: (section) -> @set {section}
 

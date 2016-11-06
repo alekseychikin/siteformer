@@ -1,8 +1,11 @@
 Model = require "model.coffee"
 httpGet = (require "ajax.coffee").httpGet
 httpPost = (require "ajax.coffee").httpPost
+configs = require "types/image/configs.json"
 
 module.exports = Model
+  defaultState: -> configs.defaultSettings
+
   setFields: (fields) ->
     sources = []
 
@@ -15,22 +18,6 @@ module.exports = Model
   initial: ->
     @testConnectionS3()
     @checkPath()
-
-  defaultState: () ->
-    storage: "local"
-    s3auth: false
-    isS3checking: false
-    buckets: []
-    sources: []
-    path: "/"
-    width: "0"
-    height: "0"
-    saveRatio: false
-    pathError: false
-    s3AccessKey: ""
-    s3SecretKey: ""
-    s3auth: false
-    s3Bucket: ""
 
   updateStorage: (value) ->
     @set storage: value

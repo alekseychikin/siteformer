@@ -1,9 +1,9 @@
 Model = require "model.coffee"
+configs = require "types/text/configs.json"
 
 module.exports = Model
-  getState: -> @state
+  defaultState: -> configs.defaultSettings
 
-  defaultState: ->
-    defaultText: ""
+  getState: -> @state
 
   updateDefaultText: (defaultText) -> @set {defaultText}

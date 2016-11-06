@@ -1,9 +1,8 @@
 Model = require "model.coffee"
+configs = require "types/date/configs.json"
 
 module.exports = Model
-  defaultState: ->
-    useTime: false
-    useCurrentDate: false
+  defaultState: -> configs.defaultSettings
 
   updateUseTime: (useTime) -> @set {useTime}
 

@@ -1,8 +1,11 @@
 Model = require "model.coffee"
 httpGet = (require "ajax.coffee").httpGet
 httpPost = (require "ajax.coffee").httpPost
+configs = require "types/file/configs.json"
 
 module.exports = Model
+  defaultState: -> configs.defaultSettings
+
   initial: ->
     @set
       s3auth: false

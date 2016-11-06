@@ -1,14 +1,15 @@
 Model = require "model.coffee"
+configs = require "types/select/configs.json"
 
 module.exports = Model
+  defaultState: -> configs.defaultSettings
+
   getState: -> @state
 
   updateNumOptions: (value) ->
     numOpts = @state.numOptions
     defaultValue = @state.defaultValue
     defaultData = @state.defaultData.slice()
-
-    console.log value, numOpts, defaultValue
 
     if !isNaN value
       if value > numOpts
