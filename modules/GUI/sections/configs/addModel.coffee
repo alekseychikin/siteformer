@@ -72,11 +72,9 @@ module.exports = Model
 
   getFields: -> @state.fields.slice()
 
-  saveFieldConfigs: (form) ->
-    index = form.index
-    delete form.index
+  saveFieldConfigs: (state) ->
     fields = @state.fields.slice()
-    fields[index].settings = form
+    fields[state.index].settings = @extends {}, state.settings
     @set {fields}
 
   updatePosition: (rowIndex, position) ->

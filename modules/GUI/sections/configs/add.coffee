@@ -35,19 +35,21 @@ Popup = require "popup"
 
 addView.on "open-configs-modal", (index, field, fields = []) ->
   Popup.open "@configs-popup"
-  field.settings.index = index
 
-  model = models[field.type] field.settings
-  model.setFields fields if model.setFields?
   sections = addModel.getSections().filter (section) -> section.id != field.section
-  model.setSections sections if model.setSections?
+
+  model = models[field.type]
+    index: index
+    field: field
+    settings: field.settings
+    fields: fields
+    sections: sections
 
   ($ "@configs-popup").html ""
   view = views[field.type] ($ "@configs-popup"), model
 
-  view.on "save-configs-modal", (form) ->
-    console.log form
-    addModel.saveFieldConfigs form
+  view.on "save-configs-modal", (state) ->
+    addModel.saveFieldConfigs state
     Popup.close()
     view.destroy()
 
