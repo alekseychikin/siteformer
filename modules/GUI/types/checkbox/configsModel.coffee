@@ -2,14 +2,16 @@ Model = require "model.coffee"
 configs = require "types/checkbox/configs.json"
 
 module.exports = Model
-  defaultState: -> configs.defaultSettings
+  defaultState: -> settings: configs.defaultSettings
 
-  getState: -> @state
+  getState: ->
+    settings: @state.settings
+    index: @state.index
 
   updateNumOptions: (value) ->
     value = parseInt value, 10
-    numOpts = parseInt @state.numOptions, 10
-    defaultData = @state.defaultData.slice()
+    numOpts = parseInt @state.settings.numOptions, 10
+    defaultData = @state.settings.defaultData.slice()
 
     if !isNaN value
       if value > numOpts
@@ -22,15 +24,16 @@ module.exports = Model
           defaultData.pop()
 
       @set
-        numOptions: value
-        defaultData: defaultData
+        settings:
+          numOptions: value
+          defaultData: defaultData
 
   updateDefaultDataOptionChecked: (index, value) ->
-    data = @state.defaultData.slice()
+    data = @state.settings.defaultData.slice()
     data[index].checked = value
-    @set defaultData: data
+    @set settings: defaultData: data
 
   updateDefaultDataOption: (index, value) ->
-    data = @state.defaultData.slice()
+    data = @state.settings.defaultData.slice()
     data[index].label = value
-    @set defaultData: data
+    @set settings: defaultData: data
