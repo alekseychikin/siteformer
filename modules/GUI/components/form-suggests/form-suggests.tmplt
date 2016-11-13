@@ -7,10 +7,10 @@
         <div
           class="form-suggests__item"
           data-role="suggest-item"
-          data-id="{row['id']}"
-          data-title="{row['title']}"
+          data-id="{row.id}"
+          data-title="{row.title}"
         >
-          {row['title']}
+          {row.title}
         </div>
       { endfor }
     </div>

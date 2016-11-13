@@ -1,31 +1,31 @@
 <div class="popup__head">Настройки файла</div>
-{ isEmpty = !str_len(settings['s3AccessKey']) || !str_len(settings['s3SecretKey']) }
+{ isEmpty = !str_len(settings.s3AccessKey) || !str_len(settings.s3SecretKey) }
 <form action="" class="form" role="configs-form">
   <div class="form__item">
     <label class="form__label">Хранилище</label>
     <div class="form__inp-contain">
       <div class="tabs">
-        <button type="button" class="tabs__item{ if (settings['storage'] == 'local') } tabs__item--active{ endif }" role="configs-file-storage" data-value="local">Локальное</button>
-        <button type="button" class="tabs__item{ if (settings['storage'] == 's3') } tabs__item--active{ endif }" role="configs-file-storage" data-value="s3">S3</button>
+        <button type="button" class="tabs__item{ if (settings.storage == 'local') } tabs__item--active{ endif }" role="configs-file-storage" data-value="local">Локальное</button>
+        <button type="button" class="tabs__item{ if (settings.storage == 's3') } tabs__item--active{ endif }" role="configs-file-storage" data-value="s3">S3</button>
       </div>
     </div>
   </div>
-  <div role="configs-file-modal-storage-local configs-file-modal-storage-frame" { if (settings['storage'] != 'local') } style="display: none"{ endif }>
+  <div role="configs-file-modal-storage-local configs-file-modal-storage-frame" { if (settings.storage != 'local') } style="display: none"{ endif }>
     <div class="form__item">
       <label for="configs-file-path" class="form__label">Путь</label>
       <div class="form__inp-contain">
-        <input type="text" class="form__inp" value="{ settings['path'] }" role="configs-file-path" id="configs-file-path" />
+        <input type="text" class="form__inp" value="{ settings.path }" role="configs-file-path" id="configs-file-path" />
         { if (pathError? && (pathError)) }
         <span class="form__error">{ pathError }</span>
         { endif }
       </div>
     </div>
   </div>
-  <div role="configs-file-modal-storage-s3 configs-file-modal-storage-frame" { if (settings['storage'] != 's3') } style="display: none"{ endif }>
+  <div role="configs-file-modal-storage-s3 configs-file-modal-storage-frame" { if (settings.storage != 's3') } style="display: none"{ endif }>
     <div class="form__item">
       <label for="configs-file-s3-access-key" class="form__label">Access key</label>
       <div class="form__inp-contain">
-        <input type="text" class="form__inp" value="{ settings['s3AccessKey'] }" role="configs-file-s3-access-key" id="configs-file-s3-access-key" />
+        <input type="text" class="form__inp" value="{ settings.s3AccessKey }" role="configs-file-s3-access-key" id="configs-file-s3-access-key" />
       </div>
     </div>
     <div class="form__item">
@@ -55,19 +55,19 @@
           <label class="form__select">
             <select role="configs-file-s3-bucket" id="configs-file-s3-bucket">
               { for (bucket, buckets) }
-              <option value="{ bucket }"{ if (settings['s3Bucket'] == bucket) } selected{ endif }>{ bucket }</option>
+              <option value="{ bucket }"{ if (settings.s3Bucket == bucket) } selected{ endif }>{ bucket }</option>
               { endfor }
             </select>
           </label>
         { else }
-          <input type="text" class="form__inp" value="{ settings['s3Bucket'] }" role="configs-file-s3-bucket" id="configs-file-s3-bucket" />
+          <input type="text" class="form__inp" value="{ settings.s3Bucket }" role="configs-file-s3-bucket" id="configs-file-s3-bucket" />
         { endif }
         </div>
       </div>
       <div class="form__item">
         <label for="configs-file-s3-path" class="form__label">Путь</label>
         <div class="form__inp-contain">
-          <input type="text" class="form__inp" value="{ settings['s3Path'] }" role="configs-file-s3-path" id="configs-file-s3-path" />
+          <input type="text" class="form__inp" value="{ settings.s3Path }" role="configs-file-s3-path" id="configs-file-s3-path" />
           { if (s3PathError? && (s3PathError)) }
             <span class="form__error">{ s3PathError }</span>
           { endif }
@@ -76,7 +76,7 @@
     { endif }
   </div>
   <div class="form__submit">
-    <button class="form__btn form__btn--submit"{ if ((settings['storage'] == "local" && (pathError? && pathError)) || (settings['storage'] == "s3" && (!s3auth || s3PathError))) } disabled{ endif }>Сохранить</button>
+    <button class="form__btn form__btn--submit"{ if ((settings.storage == "local" && (pathError? && pathError)) || (settings.storage == "s3" && (!s3auth || s3PathError))) } disabled{ endif }>Сохранить</button>
     <button type="button" class="form__btn popup__cancel">Отменить</button>
   </div>
 </form>

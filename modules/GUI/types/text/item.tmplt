@@ -2,9 +2,9 @@
 
 <div class="form__inp-contain form__inp-contain--full-width" role="input-contain">
   <EditArea
-    id="{field['alias']}"
+    id="{field.alias}"
     role="area"
-    name="{field['alias']}"
+    name="{field.alias}"
     value={data}
   />
 </div>

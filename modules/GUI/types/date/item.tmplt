@@ -1,21 +1,21 @@
 <div class="form__inp-contain" role="input-contain">
   <label class="form__placeholder">
     <input
-      class="form__inp form__inp--date" 
+      class="form__inp form__inp--date"
       type="date"
-      id="{ field['alias'] }"
-      value="{data['date']}"
+      id="{ field.alias }"
+      value="{data.date}"
       role="date"
     />
     <span class="form__inp-empty" role="date-empty"></span>
   </label>
-  {if (field['settings']['useTime'])}
+  {if (field.settings.useTime)}
     <label class="form__placeholder">
       <input
         class="form__inp form__inp--time"
         type="time"
-        id="{ field['alias'] }-time"
-        value="{data['time']}"
+        id="{ field.alias }-time"
+        value="{data.time}"
         role="time"
       />
       <span class="form__inp-empty" role="time-empty"></span>

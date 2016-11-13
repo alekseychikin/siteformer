@@ -1,6 +1,6 @@
 <div class="popup__head">Настройки строки</div>
 <form action="" class="form" role="configs-form">
-  {if (arr_len(settings['copyValueOfSources']))}
+  {if (arr_len(settings.copyValueOfSources))}
     <div class="form__item">
       <div class="form__inp-contain form__inp-contain--full-width">
         <input
@@ -9,7 +9,7 @@
           role="configs-string-copy-value-of"
           id="configs-string-copy-value-of"
           name="configs-string-copy-value-of"
-          {if (settings['copyValueOf'])} checked{endif}
+          {if (settings.copyValueOf)} checked{endif}
         >
         <label class="form__checkbox-label" for="configs-string-copy-value-of"></label>
         <label class="form__label-text" for="configs-string-copy-value-of">
@@ -19,9 +19,9 @@
 
       <div class="form__inp-contain form__inp-contain--full-width">
         <label class="form__select">
-          <select role="configs-string-copy-value-of-select"{if (!settings['copyValueOf'])} disabled{endif}>
-            {for(item, settings['copyValueOfSources'])}
-              <option value="{item['alias']}"{if (item['alias'] == settings['copyValueOfValue'])} selected{endif}>{item['label']}</option>
+          <select role="configs-string-copy-value-of-select"{if (!settings.copyValueOf)} disabled{endif}>
+            {for(item, settings.copyValueOfSources)}
+              <option value="{item.alias}"{if (item.alias == settings.copyValueOfValue)} selected{endif}>{item.label}</option>
             {endfor}
           </select>
         </label>
@@ -37,7 +37,7 @@
         role="configs-string-remove-punctuation"
         id="configs-string-remove-punctuation"
         name="configs-string-remove-punctuation"
-        {if (settings['removePunctuation'])} checked{endif}
+        {if (settings.removePunctuation)} checked{endif}
       >
       <label class="form__checkbox-label" for="configs-string-remove-punctuation"></label>
       <label class="form__label-text" for="configs-string-remove-punctuation">
@@ -54,7 +54,7 @@
         role="configs-string-translit"
         id="configs-string-translit"
         name="configs-string-translit"
-        {if (settings['translit'])} checked{endif}
+        {if (settings.translit)} checked{endif}
       >
       <label class="form__checkbox-label" for="configs-string-translit"></label>
       <label class="form__label-text" for="configs-string-translit">

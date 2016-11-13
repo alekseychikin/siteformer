@@ -4,13 +4,13 @@
       <input
         class="form__checkbox"
         type="checkbox"
-        id="{ field['alias'] }{ i }"
+        id="{ field.alias }{ i }"
         role="checkbox"
         data-index="{ i }"
-        { if (dataItem['checked'] == "true") } checked{ endif }
+        { if (dataItem.checked == "true") } checked{ endif }
       />
-      <label class="form__checkbox-label" for="{ field['alias'] }{ i }"></label>
-      <label for="{ field['alias'] }{ i }">{ dataItem['label'] }</label>
+      <label class="form__checkbox-label" for="{ field.alias }{ i }"></label>
+      <label for="{ field.alias }{ i }">{ dataItem.label }</label>
     </div>
   { endfor }
 </div>

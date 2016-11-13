@@ -3,21 +3,21 @@
   <div class="form__item">
     <label for="configs-select-num-options" class="form__label">Количество вариантов ответа</label>
     <div class="form__inp-contain">
-      <input type="text" class="form__inp form__inp--very-short" value="{ settings['numOptions'] }" role="configs-select-num-options" id="configs-select-num-options" />
+      <input type="text" class="form__inp form__inp--very-short" value="{ settings.numOptions }" role="configs-select-num-options" id="configs-select-num-options" />
     </div>
   </div>
   <div class="form__item">
     <label class="form__label">Варианты ответов:</label>
     <div class="form__inp-contain form__inp-contain--full-width">
       <div class="form__row-option">
-        <input type="radio" class="form__radio" role="configs-select-option" value="-1" id="configs-select-option--1" name="configs-select-option"{ if (settings['defaultValue'] == -1) } checked{ endif } />
+        <input type="radio" class="form__radio" role="configs-select-option" value="-1" id="configs-select-option--1" name="configs-select-option"{ if (settings.defaultValue == -1) } checked{ endif } />
         <label class="form__radio-label" for="configs-select-option--1"></label>
         <label for="configs-select-option--1"><i>Ничего не выбрано по умолчанию</i></label>
       </div>
       <div role="configs-select-options-contain">
-        { for (i, option, settings['defaultData']) }
+        { for (i, option, settings.defaultData) }
         <div class="form__row-option">
-          <input type="radio" class="form__radio" role="configs-select-option" value="{ i }" id="configs-select-option-{ i }" name="configs-select-option"{ if (settings['defaultValue'] == i) } checked{ endif } />
+          <input type="radio" class="form__radio" role="configs-select-option" value="{ i }" id="configs-select-option-{ i }" name="configs-select-option"{ if (settings.defaultValue == i) } checked{ endif } />
           <label class="form__radio-label" for="configs-select-option-{ i }"></label>
           <label><input type="text" class="form__inp form__inp--half-width" value="{ option }" role="configs-select-option-label" data-index="{ i }" /></label>
         </div>

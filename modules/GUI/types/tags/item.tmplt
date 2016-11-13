@@ -8,8 +8,8 @@
   <Suggest rows={rows}>
     <input
       type="text"
-      name="{ field['alias'] }"
-      id="{ field['alias'] }"
+      name="{ field.alias }"
+      id="{ field.alias }"
       class="form__inp"
       value="{ data }"
       role="tags"

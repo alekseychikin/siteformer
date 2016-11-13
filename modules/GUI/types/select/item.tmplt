@@ -1,7 +1,7 @@
 <div class="form__inp-contain" role="input-contain">
   <label class="form__select">
-    <select name="{ field['alias'] }" id="{ field['alias'] }" role="select">
-    { for (i, dataItem, field['settings']['defaultData']) }
+    <select name="{ field.alias }" id="{ field.alias }" role="select">
+    { for (i, dataItem, field.settings.defaultData) }
       <option value="{ i }"{ if (data == i) } selected{ endif }>{ dataItem }</option>
     { endfor }
     </select>

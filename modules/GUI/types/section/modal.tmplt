@@ -7,7 +7,7 @@
         <select role="configs-section-section" id="configs-section-section">
           { if (arr_len(sections)) }
             { for (sectionItem, sections) }
-              <option value="{ sectionItem['alias'] }"{ if (sectionItem['alias'] == section) } selected{ endif }>{ sectionItem['title'] }</option>
+              <option value="{ sectionItem.alias }"{ if (sectionItem.alias == section) } selected{ endif }>{ sectionItem.title }</option>
             { endfor }
           { endif }
         </select>
@@ -21,9 +21,9 @@
         <select role="configs-section-field" id="configs-section-field">
           { if (arr_len(sections)) }
             { for (sectionIndex, sectionItem, sections) }
-              { if (sectionItem['alias'] == section || (!section && sectionIndex == 0)) }
-                { for (fieldItem, sectionItem['fields']) }
-                  <option value="{ fieldItem['alias'] }"{ if (field == fieldItem['alias']) } selected{ endif }>{ fieldItem['title'] }</option>
+              { if (sectionItem.alias == section || (!section && sectionIndex == 0)) }
+                { for (fieldItem, sectionItem.fields) }
+                  <option value="{ fieldItem.alias }"{ if (field == fieldItem.alias) } selected{ endif }>{ fieldItem.title }</option>
                 { endfor }
               { endif }
             { endfor }

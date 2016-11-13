@@ -7,7 +7,7 @@
       { if (!!filename?) }
         <span class="form__file-filename">{ filename }</span>
       { endif }
-      <input type="file" name="{ field['alias'] }" id="{ field['alias'] }" value="" role="image" />
+      <input type="file" name="{ field.alias }" id="{ field.alias }" value="" role="image" />
     </label>
   </div>
 </div>
