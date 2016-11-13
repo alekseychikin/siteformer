@@ -3,27 +3,24 @@ configs = require "types/string/configs.json"
 
 module.exports = Model
   getState: ->
-    copyValueOf: @state.copyValueOf
-    copyValueOfValue: @state.copyValueOfValue
-    removePunctuation: @state.removePunctuation
-    translit: @state.translit
+    settings: @state.settings
     index: @state.index
 
-  setFields: (fields) ->
+  initial: () ->
     copyValueOfSources = []
 
-    for field, index in fields
+    for field, index in @state.fields
       if field.type == "string" && index != @state.index && field.alias
         copyValueOfSources.push alias: field.alias, label: field.title
 
-    @set {copyValueOfSources}
+    @set settings: {copyValueOfSources}
 
-  defaultState: -> configs.defaultSettings
+  defaultState: -> settings: configs.defaultSettings
 
-  updateCopyValueOf: (copyValueOf) -> @set {copyValueOf}
+  updateCopyValueOf: (copyValueOf) -> @set settings: {copyValueOf}
 
-  updateCopyValueOfValue: (copyValueOfValue) -> @set {copyValueOfValue}
+  updateCopyValueOfValue: (copyValueOfValue) -> @set settings: {copyValueOfValue}
 
-  updateRemovePunctuation: (removePunctuation) -> @set {removePunctuation}
+  updateRemovePunctuation: (removePunctuation) -> @set settings: {removePunctuation}
 
-  updateTranslit: (translit) -> @set {translit}
+  updateTranslit: (translit) -> @set settings: {translit}

@@ -2,14 +2,16 @@ Model = require "model.coffee"
 configs = require "types/select/configs.json"
 
 module.exports = Model
-  defaultState: -> configs.defaultSettings
+  defaultState: -> settings: configs.defaultSettings
 
-  getState: -> @state
+  getState: ->
+    settings: @state.settings
+    index: @state.index
 
   updateNumOptions: (value) ->
-    numOpts = @state.numOptions
-    defaultValue = @state.defaultValue
-    defaultData = @state.defaultData.slice()
+    numOpts = @state.settings.numOptions
+    defaultValue = @state.settings.defaultValue
+    defaultData = @state.settings.defaultData.slice()
 
     if !isNaN value
       if value > numOpts
@@ -19,18 +21,19 @@ module.exports = Model
         for i in [value + 1..numOpts]
           defaultData.pop()
         if defaultValue >= value
-          @set {defaultValue}
+          @set settings: {defaultValue}
 
       defaultValue = -1 if defaultValue + 1 >= value
 
       @set
-        numOptions: value
-        defaultData: defaultData
-        defaultValue: defaultValue
+        settings:
+          numOptions: value
+          defaultData: defaultData
+          defaultValue: defaultValue
 
-  updateDefaultValue: (value) -> @set defaultValue: parseInt value, 10
+  updateDefaultValue: (value) -> @set settings: defaultValue: parseInt value, 10
 
   updateDefaultDataOption: (index, value) ->
-    data = @state.defaultData.slice()
+    data = @state.settings.defaultData.slice()
     data[index] = value
-    @set defaultData: data
+    @set settings: defaultData: data

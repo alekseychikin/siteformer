@@ -9,5 +9,5 @@ module.exports = Model
 
   get: ->
     date = @state.date
-    date += " #{@state.time}" if @state.useTime
+    date += " #{@state.time}" if @state.field.settings.useTime
     date

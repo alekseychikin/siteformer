@@ -2,10 +2,12 @@ Model = require "model.coffee"
 configs = require "types/date/configs.json"
 
 module.exports = Model
-  defaultState: -> configs.defaultSettings
+  defaultState: -> settings: configs.defaultSettings
 
-  updateUseTime: (useTime) -> @set {useTime}
+  updateUseTime: (useTime) -> @set settings: {useTime}
 
-  updateUseCurrentDate: (useCurrentDate) -> @set {useCurrentDate}
+  updateUseCurrentDate: (useCurrentDate) -> @set settings: {useCurrentDate}
 
-  getState: -> @state
+  getState: ->
+    settings: @state.settings
+    index: @state.index

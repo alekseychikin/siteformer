@@ -8,7 +8,7 @@
         role="configs-date-use-time"
         id="configs-date-use-time"
         name="configs-date-use-time"
-        {if (useTime)} checked{endif}
+        {if (settings['useTime'])} checked{endif}
       >
       <label class="form__checkbox-label" for="configs-date-use-time"></label>
       <label class="form__label-text" for="configs-date-use-time">
@@ -25,7 +25,7 @@
         role="configs-date-use-current-date"
         id="configs-date-use-current-date"
         name="configs-date-use-current-date"
-        {if (useCurrentDate)} checked{endif}
+        {if (settings['useCurrentDate'])} checked{endif}
       >
       <label class="form__checkbox-label" for="configs-date-use-current-date"></label>
       <label class="form__label-text" for="configs-date-use-current-date">

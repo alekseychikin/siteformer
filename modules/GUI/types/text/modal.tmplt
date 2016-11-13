@@ -5,7 +5,7 @@
   <div class="form__item">
     <label for="configs-text-default-text" class="form__label">Текст по умолчанию</label>
       <EditArea
-        value={defaultText}
+        value={settings['defaultText']}
         name="configs-text-default-text"
         role="configs-text-default-text"
         id="configs-text-default-text"

@@ -2,15 +2,27 @@ Model = require "model.coffee"
 configs = require "types/section/configs.json"
 
 module.exports = Model
-  defaultState: -> configs.defaultSettings
+  defaultState: -> settings: configs.defaultSettings
 
   getState: ->
-    section: @state.section
-    field: @state.field
+    settings: @state.settings
     index: @state.index
 
-  setSections: (sections) -> @set {sections}
+  initial: ->
+    section = ""
+    field = ""
 
-  updateSection: (section) -> @set {section}
+    @state.sections.forEach (item) -> section = item.alias if !section && item.alias
+    @set settings: {section} if !@state.settings.section
 
-  updateField: (field) -> @set {field}
+    @state.sections.forEach (item) ->
+      if section == item.alias
+        item.fields.forEach (item) ->
+          if !field && item.alias
+            field = item.alias
+
+    @set settings: {field} if !@state.settings.field
+
+  updateSection: (section) -> @set settings: {section}
+
+  updateField: (field) -> @set settings: {field}
