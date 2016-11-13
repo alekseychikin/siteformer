@@ -27,3 +27,7 @@
 input:checked + .form__radio-label:before {
   opacity: 1;
 }
+
+input:focus + .form__radio-label {
+  box-shadow: 0 0 6px #699EF5;
+}

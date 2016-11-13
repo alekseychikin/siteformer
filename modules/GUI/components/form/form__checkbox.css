@@ -1,5 +1,4 @@
 .form__checkbox {
   position: absolute;
-  visibility: hidden;
   left: -9999px;
 }

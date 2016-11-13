@@ -28,3 +28,7 @@
 input:checked + .form__checkbox-label:before {
   opacity: 1;
 }
+
+input:focus + .form__checkbox-label {
+  box-shadow: 0 0 6px #699EF5;
+}
