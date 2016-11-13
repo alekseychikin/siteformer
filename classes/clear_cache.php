@@ -15,7 +15,9 @@ class ClearCache {
     while ($file = readdir($dir)) {
       if ($file !== '.' && $file !== '..') {
         if (is_dir($path . $file)) {
-          self::recursive($path . $file . '/');
+          if (self::recursive($path . $file . '/')) {
+            $hasFiles = true;
+          }
         } else {
           $lastModifyTime = filemtime($path . $file);
 
@@ -31,6 +33,10 @@ class ClearCache {
 
     if (!$hasFiles && $path !== ENGINE_TEMP) {
       @rmdir($path);
+
+      return false;
     }
+
+    return true;
   }
 }
