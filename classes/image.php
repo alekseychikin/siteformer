@@ -138,35 +138,25 @@ class SFImage
       $params['height'] = 0;
     }
 
-    if (isset($params['maxsize'])) {
-      if ($width > $height) {
-        $params['width'] = $params['maxsize'];
-      } else {
-        $params['height'] = $params['maxsize'];
+    if (!isset($params['saveRatio'])) {
+      $params['saveRatio'] = true;
+    }
+
+    if ($params['saveRatio']) {
+      if ($params['width'] != 0 && $params['width'] < $width) {
+        $height = (int)($height - (($width - $params['width']) / ($width / $height)));
+        $width = $params['width'];
       }
-    }
 
-    if (isset($params['minsize'])) {
-      if ($width < $height) {
-        $params['width'] = $params['minsize'];
-      } else {
-        $params['height'] = $params['minsize'];
+      if ($params['height'] != 0 && $params['height'] < $height) {
+        $width = (int)($width - (($height - $params['height']) / ($height / $width)));
+        $height = $params['height'];
       }
-    }
-
-    if ($params['width'] != 0 && $params['width'] < $width) {
-      $height = (int)($height - (($width - $params['width']) / ($width / $height)));
-      $width = $params['width'];
-    }
-
-    if ($params['height'] != 0 && $params['height'] < $height) {
-      $width = (int)($width - (($height - $params['height']) / ($height / $width)));
-      $height = $params['height'];
-    }
-
-    if ($params['width'] != 0 && $params['height'] != 0) {
-      $width = $params['width'];
-      $height = $params['height'];
+    } else {
+      if ($params['width'] != 0 && $params['height'] != 0) {
+        $width = $params['width'];
+        $height = $params['height'];
+      }
     }
 
     $image  = $this->createImage($this->filename);

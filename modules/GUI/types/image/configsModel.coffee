@@ -47,18 +47,18 @@ module.exports = Model
   resetPath: -> @set pathError: false
 
   testConnectionS3: ->
-    if @state.storage == "s3" && @state.s3AccessKey && @state.s3SecretKey && !@state.s3auth
+    if @state.settings.storage == "s3" && @state.settings.s3AccessKey && @state.settings.s3SecretKey && !@state.s3auth
       @set s3checking: true
 
       httpGet "/cms/types/image/check-s3-connection/",
-        accessKey: @state.s3AccessKey
-        secretKey: @state.s3SecretKey
+        accessKey: @state.settings.s3AccessKey
+        secretKey: @state.settings.s3SecretKey
       .then (response) =>
         @set s3auth: response.auth
 
         if response.auth
-          if @state.s3Bucket not in response.buckets
-            @set s3Bucket: response.buckets[0]
+          if @state.settings.s3Bucket not in response.buckets
+            @set settings: s3Bucket: response.buckets[0]
 
           @set buckets: response.buckets
 
@@ -68,13 +68,12 @@ module.exports = Model
 
         console.error error
 
-  updateS3AccessKey: (value) ->
-    if @state.s3AccessKey != value
+  updateS3AccessKey: (s3AccessKey) ->
+    if s3AccessKey && @state.settings.s3AccessKey != s3AccessKey
       @set
         s3auth: false
         buckets: []
-
-    @set s3AccessKey: value
+        settings: {s3AccessKey}
 
   updateS3SecretKey: (s3SecretKey) ->
     if s3SecretKey && @state.settings.s3SecretKey != s3SecretKey

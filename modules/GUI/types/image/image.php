@@ -103,17 +103,12 @@
         $value = $data[$settings['source']];
       }
 
-      if (!$value || $value === 'false') return false;
+      if (!$value || $value === 'false') return '';
 
       $image = new SFImage(ENGINE_TEMP . $value);
-      $resizeParams = [];
-
-      if (isset($settings['width']) && $settings['width']) $resizeParams['width'] = $settings['width'];
-      if (isset($settings['height']) && $settings['height']) $resizeParams['height'] = $settings['height'];
-      if (isset($settings['maxsize']) && $settings['maxsize']) $resizeParams['maxsize'] = $settings['maxsize'];
 
       $fieldTempPath = $image->path('filepath') . $field['alias'] . '_' . $image->path('filename');
-      $image = $image->resize($resizeParams, $fieldTempPath);
+      $image = $image->resize($settings, $fieldTempPath);
 
       if ($settings['storage'] === 's3') {
         SFPath::connectS3($settings['s3AccessKey'], $settings['s3SecretKey'], $settings['s3Bucket']);
@@ -126,7 +121,7 @@
         return substr(SFPath::move($path . date('Y/m/'), $fieldTempPath), strlen($path));
       }
 
-      return false;
+      return '';
     }
 
     private static function getSources($fields, $currentField, $currentAlias) {
