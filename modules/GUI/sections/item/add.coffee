@@ -49,4 +49,4 @@ httpGet window.location.href
           if views[field.type]? && (!field.settings.hide? || (field.settings.hide? && !field.settings.hide))
             views[field.type] $rows.eq(index), model
 
-          index++
+            index++

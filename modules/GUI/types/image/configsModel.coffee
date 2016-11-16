@@ -12,16 +12,15 @@ module.exports = Model
     pathError: false
     sources: []
 
-  setFields: (fields) ->
+  initial: ->
     sources = []
 
-    for field, index in fields
+    for field, index in @state.fields
       if field.type == "image" && index != @state.index && field.alias
         sources.push alias: field.alias, label: field.title
 
     @set {sources}
 
-  initial: ->
     @testConnectionS3()
     @checkPath()
 
