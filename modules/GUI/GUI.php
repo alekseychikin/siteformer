@@ -307,6 +307,19 @@ class SFGUI
     echo "alter tables\n";
     foreach ($arrDiff as $field) {
       switch ($field['mark']) {
+        case 'delete':
+          echo "\n"."delete ".$source['table']."\n";
+          SFORM::alter($source['table'])
+            ->drop($field['element']['alias'])
+            ->exec();
+            // ->getQuery();
+
+          break;
+      }
+    }
+
+    foreach ($arrDiff as $field) {
+      switch ($field['mark']) {
         case 'edit':
           echo "\n"."edit ".$source['table']."\n";
           $fieldType = array_merge($defaultField, self::getSqlFieldType($field['element']));
@@ -323,14 +336,6 @@ class SFGUI
           $fieldType['name'] = $field['element']['alias'];
           SFORM::alter($source['table'])
             ->add($fieldType)
-            ->exec();
-            // ->getQuery();
-
-          break;
-        case 'delete':
-          echo "\n"."delete ".$source['table']."\n";
-          SFORM::alter($source['table'])
-            ->drop($field['element']['alias'])
             ->exec();
             // ->getQuery();
 
