@@ -55,7 +55,7 @@ class SFTypeCheckbox extends SFType
     return json_encode($params);
   }
 
-  public static function prepareData($field, $data) {
+  public static function prepareData($field, $data, $section) {
     return $data[$field['alias']];
   }
 

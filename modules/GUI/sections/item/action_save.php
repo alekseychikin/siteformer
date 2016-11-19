@@ -36,7 +36,21 @@ $newData = array();
 
 foreach ($fields as $field) {
   $className = SFGUI::getClassNameByType($field['type']);
-  $newData[$field['alias']] = $className::prepareData($field, $data);
+  $className::validateData($field, $data, $section);
+}
+
+foreach ($fields as $field) {
+  $className = SFGUI::getClassNameByType($field['type']);
+  $newData[$field['alias']] = $className::prepareData($field, $data, $section);
+}
+
+$record = SFORM::insert($section['table'])
+  ->values($newData)
+  ->exec('default', true);
+
+foreach ($fields as $field) {
+  $className = SFGUI::getClassNameByType($field['type']);
+  $className::postPrepareData($record, $field, $newData, $data, $section);
 }
 
 SFResponse::showContent();

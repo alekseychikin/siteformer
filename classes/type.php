@@ -31,13 +31,36 @@ class SFType
   }
 
   /**
+  * Method for validationg data before preparing data and putting to the database
+  * @param array $field Field
+  * @param array $data Sended data
+  * @param array $section Section
+  */
+  public static function validateData($field, $data, $section) {
+    return true;
+  }
+
+  /**
   * Method for preparing data for putting to database
   * @param array $field Field
   * @param array $data Sended data
+  * @param array $section Section
   * @return string Prepared data
   */
-  public static function prepareData($field, $data) {
+  public static function prepareData($field, $data, $section) {
     return $data[$field['alias']];
+  }
+
+  /**
+  * Method for adding some more data to another tables after insert record to main table
+  * @param array $record Fresh inserted data to main table
+  * @param array $field Field
+  * @param array $newData Array of data prepared in `prepareData` Method
+  * @param array $data Origin array of data, sended to `prepareData` before
+  * @param array $section Section
+  * @return void
+  */
+  public static function postPrepareData($record, $field, $newData, $data, $section) {
   }
 
   /**

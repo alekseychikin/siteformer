@@ -37,7 +37,7 @@ class SFTypeString extends SFType
     return json_encode($params);
   }
 
-  public static function prepareData($field, $data) {
+  public static function prepareData($field, $data, $section) {
     $settings = $field['settings'];
 
     $value = $data[$field['alias']];
