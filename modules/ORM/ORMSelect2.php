@@ -157,6 +157,16 @@ class SFORMSelect extends SFORMDatabase
     return $this;
   }
 
+  public function id ($id, $alias = 'default') {
+    $primaryFields = $this->getPrimaryFields($this->fromTable, $alias);
+
+    if (count($primaryFields) === 1) {
+      $this->where($primaryFields[0], $id);
+    }
+
+    return $this;
+  }
+
   public function order ($order) {
     $order = explode(',', $order);
     $orders = [];
@@ -210,6 +220,17 @@ class SFORMSelect extends SFORMDatabase
     $result = $this->dropIdKeys($resultRaw);
 
     return $result;
+  }
+
+  public function execOne ($alias = 'default') {
+    $this->limit(1);
+    $result = $this->exec($alias);
+
+    if (isset($result[0])) {
+      return $result[0];
+    }
+
+    return [];
   }
 
   private function dropIdKeys ($resultRaw) {
