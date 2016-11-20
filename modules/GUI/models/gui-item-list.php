@@ -4,8 +4,11 @@ class SFGuiItemList extends SFRouterModel
 {
   public static function get ($params) {
     SFResponse::showContent();
-    $section = SFGUI::getSection($params['section']);
-    print_r($section);
-    return [];
+
+    $result = SFGUI::getItemList($params['section'])
+      ->order('id desc')
+      ->limit(0, 10);
+
+    return $result->exec();
   }
 }
