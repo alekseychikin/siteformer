@@ -4,6 +4,8 @@ require_once $modulePath . 'GUIGetItemList.php';
 
 class SFGUI
 {
+  private static $sections = [];
+
   public static function init($params) {
     $dependencies = ['SFRouter', 'SFTemplater'];
     arrMap($dependencies, function ($dependence) {
@@ -121,7 +123,11 @@ class SFGUI
   }
 
   // Get section by alias
-  public static function getSection($alias) {
+  public static function getSection($alias, $force = false) {
+    if (isset(self::$sections[$alias]) && !$force) {
+      return self::$sections[$alias];
+    }
+
     $res = SFORM::select()
       ->from('sections')
       ->join('section_fields')
@@ -135,8 +141,13 @@ class SFGUI
       $res['fields'] = self::prepareSectionFields($res['section_fields']);
       unset($res['section_fields']);
 
+      self::$sections[$alias] = $res;
+      self::$sections[$res['id']] = $res;
+
       return $res;
     }
+
+    return false;
   }
 
   // Get section by id
@@ -148,11 +159,19 @@ class SFGUI
       ->where('id', $id)
       ->andWhere('sections.enable', 1)
       ->exec();
-    $res = $res[0];
-    $res['fields'] = self::prepareSectionFields($res['section_fields']);
-    unset($res['section_fields']);
 
-    return $res;
+    if (count($res)) {
+      $res = $res[0];
+      $res['fields'] = self::prepareSectionFields($res['section_fields']);
+      unset($res['section_fields']);
+
+      self::$sections[$id] = $res;
+      self::$sections[$res['alias']] = $res;
+
+      return $res;
+    }
+
+    return false;
   }
 
   public static function getNewFields () {
