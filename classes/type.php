@@ -82,7 +82,13 @@ class SFType
     return $value;
   }
 
-  public static function whereExpression($databaseQuery, $section, $field, $value, $params) {
+  public static function joinData($databaseQuery, $section, $field) {
+  }
 
+  public static function postProcessJoinedData($data, $section, $field) {
+    return $data;
+  }
+
+  public static function whereExpression($databaseQuery, $section, $field, $value, $params) {
   }
 }
