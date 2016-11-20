@@ -36,4 +36,25 @@ class SFTypeSection extends SFType
       'title' => ''
     ];
   }
+
+  public static function joinData($databaseQuery, $section, $field) {
+    $joinSection = SFGUI::getSection($field['settings']['section']);
+    $databaseQuery->join($joinSection['table'])
+      ->on($joinSection['table'] . '.id', SFORM::field($section['table'] . '.' . $field['alias']));
+  }
+
+  public static function postProcessJoinedData($data, $section, $field) {
+    $joinSection = SFGUI::getSection($field['settings']['section']);
+
+    foreach ($data as $index => $row) {
+      $data[$index][$field['alias']] = [];
+
+      if (isset($row[$joinSection['table']]) && isset($row[$joinSection['table']][0])) {
+        $data[$index][$field['alias']] = $row[$joinSection['table']][0];
+        unset($data[$index][$joinSection['table']]);
+      }
+    }
+
+    return $data;
+  }
 }
