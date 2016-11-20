@@ -4,7 +4,7 @@ $src = urldecode($_GET['src']);
 $section = $_GET['section'];
 $field = $_GET['field'];
 
-$result = SFGUI::getItemListFrom($section)
+$result = SFGUI::getItemList($section)
   ->where($field, $src, ['find' => 'prefix'])
   ->limit(10)
   ->exec();

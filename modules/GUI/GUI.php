@@ -1,6 +1,6 @@
 <?php if (!defined('ROOT')) die('You can\'t just open this file, dude');
 
-require_once $modulePath . 'GUIGetItemListFrom.php';
+require_once $modulePath . 'GUIGetItemList.php';
 
 class SFGUI
 {
@@ -468,8 +468,8 @@ class SFGUI
       ->exec();
   }
 
-  public static function getItemListFrom($section) {
-    return new SFGUIGetItemListFrom($section);
+  public static function getItemList($section) {
+    return new SFGUIGetItemList($section);
   }
 
   private static function stringifyToArray($data, $indent = 1) {
