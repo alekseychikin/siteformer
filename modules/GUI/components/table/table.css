@@ -3,12 +3,14 @@
   border-collapse: separate;
 }
 
-.table td {
+.table td,
+.table th {
   font-size: 15px;
   padding: 10px 20px;
 }
 
-.table thead td {
+.table thead td,
+.table thead th {
   background-color: #EFEFEF;
   font-weight: bold;
   font-size: 14px;

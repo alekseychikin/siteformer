@@ -1,0 +1,64 @@
+{ import(Checkbox, './types/checkbox/table-item') }
+{ import(Date, './types/date/table-item') }
+{ import(Radio, './types/radio/table-item') }
+{ import(Section, './types/section/table-item') }
+{ import(Select, './types/select/table-item') }
+{ import(String, './types/string/table-item') }
+
+<div class="section__row">
+  <a href="/cms/{section}/add/" class="form__btn">Добавить запись</a>
+</div>
+<div class="section__row" role="section-list">
+  { checkedItems = 0 }
+  <table class="table">
+    <colgroup>
+      <col width="20" />
+      { for(field, fields) }
+        <col width="*" />
+      { endfor }
+    </colgroup>
+    <thead>
+      <tr>
+        <th>
+          <input class="form__checkbox" type="checkbox" id="checkall" role="cbeck-all" />
+          <label class="form__checkbox-label" for="checkall"></label>
+        </th>
+        { for(field, fields) }
+          <th>{ field.title }</th>
+        { endfor }
+      </tr>
+    </thead>
+    <tbody>
+      { checkedItems = 0 }
+      { for (i, dataRow, data) }
+        { isChecked = dataRow.checked? && (dataRow.checked) }
+        { if (isChecked) }
+          { checkedItems = checkedItems + 1 }
+        { endif }
+        <tr class="table__link" role="section-row" data-id="{ i }">
+          <td>
+            <input class="form__checkbox" type="checkbox" id="check{ dataRow.id }" role="check-item"{ if (isChecked) } checked{ endif } />
+            <label class="form__checkbox-label" for="check{ dataRow.id }"></label>
+          </td>
+          { for (j, field, fields) }
+            <td><a href="/cms/{ section }/{ dataRow.id }/"{ if (j != 0) } tabindex="-1"{ endif }>
+              { if (field.type == 'checkbox') }
+                <Checkbox field={field} value={dataRow[field.alias]} />
+              { elseif (field.type == 'date') }
+                <Date field={field} value={dataRow[field.alias]} />
+              { elseif (field.type == 'radio') }
+                <Radio field={field} value={dataRow[field.alias]} />
+              { elseif (field.type == 'section') }
+                <Section field={field} value={dataRow[field.alias]} />
+              { elseif (field.type == 'select') }
+                <Select field={field} value={dataRow[field.alias]} />
+              { elseif (field.type == 'string') }
+                <String field={field} value={dataRow[field.alias]} />
+              { endif }
+            </a></td>
+          { endfor }
+        </tr>
+      { endfor }
+    </tbody>
+  </table>
+</div>

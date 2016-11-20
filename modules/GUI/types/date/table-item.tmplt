@@ -1,0 +1,9 @@
+{ if (value != '') }
+  { date = str_split(value, ' ') }
+  { time = str_split(date[1], ':') }
+  { date = str_split(date[0], '-') }
+  { date[2] }.{ date[1] }.{ date[0] }
+  { if (field.settings.useTime) }
+    { time[0] }:{ time[1] }
+  { endif }
+{ endif }

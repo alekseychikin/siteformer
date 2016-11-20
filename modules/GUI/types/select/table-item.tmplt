@@ -1,0 +1,5 @@
+{ for (i, item, field.settings.defaultData)}
+  { if (i == value) }
+    { item }
+  { endif }
+{ endfor }

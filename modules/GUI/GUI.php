@@ -73,7 +73,11 @@ class SFGUI
     SFRouter::addRule('/cms/types/{type}/{handle}/', MODULES . 'GUI/sections/main/type');
     SFRouter::addRule('/cms/{section}/', [
       'data' => [
-        'fields' => 'gui-fields?section={section}',
+        'title' => 'gui-sections?section={section}&field=title',
+        'page_title' => 'gui-scalar?value=Редактировать раздел «{title}»',
+        'fields' => 'gui-fields?section={section}&limit=6',
+        'section' => 'gui-scalar?value={section}',
+        'sections' => 'gui-sections',
         'data' => 'gui-item-list?section={section}&offset=0&limit=10'
       ],
       'template' => 'sections/item/index'

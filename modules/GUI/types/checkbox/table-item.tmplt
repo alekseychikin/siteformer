@@ -1,0 +1,9 @@
+{ values = [] }
+{ for (i, item, field.settings.defaultData)}
+  { if ((i + 1) & value) }
+    { arr_push(values, item.label) }
+  { endif }
+{ endfor }
+{ for (i, item, values) }
+  { item }{ if (i != arr_len(values) - 1) },{ endif }
+{ endfor }
