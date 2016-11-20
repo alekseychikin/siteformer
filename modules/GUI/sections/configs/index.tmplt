@@ -1,4 +1,4 @@
-{ import(TableSectionsList, './sections/configs/table-sections-list') }
+{ import(TableSectionsList, './sections/configs/table-section-list') }
 { import(Main, './sections/main/main') }
 { import(Scripts, './sections/main/scripts') }
 

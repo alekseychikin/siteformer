@@ -1,5 +1,5 @@
 View = require "view.coffee"
-sectionsTemplate = require "sections/configs/table-sections-list"
+sectionsTemplate = require "sections/configs/table-section-list"
 Render = require "render"
 
 module.exports = View
