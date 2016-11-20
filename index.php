@@ -1,5 +1,8 @@
 <?php
 
+$startTime = explode(' ', microtime());
+$startTime = $startTime[1] + $startTime[0];
+
 $e = new Exception();
 $trace = $e->getTrace();
 

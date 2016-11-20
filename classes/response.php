@@ -190,6 +190,8 @@
     }
 
     private static function returnData() {
+      global $startTime;
+
       if (!self::$working) return false;
 
       $content = '';
@@ -233,6 +235,10 @@
           } else {
             if (self::$error === 200) {
               echo $content;
+              $endTime = explode(' ', microtime());
+              $endTime = $endTime[1] + $endTime[0];
+
+              echo '<!-- ' . ($endTime - $startTime) . 's; ' . SFORMDatabase::$countQueries . ' queries -->';
             } else {
               $trace = print_r(self::$result['error']['trace'], true);
               echo self::$result['error']['message'] . "\n" . $trace;

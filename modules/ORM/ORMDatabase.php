@@ -16,6 +16,7 @@
     private static $cachedPrimaryFields = array();
     private static $cachedFields = array();
     private static $cachedTables = array();
+    public static $countQueries = 0;
 
     protected function makeStringOfField($field)
     {
@@ -133,6 +134,9 @@
           $res = mysql_query($sql, self::$connections[$alias]);
         }
       }
+
+      self::$countQueries++;
+
       $endtime = microtime(true);
       if (self::$reports !== false) {
         self::putReport($sql, number_format($endtime - $timestart, 4));
