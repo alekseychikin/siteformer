@@ -9,7 +9,11 @@ module.exports = Model
     @set {data}
 
   get: ->
-    @state.data
+    data = @state.data
       .map (item, index) -> if item.checked then 1 << index else null
       .filter (item) -> item != null
-      .reduce (a, b) -> a | b
+
+    if data.length > 1
+      data.reduce (a, b) -> a | b
+    else
+      data[0] || 0
