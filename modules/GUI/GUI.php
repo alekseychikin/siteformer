@@ -12,6 +12,8 @@ class SFGUI
       if (!class_exists($dependence)) die('Need module Router before '. $dependence);
     });
 
+    self::checkTables();
+
     // append types handlers
     $dir = opendir(MODULES . 'GUI/types');
 
@@ -579,5 +581,80 @@ class SFGUI
     }
 
     return $tableName;
+  }
+
+  private static function checkTables() {
+    if (!SFORM::exists('section_fields')) {
+      echo SFORM::create('section_fields')
+        ->addField([
+          'name' => 'id',
+          'type' => 'INT(11) UNSIGNED',
+          'autoincrement' => true,
+          'null' => 'NULL',
+          'default' => NULL
+        ])
+        ->addField([
+          'name' => 'section',
+          'type' => 'INT(11) UNSIGNED',
+          'null' => 'NULL',
+          'default' => NULL
+        ])
+        ->addField([
+          'name' => 'title',
+          'type' => 'VARCHAR(60)',
+          'null' => 'NOT NULL'
+        ])
+        ->addField([
+          'name' => 'alias',
+          'type' => 'VARCHAR(60)',
+          'null' => 'NOT NULL'
+        ])
+        ->addField([
+          'name' => 'type',
+          'type' => 'VARCHAR(20)',
+          'null' => 'NOT NULL'
+        ])
+        ->addField([
+          'name' => 'settings',
+          'type' => 'TEXT'
+        ])
+        ->addField([
+          'name' => 'position',
+          'type' => 'INT(3)',
+          'null' => 'NOT NULL',
+          'default' => 0
+        ])
+        ->addKey('id', 'primary key')
+        ->addKey('position')
+        ->addKey('section')
+        ->addKey('alias')
+        ->exec();
+    }
+
+    if (!SFORM::exists('section_fields_users')) {
+      SFORM::create('section_fields_users')
+        ->addField([
+          'name' => 'user',
+          'type' => 'INT(11) UNSIGNED',
+          'autoincrement' => true,
+          'null' => 'NULL',
+          'default' => NULL
+        ])
+        ->addField([
+          'name' => 'section',
+          'type' => 'INT(11) UNSIGNED',
+          'null' => 'NULL',
+          'default' => NULL
+        ])
+        ->addField([
+          'name' => 'field',
+          'type' => 'INT(11) UNSIGNED',
+          'null' => 'NULL',
+          'default' => NULL
+        ])
+        ->addKey(['user', 'section', 'field'], 'primary key')
+        ->addKey(['user', 'section'])
+        ->exec();
+    }
   }
 }
