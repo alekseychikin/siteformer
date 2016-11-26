@@ -16,12 +16,14 @@ createXMLHTTPObject = ->
 
 logicConsts = ["false", "true"]
 
-prepareJsonResponse = (response) ->
+prepareJsonResponse = (response, isFirst = true) ->
+  return {} if response instanceof Array and !response.length and isFirst
+
   for key of response
-    response[key] = !!(logicConsts.indexOf response[key]) if ~logicConsts.indexOf response[key]
-    response[key] = parseInt(response[key], 10) if response[key].match? && response[key].match /^\d+$/
-    response[key] = {} if response[key] instanceof Array && !response[key].length
-    response[key] = prepareJsonResponse response[key] if typeof response[key] == "object"
+    if response[key]
+      response[key] = !!(logicConsts.indexOf response[key]) if ~logicConsts.indexOf response[key]
+      response[key] = parseInt(response[key], 10) if response[key].match? && response[key].match /^\d+$/
+      response[key] = prepareJsonResponse response[key], false if typeof response[key] == "object"
   response
 
 readyStateChange = (req, resolve, reject) ->
