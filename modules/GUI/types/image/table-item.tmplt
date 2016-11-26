@@ -1,0 +1,7 @@
+{ if (value) }
+  { path = field.settings.path }
+  { if (field.settings.storage == 's3') }
+    { path = 'https://s3-' ++ field.settings.s3BucketLocation ++ '.amazonaws.com/' ++ field.settings.s3Bucket ++ '/' }
+  { endif }
+  <img src="{ path }{ value }" width="130" />
+{ endif }

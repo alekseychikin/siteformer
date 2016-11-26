@@ -1,5 +1,6 @@
 { import(Checkbox, './types/checkbox/table-item') }
 { import(Date, './types/date/table-item') }
+{ import(Image, './types/image/table-item') }
 { import(Radio, './types/radio/table-item') }
 { import(Section, './types/section/table-item') }
 { import(Select, './types/select/table-item') }
@@ -50,6 +51,8 @@
               <Checkbox field={field} value={dataRow[field.alias]} />
             { elseif (field.type == 'date') }
               <Date field={field} value={dataRow[field.alias]} />
+            { elseif (field.type == 'image') }
+              <Image field={field} value={dataRow[field.alias]} />
             { elseif (field.type == 'radio') }
               <Radio field={field} value={dataRow[field.alias]} />
             { elseif (field.type == 'section') }
