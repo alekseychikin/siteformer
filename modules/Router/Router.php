@@ -13,7 +13,13 @@ class SFRouter
   private static $modelsPath = false;
 
   public static function main() {
-    $result = self::parse();
+    $url = self::getUri();
+
+    if ($url === '/' && isset($_GET['graph'])) {
+      self::returnModelData(parseJSON(urldecode($_GET['graph'])));
+    }
+
+    $result = self::parse($url);
 
     if (!$result) return false;
 
@@ -36,18 +42,40 @@ class SFRouter
     return false;
   }
 
+  private static function returnModelData($params) {
+    if (strtoupper($_SERVER['REQUEST_METHOD']) === 'GET') {
+      self::prepareGetParams($params);
+    } elseif (strtoupper($_SERVER['REQUEST_METHOD']) === 'POST') {
+      $params = [];
+
+      foreach ($_POST as $key => $value) {
+        SFModels::post($key, parseJSON($value));
+      }
+
+      die();
+    }
+
+    SFResponse::render();
+  }
+
   private static function runAction ($data, $params) {
     if (isset($data['data'])) {
-      foreach ($data['data'] as $key => $value) {
-        list($model, $options) = self::parseSource($value, $params);
-        $params[$key] = self::getDataFromModel($model, $options);
-        SFResponse::set($key, $params[$key], true);
-      }
+      self::prepareGetParams($data['data'], $params);
     }
 
     if (isset($data['template'])) {
       echo SFTemplater::render($data['template'], SFResponse::getResults());
     }
+  }
+
+  private static function prepareGetParams ($srcParams, $params = []) {
+    foreach ($srcParams as $key => $value) {
+      list($model, $options) = self::parseSource($value, $params);
+      $params[$key] = self::getDataFromModel($model, $options);
+      SFResponse::set($key, $params[$key]);
+    }
+
+    return $params;
   }
 
   private static function getDataFromModel($model, $params) {
@@ -168,9 +196,7 @@ class SFRouter
     return self::$languages[0];
   }
 
-  public static function parse() {
-    $url = self::getUri();
-
+  public static function parse($url) {
     if (substr($url, -1, 1) == '/') $url = substr($url, 0, -1);
 
     $params = include self::$routingPath;
