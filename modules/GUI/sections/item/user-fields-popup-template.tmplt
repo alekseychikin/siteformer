@@ -1,0 +1,36 @@
+<div class="popup__head">Настройки полей</div>
+<form action="" class="form" role="fields-config">
+  <div class="form__item">
+    <div class="form__inp-contain form__inp-contain--full-width">
+      <div role="fields-config-item">
+        { for (i, field, fields) }
+          { isChecked = false }
+
+          { for (userField, userFields) }
+            { if (userField.alias == field.alias) }
+              { isChecked = true }
+            { endif }
+          { endfor }
+          <div class="form__row-option">
+            <input
+              type="checkbox"
+              class="form__checkbox"
+              data-role="configs-checkbox-option"
+              value="{ field.alias }"
+              data-index="{ i }"
+              id="fields-config-item-{ i }"
+              name="fields-config-item"
+              { if (isChecked) }checked{ endif }
+            />
+            <label for="fields-config-item-{ i }" class="form__checkbox-label"></label>
+            <label for="fields-config-item-{ i }">{ field.title }</label>
+          </div>
+        { endfor }
+      </div>
+    </div>
+  </div>
+  <div class="form__submit">
+    <button class="form__btn form__btn--submit">Сохранить</button>
+    <button type="button" class="form__btn popup__cancel">Отменить</button>
+  </div>
+</form>
