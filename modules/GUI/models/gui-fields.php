@@ -16,6 +16,31 @@ class SFGuiFields extends SFRouterModel
         return array_slice($fields, 0, $params['limit']);
       }
 
+      if (isset($params['usersonly'])) {
+        $user = 1;
+
+        $fields = SFORM::select()
+          ->from('section_fields_users', 'user_fields')
+          ->join('section_fields', 'fields')
+          ->on('fields.id', SFORM::field('user_fields.field'))
+          ->where('user_fields.user', $user)
+          ->andWhere('user_fields.section', $section['id'])
+          ->exec();
+
+        $fields = arrMap($fields, function ($field) {
+          return $field['fields'][0];
+        });
+
+        $fields = arrMap($fields, function ($field) {
+          $field['settings'] = parseJSON($field['settings']);
+          return $field;
+        });
+
+        return arrSort($fields, function ($item1, $item2) {
+          return $item1['position'] < $item2['position'];
+        });
+      }
+
       return $section['fields'];
     }
 

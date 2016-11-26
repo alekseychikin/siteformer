@@ -77,7 +77,8 @@ class SFGUI
       'data' => [
         'title' => 'gui-sections?section={section}&field=title',
         'page_title' => 'gui-scalar?value=Редактировать раздел «{title}»',
-        'fields' => 'gui-fields?section={section}&limit=6',
+        'fields' => 'gui-fields?section={section}',
+        'user_fields' => 'gui-fields?section={section}&usersonly',
         'section' => 'gui-scalar?value={section}',
         'sections' => 'gui-sections',
         'data' => 'gui-item-list?section={section}&offset=0&limit=10'
