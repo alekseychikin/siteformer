@@ -3,11 +3,13 @@
 { import(Scripts, './sections/main/scripts') }
 
 <Main pageTitle={page_title} sections={sections} section={section}>
-  <h1 class="head">Настройки</h1>
+  <article class="content">
+    <h1 class="head">Настройки</h1>
 
-  <div class="section__wrap" data-role="item-list">
-    <ListItems user_fields={user_fields} fields={fields} data={data} section={section} />
-  </div>
+    <div class="section__wrap" data-role="item-list">
+      <ListItems user_fields={user_fields} fields={fields} data={data} section={section} />
+    </div>
+  </article>
 
   <div class="popup" role="configs-popup"></div>
 

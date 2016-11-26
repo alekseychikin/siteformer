@@ -3,9 +3,9 @@
 { import(Scripts, './sections/main/scripts') }
 
 <Main pageTitle="{page_title}" sections={sections} section={section}>
-  <h1 class="head">{ if (id?) }Редактировать{ else }Добавить{ endif } раздел</h1>
-
   <article class="content" role="configs-add">
+    <h1 class="head">{ if (id?) }Редактировать{ else }Добавить{ endif } раздел</h1>
+
     <form action="/cms/configs/{ if (id?) }{ alias }{ else }add{ endif }/" class="form" role="configs-add-form">
       <div class="form__item">
         <label for="name" class="form__label">Название</label>
