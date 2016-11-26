@@ -1,4 +1,4 @@
-{ if (value != '') }
+{ if (value) }
   { date = str_split(value, ' ') }
   { time = str_split(date[1], ':') }
   { date = str_split(date[0], '-') }
