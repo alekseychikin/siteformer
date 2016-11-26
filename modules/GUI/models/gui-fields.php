@@ -46,4 +46,25 @@ class SFGuiFields extends SFRouterModel
 
     return false;
   }
+
+  public static function post($params) {
+    if (isset($params['usersonly'])) {
+      $section = SFGUI::getSection($params['section']);
+      $fields = $params['fields'];
+
+      SFORM::delete('section_fields_users')
+        ->where('section', $section['id'])
+        ->exec();
+
+      foreach ($fields as $field) {
+        SFORM::insert('section_fields_users')
+          ->values([
+            'section' => $section['id'],
+            'user' => 1,
+            'field' => $field['id']
+          ])
+          ->exec();
+      }
+    }
+  }
 }
