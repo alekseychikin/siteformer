@@ -83,6 +83,16 @@
         $params['hide'] = true;
       }
 
+      if ($params['storage'] === 's3') {
+        S3::setExceptions(true);
+        S3::$useSSL = true;
+        $s3 = new S3($params['s3AccessKey'], $params['s3SecretKey']);
+        $params['s3BucketLocation'] = '';
+        try {
+          $params['s3BucketLocation'] = $s3->getBucketLocation($params['s3Bucket']);
+        } catch (Exception $e) {}
+      }
+
       return json_encode($params);
     }
 
