@@ -60,7 +60,15 @@ class SFTypeCheckbox extends SFType
   }
 
   public static function getDefaultData($settings) {
-    return $settings['defaultData'];
+    $data = 0;
+
+    foreach ($settings['defaultData'] as $index => $field) {
+      if ($field['checked']) {
+        $data |= 1 << $index;
+      }
+    }
+
+    return $data;
   }
 
   public static function prepareDataForEditForm($value, $settings) {
