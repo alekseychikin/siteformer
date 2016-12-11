@@ -32,11 +32,14 @@ module.exports = Model
       catch e
         console.error e
 
+    result.section = @state.section if @state.section?
+    result.id = @state.id if @state.id?
+
     Promise.all promises
-    .then =>
-      console.log result
-      httpPost "/cms/#{@state.section}/action_save/", data: result
-    .then (response) ->
-      console.log response
-    .catch (error) ->
-      console.error error.error
+      .then =>
+        console.log result
+        httpPost "/cms/#{@state.section}/action_save/", data: result
+      .then (response) ->
+        console.log response
+      .catch (error) ->
+        console.error error.error

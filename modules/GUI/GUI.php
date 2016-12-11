@@ -1,6 +1,7 @@
 <?php if (!defined('ROOT')) die('You can\'t just open this file, dude');
 
 require_once $modulePath . 'GUIGetItemList.php';
+require_once $modulePath . 'GUIGetItem.php';
 
 class SFGUI
 {
@@ -91,13 +92,23 @@ class SFGUI
         'fields' => 'gui-fields?section={section}',
         'section' => 'gui-sections?section={section}&field=alias',
         'sectionName' => 'gui-sections?section={section}&field=title',
-        'page_title' => 'gui-scalar?value=Добавить запивь в «{sectionName}»',
+        'page_title' => 'gui-scalar?value=Добавить запись в «{sectionName}»',
         'data' => 'gui-section-data?section={section}'
       ],
       'template' => 'sections/item/add'
     ]);
     SFRouter::addRule('/cms/{section}/action_save/', MODULES . 'GUI/sections/item/action_save');
-    SFRouter::addRule('/cms/{section}/{item}/', MODULES . 'GUI/sections/item');
+    SFRouter::addRule('/cms/{section}/{id}/', [
+      'data' => [
+        'sections' => 'gui-sections',
+        'fields' => 'gui-fields?section={section}',
+        'section' => 'gui-sections?section={section}&field=alias',
+        'sectionName' => 'gui-sections?section={section}&field=title',
+        'page_title' => 'gui-scalar?value=Добавить запись в «{sectionName}»',
+        'data' => 'gui-section-data?section={section}&id={id}'
+      ],
+      'template' => 'sections/item/add'
+    ]);
 
     define('GUI_COMPILE_TEMPLATES', ENGINE . 'modules/GUI/dist/');
 
@@ -496,6 +507,10 @@ class SFGUI
 
   public static function getItemList($section) {
     return new SFGUIGetItemList($section);
+  }
+
+  public static function getItem($section) {
+    return new SFGUIGetItem($section);
   }
 
   private static function stringifyToArray($data, $indent = 1) {

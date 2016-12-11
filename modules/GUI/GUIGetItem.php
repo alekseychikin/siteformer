@@ -2,13 +2,21 @@
 
 require_once __DIR__ . '/GUIGetItemSuper.php';
 
-class SFGUIGetItemList extends SFGUIGetItemSuper
+class SFGUIGetItem extends SFGUIGetItemSuper
 {
   public function __construct($section) {
     parent::__construct($section);
+
+    $this->limit(1);
   }
 
   public function exec($alias = 'default') {
-    return $this->execAndGetItems($alias);
+    $data = $this->execAndGetItems($alias);
+
+    if (!count($data)) {
+      return false;
+    }
+
+    return $data[0];
   }
 }

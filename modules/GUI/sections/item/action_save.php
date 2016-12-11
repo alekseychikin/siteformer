@@ -32,26 +32,61 @@ while (true) {
   if (!$find) break;
 }
 
-$newData = array();
+if (isset($data['id']) && isset($data['section'])) {
+  $id = $data['id'];
+  $sectionName = $data['section'];
+  $section = SFGUI::getSection($sectionName);
+  unset($data['id']);
+  unset($data['section']);
 
-foreach ($fields as $field) {
-  $className = SFGUI::getClassNameByType($field['type']);
-  $className::validateData($field, $data, $section);
+  $currentData = SFGUI::getItem($sectionName)
+    ->where('id', $id)
+    ->exec();
+  $newData = array();
+
+  foreach ($fields as $field) {
+    $className = SFGUI::getClassNameByType($field['type']);
+    $className::validateUpdateData($sectionName, $field, $currentData, $data);
+  }
+
+  foreach ($fields as $field) {
+    $className = SFGUI::getClassNameByType($field['type']);
+    $newData[$field['alias']] = $className::prepareUpdateData($sectionName, $field, $currentData, $data);
+  }
+
+  $record = SFORM::update($section['table'])
+    ->values($newData)
+    ->where('id', $id)
+    ->exec();
+
+  foreach ($fields as $field) {
+    $className = SFGUI::getClassNameByType($field['type']);
+    $className::postPrepareUpdateData($sectionName, $field, $newData, $data);
+  }
+
+  die();
+} else {
+  $newData = array();
+
+  foreach ($fields as $field) {
+    $className = SFGUI::getClassNameByType($field['type']);
+    $className::validateInsertData($section, $field, $data);
+  }
+
+  foreach ($fields as $field) {
+    $className = SFGUI::getClassNameByType($field['type']);
+    $newData[$field['alias']] = $className::prepareInsertData($section, $field, $data);
+  }
+
+  $record = SFORM::insert($section['table'])
+    ->values($newData)
+    ->exec('default', true);
+
+  foreach ($fields as $field) {
+    $className = SFGUI::getClassNameByType($field['type']);
+    $className::postPrepareUpdateData($section, $field, $record, $currentData, $newData, $data);
+  }
+
+  SFResponse::showContent();
+  print_r($newData);
 }
-
-foreach ($fields as $field) {
-  $className = SFGUI::getClassNameByType($field['type']);
-  $newData[$field['alias']] = $className::prepareData($field, $data, $section);
-}
-
-$record = SFORM::insert($section['table'])
-  ->values($newData)
-  ->exec('default', true);
-
-foreach ($fields as $field) {
-  $className = SFGUI::getClassNameByType($field['type']);
-  $className::postPrepareData($record, $field, $newData, $data, $section);
-}
-
-SFResponse::showContent();
-print_r($newData);

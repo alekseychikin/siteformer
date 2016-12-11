@@ -49,6 +49,6 @@
   { endif }
 { endfor }
 <div class="form__submit">
-  <button class="form__btn form__btn--submit">Создать</button>
+  <button class="form__btn form__btn--submit">{ if (data.id?) }Сохранить{ else }Создать{ endif }</button>
   <a href="/cms/{ section }/" class="form__btn">Отменить</a>
 </div>
