@@ -9,7 +9,7 @@ class SFTypeDate extends SFType
     ];
   }
 
-  public static function prepareData($field, $data, $section) {
+  public static function prepareInsertData($section, $field, $data) {
     return $data[$field['alias']];
   }
 

@@ -104,7 +104,7 @@
       return false;
     }
 
-    public static function prepareData($field, $data, $section) {
+    public static function prepareInsertData($section, $field, $data) {
       $settings = $field['settings'];
 
       if ($settings['source'] === 'upload') {

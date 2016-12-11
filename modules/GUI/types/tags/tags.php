@@ -63,7 +63,7 @@ class SFTypeTags extends SFType
     return '';
   }
 
-  public static function prepareData($field, $data, $section) {
+  public static function prepareInsertData($section, $field, $data) {
     $tags = self::getArrTagsFromString($data[$field['alias']]);
 
     $existsTags = arrMap(self::getTagRecords($field['section'], $field['id'], $tags), function ($row) {
@@ -110,7 +110,7 @@ class SFTypeTags extends SFType
       ->exec();
   }
 
-  public static function postPrepareData($record, $field, $newData, $data, $section) {
+  public static function postPrepareInsertData($section, $field, $record, $data) {
     $tags = self::getArrTagsFromString($data[$field['alias']]);
 
     $ids = arrMap(self::getTagRecords($field['section'], $field['id'], $tags), function ($row) {

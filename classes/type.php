@@ -31,36 +31,52 @@ class SFType
   }
 
   /**
-  * Method for validationg data before preparing data and putting to the database
+  * Method for validating data before preparing data and putting to the database
+  * @param array $section Section
   * @param array $field Field
   * @param array $data Sended data
-  * @param array $section Section
   */
-  public static function validateData($field, $data, $section) {
+  public static function validateInsertData($section, $field, $data) {
+    return true;
+  }
+
+  /**
+  * Method for validating data before preparing data and update it at the database
+  * @param array $section Section
+  * @param array $field Field
+  * @param array $data Sended data
+  */
+  public static function validateUpdateData($section, $field, $data) {
     return true;
   }
 
   /**
   * Method for preparing data for putting to database
+  * @param array $section Section
   * @param array $field Field
   * @param array $data Sended data
-  * @param array $section Section
   * @return string Prepared data
   */
-  public static function prepareData($field, $data, $section) {
+  public static function prepareInsertData($section, $field, $data) {
+    return $data[$field['alias']];
+  }
+
+  public static function prepareUpdateData($section, $field, $currentData, $data) {
     return $data[$field['alias']];
   }
 
   /**
   * Method for adding some more data to another tables after insert record to main table
-  * @param array $record Fresh inserted data to main table
-  * @param array $field Field
-  * @param array $newData Array of data prepared in `prepareData` Method
-  * @param array $data Origin array of data, sended to `prepareData` before
   * @param array $section Section
+  * @param array $field Field
+  * @param array $record Fresh inserted data to main table
+  * @param array $data Origin array of data, sended to `prepareData` before
   * @return void
   */
-  public static function postPrepareData($record, $field, $newData, $data, $section) {
+  public static function postPrepareInsertData($section, $field, $record, $data) {
+  }
+
+  public static function postPrepareUpdateData($section, $field, $newData, $data) {
   }
 
   /**
@@ -85,7 +101,7 @@ class SFType
   public static function joinData($databaseQuery, $section, $field) {
   }
 
-  public static function postProcessJoinedData($data, $section, $field) {
+  public static function postProcessData($section, $field, $data) {
     return $data;
   }
 

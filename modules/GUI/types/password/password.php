@@ -4,7 +4,7 @@ require_once ENGINE . 'classes/validate.php';
 
 class SFTypePassword extends SFType
 {
-  public static function prepareData($field, $data, $section) {
+  public static function prepareInsertData($section, $field, $data) {
     return md5($data[$field['alias']]);
   }
 }

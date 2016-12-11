@@ -17,7 +17,7 @@ class SFTypeTable extends SFType
     return $settings['defaultData'];
   }
 
-  public static function prepareData($field, $data, $section) {
+  public static function prepareInsertData($section, $field, $data) {
     return json_encode($data[$field['alias']], true);
   }
 }

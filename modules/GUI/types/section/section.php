@@ -9,7 +9,7 @@ class SFTypeSection extends SFType
     ];
   }
 
-  public static function prepareData($field, $data, $section) {
+  public static function prepareInsertData($section, $field, $data) {
     return $data[$field['alias']];
   }
 
@@ -43,7 +43,7 @@ class SFTypeSection extends SFType
       ->on($joinSection['table'] . '.id', SFORM::field($section['table'] . '.' . $field['alias']));
   }
 
-  public static function postProcessJoinedData($data, $section, $field) {
+  public static function postProcessData($section, $field, $data) {
     $joinSection = SFGUI::getSection($field['settings']['section']);
 
     foreach ($data as $index => $row) {
