@@ -28,4 +28,26 @@ class SFTypeDate extends SFType
 
     return $date;
   }
+
+  public static function postProcessData($section, $field, $data) {
+    $date = $data[$field['alias']];
+
+    if (preg_match('/^(\d{4}\-\d{2}\-\d{2})\s(\d{2}:\d{2}):\d{2}$/', $date, $out)) {
+      $date = explode(' ', $date);
+
+      $data[$field['alias']] = [
+        'date' => $out[1],
+        'time' => $out[2]
+      ];
+
+      return $data;
+    }
+
+    $data[$field['alias']] = [
+      'date' => '',
+      'time' => ''
+    ];
+
+    return $data;
+  }
 }
