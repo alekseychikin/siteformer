@@ -134,6 +134,44 @@
       return '';
     }
 
+    public static function prepareUpdateData($section, $field, $currentData, $data) {
+      if ($currentData[$field['alias']] === $data[$field['alias']]) {
+        return $data[$field['alias']];
+      }
+
+      $settings = $field['settings'];
+
+      if ($settings['source'] === 'upload') {
+        if (!empty($currentData[$field['alias']]) && file_exists(ROOT . $settings['path'] . $currentData[$field['alias']])) {
+          unlink(ROOT . $settings['path'] . $currentData[$field['alias']]);
+        }
+
+        $value = $data[$field['alias']];
+      } else {
+        $value = $data[$settings['source']];
+      }
+
+      if (!$value || $value === 'false') return '';
+
+      $image = new SFImage(ENGINE_TEMP . $value);
+
+      $fieldTempPath = $image->path('filepath') . $field['alias'] . '_' . $image->path('filename');
+      $image = $image->resize($settings, $fieldTempPath);
+
+      if ($settings['storage'] === 's3') {
+        SFPath::connectS3($settings['s3AccessKey'], $settings['s3SecretKey'], $settings['s3Bucket']);
+        $path = SFPath::prepareDir($settings['s3Path'], PPD_OPEN_LEFT | PPD_CLOSE_RIGHT) . date('Y/m/');
+
+        return $bucketPath = SFPath::moveToBucket($path, $fieldTempPath);
+      } elseif ($settings['storage'] === 'local') {
+        $path = ROOT . SFPath::prepareDir($settings['path'], PPD_OPEN_LEFT | PPD_CLOSE_RIGHT);
+
+        return substr(SFPath::move($path . date('Y/m/'), $fieldTempPath), strlen($path));
+      }
+
+      return $data[$field['alias']];
+    }
+
     private static function getSources($fields, $currentField, $currentAlias) {
       $sources = array('upload');
 

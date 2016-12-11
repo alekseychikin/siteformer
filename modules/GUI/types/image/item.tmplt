@@ -1,13 +1,34 @@
+{ if (!previewData?) }
+  { previewData = '' }
+{ endif }
+{ if (!data?) }
+  { data = '' }
+{ endif }
 <div class="form__inp-contain" role="input-contain">
   <div class="form__file-wrap">
-    { if (!!filename?) }
+    { if (str_len(data)) }
     <span class="form__file-close" role="remove"></span>
     { endif }
-    <label class="form__file{ if (!!filename?) } form__file--choosen{ endif }">
-      { if (!!filename?) }
-        <span class="form__file-filename">{ filename }</span>
+    <label class="form__file{ if (str_len(data)) } form__file--choosen{ endif }{ if (str_len(previewData) || str_len(data)) } form__file--previewed{ endif }">
+      { if (str_len(data)) }
+        { if (str_len(previewData) || str_len(data)) }
+          { path = field.settings.path }
+          { if (field.settings.storage == 's3') }
+            { path = 'https://s3-' ++ field.settings.s3BucketLocation ++ '.amazonaws.com/' ++ field.settings.s3Bucket ++ '/' }
+          { endif }
+          <span class="form__file-preview-contain" style="background-image: url(\'{ if (str_len(previewData)) }{ previewData }{ else }{ path }{ data }{ endif }\')"></span>
+        { endif }
+        <span class="form__file-filename">{ if (str_len(data)) }{ data }{ endif }</span>
       { endif }
-      <input type="file" name="{ field.alias }" id="{ field.alias }" value="" role="image" />
+      <input
+        type="file"
+        name="{ field.alias }"
+        id="{ field.alias }"
+        value=""
+        role="image"
+        onfocus="this.parentNode.parentNode.className = \'form__file-wrap form__file-wrap--active\'"
+        onblur="this.parentNode.parentNode.className = \'form__file-wrap\'"
+      />
     </label>
   </div>
 </div>

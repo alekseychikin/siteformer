@@ -2,31 +2,65 @@ Model = require "model.coffee"
 httpFile = (require "ajax.coffee").httpFile
 
 module.exports = Model
+  defaultData: ->
+    readyToSave: false
+    data: ""
+    previewData: ""
+
+  initial: ->
+    if @state.data.length
+      @set
+        readyToSave: true
+        uploadedPath: @state.data
+
   setPreview: (input) ->
-    @set readyToSave: false
+    @set
+      readyToSave: false
+      data: ""
+      previewData: ""
     @input = input
+
+    data = ''
+
     if input.files?
-      @set filename: input.files[0].name
+      data = input.files[0].name
     else
       filename = input.value.split /[\/\\]/
-      @set filename: filename.pop()
+      data = filename.pop()
+
+    if "FileReader" of window
+      reader = new FileReader()
+
+      reader.onload = (e) =>
+        @set
+          previewData: e.target.result
+          data: data
+
+        reader = null
+
+      reader.readAsDataURL input.files[0]
+    else
+      @set {data}
 
   setInput: (input) ->
     @input = input
 
   removePreview: ->
-    @set filename: false
-    @set readyToSave: false
+    @set
+      readyToSave: false
+      data: ""
+      previewData: ""
 
   get: ->
     if @state.readyToSave
       @state.uploadedPath
-    else if @input && @state.filename
+    else if @input && @state.data
       httpFile "/cms/types/image/uploadimage/",
         image: @input
       .then (response) =>
-        @set readyToSave: true
-        @set uploadedPath: response.filename
+        @set
+          readyToSave: true
+          uploadedPath: response.filename
         response.filename
     else
       false

@@ -3,8 +3,6 @@ template = require "types/image/item"
 Render = require "render"
 
 module.exports = View
-  debug: true
-
   initial: ->
     @template = Render template, @contain[0]
     @model.setInput @contain.find("@image")[0]
