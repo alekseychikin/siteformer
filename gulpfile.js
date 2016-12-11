@@ -158,7 +158,6 @@ function filterComponentsEntiries(opts)
 }
 
 var commonBundle = [
-  'node_modules/promise/index.js',
   'modules/GUI/libs/jquery-plugins.coffee',
   'modules/GUI/libs/view.coffee',
   'modules/GUI/libs/model.coffee',
@@ -168,7 +167,6 @@ var commonBundle = [
   'modules/GUI/libs/components.coffee'
 ];
 var exposeCommonBundle = {
-  'node_modules/promise/index.js': 'promise',
   'modules/GUI/libs/jquery-plugins.coffee': 'jquery-plugins.coffee',
   'modules/GUI/libs/view.coffee': 'view.coffee',
   'modules/GUI/libs/model.coffee': 'model.coffee',
