@@ -1,21 +1,41 @@
 <div class="form__inp-contain" role="input-contain">
   <table class="table">
-  { for (rowIndex, row, data) }
-    <tr>
-    { for (columnIndex, column, row) }
-      <td>
-        <input
-          class="form__inp"
-          type="text"
-          id="{ field.alias }{ rowIndex }_{ columnIndex }"
-          role="cell"
-          value="{ column }"
-          data-row="{ rowIndex }"
-          data-column="{ columnIndex }"
-        />
-      </td>
-    { endfor }
-    </tr>
-  { endfor }
+    { if (data) }
+      { for (rowIndex, row, data) }
+        <tr>
+        { for (columnIndex, column, row) }
+          <td>
+            <input
+              class="form__inp"
+              type="text"
+              id="{ field.alias }{ rowIndex }_{ columnIndex }"
+              role="cell"
+              value="{ column }"
+              data-row="{ rowIndex }"
+              data-column="{ columnIndex }"
+            />
+          </td>
+        { endfor }
+        </tr>
+      { endfor }
+    { else }
+      { for (rowIndex, row, field.settings.defaultData) }
+        <tr>
+        { for (columnIndex, column, row) }
+          <td>
+            <input
+              class="form__inp"
+              type="text"
+              id="{ field.alias }{ rowIndex }_{ columnIndex }"
+              role="cell"
+              value=""
+              data-row="{ rowIndex }"
+              data-column="{ columnIndex }"
+            />
+          </td>
+        { endfor }
+        </tr>
+      { endfor }
+    { endif }
   </table>
 </div>

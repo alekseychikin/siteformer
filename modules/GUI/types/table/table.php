@@ -20,4 +20,10 @@ class SFTypeTable extends SFType
   public static function prepareInsertData($section, $field, $data) {
     return json_encode($data[$field['alias']], true);
   }
+
+  public static function postProcessData($section, $field, $data) {
+    $data[$field['alias']] = parseJSON($data[$field['alias']]);
+
+    return $data;
+  }
 }
