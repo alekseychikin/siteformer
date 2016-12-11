@@ -39,9 +39,14 @@
     left: 50%;
     background: inline('form__file.svg') no-repeat;
     width: width('form__file.svg');
-    height: calc(height('form__file.svg') / 2);
-    margin: calc(height('form__file.svg') / - 4) 0 0 calc(width('form__file.svg') / - 2);
+    height: calc(height('form__file.svg') / 3);
+    margin: calc(height('form__file.svg') / -6) 0 0 calc(width('form__file.svg') / -2);
     cursor: pointer;
+
+  }
+
+  &--previewed:after {
+    background-position: 0 calc(height('form__file.svg') / -6 * 4);
   }
 
   &:hover:before {
@@ -49,6 +54,6 @@
   }
 
   &:hover:after {
-    background-position: 0 calc(height('form__file.svg') / -2);
+    background-position: 0 calc(height('form__file.svg') / -6 * 2);
   }
 }
