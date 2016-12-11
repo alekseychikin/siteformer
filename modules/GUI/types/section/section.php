@@ -46,14 +46,19 @@ class SFTypeSection extends SFType
   public static function postProcessData($section, $field, $data) {
     $joinSection = SFGUI::getSection($field['settings']['section']);
 
-    foreach ($data as $index => $row) {
-      $data[$index][$field['alias']] = [];
+    if (isset($data[$joinSection['table']]) && isset($data[$joinSection['table']][0])) {
+      $data[$field['alias']] = $data[$joinSection['table']][0];
+      unset($data[$joinSection['table']]);
 
-      if (isset($row[$joinSection['table']]) && isset($row[$joinSection['table']][0])) {
-        $data[$index][$field['alias']] = $row[$joinSection['table']][0];
-        unset($data[$index][$joinSection['table']]);
-      }
+      return $data;
     }
+
+    unset($data[$joinSection['table']]);
+
+    $data[$field['alias']] = [
+      'title' => '',
+      'id' => ''
+    ];
 
     return $data;
   }
