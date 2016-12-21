@@ -98,6 +98,7 @@ class SFGUI
       'template' => 'sections/item/add'
     ]);
     SFRouter::addRule('/cms/{section}/action_save/', MODULES . 'GUI/sections/item/action_save');
+    SFRouter::addRule('/cms/{section}/action_delete/', MODULES . 'GUI/sections/item/action_delete');
     SFRouter::addRule('/cms/{section}/{id}/', [
       'data' => [
         'sections' => 'gui-sections',

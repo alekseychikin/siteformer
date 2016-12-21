@@ -5,3 +5,5 @@ module.exports = View
     "submit: contain": (e) ->
       @model.save()
       return false
+
+    "click: [data-role='delete']": -> @model.delete()

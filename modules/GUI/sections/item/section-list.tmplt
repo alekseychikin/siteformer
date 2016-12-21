@@ -17,34 +17,20 @@
 
 <table class="table">
   <colgroup>
-    <col width="20" />
     { for(field, userFields) }
       <col width="*" />
     { endfor }
   </colgroup>
   <thead>
     <tr>
-      <th>
-        <input class="form__checkbox" type="checkbox" id="checkall" role="cbeck-all" />
-        <label class="form__checkbox-label" for="checkall"></label>
-      </th>
       { for(field, userFields) }
         <th>{ field.title }</th>
       { endfor }
     </tr>
   </thead>
   <tbody>
-    { checkedItems = 0 }
     { for (i, dataRow, data) }
-      { isChecked = dataRow.checked? && (dataRow.checked) }
-      { if (isChecked) }
-        { checkedItems = checkedItems + 1 }
-      { endif }
-      <tr class="table__link" role="section-row" data-id="{ i }">
-        <td>
-          <input class="form__checkbox" type="checkbox" id="check{ dataRow.id }" role="check-item"{ if (isChecked) } checked{ endif } />
-          <label class="form__checkbox-label" for="check{ dataRow.id }"></label>
-        </td>
+      <tr class="table__link">
         { for (j, field, userFields) }
           <td><a href="/cms/{ section }/{ dataRow.id }/"{ if (j != 0) } tabindex="-1"{ endif }>
             { if (field.type == 'checkbox') }

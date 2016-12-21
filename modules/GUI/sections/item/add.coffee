@@ -51,3 +51,6 @@ httpGet window.location.href
             views[field.type] $rows.eq(index), model
 
             index++
+
+    addModel.on "delete-section", (section) ->
+      window.location.href = "/cms/#{section}"

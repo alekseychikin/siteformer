@@ -43,3 +43,11 @@ module.exports = Model
         console.log response
       .catch (error) ->
         console.error error.error
+
+  delete: ->
+    data =
+      id: @state.id
+      section: @state.section
+
+    httpPost "/cms/#{@state.section}/action_delete/", data
+      .then => @trigger "delete-section", @state.section
