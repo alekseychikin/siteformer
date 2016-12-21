@@ -14,7 +14,7 @@ module.exports.skipLastQuery = (collection) -> (query) -> new Promise (resolve, 
     resolve query
 
 timeoutHandler = (resolve, query) ->
-  =>
+  ->
     clearTimeout throttleTimeout
     throttleTimeout = false
     resolve query

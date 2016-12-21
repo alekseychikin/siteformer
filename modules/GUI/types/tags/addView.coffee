@@ -10,7 +10,9 @@ module.exports = View
   events:
     "change input keyup click: @tags": (e) ->
       @model.setSelection @input[0].selectionStart, @input[0].selectionEnd
+
       if e.keyCode == 27 then @model.emptySearch() else @model.update e.target.value
+
     "click: [data-role='suggest-item']": (e) ->
       @model.setTag
         title: e.target.getAttribute "data-title"
@@ -20,6 +22,4 @@ module.exports = View
         @input.focus()
       , 20
 
-  render: (state) ->
-    # console.log state
-    @templateRender state
+  render: (state) -> @templateRender state

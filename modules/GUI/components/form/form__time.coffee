@@ -1,7 +1,7 @@
 $ = require "jquery-plugins.coffee"
 $body = $ document.body
 
-isTouchDevice = =>
+isTouchDevice = ->
   ("ontouchstart" in window) ||
   (navigator.MaxTouchPoints > 0) ||
   (navigator.msMaxTouchPoints > 0)
@@ -30,11 +30,11 @@ class TimeControl
     $input.on "change", => @updateFakeInputValue $input
 
     $input
-    .siblings ".form__inp-empty"
-    .on "click", =>
-      @$fakeInp
-      .val ""
-      .trigger "change"
+      .siblings ".form__inp-empty"
+      .on "click", =>
+        @$fakeInp
+        .val ""
+        .trigger "change"
 
     $input.on "focus", =>
       @$fakeInp.focus()
@@ -60,7 +60,7 @@ class TimeControl
       $input.trigger "change"
       @$fakeInp.trigger "blur"
 
-    @$fakeInp.on "keydown", (e) =>
+    @$fakeInp.on "keydown", (e) ->
       if e.keyCode == 9
         $inputs = $body.find "input, select, button"
         prevInput = $inputs[$inputs.length - 1]
@@ -68,26 +68,26 @@ class TimeControl
 
         if e.shiftKey
           $inputs.each ->
-            if this == $input[0]
+            if @ == $input[0]
               $ prevInput
-              .focus()
+                .focus()
 
               return false
-            prevInput = this
+            prevInput = @
         else
           $inputs.each ->
             if nextInput
-              $ this
-              .focus()
+              $ @
+                .focus()
 
               return false
 
-            nextInput = this if this == $input[0]
+            nextInput = @ if @ == $input[0]
 
           if !nextInput
             $inputs
-            .first()
-            .focus()
+              .first()
+              .focus()
 
         e.preventDefault()
 

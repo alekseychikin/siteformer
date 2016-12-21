@@ -26,13 +26,18 @@ module.exports = Model
   save: ->
     result = {}
     promises = []
+
     @state.fields.map (item) ->
       itemName = item.name
+
       try
         if typeof item.model.get != "function"
           throw "#{itemName} has no `get` method"
+
         value = item.model.get()
+
         promises.push value
+
         do (itemName, value) ->
           if value instanceof Promise
             value

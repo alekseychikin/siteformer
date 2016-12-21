@@ -6,14 +6,12 @@ module.exports = View
   events:
     "submit: @configs-form": "submitConfigsForm"
     "change: @configs-text-default-text": (e) -> @model.updateDefaultText e.target.value
-    "popup-close: contain": (e) -> @destroy()
-
-  debug: true
+    "popup-close: contain": -> @destroy()
 
   initial: -> @modalContain = Render modalWindowTemplate, @contain[0]
 
   render: (state) -> @modalContain state
 
-  submitConfigsForm: (e) ->
+  submitConfigsForm: ->
     @trigger "save-configs-modal", @model.getState()
     return false

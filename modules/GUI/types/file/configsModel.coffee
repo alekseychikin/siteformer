@@ -24,7 +24,7 @@ module.exports = Model
     @set settings: {path}
     @checkPath()
 
-  checkPath: () ->
+  checkPath: ->
     httpGet "/cms/types/file/checkpath/",
       path: @state.settings.path
     .then (response) =>
@@ -35,7 +35,10 @@ module.exports = Model
       console.error error
 
   testConnectionS3: ->
-    if @state.settings.storage == "s3" && @state.settings.s3AccessKey && @state.settings.s3SecretKey && !@state.s3auth
+    isS3 = @state.settings.storage == "s3"
+    isKeys = @state.settings.s3AccessKey && @state.settings.s3SecretKey
+
+    if isS3 && isKeys && !@state.s3auth
       @set s3checking: true
 
       httpGet "/cms/types/file/check-s3-connection/",

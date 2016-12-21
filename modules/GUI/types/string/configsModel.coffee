@@ -6,7 +6,7 @@ module.exports = Model
     settings: @state.settings
     index: @state.index
 
-  initial: () ->
+  initial: ->
     copyValueOfSources = []
 
     for field, index in @state.fields

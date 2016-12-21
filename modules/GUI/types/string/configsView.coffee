@@ -8,6 +8,7 @@ module.exports = View
     "change: @configs-string-copy-value-of": (e) ->
       @model.updateCopyValueOf e.target.checked
       @model.updateCopyValueOfValue @contain.find("@configs-string-copy-value-of-select").val()
+
     "change: @configs-string-copy-value-of-select": (e) -> @model.updateCopyValueOfValue e.target.value
     "change: @configs-string-remove-punctuation": (e) -> @model.updateRemovePunctuation e.target.checked
     "change: @configs-string-translit": (e) -> @model.updateTranslit e.target.checked

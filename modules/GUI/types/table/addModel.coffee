@@ -7,6 +7,7 @@ module.exports = Model
   update: (rowIndex, columnIndex, value) ->
     data = @state.data.slice()
     data[rowIndex][columnIndex] = value
+
     @set {data}
 
   get: -> @state.data

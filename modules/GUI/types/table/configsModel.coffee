@@ -10,6 +10,7 @@ module.exports = Model
 
   updateColumns: (value) ->
     value = parseInt value, 10
+
     if !isNaN value
       if value > @state.settings.columns
         for row in @state.settings.defaultData
@@ -19,10 +20,12 @@ module.exports = Model
         for row in @state.settings.defaultData
           for i in [value + 1..@state.settings.columns]
             row.pop()
+
       @set settings: columns: value
 
   updateRows: (value) ->
     value = parseInt value, 10
+
     if !isNaN value
       if value > @state.settings.rows
         for row in [@state.settings.rows + 1..value]
@@ -33,6 +36,7 @@ module.exports = Model
       else if value < @state.settings.rows
         for row in [value + 1..@state.settings.rows]
           @state.settings.defaultData.pop()
+
       @set settings: rows: value
 
   updateCellData: (row, column, value) ->

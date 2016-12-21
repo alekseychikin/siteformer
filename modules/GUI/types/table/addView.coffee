@@ -6,4 +6,5 @@ module.exports = View
       $input = $ e.target
       rowIndex = + $input.data "row"
       columnIndex = + $input.data "column"
+
       @model.update rowIndex, columnIndex, e.target.value

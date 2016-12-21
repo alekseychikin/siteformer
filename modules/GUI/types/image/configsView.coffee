@@ -12,10 +12,16 @@ module.exports = View
     "keydown: @configs-image-path": (e) -> @model.resetPath()
     "keyup input: @configs-image-path": (e) ->  @throttling 500, => @model.updatePath e.target.value
     "change: @configs-image-path": (e) ->  @model.updatePath e.target.value
-    "change keyup input blur: @configs-image-s3-access-key": (e) -> @throttling 500, => @model.updateS3AccessKey e.target.value
-    "change keyup input blur: @configs-image-s3-secret-key": (e) -> @throttling 500, => @model.updateS3SecretKey e.target.value
+    "change keyup input blur: @configs-image-s3-access-key": (e) ->
+      @throttling 500, => @model.updateS3AccessKey e.target.value
+
+    "change keyup input blur: @configs-image-s3-secret-key": (e) ->
+      @throttling 500, => @model.updateS3SecretKey e.target.value
+
     "change: @configs-image-s3-bucket": (e) -> @model.updateS3Bucket e.target.value
-    "change keyup input: @configs-image-s3-path": (e) -> @throttling 500, => @model.updateS3Path e.target.value
+    "change keyup input: @configs-image-s3-path": (e) ->
+      @throttling 500, => @model.updateS3Path e.target.value
+
     "change: @configs-image-width": (e) -> @model.updateWidth e.target.value
     "change: @configs-image-height": (e) -> @model.updateHeight e.target.value
     "change: @configs-image-save-ratio": (e) -> @model.updateSaveRatio e.target.checked

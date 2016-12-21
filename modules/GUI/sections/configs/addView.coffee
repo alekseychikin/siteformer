@@ -12,15 +12,15 @@ createDuplicateRow = ($rowRaw) ->
   $tdsRaw = $rowRaw.find ".form-table__cell"
 
   $tdsRaw.each ->
-    $tdRaw = $ this
-    $tdChildsRaw = $ this.childNodes
+    $tdRaw = $ @
+    $tdChildsRaw = $ @childNodes
     $fakeCell = $ "<div class='form-table__cell-fake'></div>"
     $fakeCell.css
       width: "#{$tdRaw.width()}px"
       height: "#{$tdRaw.height()}px"
 
     $tdChildsRaw.each ->
-      $clone = $ this.cloneNode true
+      $clone = $ @cloneNode true
       $fakeCell.append $clone
 
     $fakeRow.append $fakeCell
@@ -44,6 +44,7 @@ module.exports = View
     @line = null
     @position = null
     @rowOffsets = []
+    @tbodyContain = Render tableModuleFields, ($ "@tbody-module-fields")[0]
 
   events:
     "click: @btn-remove-field": (e) -> @model.removeField @getRowIndex e
@@ -143,8 +144,6 @@ module.exports = View
       @position = null
       @fakeRowHeight = null
       @rowOffsets.splice(0)
-
-  initial: -> @tbodyContain = Render tableModuleFields, ($ "@tbody-module-fields")[0]
 
   render: (state) -> @tbodyContain state
 

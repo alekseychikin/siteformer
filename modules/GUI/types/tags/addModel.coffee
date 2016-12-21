@@ -58,11 +58,13 @@ module.exports = Model
         tag: tag
 
     tags.map (item) =>
-      item.tag = item.tag.replace /^(\s*).*?(\s*)$/, "$1#{tag.title}$2" if item.start <= @state.start <= item.end
+      if item.start <= @state.start <= item.end
+        item.tag = item.tag.replace /^(\s*).*?(\s*)$/, "$1#{tag.title}$2"
+
       item
 
     value = tags
-      .map (item) => item.tag
+      .map (item) -> item.tag
       .join ","
 
     @set data: value

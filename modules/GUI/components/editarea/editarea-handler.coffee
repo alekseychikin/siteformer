@@ -22,33 +22,33 @@ class EditArea
     @["#{event.target.dataset.handler}Handler"](event)
     emmitEvent "change", @area
 
-  header2Handler: (event) -> @pasteDoubleTag "h2"
+  header2Handler: -> @pasteDoubleTag "h2"
 
-  header3Handler: (event) -> @pasteDoubleTag "h3"
+  header3Handler: -> @pasteDoubleTag "h3"
 
-  boldHandler: (event) -> @pasteDoubleTag "b"
+  boldHandler: -> @pasteDoubleTag "b"
 
-  italicHandler: (event) -> @pasteDoubleTag "i"
+  italicHandler: -> @pasteDoubleTag "i"
 
-  spanHandler: (event) -> @pasteDoubleTag "span"
+  spanHandler: -> @pasteDoubleTag "span"
 
-  paragraphHandler: (event) -> @pasteDoubleTag "p"
+  paragraphHandler: -> @pasteDoubleTag "p"
 
-  abbrHandler: (event) -> @pasteDoubleTag "abbr"
+  abbrHandler: -> @pasteDoubleTag "abbr"
 
-  cutHandler: (event) -> @pasteSingleTag "cut"
+  cutHandler: -> @pasteSingleTag "cut"
 
-  ulHandler: (event) -> @pasteDoubleTag "ul"
+  ulHandler: -> @pasteDoubleTag "ul"
 
-  olHandler: (event) -> @pasteDoubleTag "ol"
+  olHandler: -> @pasteDoubleTag "ol"
 
-  liHandler: (event) -> @pasteDoubleTag "li"
+  liHandler: -> @pasteDoubleTag "li"
 
-  linkHandler: (event) -> @pasteDoubleTag "a", href: ""
+  linkHandler: -> @pasteDoubleTag "a", href: ""
 
-  imgHandler: (event) -> @pasteSingleTag "img", {src: "", alt: ""}
+  imgHandler: -> @pasteSingleTag "img", {src: "", alt: ""}
 
-  typographHandler: (event) ->
+  typographHandler: ->
     console.log "Add typograph!"
 
   pasteSingleTag: (tagName, attrs = {}) ->

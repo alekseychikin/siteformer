@@ -2,7 +2,7 @@ $ = require "jquery-plugins.coffee"
 
 $selects = $ "select"
 $selects.each ->
-  $select = $ this
+  $select = $ @
   $label = $select.parent()
 
   $select.on "focus", ->

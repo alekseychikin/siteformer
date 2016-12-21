@@ -19,7 +19,7 @@ module.exports = Model
     searchSection: ""
     searchField: ""
 
-  initial: () ->
+  initial: ->
     @set
       searchField: @state.field.settings.field
       searchSection: @state.field.settings.section

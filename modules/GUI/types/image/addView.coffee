@@ -13,4 +13,4 @@ module.exports = View
 
   events:
     "change: @image": (e) -> @model.setPreview e.target
-    "click: @remove": (e) -> @model.removePreview()
+    "click: @remove": -> @model.removePreview()

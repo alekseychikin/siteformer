@@ -19,7 +19,7 @@ module.exports = Model
     @set path: value
     @checkPath()
 
-  checkPath: () ->
+  checkPath: ->
     httpGet "/cms/types/gallery/checkpath/",
       path: @state.path
     .then (response) =>

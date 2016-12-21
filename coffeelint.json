@@ -1,0 +1,42 @@
+{
+  "indentation" : {
+    "level" : "error",
+    "value" : 2
+  },
+  "line_endings" : {
+    "value" : "unix",
+    "level" : "error"
+  },
+  "arrow_spacing": {
+    "level": "error",
+    "value": 1
+  },
+  "camel_case_classes": {
+    "level": "error",
+    "value": true
+  },
+  "max_line_length": {
+    "level": "error",
+    "value": 110
+  },
+  "no_throwing_strings": {
+    "level": "ignore"
+  },
+  "no_empty_functions": {
+    "level": "error",
+    "value": true
+  },
+  "no_nested_string_interpolation": {
+    "level": "ignore"
+  },
+  "no_this": {
+    "level": "error"
+  },
+  "no_empty_param_list": {
+    "level": "error"
+  },
+  "no_trailing_whitespace": {
+    "level": "error",
+    "value": 1
+  }
+}

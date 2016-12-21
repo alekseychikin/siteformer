@@ -29,7 +29,7 @@ MONTHS = [
   "Декабрь"
 ]
 
-isTouchDevice = =>
+isTouchDevice = ->
   ("ontouchstart" in window) ||
   (navigator.MaxTouchPoints > 0) ||
   (navigator.msMaxTouchPoints > 0)
@@ -67,7 +67,7 @@ class DateControl
     self = @
 
     @$calendar.on "click", ".form__calendar-cell", (e) ->
-      $cell = $(this)
+      $cell = $ @
       date = $cell.attr "data-value"
       self.$fakeInp.val date
       self.$fakeInp.trigger "change"
@@ -98,11 +98,11 @@ class DateControl
       @updateFakeInputValue $input
 
     $input
-    .siblings ".form__inp-empty"
-    .on "click", =>
-      @$fakeInp
-      .val ""
-      .trigger "change"
+      .siblings ".form__inp-empty"
+      .on "click", =>
+        @$fakeInp
+          .val ""
+          .trigger "change"
 
     $input.on "focus", =>
       @$fakeInp.focus()
@@ -129,17 +129,17 @@ class DateControl
 
       if offset.top + height + INPUT_HEIGHT > $document.outerHeight()
         @$calendar
-        .addClass "form__calendar--top"
-        .css
-          top: "#{offset.top - height - 15}px"
-          left: "#{offset.left}px"
-        .addClass "form__calendar--show"
+          .addClass "form__calendar--top"
+          .css
+            top: "#{offset.top - height - 15}px"
+            left: "#{offset.left}px"
+          .addClass "form__calendar--show"
       else
         @$calendar
-        .removeClass "form__calendar--top"
-        .css
-          top: "#{offset.top + INPUT_HEIGHT}px"
-          left: "#{offset.left}px"
+          .removeClass "form__calendar--top"
+          .css
+            top: "#{offset.top + INPUT_HEIGHT}px"
+            left: "#{offset.left}px"
 
     @$fakeInp.on "change", =>
       value = @$fakeInp.val()
@@ -160,9 +160,9 @@ class DateControl
       setTimeout =>
         if !stayOpening
           @$calendar
-          .removeClass "form__calendar--show"
-          .css
-            left: ""
+            .removeClass "form__calendar--show"
+            .css
+              left: ""
           $input.removeClass "focus"
         stayOpening = false
       , 10
@@ -175,22 +175,22 @@ class DateControl
 
         if e.shiftKey
           $inputs.each ->
-            if this == $input[0]
+            if @ == $input[0]
               $ prevInput
-              .focus()
+                .focus()
 
               return false
-            prevInput = this
+            prevInput = @
         else
           $inputs.each ->
             if nextInput
-              $ this
-              .focus()
+              $ @
+                .focus()
 
               return false
 
-            if this == $input[0]
-              nextInput = this
+            if @ == $input[0]
+              nextInput = @
 
           if !nextInput
             $inputs
@@ -213,7 +213,7 @@ class DateControl
     firstDayOfMonth = new Date date[1], date[2], 1
 
     d = new Date date[1], date[2] + 1, 0
-    daysInMonth = d.getDate();
+    daysInMonth = d.getDate()
 
     dayOfWeek = if currentDate.getDay() == 0 then 7 else currentDate.getDay()
     firstDayOfWeek = if firstDayOfMonth.getDay() == 0 then 7 else firstDayOfMonth.getDay()

@@ -50,7 +50,7 @@ class ViewClass
       if target
         arguments[0].target = target
       else
-        arguments[0].target = this
+        arguments[0].target = @
       cb.apply self, arguments
 
   cacheEvent: (event, selector, cb, target = null) ->
@@ -74,7 +74,9 @@ class ViewClass
       callback = @cacheEvent event, selector, cb, target
       $(target).on event, callback
     else
-      console.log "Add event `#{event}` at `#{selector}` (#{(@contain.find selector).length} selectors)" if @debug
+      if @debug
+        console.log "Add event `#{event}` at `#{selector}` (#{(@contain.find selector).length} selectors)"
+
       callback = @cacheEvent event, selector, cb
       @contain.on event, selector, callback
 

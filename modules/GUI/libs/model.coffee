@@ -127,7 +127,7 @@ Model = ->
 
   params = arguments[0]
 
-  return (state) =>
+  return (state) ->
     return new ModelItem params, state
 
 ModelItem = (params, state) ->
@@ -153,11 +153,19 @@ ModelItem = (params, state) ->
     result = @initialState()
     if typeof result.then == "function"
       result.then (response) =>
-        @state = if typeof @defaultState == "function" then (@__validateState @defaultState(), response) else response
+        if typeof @defaultState == "function"
+          @state = @__validateState @defaultState(), response
+        else
+          @state = response
+
         @initializedState = true
         @trigger "initialState", @state
     else
-      @state = if typeof @defaultState == "function" then (@__validateState @defaultState(), result) else result
+      if typeof @defaultState == "function"
+        @state = @__validateState @defaultState(), result
+      else
+        @state = result
+
       @initializedState = true
       @trigger "initialState", @state
 

@@ -5,7 +5,7 @@ module.exports = Model
     userFields: []
     fields: []
 
-  getUserFields: () -> @state.userFields
+  getUserFields: -> @state.userFields
 
   addField: (alias) ->
     field = @state.fields.find (field) -> field.alias == alias
