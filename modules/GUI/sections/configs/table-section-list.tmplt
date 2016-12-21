@@ -2,20 +2,14 @@
   <a href="/cms/configs/add/" class="form__btn">Добавить раздел</a>
 </div>
 <div class="section__row" role="section-list">
-  { checkedItems = 0 }
   <table class="table">
     <colgroup>
-      <col width="20" />
       <col width="*" />
       <col width="*" />
       <col width="*" />
     </colgroup>
     <thead>
       <tr>
-        <th>
-          <input class="form__checkbox" type="checkbox" id="checkall" role="cbeck-all" />
-          <label class="form__checkbox-label" for="checkall"></label>
-        </th>
         <th>Название</th>
         <th>Веб-имя</th>
         <th>Модуль</th>
@@ -23,15 +17,7 @@
     </thead>
     <tbody>
       { for (i, sectionsItem, sections) }
-        { isChecked = sectionsItem.checked? && (sectionsItem.checked) }
-        { if (isChecked) }
-          { checkedItems = checkedItems + 1 }
-        { endif }
       <tr class="table__link" role="section-row" data-id="{ i }">
-        <td>
-          <input class="form__checkbox" type="checkbox" id="check{ sectionsItem.id }" role="check-item"{ if (isChecked) } checked{ endif } />
-          <label class="form__checkbox-label" for="check{ sectionsItem.id }"></label>
-        </td>
         <td><a href="/cms/configs/{ sectionsItem.alias }/">{ sectionsItem.title }</a></td>
         <td><a href="/cms/configs/{ sectionsItem.alias }/" tabindex="-1">{ sectionsItem.alias }</a></td>
         <td><a href="/cms/configs/{ sectionsItem.alias }/" tabindex="-1">{ sectionsItem.module }</a></td>
@@ -39,11 +25,4 @@
       { endfor }
     </tbody>
   </table>
-</div>
-<div class="section__row">
-  <form action role="bottom-form">
-    <button class="form__btn" type="submit"{ if (checkedItems == 0) } disabled{endif}>
-      Удалить
-    </button>
-  </form>
 </div>

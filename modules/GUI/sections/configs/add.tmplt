@@ -65,6 +65,10 @@
       <div class="form__submit">
         <button class="form__btn form__btn--submit">Сохранить</button>
         <a href="/cms/configs/" class="form__btn">Отменить</a>
+
+        { if (id?) }
+          <button class="form__btn form__btn--delete" type="button" data-role="delete">Удалить</button>
+        { endif }
       </div>
     </form>
   </article>

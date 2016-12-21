@@ -1,0 +1,21 @@
+.form__btn--delete {
+  float: right;
+  background-color: #5B4970;
+  background-image: linear-gradient(to top, #ab5151 0%, #c76363 96%);
+  box-shadow: 0px 1px 0px 0px rgba(199,199,199,0.50);
+  color: #FFFFFF;
+}
+
+.form__btn--delete:hover {
+  background-image: linear-gradient(to top, #ab6565 0%, #cd7d7d 96%);
+}
+
+.form__btn--delete:active {
+  background-image: linear-gradient(to top, #ab6565 0%, #cd7d7d 96%);
+  box-shadow: 0 1px 2px #676767 inset;
+}
+
+.form__btn--delete:disabled {
+  color: #e6e6e6;
+  background-image: linear-gradient(to top, #d09494 0%, #de9595 96%);
+}

@@ -114,3 +114,7 @@ module.exports = Model
         console.error response.error if response.error?
 
   getSections: -> @state.sections
+
+  remove: ->
+    httpPost "/cms/configs/action_delete/", id: @state.id
+      .then => @trigger "delete-section"

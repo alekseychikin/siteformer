@@ -64,6 +64,7 @@ module.exports = View
     "mousedown: @btn-move-row": "mousedownBtnMoveRow"
     "mousemove: document.body": "mousemoveDocumentBody"
     "mouseup: document.body": "mouseupDocumentBody"
+    "click: [data-role='delete']": -> @model.remove()
 
   mousedownBtnMoveRow: (e) ->
     $btn = $ e.target

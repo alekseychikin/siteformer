@@ -56,6 +56,9 @@ addView.on "open-configs-modal", (index, field, fields = []) ->
 addModel.on "onSavedSection", (alias) ->
   window.location.href = "/cms/configs/#{alias}/"
 
+addModel.on "delete-section", ->
+  window.location.href = "/cms/configs/"
+
 # setTimeout =>
 #   ($ "@btn-add-field").trigger "click"
 #   ($ "@configs-add-title")

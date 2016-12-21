@@ -1,6 +1,5 @@
 { import(TableSectionsList, './sections/configs/table-section-list') }
 { import(Main, './sections/main/main') }
-{ import(Scripts, './sections/main/scripts') }
 
 <Main pageTitle="{page_title}" sections={sections} section={section}>
   <h1 class="head">Настройки</h1>
@@ -8,8 +7,4 @@
   <div class="section__wrap" role="sections">
     <TableSectionsList sections={sections} />
   </div>
-
-  <Scripts>
-    <script src="/sf-engine/modules/GUI/dist/configs/index.js"></script>
-  </Scripts>
 </Main>
