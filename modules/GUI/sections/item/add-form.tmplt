@@ -49,7 +49,30 @@
   { endif }
 { endfor }
 <div class="form__submit">
-  <button class="form__btn form__btn--submit">{ if (data.id?) }Сохранить{ else }Создать{ endif }</button>
+  <button class="form__btn form__btn--submit" type="submit" data-role="save-public">
+    { if (data.id?) }
+      { if (data.status == 'draft') }
+        Опубликовать
+      { else }
+        Сохранить
+      { endif }
+    { else }
+      Опубликовать
+    { endif }
+  </button>
+
+  <button class="form__btn" type="button" data-role="save-draft">
+    { if (data.id?) }
+      { if (data.status == 'draft') }
+        Сохранить
+      { else }
+        Убрать в черновик
+      { endif }
+    { else }
+      Сохранить в черновик
+    { endif }
+  </button>
+
   <a href="/cms/{ section }/" class="form__btn">Отменить</a>
 
   { if (data.id?) }

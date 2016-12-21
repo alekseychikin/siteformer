@@ -3,6 +3,7 @@
 $section = SFGUI::getSection($section);
 $fields = $section['fields'];
 $data = $_POST['data'];
+$status = $_POST['status'];
 
 // sort fields; some of them may should have a source
 while (true) {
@@ -42,7 +43,7 @@ if (isset($data['id']) && isset($data['section'])) {
   $currentData = SFGUI::getItem($sectionName)
     ->where('id', $id)
     ->exec();
-  $newData = array();
+  $newData = ['status' => $status];
 
   foreach ($fields as $field) {
     $className = SFGUI::getClassNameByType($field['type']);
@@ -66,7 +67,7 @@ if (isset($data['id']) && isset($data['section'])) {
 
   die();
 } else {
-  $newData = array();
+  $newData = ['status' => $status];
 
   foreach ($fields as $field) {
     $className = SFGUI::getClassNameByType($field['type']);
@@ -86,7 +87,4 @@ if (isset($data['id']) && isset($data['section'])) {
     $className = SFGUI::getClassNameByType($field['type']);
     $className::postPrepareUpdateData($section, $field, $record, $currentData, $newData, $data);
   }
-
-  SFResponse::showContent();
-  print_r($newData);
 }

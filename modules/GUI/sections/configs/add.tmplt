@@ -63,7 +63,7 @@
         </div>
       </div>
       <div class="form__submit">
-        <button class="form__btn form__btn--submit">Сохранить</button>
+        <button class="form__btn form__btn--submit">{ if (id?) }Сохранить{ else }Создать{ endif }</button>
         <a href="/cms/configs/" class="form__btn">Отменить</a>
 
         { if (id?) }

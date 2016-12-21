@@ -82,7 +82,7 @@ class SFGUI
         'user_fields' => 'gui-fields?section={section}&usersonly',
         'section' => 'gui-scalar?value={section}',
         'sections' => 'gui-sections',
-        'data' => 'gui-item-list?section={section}&offset=0&limit=10'
+        'data' => 'gui-item-list?section={section}&offset=0&limit=10&status=active,draft'
       ],
       'template' => 'sections/item/index'
     ]);

@@ -3,12 +3,25 @@ httpGet = (require "ajax.coffee").httpGet
 httpPost = (require "ajax.coffee").httpPost
 
 module.exports = Model
+  initialState: ->
+    status: "draft"
+
   add: (name, model) ->
     fields = @state.fields.slice()
     fields.push
       model: model
       name: name
     @set {fields}
+
+  savePublic: ->
+    @set status: "public"
+
+    @save()
+
+  saveDraft: ->
+    @set status: "draft"
+
+    @save()
 
   save: ->
     result = {}
@@ -34,6 +47,7 @@ module.exports = Model
 
     result.section = @state.section if @state.section?
     result.id = @state.id if @state.id?
+    result.status = @state.status
 
     Promise.all promises
       .then =>

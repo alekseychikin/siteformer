@@ -5,6 +5,7 @@ class SFGUIGetItemSuper
   protected $section;
   protected $fields;
   protected $databaseQuery;
+  private static $systemFields = ['id', 'status'];
 
   public function __construct($section) {
     $this->section = $section;
@@ -33,7 +34,9 @@ class SFGUIGetItemSuper
       }
     }
 
-    $this->databaseQuery->where($field, $value);
+    if (in_array($field, self::$systemFields)) {
+      $this->whereSystemField($field, $value);
+    }
 
     return $this;
   }
@@ -72,5 +75,30 @@ class SFGUIGetItemSuper
     }
 
     return $data;
+  }
+
+  private function whereSystemField($field, $value) {
+    switch ($field) {
+      case 'id':
+        $this->databaseQuery->where($field, $value);
+
+        break;
+      case 'status':
+        $this->databaseQuery->openWhere();
+
+        foreach ($value as $index => $status) {
+
+          if (!$index) {
+            $this->databaseQuery->where($field, $status);
+            continue;
+          }
+
+          $this->databaseQuery->orWhere($field, $status);
+        }
+
+        $this->databaseQuery->closeWhere();
+
+        break;
+    }
   }
 }
