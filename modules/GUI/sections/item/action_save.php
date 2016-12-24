@@ -3,7 +3,8 @@
 $section = SFGUI::getSection($section);
 $fields = $section['fields'];
 $data = $_POST['data'];
-$status = $_POST['status'];
+$status = $data['status'];
+unset($data['status']);
 
 // sort fields; some of them may should have a source
 while (true) {
@@ -64,19 +65,17 @@ if (isset($data['id']) && isset($data['section'])) {
     $className = SFGUI::getClassNameByType($field['type']);
     $className::postPrepareUpdateData($sectionName, $field, $newData, $data);
   }
-
-  die();
 } else {
   $newData = ['status' => $status];
 
   foreach ($fields as $field) {
     $className = SFGUI::getClassNameByType($field['type']);
-    $className::validateInsertData($section, $field, $data);
+    $className::validateInsertData($sectionName, $field, $data);
   }
 
   foreach ($fields as $field) {
     $className = SFGUI::getClassNameByType($field['type']);
-    $newData[$field['alias']] = $className::prepareInsertData($section, $field, $data);
+    $newData[$field['alias']] = $className::prepareInsertData($sectionName, $field, $data);
   }
 
   $record = SFORM::insert($section['table'])
@@ -85,6 +84,6 @@ if (isset($data['id']) && isset($data['section'])) {
 
   foreach ($fields as $field) {
     $className = SFGUI::getClassNameByType($field['type']);
-    $className::postPrepareUpdateData($section, $field, $record, $currentData, $newData, $data);
+    $className::postPrepareInsertData($section, $field, $record, $data);
   }
 }

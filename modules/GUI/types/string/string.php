@@ -7,7 +7,7 @@ class SFTypeString extends SFType
   public static function validateSettings($params, $fields, $currentAlias) {
     $sources = self::getSources($fields, $params, $currentAlias);
 
-    $params = parseJSON($params, true);
+    $params = parseJSON($params);
     $params = SFValidate::parse([
       [
         'name' => 'translit',
