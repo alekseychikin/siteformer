@@ -1,12 +1,7 @@
 {
   "template_index": "item.html",
   "name": "Строка",
-  "hasSettings": true,
+  "hasSettings": false,
   "defaultSettings": {
-    "copyValueOfSources": [],
-    "copyValueOf": false,
-    "copyValueOfValue": "",
-    "removePunctuation": false,
-    "translit": false
   }
 }

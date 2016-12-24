@@ -15,7 +15,6 @@ models =
   table: require "table/configsModel.coffee"
   section: require "section/configsModel.coffee"
   select: require "select/configsModel.coffee"
-  string: require "string/configsModel.coffee"
   text: require "text/configsModel.coffee"
   url: require "url/configsModel.coffee"
 
@@ -29,7 +28,6 @@ views =
   table: require "table/configsView.coffee"
   section: require "section/configsView.coffee"
   select: require "select/configsView.coffee"
-  string: require "string/configsView.coffee"
   text: require "text/configsView.coffee"
   url: require "url/configsView.coffee"
 
