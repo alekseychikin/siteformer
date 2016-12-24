@@ -11,6 +11,7 @@
 { import (Table, './types/table/item') }
 { import (Tags, './types/tags/item') }
 { import (Text, './types/text/item') }
+{ import (Url, './types/url/item') }
 
 { for (field, fields) }
   { if (!field.settings.hide? || (field.settings.hide? && !field.settings.hide)) }
@@ -43,6 +44,8 @@
           <Tags  field={field} data={data[field.alias]} />
         { elseif (field.type == 'text') }
           <Text  field={field} data={data[field.alias]} />
+        { elseif (field.type == 'url') }
+          <Url  field={field} data={data[field.alias]} />
         { endif }
       </div>
     </div>

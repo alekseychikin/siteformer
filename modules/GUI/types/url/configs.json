@@ -1,0 +1,8 @@
+{
+  "template_index": "item.html",
+  "name": "Урл",
+  "hasSettings": true,
+  "defaultSettings": {
+    "source": ""
+  }
+}

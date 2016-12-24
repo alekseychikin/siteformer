@@ -1,0 +1,10 @@
+<div class="form__inp-contain" role="input-contain">
+  <input
+    class="form__inp"
+    type="text"
+    name="{ field.alias }"
+    id="{ field.alias }"
+    value="{ data }"
+    role="url"
+  />
+</div>

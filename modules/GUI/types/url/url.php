@@ -1,0 +1,79 @@
+<?php if (!defined('ROOT')) die('You can\'t just open this file, dude');
+
+require_once ENGINE . 'classes/validate.php';
+
+class SFTypeUrl extends SFType
+{
+  public static function validateSettings($params, $fields, $currentAlias) {
+    $params = parseJSON($params);
+    $params = SFValidate::parse([
+      [
+        'name' => 'source'
+      ]
+    ], $params);
+
+    return json_encode($params);
+  }
+
+  public static function prepareInsertData($section, $field, $data) {
+    $section = SFGUI::getSection($section);
+    $settings = $field['settings'];
+
+    $value = $data[$field['alias']];
+
+    if (empty($value)) {
+      $value = $data[$settings['source']];
+    }
+
+    $value = mb_strtolower(SFText::removeSpecialCharacters($value), 'utf-8');
+    $value = SFText::translite($value);
+
+    $record = SFORM::select()
+      ->from($section['table'])
+      ->where($field['alias'], $value);
+
+    $i = 1;
+    $newValue = $value;
+
+    while ($record->length()) {
+      $newValue = $value . '-' . ++$i;
+      $record = SFORM::select()
+        ->from($section['table'])
+        ->where($field['alias'], $newValue);
+    }
+
+    return $newValue;
+  }
+
+  public static function prepareUpdateData($section, $field, $currentData, $data) {
+    $section = SFGUI::getSection($section);
+    $settings = $field['settings'];
+
+    $value = $data[$field['alias']];
+
+    if (empty($value)) {
+      $value = $data[$settings['source']];
+    }
+
+    $value = mb_strtolower(SFText::removeSpecialCharacters($value), 'utf-8');
+    $value = SFText::translite($value);
+
+    $record = SFORM::select()
+      ->from($section['table'])
+      ->where($field['alias'], $value)
+      ->andWhere('id', '!=', $currentData['id']);
+
+    $i = 1;
+    $newValue = $value;
+
+    while ($record->length()) {
+      $newValue = $value . '-' . ++$i;
+      $record = SFORM::select()
+        ->from($section['table'])
+        ->where($field['alias'], $newValue)
+        ->andWhere('id', '!=', $currentData['id']);
+    }
+
+    return $newValue;
+  }
+}

@@ -6,6 +6,7 @@
 { import(Select, './types/select/table-item') }
 { import(String, './types/string/table-item') }
 { import(Tags, './types/tags/table-item') }
+{ import(Url, './types/url/table-item') }
 
 { checkedItems = 0 }
 
@@ -49,6 +50,8 @@
               <String field={field} value={dataRow[field.alias]} />
             { elseif (field.type == 'tags') }
               <Tags field={field} value={dataRow[field.alias]} />
+            { elseif (field.type == 'url') }
+              <Url field={field} value={dataRow[field.alias]} />
             { endif }
           </a></td>
         { endfor }

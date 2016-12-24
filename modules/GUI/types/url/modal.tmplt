@@ -1,0 +1,21 @@
+<div class="popup__head">Настройки урла</div>
+<form action="" class="form" role="configs-form">
+  <div class="form__item">
+    <label for="configs-url-field" class="form__label">Поиск по полю</label>
+    <div class="form__inp-contain">
+      <label class="form__select">
+        <select data-role="configs-url-field" id="configs-url-field">
+          { if (arr_len(fields)) }
+            { for (fieldItem, fields) }
+              <option value="{ fieldItem.alias }"{ if (source == fieldItem.alias) } selected{ endif }>{ fieldItem.title }</option>
+            { endfor }
+          { endif }
+        </select>
+      </label>
+    </div>
+  </div>
+  <div class="form__submit">
+    <button class="form__btn form__btn--submit">Сохранить</button>
+    <button type="button" class="form__btn popup__cancel">Отменить</button>
+  </div>
+</form>

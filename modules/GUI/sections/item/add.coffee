@@ -17,6 +17,7 @@ models =
   table: require "table/addModel.coffee"
   tags: require "tags/addModel.coffee"
   text: require "text/addModel.coffee"
+  url: require "url/addModel.coffee"
 
 views =
   checkbox: require "checkbox/addView.coffee"
@@ -30,6 +31,7 @@ views =
   table: require "table/addView.coffee"
   tags: require "tags/addView.coffee"
   text: require "text/addView.coffee"
+  url: require "url/addView.coffee"
 
 httpGet window.location.href
   .then (response) ->
