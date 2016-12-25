@@ -3,7 +3,7 @@
 class SFGuiItemList extends SFRouterModel
 {
   public static function get ($params) {
-    $statuses = ['active'];
+    $statuses = ['public'];
 
     if (isset($params['status'])) {
       $statuses = explode(',', $params['status']);

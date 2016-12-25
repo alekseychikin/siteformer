@@ -66,6 +66,7 @@ module.exports = Model
   removeField: (index) ->
     fields = @state.fields.slice()
     fields.splice index, 1
+    fields.forEach (field, index) -> field.position = index
     @set {fields}
 
   getFieldByIndex: (index) -> @clone @state.fields[index]

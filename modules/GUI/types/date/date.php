@@ -10,7 +10,13 @@ class SFTypeDate extends SFType
   }
 
   public static function prepareInsertData($section, $field, $data) {
-    return $data[$field['alias']];
+    $value = $data[$field['alias']];
+
+    if (empty($value)) {
+      return NULL;
+    }
+
+    return $value;
   }
 
   public static function getDefaultData($settings) {

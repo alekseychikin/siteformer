@@ -67,6 +67,7 @@ if (isset($data['id']) && isset($data['section'])) {
   }
 } else {
   $newData = ['status' => $status];
+  $sectionName = $data['section'];
 
   foreach ($fields as $field) {
     $className = SFGUI::getClassNameByType($field['type']);

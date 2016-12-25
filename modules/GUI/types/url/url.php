@@ -19,6 +19,10 @@ class SFTypeUrl extends SFType
     $section = SFGUI::getSection($section);
     $settings = $field['settings'];
 
+    if (empty($data[$field['alias']]) && empty($data[$settings['source']])) {
+      return '';
+    }
+
     $value = $data[$field['alias']];
 
     if (empty($value)) {
@@ -48,6 +52,10 @@ class SFTypeUrl extends SFType
   public static function prepareUpdateData($section, $field, $currentData, $data) {
     $section = SFGUI::getSection($section);
     $settings = $field['settings'];
+
+    if (empty($data[$field['alias']]) && empty($data[$settings['source']])) {
+      return '';
+    }
 
     $value = $data[$field['alias']];
 

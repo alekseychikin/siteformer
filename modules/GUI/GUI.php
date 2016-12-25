@@ -82,7 +82,7 @@ class SFGUI
         'user_fields' => 'gui-fields?section={section}&usersonly',
         'section' => 'gui-scalar?value={section}',
         'sections' => 'gui-sections',
-        'data' => 'gui-item-list?section={section}&offset=0&limit=10&status=active,draft'
+        'data' => 'gui-item-list?section={section}&offset=0&limit=10&status=public,draft'
       ],
       'template' => 'sections/item/index'
     ]);
@@ -204,14 +204,15 @@ class SFGUI
       }
     }
 
-    $fields = array(
-      array(
+    $fields = [
+      [
         'title' => '',
         'alias' => '',
         'type' => $firstType['type'],
-        'settings' => $firstType['defaultSettings']
-      )
-    );
+        'settings' => $firstType['defaultSettings'],
+        'position' => 0
+      ]
+    ];
 
     return $fields;
   }
@@ -236,7 +237,7 @@ class SFGUI
       ],
       [
         'name' => 'status',
-        'type' => 'ENUM(\'active\', \'inactive\', \'draft\', \'deleted\')',
+        'type' => 'ENUM(\'public\', \'draft\', \'deleted\')',
         'null' => 'NOT NULL',
         'default' => 'draft'
       ]
