@@ -1,12 +1,33 @@
-$ = require "jquery-plugins.coffee"
+selectSelector = "select"
 
-$selects = $ "select"
-$selects.each ->
-  $select = $ @
-  $label = $select.parent()
+focusHandler = (e) -> e.target.parentNode.className = "form__select focus"
 
-  $select.on "focus", ->
-    $label.addClass "focus"
+blurHandler = (e) -> e.target.parentNode.className = "form__select"
 
-  $select.on "blur", ->
-    $label.removeClass "focus"
+bindEvents = (select) ->
+  select.addEventListener "focus", focusHandler
+
+  select.addEventListener "blur", blurHandler
+
+unbindEvents = (select) ->
+  select.removeEventListener "focus", focusHandler
+
+  select.removeEventListener "blur", blurHandler
+
+elements = Array.from document.querySelectorAll selectSelector
+elements.forEach bindEvents
+
+observer = new MutationObserver (mutations) ->
+  mutations.forEach (mutation) ->
+    if mutation.type == "childList"
+      mutation.addedNodes.forEach (element) ->
+        if element.nodeType == 1 && element.matches selectSelector
+          setTimeout (bindEvents element), 100
+
+      mutation.removedNodes.forEach (element) ->
+        if element.nodeType == 1 && element.matches editAreaSelector
+          setTimeout (unbindEvents element), 100
+
+config = attributes: true, childList: true, characterData: true, subtree: true
+
+observer.observe document.body, config
