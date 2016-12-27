@@ -2,7 +2,7 @@
   cursor: pointer;
   display: inline-block;
   height: 38px;
-  vertical-align: top;
+  vertical-align: middle;
   width: 26px;
   background: url('form-table__move.svg') center no-repeat;
 }
