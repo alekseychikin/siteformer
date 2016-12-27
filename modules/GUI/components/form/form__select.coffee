@@ -25,7 +25,7 @@ observer = new MutationObserver (mutations) ->
           setTimeout (bindEvents element), 100
 
       mutation.removedNodes.forEach (element) ->
-        if element.nodeType == 1 && element.matches editAreaSelector
+        if element.nodeType == 1 && element.matches selectSelector
           setTimeout (unbindEvents element), 100
 
 config = attributes: true, childList: true, characterData: true, subtree: true
