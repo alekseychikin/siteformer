@@ -141,11 +141,11 @@
 
       $settings = $field['settings'];
 
-      if ($settings['source'] === 'upload') {
-        if (!empty($currentData[$field['alias']]) && file_exists(ROOT . $settings['path'] . $currentData[$field['alias']])) {
-          unlink(ROOT . $settings['path'] . $currentData[$field['alias']]);
-        }
+      if (!empty($currentData[$field['alias']]) && file_exists(ROOT . $settings['path'] . $currentData[$field['alias']])) {
+        unlink(ROOT . $settings['path'] . $currentData[$field['alias']]);
+      }
 
+      if ($settings['source'] === 'upload') {
         $value = $data[$field['alias']];
       } else {
         $value = $data[$settings['source']];
