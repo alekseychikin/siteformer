@@ -25,6 +25,10 @@
   }
 }
 
+.form__checkbox-label:last-child {
+  margin-right: 0;
+}
+
 input:checked + .form__checkbox-label:before {
   opacity: 1;
 }
