@@ -17,6 +17,10 @@
       </select>
     </label>
   </td>
+  <td class="form-table__cell form-table__cell--center">
+    <input class="form__checkbox" type="checkbox" id="required-field-{index}"{ if (field.required) } checked{ endif } data-role="field-required" />
+    <label class="form__checkbox-label" for="required-field-{index}"></label>
+  </td>
   <td class="form-table__cell">
     { if (hasSettings) }
     <button class="form__btn" type="button" role="btn-config-field">Н</button>

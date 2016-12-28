@@ -27,6 +27,7 @@ module.exports = Model
       type: "string"
       position: @state.fields.length
       section: @state.id
+      required: false
     ]
 
     for typeItem in @state.types
@@ -53,6 +54,11 @@ module.exports = Model
     fields = @state.fields.slice()
     fields[index].type = value
     @resetSettings index
+    @set {fields}
+
+  updateFieldRequired: (index, value) ->
+    fields = @state.fields.slice()
+    fields[index].required = value
     @set {fields}
 
   resetSettings: (index) ->

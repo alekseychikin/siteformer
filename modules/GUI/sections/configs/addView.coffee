@@ -57,6 +57,7 @@ module.exports = View
     "change: @field-title": (e) -> @model.updateFieldTitle (@getRowIndex e), e.target.value
     "change: @field-alias": (e) -> @model.updateFieldAlias (@getRowIndex e), e.target.value
     "change: @field-type": (e) -> @model.updateFieldType (@getRowIndex e), e.target.value
+    "change: [data-role='field-required']": (e) -> @model.updateFieldRequired (@getRowIndex e), Number e.target.checked
     "change: @configs-add-title": (e) -> @model.updateTitle e.target.value
     "change: @configs-add-alias": (e) -> @model.updateAlias e.target.value
     "change: @configs-add-module": (e) -> @model.updateModule e.target.value

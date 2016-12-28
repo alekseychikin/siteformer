@@ -19,7 +19,10 @@ class SFGUI
     $dir = opendir(MODULES . 'GUI/types');
 
     while($filename = readdir($dir)) {
-      if ($filename != '.' && $filename != '..' && is_dir(MODULES . 'GUI/types/' . $filename) && file_exists(MODULES . 'GUI/types/' . $filename . '/' . $filename . '.php')) {
+      $dirname = MODULES . 'GUI/types/' . $filename;
+      $isDir = is_dir($dirname);
+      $isFileExists = file_exists($dirname . '/' . $filename . '.php');
+      if ($filename != '.' && $filename != '..' && $isDir && $isFileExists) {
         require_once MODULES . 'GUI/types/' . $filename . '/' . $filename . '.php';
 
         $className = self::getClassNameByType($filename);
@@ -412,6 +415,7 @@ class SFGUI
               'title' => $field['element']['title'],
               'alias' => $field['element']['alias'],
               'type' => $field['element']['type'],
+              'required' => $field['element']['required'],
               'settings' => $field['element']['settings'],
               'position' => $field['element']['position']
             ])
@@ -434,6 +438,7 @@ class SFGUI
               'title' => $field['element']['title'],
               'alias' => $field['element']['alias'],
               'type' => $field['element']['type'],
+              'required' => $field['element']['required'],
               'settings' => $field['element']['settings'],
               'position' => $field['element']['position']
             ])

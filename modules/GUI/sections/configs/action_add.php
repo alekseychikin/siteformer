@@ -75,6 +75,9 @@ $data = SFValidate::parse([
         'error' => 'Зада странный тип поля :value'
       ],
       [
+        'name' => 'required'
+      ],
+      [
         'name' => 'settings',
         'modify' => function ($settings) {
           return json_encode($settings);

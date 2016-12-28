@@ -43,6 +43,7 @@
             <col width="*" />
             <col width="75" />
             <col width="75" />
+            <col width="75" />
             <col width="40" />
           </colgroup>
           <thead>
@@ -50,6 +51,7 @@
               <th class="form-table__cell">Заголовок</th>
               <th class="form-table__cell">Веб-имя</th>
               <th class="form-table__cell">Тип</th>
+              <th title="Обязательное к заполнению">Обяз.</th>
               <th></th>
               <th></th>
             </tr>

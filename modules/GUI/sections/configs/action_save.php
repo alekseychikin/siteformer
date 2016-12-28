@@ -91,6 +91,9 @@ if ($id === false) {
           'error' => 'Зада странный тип поля :value'
         ],
         [
+          'name' => 'required'
+        ],
+        [
           'name' => 'settings',
           'modify' => function ($settings) {
             return json_encode($settings);
