@@ -2,6 +2,7 @@
   "template_index": "item.html",
   "name": "Изображение",
   "hasSettings": true,
+  "requiredable": true,
   "defaultSettings": {
     "storage": "local",
     "path": "/",

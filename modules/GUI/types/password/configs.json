@@ -2,7 +2,7 @@
   "template_index": "item.html",
   "name": "Пароль",
   "hasSettings": false,
+  "requiredable": true,
   "defaultSettings": {
-
   }
 }

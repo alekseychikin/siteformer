@@ -2,6 +2,7 @@
   "template_index": "item.html",
   "name": "Дата",
   "hasSettings": true,
+  "requiredable": true,
   "defaultSettings": {
     "useTime": false,
     "useCurrentDate": false

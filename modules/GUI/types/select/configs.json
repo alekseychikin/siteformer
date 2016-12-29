@@ -2,6 +2,7 @@
   "template_index": "item.html",
   "name": "Выпадайка",
   "hasSettings": true,
+  "requiredable": false,
   "defaultSettings": {
     "defaultValue": -1,
     "numOptions": 1,

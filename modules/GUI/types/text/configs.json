@@ -2,6 +2,7 @@
   "template_index": "item.html",
   "name": "Текст",
   "hasSettings": true,
+  "requiredable": true,
   "defaultSettings": {
     "defaultText": ""
   }

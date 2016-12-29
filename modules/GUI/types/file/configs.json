@@ -2,6 +2,7 @@
   "template_index": "item.html",
   "name": "Файл",
   "hasSettings": true,
+  "requiredable": true,
   "defaultSettings": {
     "storage": "local",
     "path": "/",

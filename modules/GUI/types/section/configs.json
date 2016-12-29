@@ -2,6 +2,7 @@
   "template_index": "item.html",
   "name": "Секция",
   "hasSettings": true,
+  "requiredable": true,
   "defaultSettings": {
     "section": "",
     "field": ""

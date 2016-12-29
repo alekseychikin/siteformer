@@ -2,6 +2,7 @@
   "template_index": "item.html",
   "name": "Галерея",
   "hasSettings": true,
+  "requiredable": false,
   "defaultSettings": {
     "storage": "local",
     "s3auth": false,

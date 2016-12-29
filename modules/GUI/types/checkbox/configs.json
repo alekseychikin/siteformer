@@ -2,6 +2,7 @@
   "template_index": "item.html",
   "name": "Флажки",
   "hasSettings": true,
+  "requiredable": false,
   "defaultSettings": {
     "numOptions": 1,
     "defaultData": [

@@ -2,6 +2,7 @@
   "template_index": "item.html",
   "name": "Таблица",
   "hasSettings": true,
+  "requiredable": false,
   "defaultSettings": {
     "columns": 4,
     "rows": 3,
