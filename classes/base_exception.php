@@ -1,4 +1,4 @@
-<?php if (!defined('ROOT')) die('You can\'t just open this file, dude');
+<?php
 
   class BaseException extends Exception
   {
@@ -27,9 +27,8 @@
       echo(join("\n", $newTrace));
       $trace = ob_get_contents();
       ob_end_clean();
-      $message = $this->message . ($this->errfile ? ' at file' . $this->errfile . ':' . $this->errline : '') . ($withTrace ? "\n" . $trace : '');
 
-      SFResponse::error(500, $message);
+      SFResponse::error(500, $this->message, $this->errfile, $this->errline, $trace);
     }
   }
 
