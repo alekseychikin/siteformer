@@ -19,6 +19,16 @@ class SFTypeDate extends SFType
     return $value;
   }
 
+  public static function prepareUpdateData($section, $field, $currentData, $data) {
+    $value = $data[$field['alias']];
+
+    if (empty($value)) {
+      return NULL;
+    }
+
+    return $value;
+  }
+
   public static function getDefaultData($settings) {
     $date = [
       'date' => '',
