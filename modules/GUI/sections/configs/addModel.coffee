@@ -33,7 +33,7 @@ module.exports = Model
 
     for typeItem in @state.types
       if typeItem.type == "string"
-        field[0].settings = @clone typeItem.defaultSettings
+        field[0].settings = Object.assign {}, typeItem.defaultSettings
 
     @set fields: @state.fields.concat field
 
@@ -83,7 +83,7 @@ module.exports = Model
     type = fields[index].type
     for typeItem in @state.types
       if typeItem.type == type
-        fields[index].settings = @clone typeItem.defaultSettings
+        fields[index].settings = Object.assign {}, typeItem.defaultSettings
     @set {fields}
 
   removeField: (index) ->
@@ -92,13 +92,13 @@ module.exports = Model
     fields.forEach (field, index) -> field.position = index
     @set {fields}
 
-  getFieldByIndex: (index) -> @clone @state.fields[index]
+  getFieldByIndex: (index) -> Object.assign {}, @state.fields[index]
 
   getFields: -> @state.fields.slice()
 
   saveFieldSettings: (state) ->
     fields = @state.fields.slice()
-    fields[state.index].settings = @extends {}, state.settings
+    fields[state.index].settings = Object.assign {}, state.settings
     if @state.errorFieldsField? && @state.errorFieldsField == "settings"
       @set
         fields: fields
