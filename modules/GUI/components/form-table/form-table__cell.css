@@ -1,4 +1,5 @@
 .form-table__cell {
+  position: relative;
   text-align: left;
   padding: 5px 10px;
 }
