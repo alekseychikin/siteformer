@@ -6,5 +6,9 @@
     id="{ field.alias }"
     value="{ data }"
     role="string"
+    { if (error? && str_len(error)) }focus{ endif }
   />
+  { if (error? && str_len(error)) }
+    <span class="form__error">{error}</span>
+  { endif }
 </div>

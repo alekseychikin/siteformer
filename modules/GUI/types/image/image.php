@@ -8,27 +8,16 @@
       $sources = self::getSources($fields, $params, $currentAlias);
 
       $params = parseJSON($params);
-      $params = SFValidate::parse([
-        [
-          'name' => 'storage',
+      $params = SFValidate::value([
+        'storage' => [
           'values' => array('local', 's3'),
-          'require' => true,
-          'error' => 'Неизвестный тип хранилища'
+          'required' => true
         ],
-        [
-          'name' => 'path'
-        ],
-        [
-          'name' => 'width'
-        ],
-        [
-          'name' => 'height'
-        ],
-        [
-          'name' => 'saveRatio'
-        ],
-        [
-          'name' => 'source',
+        'path' => [],
+        'width' => [],
+        'height' => [],
+        'saveRatio' => [],
+        'source' => [
           'valid' => function ($value) use ($fields, $sources) {
             $usedSource = array($value);
             while (true) {
@@ -62,21 +51,12 @@
 
             return true;
           },
-          'require' => true,
-          'error' => 'Неизвестный или зацикленный источник'
+          'required' => true
         ],
-        [
-          'name' => 's3AccessKey'
-        ],
-        [
-          'name' => 's3SecretKey'
-        ],
-        [
-          'name' => 's3Bucket'
-        ],
-        [
-          'name' => 's3Path'
-        ]
+        's3AccessKey' => [],
+        's3SecretKey' => [],
+        's3Bucket' => [],
+        's3Path' => []
       ], $params);
 
       if ($params['source'] !== 'upload') {

@@ -16,7 +16,7 @@ module.exports = new View
         e.preventDefault()
 
     "change: @configs-select-option": (e) -> @model.updateDefaultValue parseInt(e.target.value, 10)
-    "change: @configs-select-option-label": (e) ->
+    "input keypress change: @configs-select-option-label": (e) ->
       @model.updateDefaultDataOption (@getIndexByEvent e), e.target.value
     "popup-close: contain": (e) -> @destroy()
 

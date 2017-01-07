@@ -1,5 +1,11 @@
 View = require "view.coffee"
+itemTemplate = require "types/url/item"
+Render = require "render"
 
 module.exports = View
+  initial: -> @itemRender = Render itemTemplate, @contain[0]
+
   events:
-    "change: @url": (e) -> @model.update e.target.value
+    "input keypress change: @url": (e) -> @model.update e.target.value
+
+  render: (state) -> @itemRender state

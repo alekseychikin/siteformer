@@ -5,13 +5,17 @@
     <div class="form__inp-contain">
       <label class="form__select">
         <select role="configs-section-section" id="configs-section-section">
+          <option value=""></option>
           { if (arr_len(sections)) }
             { for (sectionItem, sections) }
-              <option value="{ sectionItem.alias }"{ if (sectionItem.alias == section) } selected{ endif }>{ sectionItem.title }</option>
+              <option value="{ sectionItem.alias }"{ if (sectionItem.alias == settings.section) } selected{ endif }>{ sectionItem.title }</option>
             { endfor }
           { endif }
         </select>
       </label>
+      { if (settings.errorCode && settings.errorIndex? && settings.errorIndex[0] == 'section' && settings.errorCode == 'EEMPTYREQUIRED') }
+        <span class="form__error">Задайте секцию</span>
+      { endif }
     </div>
   </div>
   <div class="form__item">
@@ -19,17 +23,21 @@
     <div class="form__inp-contain">
       <label class="form__select">
         <select role="configs-section-field" id="configs-section-field">
-          { if (arr_len(sections)) }
+          <option value=""></option>
+          { if (arr_len(sections) && str_len(settings.section)) }
             { for (sectionIndex, sectionItem, sections) }
               { if (sectionItem.alias == section || (!section && sectionIndex == 0)) }
                 { for (fieldItem, sectionItem.fields) }
-                  <option value="{ fieldItem.alias }"{ if (field == fieldItem.alias) } selected{ endif }>{ fieldItem.title }</option>
+                  <option value="{ fieldItem.alias }"{ if (settings.field == fieldItem.alias) } selected{ endif }>{ fieldItem.title }</option>
                 { endfor }
               { endif }
             { endfor }
           { endif }
         </select>
       </label>
+      { if (settings.errorCode && settings.errorIndex? && settings.errorIndex[0] == 'field' && settings.errorCode == 'EEMPTYREQUIRED') }
+        <span class="form__error">Задайте поле</span>
+      { endif }
     </div>
   </div>
   <div class="form__submit">

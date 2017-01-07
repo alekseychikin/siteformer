@@ -8,7 +8,6 @@ module.exports = View
 
   events:
     "submit: @configs-form": "submitConfigsForm"
-
     "change: @configs-radio-num-options": (e) -> @model.updateNumOptions Number(e.target.value)
     "blur: @configs-radio-num-options": (e) -> @model.updateNumOptions Number(e.target.value)
     "keydown: @configs-radio-num-options": (e) ->
@@ -17,7 +16,7 @@ module.exports = View
         e.preventDefault()
 
     "change: @configs-radio-option": (e) -> @model.updateDefaultValue Number(e.target.value)
-    "change: @configs-radio-option-label": (e) ->
+    "input keypress change: @configs-radio-option-label": (e) ->
       @model.updateDefaultDataOption (@getIndexByEvent e), e.target.value
     "popup-close: contain": (e) -> @destroy()
 

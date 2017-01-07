@@ -11,13 +11,21 @@
     <div class="form__inp-contain form__inp-contain--full-width">
       <div role="configs-checkbox-options-contain">
         { for (i, option, settings.defaultData) }
-        <div class="form__row-option">
-          <input type="checkbox" class="form__checkbox" role="configs-checkbox-option" value="{ i }" data-index="{ i }" id="configs-checkbox-option-{ i }" name="configs-checkbox-option"{ if (option.checked == true || option.checked == "true") } checked{ endif } />
-          <label for="configs-checkbox-option-{ i }" class="form__checkbox-label"></label>
-          <label><input type="text" class="form__inp form__inp--half-width" value="{ option.label }" role="configs-checkbox-option-label" data-index="{ i }" /></label>
-        </div>
+          <div class="form__row-option">
+            <input type="checkbox" class="form__checkbox" role="configs-checkbox-option" value="{ i }" data-index="{ i }" id="configs-checkbox-option-{ i }" name="configs-checkbox-option"{ if (option.checked == true || option.checked == "true") } checked{ endif } />
+            <label for="configs-checkbox-option-{ i }" class="form__checkbox-label"></label>
+            <label><input type="text" class="form__inp form__inp--half-width" value="{ option.label }" role="configs-checkbox-option-label" data-index="{ i }" /></label>
+
+            { if (settings.errorCode && settings.errorIndex? && settings.errorIndex[1]? && settings.errorIndex[0] == 'defaultData' && settings.errorCode == 'ENOTUNIQUEVALUE' && settings.errorIndex[1] == i) }
+              <span class="form__error">Варианты должны быть уникальными</span>
+            { endif }
+          </div>
         { endfor }
       </div>
+
+      { if (settings.errorCode && settings.errorIndex? && settings.errorIndex[0] == 'defaultData' && settings.errorCode == 'EMINLENGTH') }
+        <span class="form__error">Задайте хотя бы один вариант</span>
+      { endif }
     </div>
   </div>
   <div class="form__submit">

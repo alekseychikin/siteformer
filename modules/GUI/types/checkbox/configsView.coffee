@@ -18,7 +18,7 @@ module.exports = View
     "change: @configs-checkbox-option": (e) ->
       @model.updateDefaultDataOptionChecked (@getIndexByEvent e), e.target.checked
 
-    "change: @configs-checkbox-option-label": (e) ->
+    "input keypress change: @configs-checkbox-option-label": (e) ->
       @model.updateDefaultDataOption (@getIndexByEvent e), e.target.value
 
     "popup-close: contain": (e) -> @destroy()

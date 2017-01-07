@@ -26,28 +26,20 @@ class SFTypeCheckbox extends SFType
 
   public static function validateSettings($params, $fields, $currentAlias) {
     $params = json_decode($params, true);
-    $params = SFValidate::parse([
-      [
-        'name' => 'numOptions',
+    $params = SFValidate::value([
+      'numOptions' => [
         'type' => 'uzint',
-        'require' => true,
-        'error' => 'Количество флажков должно быть больше нуля'
+        'required' => true
       ],
-      [
-        'name' => 'defaultData',
+      'defaultData' => [
         'minlength' => 1,
-        'error' => 'Не заданы Флажки',
-        'array' => [
-          [
-            'name' => 'label',
-            'require' => true,
+        'collection' => [
+          'label' => [
+            'required' => true,
             'unique' => true,
-            'error' => 'Имя флажка должно быть уникальным',
-            'skip_row_if_empty' => true
+            'skipempty' => true
           ],
-          [
-            'name' => 'checked'
-          ]
+          'checked' => []
         ]
       ]
     ], $params);

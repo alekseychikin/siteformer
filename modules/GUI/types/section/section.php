@@ -15,16 +15,12 @@ class SFTypeSection extends SFType
 
   public static function validateSettings($settings, $fields, $currentAlias) {
     $settings = json_decode($settings, true);
-    $settings = SFValidate::parse([
-      [
-        'name' => 'section',
-        'require' => true,
-        'error' => 'Не выбрана секция'
+    $settings = SFValidate::value([
+      'section' => [
+        'required' => true
       ],
-      [
-        'name' => 'field',
-        'require' => true,
-        'error' => 'Не выбрано поле'
+      'field' => [
+        'required' => true
       ]
     ], $settings);
     return json_encode($settings);

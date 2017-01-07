@@ -6,9 +6,9 @@ class SFTypeUrl extends SFType
 {
   public static function validateSettings($params, $fields, $currentAlias) {
     $params = parseJSON($params);
-    $params = SFValidate::parse([
-      [
-        'name' => 'source'
+    $params = SFValidate::value([
+      'source' => [
+        'required' => true
       ]
     ], $params);
 

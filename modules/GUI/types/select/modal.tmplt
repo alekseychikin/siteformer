@@ -20,9 +20,17 @@
           <input type="radio" class="form__radio" role="configs-select-option" value="{ i }" id="configs-select-option-{ i }" name="configs-select-option"{ if (settings.defaultValue == i) } checked{ endif } />
           <label class="form__radio-label" for="configs-select-option-{ i }"></label>
           <label><input type="text" class="form__inp form__inp--half-width" value="{ option }" role="configs-select-option-label" data-index="{ i }" /></label>
+
+          { if (settings.errorCode && settings.errorIndex? && settings.errorIndex[1]? && settings.errorIndex[0] == 'defaultData' && settings.errorCode == 'ENOTUNIQUEVALUE' && settings.errorIndex[1] == i) }
+            <span class="form__error">Варианты должны быть уникальными</span>
+          { endif }
         </div>
         { endfor }
       </div>
+
+      { if (settings.errorCode && settings.errorIndex? && settings.errorIndex[0] == 'defaultData' && settings.errorCode == 'EMINLENGTH') }
+        <span class="form__error">Задайте хотя бы один вариант</span>
+      { endif }
     </div>
   </div>
   <div class="form__submit">

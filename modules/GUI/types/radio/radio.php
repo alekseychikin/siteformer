@@ -16,28 +16,21 @@ class SFTypeRadio extends SFType
 
   public static function validateSettings($params, $fields, $currentAlias) {
     $params = json_decode($params, true);
-    $params = SFValidate::parse([
-      [
-        'name' => 'numOptions',
+    $params = SFValidate::value([
+      'numOptions' => [
         'type' => 'uzint',
-        'require' => true,
-        'error' => 'Количество переключателей должно быть больше нуля'
+        'required' => true
       ],
-      [
-        'name' => 'defaultValue',
+      'defaultValue' => [
         'type' => 'int',
-        'require' => true,
-        'error' => 'Неизвестное значение по умолчанию'
+        'required' => true
       ],
-      [
-        'name' => 'defaultData',
+      'defaultData' => [
         'minlength' => 1,
-        'error' => 'Не заданы переключатели',
-        'array' => [
-          'require' => true,
+        'collection' => [
+          'required' => true,
           'unique' => true,
-          'error' => 'Имя переключателя должно быть уникальным',
-          'skip_row_if_empty' => true
+          'skipempty' => true
         ]
       ]
     ], $params);
