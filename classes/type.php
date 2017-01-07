@@ -61,6 +61,14 @@ class SFType
     return $data[$field['alias']];
   }
 
+  /**
+  * Method for preparing data for update in database
+  * @param array $section Section
+  * @param array $field Field
+  * @param array $currentData Current data
+  * @param array $data Sended data
+  * @return string Prepared data
+  */
   public static function prepareUpdateData($section, $field, $currentData, $data) {
     return $data[$field['alias']];
   }
@@ -70,12 +78,20 @@ class SFType
   * @param array $section Section
   * @param array $field Field
   * @param array $record Fresh inserted data to main table
-  * @param array $data Origin array of data, sended to `prepareData` before
+  * @param array $data Origin array of data, sended to `prepareInsertData` before
   * @return void
   */
   public static function postPrepareInsertData($section, $field, $record, $data) {
   }
 
+  /**
+  * Method for adding some more data or updating some data to another tables after update record to main table
+  * @param array $section Section
+  * @param array $field Field
+  * @param array $newData Fresh updated data from main table
+  * @param array $data Origin array of data, sended to `prepareUpdateData` before
+  * @return void
+  */
   public static function postPrepareUpdateData($section, $field, $newData, $data) {
   }
 
