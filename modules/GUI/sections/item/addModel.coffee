@@ -60,8 +60,17 @@ module.exports = Model
         httpPost "/cms/#{@state.section}/action_save/", data: result
       .then (response) ->
         console.log response
-      .catch (error) ->
-        console.error error.error
+      .catch (response) =>
+        console.log response.error
+        if response.error.message && response.error.message.index
+          error = response.error.message
+          console.log error
+
+          @showError error.index, error.code
+
+  showError: (index, code) ->
+    for field in @state.fields
+      field.model.showError code if field.name == index[0] && field.model.showError?
 
   delete: ->
     data =

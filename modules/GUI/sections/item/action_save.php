@@ -56,6 +56,17 @@ if (isset($data['id']) && isset($data['section'])) {
     $newData[$field['alias']] = $className::prepareUpdateData($sectionName, $field, $currentData, $data);
   }
 
+  if ($status === 'public') {
+    foreach ($fields as $field) {
+      if ($field['required'] == "1" && (empty($newData[$field['alias']]))) {
+        throw new ValidationException([
+          'index' => [$field['alias']],
+          'code' => 'EEMPTYREQUIREDVALUE'
+        ]);
+      }
+    }
+  }
+
   $record = SFORM::update($section['table'])
     ->values($newData)
     ->where('id', $id)
@@ -77,6 +88,17 @@ if (isset($data['id']) && isset($data['section'])) {
   foreach ($fields as $field) {
     $className = SFGUI::getClassNameByType($field['type']);
     $newData[$field['alias']] = $className::prepareInsertData($sectionName, $field, $data);
+  }
+
+  if ($status === 'public') {
+    foreach ($fields as $field) {
+      if ($field['required'] == "1" && (empty($newData[$field['alias']]))) {
+        throw new ValidationException([
+          'index' => [$field['alias']],
+          'code' => 'EEMPTYREQUIREDVALUE'
+        ]);
+      }
+    }
   }
 
   $record = SFORM::insert($section['table'])
