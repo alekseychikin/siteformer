@@ -44,7 +44,7 @@ require_once CLASSES . 'S3.php';
 require_once CLASSES . 'array.php';
 require_once CLASSES . 'models.php';
 require_once CLASSES . 'uri.php';
-require_once CLASSES . 'validate2.php';
+require_once CLASSES . 'validate.php';
 require_once CLASSES . 'paths.php';
 require_once CLASSES . 'text.php';
 require_once CLASSES . 'socket.php';
