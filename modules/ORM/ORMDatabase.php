@@ -30,38 +30,29 @@
 
     protected function validateField($field)
     {
-      return SFValidate::parse(array(
-        array(
-          'name' => 'name',
-          'require' => true,
-          'error' => 'Не задано имя поля'
-        ),
-        array(
-          'name' => 'type',
-          'require' => true,
-          'error' => 'Не задан тип поля'
-        ),
-        array(
-          'name' => 'null',
+      return SFValidate::value([
+        'name' => [
+          'required' => true
+        ],
+        'type' => [
+          'required' => true
+        ],
+        'null' => [
           'default' => NULL
-        ),
-        array(
-          'name' => 'autoincrement',
+        ],
+        'autoincrement' => [
           'default' => false,
-          'modify' => function ($value)
-          {
+          'modify' => function ($value) {
             return ($value ? 'AUTO_INCREMENT' : '');
           }
-        ),
-        array(
-          'name' => 'default',
+        ],
+        'default' => [
           'default' => NULL,
-          'modify' => function ($value)
-          {
+          'modify' => function ($value) {
             return $value;
           }
-        )
-      ), $field);
+        ]
+      ], $field);
     }
 
     protected static function hasConnection($alias = 'default')
