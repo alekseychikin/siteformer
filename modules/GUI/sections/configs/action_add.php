@@ -10,11 +10,10 @@ arrMap(SFGUI::getTypes(), function ($type) use (& $types) {
 
 SFResponse::showContent();
 SFORM::showError();
-$data = SFValidate::parse([
-  [
-    'name' => 'title',
-    'require' => true,
-    'error' => 'Поле «Название» обязательно для заполнения, должно быть уникальным',
+
+$data = SFValidate::value([
+  'title' => [
+    'required' => true,
     'unique' => function ($value) {
       $res = SFORM::select()
         ->from('sections')
@@ -24,11 +23,9 @@ $data = SFValidate::parse([
       return !$res->length();
     }
   ],
-  [
-    'name' => 'alias',
-    'require' => true,
-    'valid' => '/^[a-zA-Z0-9\-_]+$/i',
-    'error' => 'Поле «Веб-имя» обязательно для заполнения, должно содержать символы латинского алфавита, цифр, знака подчеркивания или дефиса',
+  'alias' => [
+    'required' => true,
+    'valid' => '/^[a-zA-Z\-_]+$/i',
     'unique' => function ($value) {
       $res = SFORM::select()
         ->from('sections')
@@ -38,53 +35,38 @@ $data = SFValidate::parse([
       return !$res->length();
     }
   ],
-  [
-    'name' => 'module',
-    'require' => true,
-    'values' => $modules,
-    'error' => 'Задан странный Модуль :value'
+  'module' => [
+    'required' => true,
+    'values' => $modules
   ],
-  [
-    'name' => 'fields',
+  'fields' => [
     'minlength' => 1,
-    'error' => 'Не заданы поля',
-    'array' => [
-      [
-        'name' => 'id',
-        'require' => false,
-        'valid' => '/^\d+$/',
-        'error' => 'Уникальный айди'
+    'collection' => [
+      'id' => [
+        'required' => false,
+        'default' => 0,
+        'valid' => '/^\d+$/'
       ],
-      [
-        'name' => 'title',
-        'require' => true,
+      'title' => [
+        'required' => true,
+        'unique' => true
+      ],
+      'alias' => [
+        'required' => true,
         'unique' => true,
-        'error' => 'Уникальное имя, обязательное для заполнения',
-        'skip_row_if_empty' => true
+        'valid' => '/^[a-zA-Z0-9\-_]+$/i'
       ],
-      [
-        'name' => 'alias',
-        'require' => true,
-        'unique' => true,
-        'valid' => '/^[a-zA-Z0-9\-_]+$/i',
-        'error' => 'Поле «Веб-имя» обязательно для заполнения, должно содержать символы латинского алфавита, цифр, знака подчеркивания или дефиса'
+      'type' => [
+        'values' => $types
       ],
-      [
-        'name' => 'type',
-        'values' => $types,
-        'error' => 'Зада странный тип поля :value'
-      ],
-      [
-        'name' => 'required'
-      ],
-      [
-        'name' => 'settings',
+      'required' => [],
+      'settings' => [
+        'type' => 'array',
         'modify' => function ($settings) {
           return json_encode($settings);
         }
       ],
-      [
-        'name' => 'position',
+      'position' => [
         'valid' => '/^\d+$/'
       ]
     ]
