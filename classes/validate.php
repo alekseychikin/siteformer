@@ -1,216 +1,159 @@
 <?php if (!defined('ROOT')) die('You can\'t just open this file, dude');
 
-  class SFValidate
-  {
-    private static $regexpTypes = array(
-      'uint' => '/^(([1-9]\d*)|0)$/',
-      'uzint' => '/^([1-9]\d*)$/',
-      'int' => '/^((\-?[1-9]\d*)|0)$/',
-      'email' => '/^[a-zA-Z_\-0-9\.]+@[a-zA-Z_\-0-9]+(\.[a-zA-Z]+)+$/',
-      'float' => '/^(([1-9]\d*)|0)(\.\d+)?$/',
-      'bool' => '/^(true|false)$/'
-    );
+class SkipEmptyException extends Exception {}
 
-    private static function returnError($field, $source = '') {
-      SFResponse::error(422, (isset($field['error']) ? str_replace(':value', $source, $field['error']) : 'Error at field `'.$field['name'].'`'));
+class SFValidate
+{
+  private static $regexpTypes = array(
+    'uint' => '/^(([1-9]\d*)|0)$/',
+    'uzint' => '/^([1-9]\d*)$/',
+    'int' => '/^((\-?[1-9]\d*)|0)$/',
+    'email' => '/^[a-zA-Z_\-0-9\.]+@[a-zA-Z_\-0-9]+(\.[a-zA-Z]+)+$/',
+    'float' => '/^(([1-9]\d*)|0)(\.\d+)?$/',
+    'bool' => '/^(true|false)$/'
+  );
+
+  public static function collection($params, $source, $index = []) {
+    $data = [];
+    $uniqueCache = [];
+
+    foreach ($source as $ind => $value) {
+      try {
+        $row = self::value($params, $value, array_merge($index, [$ind]), $uniqueCache);
+        $data[$ind] = $row;
+      } catch (SkipEmptyException $e) {
+        $data[$ind] = null;
+      }
     }
 
-    public static function parse($fields, $source, & $uniqueCache = array(), $prevName = '', & $skip = false) {
-      $data = array();
+    $data = array_filter($data, function ($item) {
+      return $item !== null;
+    });
 
-      foreach ($fields as $field) {
-        if (isset($field['array'])) {
-          $subdata = array();
-
-          for ($i = 0; $i < count($source[$field['name']]); $i++) {
-            $skip = false;
-            list($key, $value) = each($field['array']);
-            reset($field['array']);
-
-            if (gettype($value) === 'array') {
-              $row = self::parse($field['array'], $source[$field['name']][$i], $uniqueCache, $prevName . '.' . $field['name'], $skip);
-            } else {
-              $row = self::parse(array($field['array']), $source[$field['name']][$i], $uniqueCache, $prevName . '.' . $field['name'], $skip);
-            }
-
-            if (!$skip) {
-              $subdata[] = $row;
-            }
-          }
-
-          if (isset($field['minlength'])) {
-            if (count($subdata) < $field['minlength']) {
-              self::returnError($field);
-            }
-          }
-
-          $data[$field['name']] = $subdata;
-        } else {
-          $isIssetSource = true;
-          $sourceItem = null;
-
-          if (gettype($source) === 'array') {
-            $cacheName = $prevName . '.' . $field['name'];
-            $isIssetSource = isset($source[$field['name']]) || array_key_exists($field['name'], $source);
-
-            if ($isIssetSource) {
-              $sourceItem = $source[$field['name']];
-            }
-          }
-
-          if (gettype($source) !== 'array') {
-            $sourceItem = $source;
-            $cacheName = $prevName;
-          }
-
-          $isEmptySourceString = (gettype($sourceItem) === 'string' && strlen($sourceItem) === 0 || $sourceItem === null);
-
-          if (isset($field['skip_row_if_empty']) && $field['skip_row_if_empty']) {
-            if (!$isIssetSource || empty($sourceItem)) {
-              $skip = true;
-
-              return false;
-            }
-          }
-
-          if (isset($field['require']) && $field['require']) { // require
-            if (!$isIssetSource || $isEmptySourceString) {
-              self::returnError($field);
-            }
-          }
-
-          if (isset($field['values']) && $isIssetSource) {
-            if (!in_array($sourceItem, $field['values'])) {
-              self::returnError($field, $sourceItem);
-            }
-          }
-
-          if (isset($field['type']) && $isIssetSource) {
-            $isBoolean = gettype($sourceItem) === 'boolean';
-            $isMatch = preg_match(self::$regexpTypes[$field['type']], $sourceItem);
-
-            if (!$isBoolean && !$isMatch) {
-              self::returnError($field, $sourceItem);
-            }
-          }
-
-          if (isset($field['valid']) && $isIssetSource && !$isEmptySourceString) {
-            if (gettype($field['valid']) === 'object') {
-              if (!$field['valid']($sourceItem, $source)) {
-                self::returnError($field, $sourceItem);
-              }
-            } elseif (!preg_match($field['valid'], $sourceItem)) {
-              self::returnError($field, $sourceItem);
-            }
-          }
-
-          if (isset($field['unique'])) {
-            if (gettype($field['unique']) === 'boolean' && $field['unique']) {
-              if (!isset($uniqueCache[$cacheName])) {
-                $uniqueCache[$cacheName] = array();
-              }
-
-              if (in_array($sourceItem, $uniqueCache[$cacheName])) {
-                self::returnError($field, $sourceItem);
-              }
-            } elseif (gettype($field['unique']) === 'object') {
-              if (!$field['unique']($sourceItem)) {
-                self::returnError($field, $sourceItem);
-              }
-            }
-          }
-
-          if (isset($field['default']) && !$isIssetSource) {
-            if (gettype($source) === 'array') {
-              $data[$field['name']] = $field['default'];
-            } else {
-              $data = $field['default'];
-            }
-          } elseif ($isIssetSource) {
-            if (gettype($source) === 'array') {
-              $data[$field['name']] = $sourceItem;
-            } else {
-              $data = $sourceItem;
-            }
-          } else {
-            if (gettype($source) === 'array') {
-              $data[$field['name']] = '';
-            } else {
-              $data = '';
-            }
-          }
-
-          if (isset($field['modify'])) {
-            if (gettype($field['modify']) === 'string') {
-              if (gettype($source) === 'array') {
-                $data[$field['name']] = call_user_func($field['modify'], $data[$field['name']]);
-              } else {
-                $data = call_user_func($field['modify'], $data);
-              }
-            } elseif (gettype($field['modify']) === 'object') {
-              if (gettype($source) === 'array') {
-                $data[$field['name']] = $field['modify']($data[$field['name']]);
-              } else {
-                $data = $field['modify']($data);
-              }
-            }
-          }
-
-          if (gettype($source) === 'array') {
-            $uniqueCache[$cacheName][] = $data[$field['name']];
-          } else {
-            $uniqueCache[$cacheName][] = $data;
-          }
-        }
-      }
-
-      return $data;
+    $result = [];
+    foreach ($data as $item) {
+      $result[] = $item;
     }
-    //SFResponse::error(422, array('error' => 'Не заполнено название'));
 
-    public static function value($value, $params) {
-      if (isset($params['require']) && !!$params['require']) { // require
-        if (gettype($value) === 'string' && strlen($value) === 0) {
-          SFResponse::error(422, isset($params['error']) ? $params['error'] : 'Error at field `'.$params['name'].'`');
+    return $result;
+  }
+
+  public static function value($params, $source, $index = [], & $uniqueCache = []) {
+    $typeIsArray = isset($params['type']) && $params['type'] === 'array';
+
+    if (!isset($params['collection']) && gettype($source) === 'array' && !$typeIsArray) {
+      $data = [];
+
+      foreach ($params as $field => $param) {
+        $value = '';
+
+        if (isset($source[$field])) {
+          $value = $source[$field];
+        }
+
+        $data[$field] = self::value($param, $value, array_merge($index, [$field]), $uniqueCache);
+      }
+    } elseif (isset($params['collection'])) {
+      $data = self::collection($params['collection'], $source, $index);
+
+      if (isset($params['minlength'])) {
+        if (count($data) < $params['minlength']) {
+          return self::returnError('EMINLENGTH', $index, $data);
         }
       }
 
-      if (isset($params['values'])) {
-        if (!in_array($value, $params['values'])) {
-          SFResponse::error(422, isset($params['error']) ? $params['error'] : 'Error at field `'.$params['name'].'`');
+      if (isset($params['maxlength'])) {
+        if (count($data) < $params['maxlength']) {
+          return self::returnError('EMAXLENGTH', $index, $data);
+        }
+      }
+    } else {
+      $data = $source;
+
+      if (isset($params['default']) && empty($data)) {
+        $data = $params['default'];
+      }
+
+      if (isset($params['skipempty'])) {
+        if (empty($data)) {
+          throw new SkipEmptyException();
         }
       }
 
-      if (isset($params['type'])) {
-        if (!preg_match(self::$regexpTypes[$params['type']], $value)) {
-          SFResponse::error(422, isset($params['error']) ? $params['error'] : 'Error at field `'.$params['name'].'`');
+      if (isset($params['type']) && $params['type'] !== 'array') {
+        $isBoolean = gettype($data) === 'boolean';
+        $isMatch = preg_match(self::$regexpTypes[$params['type']], $data);
+
+        if (!$isBoolean && !$isMatch) {
+          return self::returnError('ENOTVALIDTYPE', $index, $data);
+        }
+      }
+
+      if (isset($params['required']) && $params['required']) {
+        if (empty($data)) {
+          return self::returnError('EEMPTYREQUIRED', $index, $data);
         }
       }
 
       if (isset($params['valid'])) {
-        if (!preg_match($params['valid'], $value)) {
-          SFResponse::error(422, isset($params['error']) ? $params['error'] : 'Error at field `'.$params['name'].'`');
+        if (gettype($params['valid']) === 'object') {
+          if (!$params['valid']($data)) {
+            return self::returnError('ENOTVALIDVALUE', $index, $data);
+          }
+        } elseif (gettype($params['valid']) === 'string') {
+          if (!preg_match($params['valid'], $data)) {
+            return self::returnError('ENOTVALIDVALUE', $index, $data);
+          }
         }
       }
 
-      if (isset($params['default']) && (gettype($value) === 'string' && strlen($value) === 0)) {
-        $value = $params['default'];
+      if (isset($params['values'])) {
+        if (!in_array($data, $params['values'])) {
+          return self::returnError('EVALUESNOTMATCHED', $index, $data);
+        }
       }
 
-      return $value;
-    }
+      if (isset($params['unique'])) {
+        if (gettype($params['unique']) === 'object') {
+          if (!$params['unique']($data)) {
+            return self::returnError('ENOTUNIQUEVALUE', $index, $data);
+          }
+        } elseif (gettype($params['unique']) === 'boolean' && $params['unique']) {
+          $cacheIndex = [];
 
-    public static function checkArray($value, $error = false) {
-      if (!count($value)) {
-        SFResponse::error(422, $error !== false ? $error : 'Error with value `'.$value.'`');
+          foreach ($index as $pos => $ind) {
+            if (gettype($ind) !== 'integer' || $pos < count($index) - 2) {
+              $cacheIndex[] = $ind;
+            }
+          }
+
+          $cacheIndex = implode('.', $cacheIndex);
+
+          if (!isset($uniqueCache[$cacheIndex])) {
+            $uniqueCache[$cacheIndex] = [];
+          }
+
+          if (in_array($data, $uniqueCache[$cacheIndex])) {
+            return self::returnError('ENOTUNIQUEVALUE', $index, $data);
+          }
+
+          $uniqueCache[$cacheIndex][] = $data;
+        }
+      }
+
+      if (isset($params['modify'])) {
+        if (gettype($params['modify']) === 'string') {
+          $data = call_user_func($params['modify'], $data);
+        } elseif (gettype($params['modify']) === 'object') {
+          $data = $params['modify']($data);
+        }
       }
     }
 
-    public static function check($expression, $error = false) {
-      if (!!$expression !== true) {
-        SFResponse::error(422, $error !== false ? $error : 'Error with value `'.$value.'`');
-      }
-    }
+    return $data;
   }
 
-?>
+  private static function returnError($code, $index, $source) {
+    throw new ValidationException(['code' => $code, 'index' => $index, 'source' => $source]);
+  }
+}
