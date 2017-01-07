@@ -5,10 +5,10 @@ itemTemplate = require "types/tags/item"
 module.exports = View
   initial: ->
     @templateRender = Render itemTemplate, @contain[0]
-    @input = @contain.find("@tags")
+    @input = @contain.find("[data-role='tags']")
 
   events:
-    "change input keyup click: @tags": (e) ->
+    "change input keyup click: [data-role='tags']": (e) ->
       @model.setSelection @input[0].selectionStart, @input[0].selectionEnd
 
       if e.keyCode == 27 then @model.emptySearch() else @model.update e.target.value

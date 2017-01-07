@@ -5,12 +5,12 @@ Render = require "render"
 module.exports = View
   initial: ->
     @template = Render template, @contain[0]
-    @model.setInput @contain.find("@image")[0]
+    @model.setInput @contain.find("[data-role='image']")[0]
 
   render: (state) ->
     if !state.field.settings.hide
       @template state
 
   events:
-    "change: @image": (e) -> @model.setPreview e.target
-    "click: @remove": -> @model.removePreview()
+    "change: [data-role='image']": (e) -> @model.setPreview e.target
+    "click: [data-role='remove']": -> @model.removePreview()

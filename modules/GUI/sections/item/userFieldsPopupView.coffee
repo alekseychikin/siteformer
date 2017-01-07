@@ -7,7 +7,7 @@ module.exports = View
   render: (state) -> @renderPopup state
 
   events:
-    "submit: @fields-config": (e) ->
+    "submit: [data-role='fields-config']": (e) ->
       @trigger "save-user-fields", @model.getUserFields()
 
       false

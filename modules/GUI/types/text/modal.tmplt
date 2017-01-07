@@ -1,7 +1,7 @@
 { import (EditArea, './components/editarea/editarea') }
 <div class="popup__head">Настройки текста</div>
 
-<form action="" class="form" role="configs-form">
+<form action="" class="form" data-role="configs-form">
   <div class="form__item">
     <label for="configs-text-default-text" class="form__label">Текст по умолчанию</label>
       <EditArea

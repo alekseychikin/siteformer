@@ -1,7 +1,7 @@
 <div class="section__row">
   <a href="/cms/configs/add/" class="form__btn">Добавить раздел</a>
 </div>
-<div class="section__row" role="section-list">
+<div class="section__row" data-role="section-list">
   <table class="table">
     <colgroup>
       <col width="*" />
@@ -17,7 +17,7 @@
     </thead>
     <tbody>
       { for (i, sectionsItem, sections) }
-      <tr class="table__link" role="section-row" data-id="{ i }">
+      <tr class="table__link" data-role="section-row" data-id="{ i }">
         <td><a href="/cms/configs/{ sectionsItem.alias }/">{ sectionsItem.title }</a></td>
         <td><a href="/cms/configs/{ sectionsItem.alias }/" tabindex="-1">{ sectionsItem.alias }</a></td>
         <td><a href="/cms/configs/{ sectionsItem.alias }/" tabindex="-1">{ sectionsItem.module }</a></td>

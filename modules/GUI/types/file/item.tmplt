@@ -1,13 +1,13 @@
-<div class="form__inp-contain" role="input-contain">
+<div class="form__inp-contain" data-role="input-contain">
   <div class="form__file-wrap">
     { if (!!filename?) }
-    <span class="form__file-close" role="remove"></span>
+    <span class="form__file-close" data-role="remove"></span>
     { endif }
     <label class="form__file{ if (!!filename?) } form__file--choosen{ endif }">
       { if (!!filename?) }
         <span class="form__file-filename">{ filename }</span>
       { endif }
-      <input type="file" name="{ field.alias }" id="{ field.alias }" value="" role="image" />
+      <input type="file" name="{ field.alias }" id="{ field.alias }" value="" data-role="image" />
     </label>
   </div>
 </div>

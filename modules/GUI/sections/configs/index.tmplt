@@ -4,7 +4,7 @@
 <Main pageTitle="{page_title}" sections={sections} section={section}>
   <h1 class="head">Настройки</h1>
 
-  <div class="section__wrap" role="sections">
+  <div class="section__wrap" data-role="sections">
     <TableSectionsList sections={sections} />
   </div>
 </Main>

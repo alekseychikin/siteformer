@@ -48,23 +48,23 @@ module.exports = View
     @configsAddRender = Render configsAddTemplate, @contain[0]
 
   events:
-    "click: @btn-remove-field": (e) -> @model.removeField @getRowIndex e
-    "click: @btn-add-field": (e) ->
+    "click: [data-role='btn-remove-field']": (e) -> @model.removeField @getRowIndex e
+    "click: [data-role='btn-add-field']": (e) ->
       @model.addEmptyField()
 
       setTimeout =>
-        @contain.find("@row-module-fields:last-child @field-title").focus()
+        @contain.find("[data-role='row-module-fields']:last-child [data-role='field-title']").focus()
       , 50
-    "input change keypress: @field-title": (e) -> @model.updateFieldTitle (@getRowIndex e), e.target.value
-    "input change keypress: @field-alias": (e) -> @model.updateFieldAlias (@getRowIndex e), e.target.value
-    "change: @field-type": (e) -> @model.updateFieldType (@getRowIndex e), e.target.value
+    "input change keypress: [data-role='field-title']": (e) -> @model.updateFieldTitle (@getRowIndex e), e.target.value
+    "input change keypress: [data-role='field-alias']": (e) -> @model.updateFieldAlias (@getRowIndex e), e.target.value
+    "change: [data-role='field-type']": (e) -> @model.updateFieldType (@getRowIndex e), e.target.value
     "change: [data-role='field-required']": (e) -> @model.updateFieldRequired (@getRowIndex e), Number e.target.checked
-    "input change keypress: @configs-add-title": (e) -> @model.updateTitle e.target.value
-    "input change keypress: @configs-add-alias": (e) -> @model.updateAlias e.target.value
-    "change: @configs-add-module": (e) -> @model.updateModule e.target.value
-    "click: @btn-config-field": "clickBtnConfigField"
-    "submit: @configs-add-form": "submitConfigsAddForm"
-    "mousedown: @btn-move-row": "mousedownBtnMoveRow"
+    "input change keypress: [data-role='configs-add-title']": (e) -> @model.updateTitle e.target.value
+    "input change keypress: [data-role='configs-add-alias']": (e) -> @model.updateAlias e.target.value
+    "change: [data-role='configs-add-module']": (e) -> @model.updateModule e.target.value
+    "click: [data-role='btn-config-field']": "clickBtnConfigField"
+    "submit: [data-role='configs-add-form']": "submitConfigsAddForm"
+    "mousedown: [data-role='btn-move-row']": "mousedownBtnMoveRow"
     "mousemove: document.body": "mousemoveDocumentBody"
     "mouseup: document.body": "mouseupDocumentBody"
     "click: [data-role='delete']": -> @model.remove()
@@ -73,7 +73,7 @@ module.exports = View
 
   mousedownBtnMoveRow: (e) ->
     $btn = $ e.target
-    @$row = $btn.closest "@row-module-fields"
+    @$row = $btn.closest "[data-role='row-module-fields']"
 
     @currentRowIndex = parseInt @$row.data("key"), 10
 
@@ -81,7 +81,7 @@ module.exports = View
 
     @dragging = true
     @rowOffsets = []
-    $rows = @contain.find "@row-module-fields"
+    $rows = @contain.find "[data-role='row-module-fields']"
 
     $rows.each (index, element) =>
       $rowItem = $ element

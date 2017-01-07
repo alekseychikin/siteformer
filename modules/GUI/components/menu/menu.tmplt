@@ -1,6 +1,6 @@
 { import(MenuItems, "./components/menu/menu-items") }
 
-<menu class="menu" role="sections-menu">
+<menu class="menu" data-role="sections-menu">
   <MenuItems sections={sections} section={section} />
 </menu>
 <menu class="menu">

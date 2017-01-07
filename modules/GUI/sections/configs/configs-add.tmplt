@@ -2,7 +2,7 @@
 
 <h1 class="head">{ if (id?) }Редактировать{ else }Добавить{ endif } раздел</h1>
 
-<form action="/cms/configs/{ if (id?) }{ alias }{ else }add{ endif }/" class="form" role="configs-add-form">
+<form action="/cms/configs/{ if (id?) }{ alias }{ else }add{ endif }/" class="form" data-role="configs-add-form">
   <div class="form__item">
     <label for="name" class="form__label">Название</label>
     <div class="form__inp-contain">
@@ -12,7 +12,7 @@
         value="{ title }"
         name="name"
         id="name"
-        role="configs-add-title"
+        data-role="configs-add-title"
         { if (errorTitle? && str_len(errorTitle)) }focus{ endif }
       />
 
@@ -31,7 +31,7 @@
         value="{ alias }"
         name="alias"
         id="alias"
-        role="configs-add-alias"
+        data-role="configs-add-alias"
         { if (id?) }disabled{ endif }
         { if (errorAlias? && str_len(errorAlias)) }focus{ endif }
       />
@@ -46,7 +46,7 @@
       <label for="module" class="form__label">Модуль</label>
       <div class="form__inp-contain">
         <label class="form__select">
-          <select name="module" id="module" role="configs-add-module">
+          <select name="module" id="module" data-role="configs-add-module">
             <option value="default"{ if (module == "default") } selected{ endif }>Стандартный</option>
             { for (modulesItem, modules) }
             <option value="{ modulesItem }"{ if (module == modulesItem) } selected{ endif }>{ modulesItem }</option>
@@ -61,7 +61,7 @@
     <span class="form__separate-text">Поля</span>
   </div>
 
-  <div class="form__table" role="module-fields">
+  <div class="form__table" data-role="module-fields">
     <table class="form-table">
       <colgroup>
         <col width="30%" />
@@ -82,7 +82,7 @@
           <th></th>
         </tr>
       </thead>
-      <tbody role="tbody-module-fields">
+      <tbody data-role="tbody-module-fields">
         <TableModuleField
           fields={fields}
           types={types}
@@ -93,7 +93,7 @@
       </tbody>
     </table>
     <div class="form__row">
-      <button role="btn-add-field" class="form__btn" type="button">Добавить поле</button>
+      <button data-role="btn-add-field" class="form__btn" type="button">Добавить поле</button>
     </div>
   </div>
 

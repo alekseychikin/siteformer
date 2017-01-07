@@ -1,6 +1,6 @@
 { import (EditArea, './components/editarea/editarea') }
 
-<div class="form__inp-contain form__inp-contain--full-width" role="input-contain">
+<div class="form__inp-contain form__inp-contain--full-width" data-role="input-contain">
   <EditArea
     id="{field.alias}"
     role="area"

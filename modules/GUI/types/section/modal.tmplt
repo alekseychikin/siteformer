@@ -1,10 +1,10 @@
 <div class="popup__head">Настройки секции</div>
-<form action="" class="form" role="configs-form">
+<form action="" class="form" data-role="configs-form">
   <div class="form__item">
     <label for="configs-section-section" class="form__label">Секция</label>
     <div class="form__inp-contain">
       <label class="form__select">
-        <select role="configs-section-section" id="configs-section-section">
+        <select data-role="configs-section-section" id="configs-section-section">
           <option value=""></option>
           { if (arr_len(sections)) }
             { for (sectionItem, sections) }
@@ -22,7 +22,7 @@
     <label for="configs-section-field" class="form__label">Поиск по полю</label>
     <div class="form__inp-contain">
       <label class="form__select">
-        <select role="configs-section-field" id="configs-section-field">
+        <select data-role="configs-section-field" id="configs-section-field">
           <option value=""></option>
           { if (arr_len(sections) && str_len(settings.section)) }
             { for (sectionIndex, sectionItem, sections) }

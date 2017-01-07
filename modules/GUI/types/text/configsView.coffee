@@ -4,8 +4,8 @@ modalWindowTemplate = require "types/text/modal"
 
 module.exports = View
   events:
-    "submit: @configs-form": "submitConfigsForm"
-    "change: @configs-text-default-text": (e) -> @model.updateDefaultText e.target.value
+    "submit: [data-role='configs-form']": "submitConfigsForm"
+    "change: [data-role='configs-text-default-text']": (e) -> @model.updateDefaultText e.target.value
     "popup-close: contain": -> @destroy()
 
   initial: -> @modalContain = Render modalWindowTemplate, @contain[0]

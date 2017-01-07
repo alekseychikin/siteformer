@@ -1,6 +1,6 @@
 { import(Suggest, './components/form-suggests/form-suggests') }
 
-<div class="form__inp-contain" role="input-contain">
+<div class="form__inp-contain" data-role="input-contain">
   { rows = [] }
   { if (searchResult?) }
     { rows = searchResult }
@@ -12,7 +12,7 @@
       id="{ field.alias }"
       class="form__inp"
       value="{ data }"
-      role="tags"
+      data-role="tags"
       autocomplete="off"
     />
   </Suggest>

@@ -4,10 +4,10 @@
 { if (!data?) }
   { data = '' }
 { endif }
-<div class="form__inp-contain" role="input-contain">
+<div class="form__inp-contain" data-role="input-contain">
   <div class="form__file-wrap">
     { if (str_len(data)) }
-    <span class="form__file-close" role="remove"></span>
+    <span class="form__file-close" data-role="remove"></span>
     { endif }
     <label class="form__file{ if (str_len(data)) } form__file--choosen{ endif }{ if (str_len(previewData) || str_len(data)) } form__file--previewed{ endif }">
       { if (str_len(data)) }
@@ -25,7 +25,7 @@
         name="{ field.alias }"
         id="{ field.alias }"
         value=""
-        role="image"
+        data-role="image"
         onfocus="this.parentNode.parentNode.className = \'form__file-wrap form__file-wrap--active\'"
         onblur="this.parentNode.parentNode.className = \'form__file-wrap\'"
       />

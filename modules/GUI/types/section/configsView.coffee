@@ -4,9 +4,9 @@ modalWindowTemplate = require "types/section/modal"
 
 module.exports = View
   events:
-    "submit: @configs-form": "submitConfigsForm"
-    "change: @configs-section-section": (e) -> @model.updateSection e.target.value
-    "change: @configs-section-field": (e) -> @model.updateField e.target.value
+    "submit: [data-role='configs-form']": "submitConfigsForm"
+    "change: [data-role='configs-section-section']": (e) -> @model.updateSection e.target.value
+    "change: [data-role='configs-section-field']": (e) -> @model.updateField e.target.value
     "popup-close: contain": (e) -> @destroy()
 
   initial: -> @modalContain = Render modalWindowTemplate, @contain[0]

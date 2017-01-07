@@ -1,13 +1,13 @@
-<div class="form__inp-contain" role="input-contain">
+<div class="form__inp-contain" data-role="input-contain">
   <label class="form__placeholder">
     <input
       class="form__inp form__inp--date"
       type="date"
       id="{ field.alias }"
       value="{data.date}"
-      role="date"
+      data-role="date"
     />
-    <span class="form__inp-empty" role="date-empty"></span>
+    <span class="form__inp-empty" data-role="date-empty"></span>
   </label>
   {if (field.settings.useTime)}
     <label class="form__placeholder">
@@ -16,9 +16,9 @@
         type="time"
         id="{ field.alias }-time"
         value="{data.time}"
-        role="time"
+        data-role="time"
       />
-      <span class="form__inp-empty" role="time-empty"></span>
+      <span class="form__inp-empty" data-role="time-empty"></span>
     </label>
   {endif}
 </div>

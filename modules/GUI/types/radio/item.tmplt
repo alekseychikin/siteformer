@@ -1,4 +1,4 @@
-<div class="form__inp-contain" role="input-contain">
+<div class="form__inp-contain" data-role="input-contain">
   { for (i, dataItem, field.settings.defaultData) }
   <div class="form__row-option">
     <input
@@ -6,7 +6,7 @@
       type="radio"
       id="{ field.alias }{ i }"
       name="{ field.alias }"
-      role="radio"
+      data-role="radio"
       data-index="{ i }"
       { if (data == i) } checked{ endif }
     />

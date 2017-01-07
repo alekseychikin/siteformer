@@ -7,7 +7,7 @@ module.exports = View
 
   events:
     "click: [data-role='configs-url-field']": (e) -> @model.updateField e.target.value
-    "submit: @configs-form": (e) ->
+    "submit: [data-role='configs-form']": (e) ->
       @trigger "save-configs-modal", @model.getState()
       return false
 

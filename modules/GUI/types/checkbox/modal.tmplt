@@ -1,20 +1,20 @@
 <div class="popup__head">Настройки флажков</div>
-<form action="" class="form" role="configs-form">
+<form action="" class="form" data-role="configs-form">
   <div class="form__item">
     <label for="configs-checkbox-num-options" class="form__label">Количество вариантов ответа</label>
     <div class="form__inp-contain">
-      <input type="text" class="form__inp form__inp--very-short" value="{ settings.numOptions }" role="configs-checkbox-num-options" id="configs-checkbox-num-options" />
+      <input type="text" class="form__inp form__inp--very-short" value="{ settings.numOptions }" data-role="configs-checkbox-num-options" id="configs-checkbox-num-options" />
     </div>
   </div>
   <div class="form__item">
     <label class="form__label">Варианты ответов:</label>
     <div class="form__inp-contain form__inp-contain--full-width">
-      <div role="configs-checkbox-options-contain">
+      <div data-role="configs-checkbox-options-contain">
         { for (i, option, settings.defaultData) }
           <div class="form__row-option">
-            <input type="checkbox" class="form__checkbox" role="configs-checkbox-option" value="{ i }" data-index="{ i }" id="configs-checkbox-option-{ i }" name="configs-checkbox-option"{ if (option.checked == true || option.checked == "true") } checked{ endif } />
+            <input type="checkbox" class="form__checkbox" data-role="configs-checkbox-option" value="{ i }" data-index="{ i }" id="configs-checkbox-option-{ i }" name="configs-checkbox-option"{ if (option.checked == true || option.checked == "true") } checked{ endif } />
             <label for="configs-checkbox-option-{ i }" class="form__checkbox-label"></label>
-            <label><input type="text" class="form__inp form__inp--half-width" value="{ option.label }" role="configs-checkbox-option-label" data-index="{ i }" /></label>
+            <label><input type="text" class="form__inp form__inp--half-width" value="{ option.label }" data-role="configs-checkbox-option-label" data-index="{ i }" /></label>
 
             { if (settings.errorCode && settings.errorIndex? && settings.errorIndex[1]? && settings.errorIndex[0] == 'defaultData' && settings.errorCode == 'ENOTUNIQUEVALUE' && settings.errorIndex[1] == i) }
               <span class="form__error">Варианты должны быть уникальными</span>

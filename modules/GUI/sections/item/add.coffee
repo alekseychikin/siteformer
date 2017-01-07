@@ -39,7 +39,7 @@ httpGet window.location.href
       section: response.section
       fields: []
       id: response.data.id
-    addView = AddView ($ "@item-add-form"), addModel
+    addView = AddView ($ "[data-role='item-add-form']"), addModel
     $rows = $ "[data-placeholder]"
     index = 0
 

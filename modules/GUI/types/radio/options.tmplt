@@ -1,6 +1,6 @@
 { for (index, option, options) }
 <div class="form__row-option">
-  <input type="radio" class="form__checkbox" role="configs-radio-option" value="{ index }" id="configs-radio-option-{ index }" name="configs-radio-option"{ if (currentValue == index) } checked{ endif } />
-  <label><input type="text" class="form__inp form__inp--half-width" value="{ option }" role="configs-radio-option-label" data-index="{ index }" /></label>
+  <input type="radio" class="form__checkbox" data-role="configs-radio-option" value="{ index }" id="configs-radio-option-{ index }" name="configs-radio-option"{ if (currentValue == index) } checked{ endif } />
+  <label><input type="text" class="form__inp form__inp--half-width" value="{ option }" data-role="configs-radio-option-label" data-index="{ index }" /></label>
 </div>
 { endfor }

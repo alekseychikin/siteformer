@@ -22,7 +22,7 @@
 { endif }
 
 <Main pageTitle="{page_title}" sections={sections} section={section}>
-  <article class="content" role="configs-add">
+  <article class="content" data-role="configs-add">
     <ConfigsAdd
       id={id}
       title={title}
@@ -39,7 +39,7 @@
     />
   </article>
 
-  <div class="popup" role="configs-popup">
+  <div class="popup" data-role="configs-popup">
   </div>
 
   <Scripts>

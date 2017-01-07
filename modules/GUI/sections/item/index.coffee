@@ -11,7 +11,7 @@ Popup = require "popup"
 
 indexView = IndexView ($ "[data-role='item-list']"), indexModel
 
-configsPopupSelector = "@configs-popup"
+configsPopupSelector = "[data-role='configs-popup']"
 
 indexView.on "open-user-fields-popup", ->
   Popup.open configsPopupSelector

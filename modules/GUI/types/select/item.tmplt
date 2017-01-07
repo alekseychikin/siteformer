@@ -1,6 +1,6 @@
-<div class="form__inp-contain" role="input-contain">
+<div class="form__inp-contain" data-role="input-contain">
   <label class="form__select">
-    <select name="{ field.alias }" id="{ field.alias }" role="select">
+    <select name="{ field.alias }" id="{ field.alias }" data-role="select">
     { for (i, dataItem, field.settings.defaultData) }
       <option value="{ i }"{ if (data == i) } selected{ endif }>{ dataItem }</option>
     { endfor }

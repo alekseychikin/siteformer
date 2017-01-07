@@ -20,7 +20,7 @@
     cols="30"
     rows="10"
     name="{name}"
-    role="{role}"
+    data-role="{role}"
     id="{id}"
   >{ value }</textarea>
 </div>

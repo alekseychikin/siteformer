@@ -1,5 +1,5 @@
 <div class="popup__head">Настройки урла</div>
-<form action="" class="form" role="configs-form">
+<form action="" class="form" data-role="configs-form">
   <div class="form__item">
     <label for="configs-url-field" class="form__label">Поиск по полю</label>
     <div class="form__inp-contain">

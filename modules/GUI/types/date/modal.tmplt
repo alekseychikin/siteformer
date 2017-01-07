@@ -1,11 +1,11 @@
 <div class="popup__head">Настройки даты</div>
-<form action="" class="form" role="configs-form">
+<form action="" class="form" data-role="configs-form">
   <div class="form__item">
     <div class="form__inp-contain form__inp-contain--full-width form__inp-contain--flex">
       <input
         class="form__checkbox"
         type="checkbox"
-        role="configs-date-use-time"
+        data-role="configs-date-use-time"
         id="configs-date-use-time"
         name="configs-date-use-time"
         {if (settings.useTime)} checked{endif}
@@ -22,7 +22,7 @@
       <input
         class="form__checkbox"
         type="checkbox"
-        role="configs-date-use-current-date"
+        data-role="configs-date-use-current-date"
         id="configs-date-use-current-date"
         name="configs-date-use-current-date"
         {if (settings.useCurrentDate)} checked{endif}

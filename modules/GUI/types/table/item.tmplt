@@ -1,4 +1,4 @@
-<div class="form__inp-contain" role="input-contain">
+<div class="form__inp-contain" data-role="input-contain">
   <table class="table">
     { if (data) }
       { for (rowIndex, row, data) }
@@ -9,7 +9,7 @@
               class="form__inp"
               type="text"
               id="{ field.alias }{ rowIndex }_{ columnIndex }"
-              role="cell"
+              data-role="cell"
               value="{ column }"
               data-row="{ rowIndex }"
               data-column="{ columnIndex }"
@@ -27,7 +27,7 @@
               class="form__inp"
               type="text"
               id="{ field.alias }{ rowIndex }_{ columnIndex }"
-              role="cell"
+              data-role="cell"
               value=""
               data-row="{ rowIndex }"
               data-column="{ columnIndex }"

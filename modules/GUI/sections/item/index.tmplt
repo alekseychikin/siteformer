@@ -11,7 +11,7 @@
     </div>
   </article>
 
-  <div class="popup" role="configs-popup"></div>
+  <div class="popup" data-role="configs-popup"></div>
 
   <Scripts>
     <script src="/sf-engine/modules/GUI/dist/item/index.js"></script>

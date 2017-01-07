@@ -1,11 +1,11 @@
 { for (index, field, fields) }
-<tr class="form-table__row" role="row-module-fields" data-key="{ index }">
+<tr class="form-table__row" data-role="row-module-fields" data-key="{ index }">
   <td class="form-table__cell">
     <input
       type="text"
       class="form__inp"
       value="{ field.title }"
-      role="field-title"
+      data-role="field-title"
       { if (errorFieldsField? && str_len(errorFieldsField) && errorFieldsField == 'title' && errorFieldsIndex == index) }focus{ endif }
     />
 
@@ -19,7 +19,7 @@
       type="text"
       class="form__inp"
       value="{ field.alias }"
-      role="field-alias"
+      data-role="field-alias"
       { if (errorFieldsField? && str_len(errorFieldsField) && errorFieldsField == 'alias' && errorFieldsIndex == index) }focus{ endif }
     />
 
@@ -30,7 +30,7 @@
 
   <td class="form-table__cell">
     <label class="form__select">
-      <select role="field-type">
+      <select data-role="field-type">
     { hasSettings = false }
     { isRequiredable = false }
     { for (type, types) }
@@ -61,7 +61,7 @@
     <button
       class="form__btn"
       type="button"
-      role="btn-config-field"
+      data-role="btn-config-field"
       { if (errorFieldsField? && str_len(errorFieldsField) && errorFieldsField == 'settings' && errorFieldsIndex == index) }focus{ endif }
     >Н</button>
     { endif }
@@ -73,12 +73,12 @@
 
   <td class="form-table__cell">
     { if (arr_len(fields) > 1) }
-    <button class="form__btn" type="button" role="btn-remove-field">X</button>
+    <button class="form__btn" type="button" data-role="btn-remove-field">X</button>
     { endif }
   </td>
 
   <td class="form-table__cell">
-    <span class="form-table__move" role="btn-move-row"></span>
+    <span class="form-table__move" data-role="btn-move-row"></span>
   </td>
 </tr>
 { endfor }

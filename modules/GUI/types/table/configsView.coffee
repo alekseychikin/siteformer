@@ -9,19 +9,19 @@ module.exports = View
   debug: true
 
   events:
-    "submit: @configs-form": "submitConfigsForm"
-    "change: @configs-table-rows": "changeConfigsTableRows"
-    "change: @configs-table-columns": "changeConfigsTableColumns"
-    "change: @configs-table-cell": (e) ->
+    "submit: [data-role='configs-form']": "submitConfigsForm"
+    "change: [data-role='configs-table-rows']": "changeConfigsTableRows"
+    "change: [data-role='configs-table-columns']": "changeConfigsTableColumns"
+    "change: [data-role='configs-table-cell']": (e) ->
       $cell = $ e.target
       @model.updateCellData ($cell.data "row"), ($cell.data "column"), ($cell.val())
 
-    "keydown: @configs-table-rows": (e) ->
+    "keydown: [data-role='configs-table-rows']": (e) ->
       @changeConfigsTableRows e
 
       if e.keyCode == 13 then e.preventDefault()
 
-    "keydown: @configs-table-columns": (e) ->
+    "keydown: [data-role='configs-table-columns']": (e) ->
       @changeConfigsTableColumns e
 
       if e.keyCode == 13 then e.preventDefault()

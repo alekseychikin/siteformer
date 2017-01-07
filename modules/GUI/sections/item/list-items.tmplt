@@ -5,6 +5,6 @@
 
   <button class="form__btn form__btn--right" data-role="config-user-fields" type="button">Настроить поля</button>
 </div>
-<div class="section__row" role="section-list">
+<div class="section__row" data-role="section-list">
   <SectionList user_fields={user_fields} fields={fields} data={data} section={section} />
 </div>

@@ -1,8 +1,8 @@
 <div class="popup__head">Настройки полей</div>
-<form action="" class="form" role="fields-config">
+<form action="" class="form" data-role="fields-config">
   <div class="form__item">
     <div class="form__inp-contain form__inp-contain--full-width">
-      <div role="fields-config-item">
+      <div data-role="fields-config-item">
         { for (i, field, fields) }
           { isChecked = false }
 
