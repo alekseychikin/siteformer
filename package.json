@@ -41,6 +41,7 @@
     "through2": "^2.0.1"
   },
   "dependencies": {
-    "jquery": "^1.11.3"
+    "jquery": "^1.11.3",
+    "promise-polyfill": "^6.0.2"
   }
 }

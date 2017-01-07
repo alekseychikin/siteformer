@@ -40,7 +40,7 @@ function watch(src, tasks) {
   });
 }
 
-gulp.task('default', ['prepare-css', 'prepare-js', 'prepare-js-lib', 'prepare-images']);
+gulp.task('default', ['prepare-css', 'polyfills', 'prepare-js', 'prepare-js-lib', 'prepare-images']);
 
 gulp.task('watch', ['default'], function ()
 {
@@ -157,6 +157,11 @@ function filterComponentsEntiries(opts)
   return stream;
 }
 
+var polyfills = [
+  'node_modules/promise-polyfill/promise.js',
+  'modules/GUI/libs/polyfills.js',
+  'modules/GUI/libs/object-assign.js'
+];
 var commonBundle = [
   'modules/GUI/libs/jquery-plugins.coffee',
   'modules/GUI/libs/view.coffee',
@@ -224,6 +229,12 @@ gulp.task('prepare-html', function ()
   gulp.src(['modules/GUI/**/*.html'])
   .pipe(cache('prepare-html'))
   .pipe(livereload());
+});
+
+gulp.task('polyfills', function () {
+  return gulp.src(polyfills)
+  .pipe(uglify())
+  .pipe(gulp.dest('modules/GUI/dist/polyfills'));
 });
 
 gulp.task('prepare-js-lib', ['prepare-html', 'prepare-js-components'], function ()
@@ -377,7 +388,7 @@ gulp.task('build-js', function ()
   .pipe(gulp.dest('modules/GUI/dist'));
 });
 
-gulp.task('build', ['build-css', 'build-js-lib', 'build-js']);
+gulp.task('build', ['build-css', 'polyfills', 'build-js-lib', 'build-js']);
 
 gulp.task('prepare-images', function ()
 {
