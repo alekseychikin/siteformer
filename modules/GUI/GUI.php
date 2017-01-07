@@ -213,7 +213,8 @@ class SFGUI
         'alias' => '',
         'type' => $firstType['type'],
         'settings' => $firstType['defaultSettings'],
-        'position' => 0
+        'position' => 0,
+        'required' => 0
       ]
     ];
 
@@ -344,17 +345,12 @@ class SFGUI
     // get diff
     $arrDiff = arrDifference($sourceFields, $dataFields);
 
-    SFResponse::showContent();
-
-    echo "alter tables\n";
     foreach ($arrDiff as $field) {
       switch ($field['mark']) {
         case 'delete':
-          echo "\n"."delete ".$source['table']."\n";
           SFORM::alter($source['table'])
             ->drop($field['element']['alias'])
             ->exec();
-            // ->getQuery();
 
           break;
       }
@@ -363,29 +359,29 @@ class SFGUI
     foreach ($arrDiff as $field) {
       switch ($field['mark']) {
         case 'edit':
-          echo "\n"."edit ".$source['table']."\n";
           $fieldType = array_merge($defaultField, self::getSqlFieldType($field['element']));
           $fieldType['name'] = $field['element']['alias'];
           SFORM::alter($source['table'])
             ->change($field['origin']['alias'], $fieldType)
             ->exec();
-            // ->getQuery();
-
-          break;
-        case 'add':
-          echo "\n"."add ".$source['table']."\n";
-          $fieldType = array_merge($defaultField, self::getSqlFieldType($field['element']));
-          $fieldType['name'] = $field['element']['alias'];
-          SFORM::alter($source['table'])
-            ->add($fieldType)
-            ->exec();
-            // ->getQuery();
 
           break;
       }
     }
 
-    echo "update sections\n";
+    foreach ($arrDiff as $field) {
+      switch ($field['mark']) {
+        case 'add':
+          $fieldType = array_merge($defaultField, self::getSqlFieldType($field['element']));
+          $fieldType['name'] = $field['element']['alias'];
+          SFORM::alter($source['table'])
+            ->add($fieldType)
+            ->exec();
+
+          break;
+      }
+    }
+
     SFORM::update('sections')
       ->values([
         'title' => $data['title'],
@@ -393,7 +389,6 @@ class SFGUI
       ])
       ->id($id)
       ->exec();
-      // ->getQuery();
 
     $sourceFields = arrMap($source['fields'], function ($item) {
       $item['settings'] = json_encode($item['settings']);
@@ -404,11 +399,9 @@ class SFGUI
 
     $fields = arrDifference($sourceFields, $data['fields']);
 
-    echo "edit section_fields table\n";
     foreach ($fields as $field) {
       switch($field['mark']) {
         case 'add':
-          echo "add\n";
           SFORM::insert('section_fields')
             ->values([
               'section' => $id,
@@ -420,19 +413,15 @@ class SFGUI
               'position' => $field['element']['position']
             ])
             ->exec();
-            // ->getQuery();
 
           break;
         case 'delete':
-          echo "delete\n";
           SFORM::delete('section_fields')
             ->id($field['element']['id'])
             ->exec();
-            // ->getQuery();
 
           break;
         case 'edit':
-          echo "edit\n";
           SFORM::update('section_fields')
             ->values([
               'title' => $field['element']['title'],
@@ -444,7 +433,6 @@ class SFGUI
             ])
             ->id($field['origin']['id'])
             ->exec();
-            // ->getQuery();
 
           break;
         case 'skip':
@@ -589,7 +577,17 @@ class SFGUI
       $className = self::getClassNameByType($field['type']);
 
       if (class_exists($className)) {
-        $data['fields'][$index]['settings'] = $className::validateSettings($field['settings'], $data['fields'], $field['alias']);
+        try {
+          $data['fields'][$index]['settings'] = $className::validateSettings($field['settings'], $data['fields'], $field['alias']);
+        } catch (ValidationException $e) {
+          $message = $e->getOriginMessage();
+
+          throw new ValidationException([
+            'code' => $message['code'],
+            'index' => array_merge(['fields', $index, 'settings'], $message['index']),
+            'source' => $message['source']
+          ]);
+        }
       }
     }
   }
