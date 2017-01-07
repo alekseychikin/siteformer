@@ -49,11 +49,12 @@ addView.on "open-configs-modal", (index, field, fields = []) ->
   view = views[field.type] ($ "@configs-popup"), model
 
   view.on "save-configs-modal", (state) ->
-    addModel.saveFieldConfigs state
+    console.log state
+    addModel.saveFieldSettings state
     Popup.close()
     view.destroy()
 
-addModel.on "onSavedSection", (alias) ->
+addModel.on "save-section", (alias) ->
   window.location.href = "/cms/configs/#{alias}/"
 
 addModel.on "delete-section", ->

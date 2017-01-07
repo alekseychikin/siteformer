@@ -1,0 +1,108 @@
+{ import(TableModuleField, './sections/configs/table-module-field') }
+
+<h1 class="head">{ if (id?) }Редактировать{ else }Добавить{ endif } раздел</h1>
+
+<form action="/cms/configs/{ if (id?) }{ alias }{ else }add{ endif }/" class="form" role="configs-add-form">
+  <div class="form__item">
+    <label for="name" class="form__label">Название</label>
+    <div class="form__inp-contain">
+      <input
+        type="text"
+        class="form__inp"
+        value="{ title }"
+        name="name"
+        id="name"
+        role="configs-add-title"
+        { if (errorTitle? && str_len(errorTitle)) }focus{ endif }
+      />
+
+      { if (errorTitle? && str_len(errorTitle)) }
+        <span class="form__error">{errorTitle}</span>
+      { endif }
+    </div>
+  </div>
+
+  <div class="form__item">
+    <label for="alias" class="form__label">Веб-имя</label>
+    <div class="form__inp-contain">
+      <input
+        type="text"
+        class="form__inp"
+        value="{ alias }"
+        name="alias"
+        id="alias"
+        role="configs-add-alias"
+        { if (id?) }disabled{ endif }
+        { if (errorAlias? && str_len(errorAlias)) }focus{ endif }
+      />
+      { if (errorAlias? && str_len(errorAlias)) }
+        <span class="form__error">{errorAlias}</span>
+      { endif }
+    </div>
+  </div>
+
+  { if (arr_len(modules)) }
+    <div class="form__item">
+      <label for="module" class="form__label">Модуль</label>
+      <div class="form__inp-contain">
+        <label class="form__select">
+          <select name="module" id="module" role="configs-add-module">
+            <option value="default"{ if (module == "default") } selected{ endif }>Стандартный</option>
+            { for (modulesItem, modules) }
+            <option value="{ modulesItem }"{ if (module == modulesItem) } selected{ endif }>{ modulesItem }</option>
+            { endfor }
+          </select>
+        </label>
+      </div>
+    </div>
+  { endif }
+
+  <div class="form__separate">
+    <span class="form__separate-text">Поля</span>
+  </div>
+
+  <div class="form__table" role="module-fields">
+    <table class="form-table">
+      <colgroup>
+        <col width="30%" />
+        <col width="30%" />
+        <col width="*" />
+        <col width="75" />
+        <col width="75" />
+        <col width="75" />
+        <col width="40" />
+      </colgroup>
+      <thead>
+        <tr class="form-table__row form-table__row--head">
+          <th class="form-table__cell">Заголовок</th>
+          <th class="form-table__cell">Веб-имя</th>
+          <th class="form-table__cell">Тип</th>
+          <th title="Обязательное к заполнению">Обяз.</th>
+          <th></th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody role="tbody-module-fields">
+        <TableModuleField
+          fields={fields}
+          types={types}
+          errorFieldsIndex={errorFieldsIndex}
+          errorFieldsField={errorFieldsField}
+          errorFieldsMessage={errorFieldsMessage}
+        />
+      </tbody>
+    </table>
+    <div class="form__row">
+      <button role="btn-add-field" class="form__btn" type="button">Добавить поле</button>
+    </div>
+  </div>
+
+  <div class="form__submit">
+    <button class="form__btn form__btn--submit">{ if (id?) }Сохранить{ else }Создать{ endif }</button>
+    <a href="/cms/configs/" class="form__btn">Отменить</a>
+
+    { if (id?) }
+      <button class="form__btn form__btn--delete" type="button" data-role="delete">Удалить</button>
+    { endif }
+  </div>
+</form>

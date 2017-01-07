@@ -2,7 +2,7 @@ $ = require "jquery-plugins.coffee"
 View = require "view.coffee"
 Render = require "render"
 Popup = require "popup"
-tableModuleFields = require "sections/configs/table-module-fields"
+configsAddTemplate = require "sections/configs/configs-add"
 $body = $ document.body
 
 createDuplicateRow = ($rowRaw) ->
@@ -44,7 +44,8 @@ module.exports = View
     @line = null
     @position = null
     @rowOffsets = []
-    @tbodyContain = Render tableModuleFields, ($ "@tbody-module-fields")[0]
+    console.log @contain
+    @configsAddRender = Render configsAddTemplate, @contain[0]
 
   events:
     "click: @btn-remove-field": (e) -> @model.removeField @getRowIndex e
@@ -54,12 +55,12 @@ module.exports = View
       setTimeout =>
         @contain.find("@row-module-fields:last-child @field-title").focus()
       , 50
-    "change: @field-title": (e) -> @model.updateFieldTitle (@getRowIndex e), e.target.value
-    "change: @field-alias": (e) -> @model.updateFieldAlias (@getRowIndex e), e.target.value
+    "input change keypress: @field-title": (e) -> @model.updateFieldTitle (@getRowIndex e), e.target.value
+    "input change keypress: @field-alias": (e) -> @model.updateFieldAlias (@getRowIndex e), e.target.value
     "change: @field-type": (e) -> @model.updateFieldType (@getRowIndex e), e.target.value
     "change: [data-role='field-required']": (e) -> @model.updateFieldRequired (@getRowIndex e), Number e.target.checked
-    "change: @configs-add-title": (e) -> @model.updateTitle e.target.value
-    "change: @configs-add-alias": (e) -> @model.updateAlias e.target.value
+    "input change keypress: @configs-add-title": (e) -> @model.updateTitle e.target.value
+    "input change keypress: @configs-add-alias": (e) -> @model.updateAlias e.target.value
     "change: @configs-add-module": (e) -> @model.updateModule e.target.value
     "click: @btn-config-field": "clickBtnConfigField"
     "submit: @configs-add-form": "submitConfigsAddForm"
@@ -67,6 +68,8 @@ module.exports = View
     "mousemove: document.body": "mousemoveDocumentBody"
     "mouseup: document.body": "mouseupDocumentBody"
     "click: [data-role='delete']": -> @model.remove()
+
+  render: (state) -> @configsAddRender state
 
   mousedownBtnMoveRow: (e) ->
     $btn = $ e.target
@@ -145,8 +148,6 @@ module.exports = View
       @position = null
       @fakeRowHeight = null
       @rowOffsets.splice(0)
-
-  render: (state) -> @tbodyContain state
 
   getRowIndex: (e) ->
     $parent = ($ e.target).closest "[data-key]"
