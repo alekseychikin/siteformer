@@ -642,6 +642,8 @@
       if (_hasProp.call(elementAttrs, attr)) {
         if (~logicAttrs.indexOf(attr)) {
           currNode[attr] = true;
+        } else if (attr === 'focus') {
+          currNode.focus();
         } else if (attr === 'value') {
           if (currNode.nodeName.toLowerCase() === 'option') {
             currNode.setAttribute('value', elementAttrs[attr]);
