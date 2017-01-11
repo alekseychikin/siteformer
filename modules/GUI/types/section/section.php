@@ -10,6 +10,18 @@ class SFTypeSection extends SFType
   }
 
   public static function prepareInsertData($section, $field, $data) {
+    if (empty($data[$field['alias']])) {
+      return null;
+    }
+
+    return $data[$field['alias']];
+  }
+
+  public static function prepareUpdateData($section, $field, $currentData, $data) {
+    if (empty($data[$field['alias']])) {
+      return null;
+    }
+
     return $data[$field['alias']];
   }
 
