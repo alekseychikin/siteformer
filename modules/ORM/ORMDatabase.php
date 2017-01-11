@@ -108,14 +108,20 @@
       }
       $timestart = microtime(true);
       if (self::$supportPDO) {
-        $res = self::$connections[$alias]->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_SCROLL));
-        $res->execute();
-        self::$lastRes = $res;
-        $err = $res->errorInfo();
-        $errCode = (int) $err[0];
-        if (self::$showError && $errCode !== 0) {
+        if (strpos($sql, 'INSERT') === 0) {
+          $res = self::$connections[$alias]->exec($sql);
+          $err = self::$connections[$alias]->errorInfo();
+        } else {
+          $res = self::$connections[$alias]->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_SCROLL));
+          $res->execute();
+          $err = $res->errorInfo();
+        }
+
+        if (self::$showError && $err[1] !== 0 && $err[1] !== null) {
           self::makeException($err[2]);
         }
+
+        self::$lastRes = $res;
       }
       else {
         if (self::$showError) {
