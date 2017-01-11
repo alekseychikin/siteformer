@@ -1,8 +1,8 @@
 { import(TableModuleField, './sections/configs/table-module-field') }
 
-<h1 class="head">{ if (id?) }Редактировать{ else }Добавить{ endif } раздел</h1>
+<h1 class="head">{ if (id) }Редактировать{ else }Добавить{ endif } раздел</h1>
 
-<form action="/cms/configs/{ if (id?) }{ alias }{ else }add{ endif }/" class="form" data-role="configs-add-form">
+<form action="/cms/configs/{ if (id) }{ alias }{ else }add{ endif }/" class="form" data-role="configs-add-form">
   <div class="form__item">
     <label for="name" class="form__label">Название</label>
     <div class="form__inp-contain">
@@ -32,7 +32,7 @@
         name="alias"
         id="alias"
         data-role="configs-add-alias"
-        { if (id?) }disabled{ endif }
+        { if (id) }disabled{ endif }
         { if (errorAlias? && str_len(errorAlias)) }focus{ endif }
       />
       { if (errorAlias? && str_len(errorAlias)) }
@@ -98,10 +98,10 @@
   </div>
 
   <div class="form__submit">
-    <button class="form__btn form__btn--submit">{ if (id?) }Сохранить{ else }Создать{ endif }</button>
+    <button class="form__btn form__btn--submit">{ if (id) }Сохранить{ else }Создать{ endif }</button>
     <a href="/cms/configs/" class="form__btn">Отменить</a>
 
-    { if (id?) }
+    { if (id) }
       <button class="form__btn form__btn--delete" type="button" data-role="delete">Удалить</button>
     { endif }
   </div>
