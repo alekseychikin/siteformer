@@ -35,8 +35,10 @@ createLine = ->
   @line = $ "<div class='form-table__line'></div>"
   $body.append @line
 
-module.exports = View
-  initial: ->
+module.exports = class AddConfigsView extends View
+  constructor: (target, model) ->
+    super target, model
+
     @dragging = false
     @fakeRow = null
     @fakeRowHeight = null
@@ -44,7 +46,6 @@ module.exports = View
     @line = null
     @position = null
     @rowOffsets = []
-    console.log @contain
     @configsAddRender = Render configsAddTemplate, @contain[0]
 
   events:

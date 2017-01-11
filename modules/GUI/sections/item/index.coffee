@@ -5,11 +5,11 @@ IndexModel = require "./indexModel.coffee"
 UserFieldsPopupModel = require "./userFieldsPopupModel.coffee"
 UserFieldsPopupView = require "./userFieldsPopupView.coffee"
 
-indexModel = IndexModel()
+indexModel = new IndexModel()
 
 Popup = require "popup"
 
-indexView = IndexView ($ "[data-role='item-list']"), indexModel
+indexView = new IndexView ($ "[data-role='item-list']"), indexModel
 
 configsPopupSelector = "[data-role='configs-popup']"
 
@@ -18,11 +18,11 @@ indexView.on "open-user-fields-popup", ->
 
   ($ configsPopupSelector).html ""
 
-  userFieldsPopupModel = UserFieldsPopupModel
+  userFieldsPopupModel = new UserFieldsPopupModel
     userFields: indexModel.getUserFields()
     fields: indexModel.getFields()
 
-  userFieldsPopupView = UserFieldsPopupView ($ configsPopupSelector), userFieldsPopupModel
+  userFieldsPopupView = new UserFieldsPopupView ($ configsPopupSelector), userFieldsPopupModel
 
   userFieldsPopupView.on "save-user-fields", (userFields) ->
     indexModel.updateUserFields userFields

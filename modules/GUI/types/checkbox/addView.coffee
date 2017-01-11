@@ -1,6 +1,8 @@
 View = require "view.coffee"
 
-module.exports = View
+module.exports = class CheckboxDataView extends View
+  constructor: (target, model) -> super target, model
+
   events:
     "change: [data-role='checkbox']": (e) ->
       $input = $ e.target

@@ -35,22 +35,22 @@ views =
 
 httpGet window.location.href
   .then (response) ->
-    addModel = AddModel
+    addModel = new AddModel
       section: response.section
       fields: []
       id: response.data.id
-    addView = AddView ($ "[data-role='item-add-form']"), addModel
+    addView = new AddView ($ "[data-role='item-add-form']"), addModel
     $rows = $ "[data-placeholder]"
     index = 0
 
     for field in response.fields
       do ->
         if models[field.type]?
-          model = models[field.type] {field, data: response.data[field.alias]}
+          model = new models[field.type] {field, data: response.data[field.alias]}
           addModel.add field.alias, model
 
           if views[field.type]? && (!field.settings.hide? || (field.settings.hide? && !field.settings.hide))
-            views[field.type] $rows.eq(index), model
+            new views[field.type] $rows.eq(index), model
 
             index++
 

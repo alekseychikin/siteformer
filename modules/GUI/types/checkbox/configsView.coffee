@@ -2,9 +2,12 @@ View = require "view.coffee"
 Render = require "render"
 modalWindowTemplate = require "types/checkbox/modal"
 
-module.exports = View
-  initial: ->
+module.exports = class CheckboxConfigsView extends View
+  constructor: (target, model) ->
+    super target, model
+
     @modalContain = Render modalWindowTemplate, @contain[0]
+    @render @model.state
 
   events:
     "submit: [data-role='configs-form']": "submitConfigsForm"

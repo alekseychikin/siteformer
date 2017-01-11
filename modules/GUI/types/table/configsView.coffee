@@ -2,11 +2,12 @@ View = require "view.coffee"
 Render = require "render"
 modalWindowTemplate = require "types/table/modal"
 
-module.exports = View
-  initial: ->
-    @modalContain = Render modalWindowTemplate, @contain[0]
+module.exports = class TableConfigsView extends View
+  constructor: (target, model) ->
+    super target, model
 
-  debug: true
+    @modalContain = Render modalWindowTemplate, @contain[0]
+    @render @model.state
 
   events:
     "submit: [data-role='configs-form']": "submitConfigsForm"

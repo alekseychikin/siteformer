@@ -11,12 +11,15 @@ fetchData = (url, section, field) -> (query) -> httpGet url,
 
 setResults = (data) -> @set searchResult: data.result
 
-module.exports = Model
-  defaultState: ->
-    data: ""
-    start: 0
-    end: 0
-    searchResult: []
+module.exports = class TagsDataModel extends Model
+  constructor: (state = {}) ->
+    defaultData =
+      data: ""
+      start: 0
+      end: 0
+      searchResult: []
+
+    super Object.assign defaultData, state
 
   update: (value) ->
     @getEditablePart value

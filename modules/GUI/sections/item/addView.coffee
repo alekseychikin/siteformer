@@ -1,6 +1,9 @@
 View = require "view.coffee"
 
-module.exports = View
+module.exports = class AddItemView extends View
+  constructor: (target, model) ->
+    super target, model
+
   events:
     "submit: contain": ->
       @model.savePublic()

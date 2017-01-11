@@ -1,8 +1,12 @@
 Model = require "model.coffee"
 {httpGet, httpPost} = require "ajax.coffee"
 
-module.exports = Model
-  initialState: -> httpGet window.location.href
+module.exports = class ItemIndexModel extends Model
+  constructor: (state = {}) ->
+    super state
+
+    httpGet window.location.href
+      .then (response) => @replace response
 
   getFields: -> @state.fields
   getUserFields: -> @state.user_fields

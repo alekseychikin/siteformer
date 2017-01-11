@@ -2,21 +2,23 @@ Model = require "model.coffee"
 httpGet = (require "ajax.coffee").httpGet
 httpPost = (require "ajax.coffee").httpPost
 
-module.exports = Model
-  initialState: ->
+module.exports = class AddConfigsModel extends Model
+  constructor: (state = {}) ->
+    defaultState =
+      title: ""
+      alias: ""
+      module: ""
+      modules: []
+      fields: []
+      types: []
+      sections: []
+    super Object.assign {}, defaultState, state
+
     httpGet window.location.pathname
-      .then (response) ->
-        state =
-          title: response.title
-          alias: response.alias
-          module: response.module
-          modules: response.modules
-          fields: response.fields
-          types: response.types
-          sections: response.sections
-        state.id = response.id if response.id
+      .then (response) =>
+        state = Object.assign {}, response
         console.log state
-        state
+        @replace state
 
   addField: (field) ->
     @set fields: @state.fields.concat [field]

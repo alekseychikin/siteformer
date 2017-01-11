@@ -1,7 +1,7 @@
 Model = require "model.coffee"
 
-module.exports = Model
-  defaultState: -> data: []
+module.exports = class CheckboxDataModel extends Model
+  constructor: (state = {data: []}) -> super state
 
   update: (index, checked) ->
     data = if checked then @state.data | (1 << index) else @state.data & ~(1 << index)

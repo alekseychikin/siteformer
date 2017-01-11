@@ -3,7 +3,10 @@ httpGet = (require "ajax.coffee").httpGet
 httpPost = (require "ajax.coffee").httpPost
 configs = require "types/file/configs.json"
 
-module.exports = Model
+module.exports = class GalleryConfigsModel extends Model
+  constructor: (state = {}) ->
+    super state
+
   defaultState: -> configs.defaultSettings
 
   initial: ->

@@ -1,13 +1,15 @@
 Model = require "model.coffee"
 httpFile = (require "ajax.coffee").httpFile
 
-module.exports = Model
-  defaultData: ->
-    readyToSave: false
-    data: ""
-    previewData: ""
+module.exports = class ImageDataModel extends Model
+  constructor: (state = {}) ->
+    defaultState =
+      readyToSave: false
+      data: ""
+      previewData: ""
 
-  initial: ->
+    super Object.assign defaultState, state
+
     if @state.data.length
       @set
         readyToSave: true

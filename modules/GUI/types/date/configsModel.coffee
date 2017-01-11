@@ -1,7 +1,10 @@
 Model = require "model.coffee"
 configs = require "types/date/configs.json"
 
-module.exports = Model
+module.exports = class DateConfigsModel extends Model
+  constructor: (state = {}) ->
+    super state
+
   defaultState: -> settings: configs.defaultSettings
 
   updateUseTime: (useTime) -> @set settings: {useTime}

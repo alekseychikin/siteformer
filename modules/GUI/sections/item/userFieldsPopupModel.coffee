@@ -1,9 +1,8 @@
 Model = require "model.coffee"
 
-module.exports = Model
-  defaultState:
-    userFields: []
-    fields: []
+module.exports = class UserFieldsModel extends Model
+  constructor: (state = {userFields: [], fields: []}) ->
+    super state
 
   getUserFields: -> @state.userFields
 

@@ -1,7 +1,7 @@
 Model = require "model.coffee"
 
-module.exports = Model
-  defaultState: -> data: ""
+module.exports = class RadioDataModel extends Model
+  constructor: (state = {data: ""}) -> super state
 
   update: (data) -> @set {data}
 

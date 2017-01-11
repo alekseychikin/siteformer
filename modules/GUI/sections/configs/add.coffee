@@ -1,9 +1,9 @@
-AddModel = require "./addModel.coffee"
-AddView = require "./addView.coffee"
+AddConfigsModel = require "./addModel.coffee"
+AddConfigsView = require "./addView.coffee"
 $ = require "jquery-plugins.coffee"
 
-addModel = AddModel()
-addView = AddView ($ "[data-role='configs-add']"), addModel
+addModel = new AddConfigsModel()
+addView = new AddConfigsView ($ "[data-role='configs-add']"), addModel
 
 models =
   checkbox: require "checkbox/configsModel.coffee"
@@ -38,7 +38,7 @@ addView.on "open-configs-modal", (index, field, fields = []) ->
 
   sections = addModel.getSections().filter (section) -> section.id != field.section
 
-  model = models[field.type]
+  model = new models[field.type]
     index: index
     field: field
     settings: field.settings
@@ -46,7 +46,7 @@ addView.on "open-configs-modal", (index, field, fields = []) ->
     sections: sections
 
   ($ "[data-role='configs-popup']").html ""
-  view = views[field.type] ($ "[data-role='configs-popup']"), model
+  view = new views[field.type] ($ "[data-role='configs-popup']"), model
 
   view.on "save-configs-modal", (state) ->
     console.log state

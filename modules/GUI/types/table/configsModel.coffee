@@ -1,7 +1,10 @@
 Model = require "model.coffee"
 configs = require "types/table/configs.json"
 
-module.exports = Model
+module.exports = class TableConfigsModel extends Model
+  constructor: (state = {}) ->
+    super state
+
   defaultState: -> settings: configs.defaultSettings
 
   getState: ->

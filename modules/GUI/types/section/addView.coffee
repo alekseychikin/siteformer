@@ -2,8 +2,11 @@ View = require "view.coffee"
 Render = require "render"
 itemTemplate = require "types/section/item"
 
-module.exports = View
-  initial: -> @templateRender = Render itemTemplate, @contain[0]
+module.exports = class SectionDataView extends View
+  constructor: (target, model) ->
+    super target, model
+
+    @templateRender = Render itemTemplate, @contain[0]
 
   events:
     "change input keyup: [data-role='section']": (e) ->

@@ -2,10 +2,13 @@ View = require "view.coffee"
 Render = require "render"
 itemTemplate = require "types/tags/item"
 
-module.exports = View
-  initial: ->
+module.exports = class TagsDataView extends View
+  constructor: (target, model) ->
+    super target, model
+
     @templateRender = Render itemTemplate, @contain[0]
     @input = @contain.find("[data-role='tags']")
+
 
   events:
     "change input keyup click: [data-role='tags']": (e) ->

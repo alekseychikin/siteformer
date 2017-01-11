@@ -2,9 +2,12 @@ View = require "view.coffee"
 Render = require "render"
 modalWindowTemplate = require "types/radio/modal"
 
-module.exports = View
-  initial: ->
+module.exports = class RadioConfigsView extends View
+  constructor: (target, model) ->
+    super target, model
+
     @optionsContain = Render modalWindowTemplate, @contain[0]
+    @render @model.state
 
   events:
     "submit: [data-role='configs-form']": "submitConfigsForm"

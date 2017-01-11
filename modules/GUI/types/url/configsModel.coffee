@@ -1,7 +1,10 @@
 Model = require "model.coffee"
 configs = require "types/url/configs.json"
 
-module.exports = Model
+module.exports = class UrlConfigsModel extends Model
+  constructor: (state = {}) ->
+    super state
+
   initial: ->
     source = ""
 

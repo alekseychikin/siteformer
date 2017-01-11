@@ -1,6 +1,8 @@
 Model = require "model.coffee"
 
-module.exports = Model
+module.exports = class DateDataModel extends Model
+  constructor: (state = {}) -> super state
+
   setSettings: (settings) ->
     @set useTime: settings.useTime
 

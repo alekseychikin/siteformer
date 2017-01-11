@@ -3,7 +3,10 @@ httpGet = (require "ajax.coffee").httpGet
 httpPost = (require "ajax.coffee").httpPost
 configs = require "types/file/configs.json"
 
-module.exports = Model
+module.exports = class FileConfigsModel extends Model
+  constructor: (state = {}) ->
+    super state
+
   defaultState: ->
     settings: configs.defaultSettings
     s3auth: false

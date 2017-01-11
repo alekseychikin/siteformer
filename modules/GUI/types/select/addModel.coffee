@@ -1,7 +1,7 @@
 Model = require "model.coffee"
 
-module.exports = Model
-  defaultState: -> data: -1
+module.exports = class SelectDataModel extends Model
+  constructor: (state= {data: -1}) -> super state
 
   update: (data) -> @set {data}
 

@@ -2,9 +2,9 @@ Model = require "model.coffee"
 httpGet = (require "ajax.coffee").httpGet
 httpPost = (require "ajax.coffee").httpPost
 
-module.exports = Model
-  initialState: ->
-    status: "draft"
+module.exports = class ItemAddModel extends Model
+  constructor: (state = {status: "draft"}) ->
+    super state
 
   add: (name, model) ->
     fields = @state.fields.slice()

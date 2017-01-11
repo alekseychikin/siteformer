@@ -1,6 +1,8 @@
 Model = require "model.coffee"
 
-module.exports = Model
+module.exports = class TableDataModel extends Model
+  constructor: (state = {}) -> super state
+
   setSettings: (settings) ->
     @set data: settings.defaultData.slice()
 

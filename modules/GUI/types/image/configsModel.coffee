@@ -3,7 +3,10 @@ httpGet = (require "ajax.coffee").httpGet
 httpPost = (require "ajax.coffee").httpPost
 configs = require "types/image/configs.json"
 
-module.exports = Model
+module.exports = class ImageConfigsModel extends Model
+  constructor: (state = {}) ->
+    super state
+
   defaultState: ->
     settings: configs.defaultSettings
     s3checking: false

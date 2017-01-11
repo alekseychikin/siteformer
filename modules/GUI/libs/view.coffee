@@ -5,23 +5,11 @@ $document = ($ document)
 
 pathTimeout = null
 
-View = (args...) ->
-  params = args[0]
-
-  if params.contain
-    return new ViewClass params, params.contain, params.model
-  return (target, model) ->
-    return new ViewClass params, target, model
-
-class ViewClass
-  constructor: (params, target, model) ->
+module.exports = class View
+  constructor: (target, model) ->
     @cachedEvents = []
     @contain = target
     @model = model
-
-    for field, item of params
-      do (field, item) =>
-        @[field] = item
 
     @__initial()
     self = @
@@ -29,9 +17,6 @@ class ViewClass
 
     if @model
       @model.addRenderListener @
-      @model.triggerInitialTriggers()
-
-  debug: false
 
   destroy: ->
     if @events && @contain
@@ -119,5 +104,3 @@ class ViewClass
       cb.call @
       pathTimeout = null
     , time
-
-module.exports = View

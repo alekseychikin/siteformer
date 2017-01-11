@@ -1,9 +1,12 @@
 Model = require "model.coffee"
 
-module.exports = Model
-  defaultState: ->
-    data: ""
-    error: ""
+module.exports = class StringConfigsModel extends Model
+  constructor: (state = {}) ->
+    defaultData =
+      data: ""
+      error: ""
+
+    super Object.assign defaultData, state
 
   messages:
     EEMPTYREQUIREDVALUE: 'Обязательное к заполнению поле'

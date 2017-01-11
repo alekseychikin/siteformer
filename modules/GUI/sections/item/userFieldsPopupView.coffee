@@ -2,8 +2,13 @@ View = require "view.coffee"
 popupTemplate = require "sections/item/user-fields-popup-template"
 Render = require "render"
 
-module.exports = View
-  initial: -> @renderPopup = Render popupTemplate, @contain[0]
+module.exports = class UserFieldsView extends View
+  constructor: (target, model) ->
+    super target, model
+
+    @renderPopup = Render popupTemplate, @contain[0]
+    @render @model.state
+
   render: (state) -> @renderPopup state
 
   events:
