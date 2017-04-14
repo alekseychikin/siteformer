@@ -2,35 +2,55 @@ var gulp = require('gulp');
 var path = require('path');
 var through = require('through2');
 var Buffer = require('buffer').Buffer
-var parser = require('html-parser');
+var gutt = require('gutt');
+var phpStringifier = require('gutt-php-stringifier');
+var browserStringifier = require('gutt-browser-stringifier');
 var using = require('gulp-using');
 var cache = require('gulp-cached');
+var rename = require('gulp-rename');
+
+function generatePhpTemplates () {
+	return through.obj(function (file, enc, next) {
+		const template = gutt.parseFile(file.path).stringifyWith(phpStringifier)
+
+		file.contents = new Buffer(template)
+		this.push(file)
+		next()
+	})
+}
+
+function generateBrowserTemplates () {
+	return through.obj(function (file, enc, next) {
+		const template = gutt.parseFile(file.path).stringifyWith(browserStringifier)
+
+		file.contents = new Buffer(template)
+		this.push(file)
+		next()
+	})
+}
+
 
 module.exports = (function (src, pwd, dest) {
   return function () {
     var results = {};
 
     gulp
-      .src(src)
-      .pipe(cache('templates'))
+      .src(src.files, {base: src.base})
       .pipe(using({}))
-      .pipe(through.obj(function (file, enc, next) {
-        results[file.path] = parser.parse(file.contents.toString(), file.path, pwd).strings()
-        file.contents = new Buffer(results[file.path].js)
-        file.path =
-          path.resolve(path.dirname(file.path), path.basename(file.path, path.extname(file.path)) + '.js')
-        next(null, file);
+      .pipe(generatePhpTemplates())
+      .pipe(rename(function (path) {
+        path.extname = '.tmplt.php'
+        return path
       }))
       .pipe(gulp.dest(dest))
 
     gulp
-      .src(src)
-      .pipe(through.obj(function (file, enc, next) {
-        results[file.path] = parser.parse(file.contents.toString(), file.path, pwd).strings()
-        file.contents = new Buffer(results[file.path].php)
-        file.path =
-          path.resolve(path.dirname(file.path), path.basename(file.path, path.extname(file.path)) + '.php')
-        next(null, file);
+      .src(src.files, {base: src.base})
+      .pipe(using({}))
+      .pipe(generateBrowserTemplates())
+      .pipe(rename(function (path) {
+        path.extname = '.tmplt.js'
+        return path
       }))
       .pipe(gulp.dest(dest))
   }
