@@ -57,7 +57,14 @@ gulp.task('watch', ['default'], function ()
 });
 
 gulp.task('templates', templatesTask(
-  'modules/GUI/**/*.tmplt',
+  {
+    files: [
+      'modules/GUI/components/**/*.tmplt',
+      'modules/GUI/sections/**/*.tmplt',
+      'modules/GUI/types/**/*.tmplt'
+    ],
+    base: 'modules/GUI'
+  },
   'modules/GUI/dist',
   'modules/GUI/dist'
 ));
@@ -240,7 +247,6 @@ gulp.task('polyfills', function () {
 gulp.task('prepare-js-lib', ['prepare-html', 'prepare-js-components'], function ()
 {
   return gulp.src(commonBundle)
-  .pipe(sourcemaps.init())
   .pipe(browserified({
     require: exposeCommonBundle,
     external: exposeCommonBundle,
@@ -264,7 +270,6 @@ gulp.task('prepare-js-lib', ['prepare-html', 'prepare-js-components'], function 
     return file;
   }))
   .pipe(concat('common-bundle.js'))
-  .pipe(sourcemaps.write('.'))
   .pipe(gulp.dest('modules/GUI/dist'))
   .pipe(livereload());
 });
