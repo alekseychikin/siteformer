@@ -1,110 +1,137 @@
-<div class="popup__head">Настройки изображения</div>
-{ isEmpty = !str_len(settings.s3AccessKey) || !str_len(settings.s3SecretKey) }
-<form action="" class="form" data-role="configs-form">
-  <div class="form__item">
-    <label class="form__label">Хранилище</label>
-    <div class="form__inp-contain">
-      <div class="tabs">
-        <button type="button" class="tabs__item{ if (settings.storage == "local") } tabs__item--active{ endif }" data-role="configs-image-storage" data-value="local">Локальное</button>
-        <button type="button" class="tabs__item{ if (settings.storage == "s3") } tabs__item--active{ endif }" data-role="configs-image-storage" data-value="s3">S3</button>
-      </div>
-    </div>
-  </div>
-  <div data-role="configs-image-modal-storage-local configs-image-modal-storage-frame" { if (settings.storage != 'local') } style="display: none"{ endif }>
+<component>
+  <param name={$settings} value={['s3AccessKey': '', 's3SecretKey': '', 'storage': 'local', 'source': '', 'saveRatio': false]} />
+  <param name={$sources} value={[]} />
+  <param name={$buckets} value={[]} />
+  <variable name={$isEmpty} value={!str_len($settings.s3AccessKey) || !str_len($settings.s3SecretKey)} />
+  <variable name={$pathError} value={false} />
+
+  <div class="popup__head">Настройки изображения</div>
+  <form action="" class="form" data-role="configs-form">
     <div class="form__item">
-      <label for="configs-image-path" class="form__label">Путь</label>
+      <label class="form__label">Хранилище</label>
       <div class="form__inp-contain">
-        <input type="text" class="form__inp" value="{ settings.path }" data-role="configs-image-path" id="configs-image-path" autocomplete="off" />
-        { if (pathError) }
-          <span class="form__error">{ pathError }</span>
-        { endif }
+        <div class="tabs">
+          <button type="button" class="tabs__item" data-role="configs-image-storage" data-value="local">
+            <if test={$settings.storage == "local"}>
+              <attribute name="class" value="tabs__item tabs__item--active" />
+            </if>
+            Локальное
+          </button>
+          <button type="button" class="tabs__item" data-role="configs-image-storage" data-value="s3">
+            <if test={$settings.storage == "s3"}>
+              <attribute name="class" value="tabs__item tabs__item--active" />
+            </if>
+            S3
+          </button>
+        </div>
       </div>
     </div>
-  </div>
-  <div data-role="configs-image-modal-storage-s3 configs-image-modal-storage-frame" { if (settings.storage != 's3') } style="display: none"{ endif }>
-    <div class="form__item">
-      <label for="configs-image-s3-access-key" class="form__label">Access key</label>
-      <div class="form__inp-contain">
-        <input type="text" class="form__inp" value="{ settings.s3AccessKey }" data-role="configs-image-s3-access-key" id="configs-image-s3-access-key" />
-      </div>
-    </div>
-    <div class="form__item">
-      <label for="configs-image-s3-secret-key" class="form__label">Secret key</label>
-      <div class="form__inp-contain">
-        <input type="password" class="form__inp" value="" data-role="configs-image-s3-secret-key" id="configs-image-s3-secret-key" />
-      </div>
-    </div>
-    <div class="form__item">
-      <div class="form__inp-contain">
-        <button type="button" class="form__btn" data-role="test-connection-s3"{ if (isEmpty || s3auth || s3checking) } disabled{ endif }>
-          { if (s3checking) }
-            Соединение...
-          { elseif (s3auth) }
-            Готово
-          { else }
-            Подключиться
-          { endif }
-        </button>
-      </div>
-    </div>
-    { if (s3auth) }
+    <div data-role="configs-image-modal-storage-local configs-image-modal-storage-frame">
+      <if test={$settings.storage != 'local'}>
+        <attribute name="style" value="display: none" />
+      </if>
       <div class="form__item">
-        <label for="configs-image-s3-bucket" class="form__label">Bucket</label>
+        <label for="configs-image-path" class="form__label">Путь</label>
         <div class="form__inp-contain">
-        { if (arr_len(buckets)) }
-          <label class="form__select">
-            <select data-role="configs-image-s3-bucket" id="configs-image-s3-bucket">
-              { for (bucket, buckets) }
-                <option value="{ bucket }"{ if (settings.s3Bucket == bucket) } selected{ endif }>{ bucket }</option>
-              { endfor }
-            </select>
-          </label>
-        { else }
-          <input type="text" class="form__inp" value="{ settings.s3Bucket }" data-role="configs-image-s3-bucket" id="configs-image-s3-bucket" />
-        { endif }
+          <input type="text" class="form__inp" value={$settings.path} data-role="configs-image-path" id="configs-image-path" autocomplete="off" />
+          <if test={$pathError}>
+            <span class="form__error">{$pathError}</span>
+          </if>
+        </div>
+      </div>
+    </div>
+    <div data-role="configs-image-modal-storage-s3 configs-image-modal-storage-frame">
+      <if test={$settings.storage != 's3'}>
+        <attribute name="style" value="display: none" />
+      </if>
+      <div class="form__item">
+        <label for="configs-image-s3-access-key" class="form__label">Access key</label>
+        <div class="form__inp-contain">
+          <input type="text" class="form__inp" value={$settings.s3AccessKey} data-role="configs-image-s3-access-key" id="configs-image-s3-access-key" />
         </div>
       </div>
       <div class="form__item">
-        <label for="configs-image-s3-path" class="form__label">Путь</label>
+        <label for="configs-image-s3-secret-key" class="form__label">Secret key</label>
         <div class="form__inp-contain">
-          <input type="text" class="form__inp" value="{ settings.s3Path }" data-role="configs-image-s3-path" id="configs-image-s3-path" />
+          <input type="password" class="form__inp" value="" data-role="configs-image-s3-secret-key" id="configs-image-s3-secret-key" />
         </div>
       </div>
-    { endif }
-  </div>
-  <div class="form__item">
-    <label for="configs-image-width" class="form__label">Уменьшить до заданных размеров</label>
-    <div class="form__inp-contain form__inp-contain--full-width">
-      <input type="text" class="form__inp form__inp--very-short" value="{ settings.width }" data-role="configs-image-width" id="configs-image-width" />
+      <div class="form__item">
+        <div class="form__inp-contain">
+          <button type="button" class="form__btn" data-role="test-connection-s3" disabled={$isEmpty || $s3auth || $s3checking}>
+            <switch>
+              <case test={$s3checking}>Соединение...</case>
+              <case test={$s3auth}>Готово</case>
+              <default>Подключиться</default>
+            </switch>
+          </button>
+        </div>
+      </div>
+      <if test={$s3auth}>
+        <div class="form__item">
+          <label for="configs-image-s3-bucket" class="form__label">Bucket</label>
+          <div class="form__inp-contain">
+          <switch>
+            <case test={arr_len($buckets)}>
+              <label class="form__select">
+                <select data-role="configs-image-s3-bucket" id="configs-image-s3-bucket">
+                  <for-each item={$bucket} from={$buckets}>
+                    <option value={$bucket} selected={$settings.s3Bucket == $bucket}>{$bucket}</option>
+                  </for-each>
+                </select>
+              </label>
+            </case>
+            <default>
+              <input type="text" class="form__inp" value={$settings.s3Bucket} data-role="configs-image-s3-bucket" id="configs-image-s3-bucket" />
+            </default>
+          </switch>
+          </div>
+        </div>
+        <div class="form__item">
+          <label for="configs-image-s3-path" class="form__label">Путь</label>
+          <div class="form__inp-contain">
+            <input type="text" class="form__inp" value={$settings.s3Path} data-role="configs-image-s3-path" id="configs-image-s3-path" />
+          </div>
+        </div>
+      </if>
+    </div>
+    <div class="form__item">
+      <label for="configs-image-width" class="form__label">Уменьшить до заданных размеров</label>
+      <div class="form__inp-contain form__inp-contain--full-width">
+        <input type="text" class="form__inp form__inp--very-short" value={$settings.width} data-role="configs-image-width" id="configs-image-width" />
 
-      <span class="form__between-inp">×</span>
+        <span class="form__between-inp">×</span>
 
-      <input class="form__inp form__inp--very-short" type="text" value="{ settings.height }" data-role="configs-image-height" />
+        <input class="form__inp form__inp--very-short" type="text" value={$settings.height} data-role="configs-image-height" />
 
-      <div class="form__hint">
-        <input class="form__checkbox" type="checkbox" data-role="configs-image-save-ratio" id="configs-image-save-ratio"{if (settings.saveRatio) } checked{endif} />
-        <label class="form__checkbox-label" for="configs-image-save-ratio"></label>
-        <label for="configs-image-save-ratio">Сохранить пропорции</label>
+        <div class="form__hint">
+          <input class="form__checkbox" type="checkbox" data-role="configs-image-save-ratio" id="configs-image-save-ratio" checked={$settings.saveRatio} />
+          <label class="form__checkbox-label" for="configs-image-save-ratio"></label>
+          <label for="configs-image-save-ratio">Сохранить пропорции</label>
+        </div>
       </div>
     </div>
-  </div>
-  <div class="form__item"{ if (!arr_len(sources)) } style="display: none" { endif }>
-    <label for="configs-image-source" class="form__label">Источник</label>
-    <div class="form__inp-contain">
-      <label class="form__select">
-        <select data-role="configs-image-source" id="configs-image-source">
-          <option value="upload"{ if (settings.source == 'upload') } selected{ endif }>Загрузить изображение</option>
-          { if (arr_len(sources)) }
-            { for (sourceItem, sources) }
-              <option value="{ sourceItem.alias }"{ if (settings.source == sourceItem.alias) } selected{ endif }>{ sourceItem.label }</option>
-            { endfor }
-          { endif }
-        </select>
-      </label>
+    <div class="form__item">
+      <if test={!arr_len($sources)}>
+        <attribute name="style" value="display: none" />
+      </if>
+      <label for="configs-image-source" class="form__label">Источник</label>
+      <div class="form__inp-contain">
+        <label class="form__select">
+          <select data-role="configs-image-source" id="configs-image-source">
+            <option value="upload" selected={$settings.source == 'upload'}>Загрузить изображение</option>
+            <if test={arr_len($sources)}>
+              <for-each item={$sourceItem} from={$sources}>
+                <option value={$sourceItem.alias} selected={$settings.source == $sourceItem.alias}>{$sourceItem.label}</option>
+              </for-each>
+            </if>
+          </select>
+        </label>
+      </div>
     </div>
-  </div>
-  <div class="form__submit">
-    <button class="form__btn form__btn--submit"{ if ((settings.storage == "local" && pathError) || (settings.storage == "s3" && (!s3auth))) } disabled{ endif }>Сохранить</button>
-    <button type="button" class="form__btn popup__cancel">Отменить</button>
-  </div>
-</form>
+    <div class="form__submit">
+      <button class="form__btn form__btn--submit" disabled={($settings.storage == "local" && $pathError) || ($settings.storage == "s3" && !$s3auth)}>Сохранить</button>
+      <button type="button" class="form__btn popup__cancel">Отменить</button>
+    </div>
+  </form>
+</component>

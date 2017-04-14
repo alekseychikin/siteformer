@@ -1,84 +1,103 @@
-{ import (Checkbox, './types/checkbox/item') }
-{ import (Date, './types/date/item') }
-{ import (File, './types/file/item') }
-{ import (Gallery, './types/gallery/item') }
-{ import (Image, './types/image/item') }
-{ import (Password, './types/password/item') }
-{ import (Radio, './types/radio/item') }
-{ import (Section, './types/section/item') }
-{ import (Select, './types/select/item') }
-{ import (String, './types/string/item') }
-{ import (Table, './types/table/item') }
-{ import (Tags, './types/tags/item') }
-{ import (Text, './types/text/item') }
-{ import (Url, './types/url/item') }
+<component>
+  <import name="x-checkbox" from="../../types/checkbox/item.tmplt" />
+  <import name="x-date" from="../../types/date/item.tmplt" />
+  <import name="x-file" from="../../types/file/item.tmplt" />
+  <import name="x-gallery" from="../../types/gallery/item.tmplt" />
+  <import name="x-image" from="../../types/image/item.tmplt" />
+  <import name="x-password" from="../../types/password/item.tmplt" />
+  <import name="x-radio" from="../../types/radio/item.tmplt" />
+  <import name="x-section" from="../../types/section/item.tmplt" />
+  <import name="x-select" from="../../types/select/item.tmplt" />
+  <import name="x-string" from="../../types/string/item.tmplt" />
+  <import name="x-table" from="../../types/table/item.tmplt" />
+  <import name="x-tags" from="../../types/tags/item.tmplt" />
+  <import name="x-text" from="../../types/text/item.tmplt" />
+  <import name="x-url" from="../../types/url/item.tmplt" />
 
-{ for (field, fields) }
-  { if (!field.settings.hide? || (field.settings.hide? && !field.settings.hide)) }
-    <div class="form__item">
-      <label for="{ field.alias }" class="form__label">{ field.title }</label>
-      <div data-placeholder="{ field.alias }">
-        { if (field.type == 'checkbox') }
-          <Checkbox field={field} data={data[field.alias]} />
-        { elseif (field.type == 'date') }
-          <Date  field={field} data={data[field.alias]} />
-        { elseif (field.type == 'file') }
-          <File  field={field} data={data[field.alias]} />
-        { elseif (field.type == 'gallery') }
-          <Gallery  field={field} data={data[field.alias]} />
-        { elseif (field.type == 'image') }
-          <Image  field={field} data={data[field.alias]} />
-        { elseif (field.type == 'password') }
-          <Password  field={field} data={data[field.alias]} />
-        { elseif (field.type == 'radio') }
-          <Radio  field={field} data={data[field.alias]} />
-        { elseif (field.type == 'section') }
-          <Section  field={field} data={data[field.alias]} />
-        { elseif (field.type == 'select') }
-          <Select  field={field} data={data[field.alias]} />
-        { elseif (field.type == 'string') }
-          <String  field={field} data={data[field.alias]} />
-        { elseif (field.type == 'table') }
-          <Table  field={field} data={data[field.alias]} />
-        { elseif (field.type == 'tags') }
-          <Tags  field={field} data={data[field.alias]} />
-        { elseif (field.type == 'text') }
-          <Text  field={field} data={data[field.alias]} />
-        { elseif (field.type == 'url') }
-          <Url  field={field} data={data[field.alias]} />
-        { endif }
+  <param name={$fields} value={[]} />
+
+  <for-each item={$field} from={$fields}>
+    <if test={!$field.settings.hide? || !$field.settings.hide}>
+      <div class="form__item">
+        <label for={$field.alias} class="form__label">{$field.title}</label>
+        <div data-placeholder={$field.alias}>
+          <switch>
+            <case test={$field.type == 'checkbox'}>
+              <x-checkbox field={$field} data={$data[$field.alias]} />
+            </case>
+            <case test={$field.type == 'date'}>
+              <x-date field={$field} data={$data[$field.alias]} />
+            </case>
+            <case test={$field.type == 'file'}>
+              <x-file field={$field} data={$data[$field.alias]} />
+            </case>
+            <case test={$field.type == 'gallery'}>
+              <x-gallery field={$field} data={$data[$field.alias]} />
+            </case>
+            <case test={$field.type == 'image'}>
+              <x-image field={$field} data={$data[$field.alias]} />
+            </case>
+            <case test={$field.type == 'password'}>
+              <x-password field={$field} data={$data[$field.alias]} />
+            </case>
+            <case test={$field.type == 'radio'}>
+              <x-radio field={$field} data={$data[$field.alias]} />
+            </case>
+            <case test={$field.type == 'section'}>
+              <x-section field={$field} data={$data[$field.alias]} />
+            </case>
+            <case test={$field.type == 'select'}>
+              <x-select field={$field} data={$data[$field.alias]} />
+            </case>
+            <case test={$field.type == 'string'}>
+              <x-string field={$field} data={$data[$field.alias]} />
+            </case>
+            <case test={$field.type == 'table'}>
+              <x-table field={$field} data={$data[$field.alias]} />
+            </case>
+            <case test={$field.type == 'tags'}>
+              <x-tags field={$field} data={$data[$field.alias]} />
+            </case>
+            <case test={$field.type == 'text'}>
+              <x-text field={$field} data={$data[$field.alias]} />
+            </case>
+            <case test={$field.type == 'url'}>
+              <x-url field={$field} data={$data[$field.alias]} />
+            </case>
+          </switch>
+        </div>
       </div>
-    </div>
-  { endif }
-{ endfor }
-<div class="form__submit">
-  <button class="form__btn form__btn--submit" type="submit" data-role="save-public">
-    { if (data.id?) }
-      { if (data.status == 'draft') }
-        Опубликовать
-      { else }
-        Сохранить
-      { endif }
-    { else }
-      Опубликовать
-    { endif }
-  </button>
+    </if>
+  </for-each>
+  <div class="form__submit">
+    <button class="form__btn form__btn--submit" type="submit" data-role="save-public">
+      <switch>
+        <case test={$data.id?}>
+          <switch>
+            <case test={$data.status == 'draft'}>Опубликовать</case>
+            <default>Сохранить</default>
+          </switch>
+        </case>
+        <default>Опубликовать</default>
+      </switch>
+    </button>
 
-  <button class="form__btn" type="button" data-role="save-draft">
-    { if (data.id?) }
-      { if (data.status == 'draft') }
-        Сохранить
-      { else }
-        Убрать в черновик
-      { endif }
-    { else }
-      Сохранить в черновик
-    { endif }
-  </button>
+    <button class="form__btn" type="button" data-role="save-draft">
+      <switch>
+        <case test={$data.id?}>
+          <switch>
+            <case test={$data.status == 'draft'}>Сохранить</case>
+            <default>Убрать в черновик</default>
+          </switch>
+        </case>
+        <default>Сохранить в черновик</default>
+      </switch>
+    </button>
 
-  <a href="/cms/{ section }/" class="form__btn">Отменить</a>
+    <a href={"/cms/" ++ $section ++ "/"} class="form__btn">Отменить</a>
 
-  { if (data.id?) }
-    <button class="form__btn form__btn--delete" type="button" data-role="delete">Удалить</button>
-  { endif }
-</div>
+    <if test={$data.id?}>
+      <button class="form__btn form__btn--delete" type="button" data-role="delete">Удалить</button>
+    </if>
+  </div>
+</component>

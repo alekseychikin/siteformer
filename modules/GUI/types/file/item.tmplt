@@ -1,13 +1,19 @@
-<div class="form__inp-contain" data-role="input-contain">
-  <div class="form__file-wrap">
-    { if (!!filename?) }
-    <span class="form__file-close" data-role="remove"></span>
-    { endif }
-    <label class="form__file{ if (!!filename?) } form__file--choosen{ endif }">
-      { if (!!filename?) }
-        <span class="form__file-filename">{ filename }</span>
-      { endif }
-      <input type="file" name="{ field.alias }" id="{ field.alias }" value="" data-role="image" />
-    </label>
+<component>
+  <param name={$filename} value={false} />
+  <param name={$fieldset} value={['alias': '']} />
+
+  <div class="form__inp-contain" data-role="input-contain">
+    <div class="form__file-wrap">
+      <if test={$filename}>
+        <span class="form__file-close" data-role="remove"></span>
+      </if>
+      <label class="form__file">
+        <if test={$filename}>
+          <attribute name="class" value="form__file form__file--choosen" />
+          <span class="form__file-filename">{$filename}</span>
+        </if>
+        <input type="file" name={$field.alias} id={$field.alias} value="" data-role="image" />
+      </label>
+    </div>
   </div>
-</div>
+</component>

@@ -1,17 +1,22 @@
-<div class="form__inp-contain" data-role="input-contain">
-  { for (i, dataItem, field.settings.defaultData) }
-    <div class="form__row-option">
-      <input
-        class="form__checkbox"
-        type="checkbox"
-        id="{ field.alias }{ i }"
-        data-role="checkbox"
-        data-index="{ i }"
-        data-shift="{1 << i}"
-        { if ((1 << i) & data) } checked{ endif }
-      />
-      <label class="form__checkbox-label" for="{ field.alias }{ i }"></label>
-      <label for="{ field.alias }{ i }">{ dataItem.label }</label>
-    </div>
-  { endfor }
-</div>
+<component>
+  <param name={$field} value={['alias': '', 'settings': ['defaultData': []]]} />
+  <param name={$data} value={0} />
+
+  <div class="form__inp-contain" data-role="input-contain">
+    <for-each key={$i} item={$data-item} from={$field.settings.defaultData}>
+      <div class="form__row-option">
+        <input
+          class="form__checkbox"
+          type="checkbox"
+          id={$field.alias ++ $i}
+          data-role="checkbox"
+          data-index={$i}
+          data-shift={1 << $i}
+          checked={(1 << $i) & $data}
+        />
+        <label class="form__checkbox-label" for={$field.alias ++ $i}></label>
+        <label for={$field.alias ++ $i}>{$data-item.label}</label>
+      </div>
+    </for-each>
+  </div>
+</component>

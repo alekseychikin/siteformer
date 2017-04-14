@@ -2,38 +2,41 @@ $ = require "jquery-plugins.coffee"
 View = require "view.coffee"
 Render = require "render"
 Popup = require "popup"
-configsAddTemplate = require "sections/configs/configs-add"
+configsAddTemplate = require "sections/configs/configs-add.tmplt"
 $body = $ document.body
 
-createDuplicateRow = ($rowRaw) ->
-  $fakeRow = $ "<div class='form-table__row-fake'></div>"
-  @position = $rowRaw.offset()
-  @fakeRowHeight = $rowRaw.height()
-  $tdsRaw = $rowRaw.find ".form-table__cell"
+createDuplicateRow = (rowRaw) ->
+  fakeRow = document.createElement "div"
+  fakeRow.className = "form-table__row-fake"
+  @position = rowRaw.getBoundingClientRect()
+  scrollTop = document.body.scrollTop || document.documentElement.scrollTop || 0
+  console.log @position.top
+  @position.top += scrollTop
+  console.log scrollTop
+  console.log @position.top
+  @fakeRowHeight = rowRaw.offsetHeight
+  tdsRaw = rowRaw.querySelectorAll ".form-table__cell"
 
-  $tdsRaw.each ->
-    $tdRaw = $ @
-    $tdChildsRaw = $ @childNodes
-    $fakeCell = $ "<div class='form-table__cell-fake'></div>"
-    $fakeCell.css
-      width: "#{$tdRaw.width()}px"
-      height: "#{$tdRaw.height()}px"
+  (Array.prototype.slice.call tdsRaw).forEach (tdRaw) ->
+    tdChildsRaw = tdRaw.childNodes
+    fakeCell = document.createElement "div"
+    fakeCell.className = "form-table__cell-fake"
+    fakeCell.style.width = "#{tdRaw.offsetWidth}px"
+    fakeCell.style.height = "#{tdRaw.offsetHeight}px"
 
-    $tdChildsRaw.each ->
-      $clone = $ @cloneNode true
-      $fakeCell.append $clone
+    (Array.prototype.slice.call tdChildsRaw).forEach (child) -> fakeCell.appendChild child.cloneNode true
 
-    $fakeRow.append $fakeCell
+    fakeRow.appendChild fakeCell
 
-  $fakeRow.css
-    left: "#{@position.left}px"
-    top: "#{@position.top}px"
-  $body.append $fakeRow
-  @fakeRow = $fakeRow
+  fakeRow.style.left = "#{@position.left}px"
+  fakeRow.style.top = "#{@position.top}px"
+  document.body.appendChild fakeRow
+  @fakeRow = fakeRow
 
 createLine = ->
-  @line = $ "<div class='form-table__line'></div>"
-  $body.append @line
+  @line = document.createElement "div"
+  @line.className = "form-table__line"
+  document.body.appendChild @line
 
 module.exports = class AddConfigsView extends View
   constructor: (target, model) ->
@@ -46,7 +49,7 @@ module.exports = class AddConfigsView extends View
     @line = null
     @position = null
     @rowOffsets = []
-    @configsAddRender = Render configsAddTemplate, @contain[0]
+    @configsAddRender = Render configsAddTemplate, @contain
 
   events:
     "click: [data-role='btn-remove-field']": (e) -> @model.removeField @getRowIndex e
@@ -54,7 +57,7 @@ module.exports = class AddConfigsView extends View
       @model.addEmptyField()
 
       setTimeout =>
-        @contain.find("[data-role='row-module-fields']:last-child [data-role='field-title']").focus()
+        @contain.querySelector("[data-role='row-module-fields']:last-child [data-role='field-title']").focus()
       , 50
     "input change keypress: [data-role='field-title']": (e) -> @model.updateFieldTitle (@getRowIndex e), e.target.value
     "input change keypress: [data-role='field-alias']": (e) -> @model.updateFieldAlias (@getRowIndex e), e.target.value
@@ -73,22 +76,21 @@ module.exports = class AddConfigsView extends View
   render: (state) -> @configsAddRender state
 
   mousedownBtnMoveRow: (e) ->
-    $btn = $ e.target
-    @$row = $btn.closest "[data-role='row-module-fields']"
+    @row = e.target.closest "[data-role='row-module-fields']"
 
-    @currentRowIndex = parseInt @$row.data("key"), 10
+    @currentRowIndex = Number @row.getAttribute "data-key"
 
-    createDuplicateRow.call @, @$row
+    createDuplicateRow.call @, @row
 
     @dragging = true
     @rowOffsets = []
-    $rows = @contain.find "[data-role='row-module-fields']"
+    rows = @contain.querySelectorAll "[data-role='row-module-fields']"
 
-    $rows.each (index, element) =>
-      $rowItem = $ element
-      @rowOffsets.push $rowItem.offset().top
+    scrollTop = document.body.scrollTop || document.documentElement.scrollTop || 0
+    (Array.prototype.slice.call rows).forEach (rowItem) =>
+      @rowOffsets.push rowItem.getBoundingClientRect().top + scrollTop
 
-    @$row.css display: "none"
+    @row.style.display = "none"
 
     lastIndex = @rowOffsets.length - 1
 
@@ -96,7 +98,7 @@ module.exports = class AddConfigsView extends View
       left: e.pageX
       top: e.pageY
 
-    createLine.call @, @$row
+    createLine.call @, @row
     @drawLineByIndex @currentRowIndex
 
   getIndexByCoords: (e) ->
@@ -116,8 +118,7 @@ module.exports = class AddConfigsView extends View
 
     top = @rowOffsets[index] if index != Infinity
 
-    @line.css
-      top: "#{top}px"
+    @line.style.top = "#{top}px"
 
   mousemoveDocumentBody: (e) ->
     if @dragging
@@ -126,18 +127,17 @@ module.exports = class AddConfigsView extends View
 
       @drawLineByIndex index
 
-      @fakeRow.css
-        left: "#{@position.left + (e.pageX - @coords.left)}px"
-        top: "#{@position.top + (e.pageY - @coords.top)}px"
+      @fakeRow.style.left = "#{@position.left + (e.pageX - @coords.left)}px"
+      @fakeRow.style.top = "#{@position.top + (e.pageY - @coords.top)}px"
 
   mouseupDocumentBody: (e) ->
     if @dragging
       index = @getIndexByCoords e
       index = @rowOffsets.length if index == Infinity
 
-      @$row.css display: ""
-      @fakeRow.remove()
-      @line.remove()
+      @row.style.display = ""
+      @fakeRow.parentNode.removeChild @fakeRow
+      @line.parentNode.removeChild @line
 
       @model.updatePosition @currentRowIndex, index
 
@@ -151,9 +151,9 @@ module.exports = class AddConfigsView extends View
       @rowOffsets.splice(0)
 
   getRowIndex: (e) ->
-    $parent = ($ e.target).closest "[data-key]"
+    parent = e.target.closest "[data-key]"
 
-    Number($parent.data "key")
+    Number parent.getAttribute "data-key"
 
   clickBtnConfigField: (e) ->
     @trigger "open-configs-modal",

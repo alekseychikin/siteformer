@@ -1,19 +1,27 @@
-{ import (ListItems, "./sections/item/list-items") }
-{ import(Main, './sections/main/main') }
-{ import(Scripts, './sections/main/scripts') }
+<component>
+  <import name="list-items" from="./list-items.tmplt" />
+  <import name="x-main" from="../main/main.tmplt" />
+  <import name="x-scripts" from="../main/scripts.tmplt" />
 
-<Main pageTitle={page_title} sections={sections} section={section}>
-  <article class="content">
-    <h1 class="head">Настройки</h1>
+  <param name={$page-title} value="" />
+  <param name={$sections} value={[]} />
+  <param name={$section} value="" />
+  <param name={$user-fields} value={[]} />
+  <param name={$data} value={[]} />
 
-    <div class="section__wrap" data-role="item-list">
-      <ListItems user_fields={user_fields} fields={fields} data={data} section={section} />
-    </div>
-  </article>
+  <x-main page-title={$page-title} sections={$sections} section={$section}>
+    <article class="content">
+      <h1 class="head">Настройки</h1>
 
-  <div class="popup" data-role="configs-popup"></div>
+      <div class="section__wrap" data-role="item-list">
+        <list-items user-fields={$user-fields} fields={$fields} data={$data} section={$section} />
+      </div>
+    </article>
 
-  <Scripts>
-    <script src="/sf-engine/modules/GUI/dist/item/index.js"></script>
-  </Scripts>
-</Main>
+    <div class="popup" data-role="configs-popup"></div>
+
+    <x-scripts>
+      <script src="/sf-engine/modules/GUI/dist/item/index.js"></script>
+    </x-scripts>
+  </x-main>
+</component>

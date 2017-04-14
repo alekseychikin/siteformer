@@ -1,34 +1,51 @@
-{ if (!previewData?) }
-  { previewData = '' }
-{ endif }
-{ if (!data?) }
-  { data = '' }
-{ endif }
-<div class="form__inp-contain" data-role="input-contain">
-  <div class="form__file-wrap">
-    { if (str_len(data)) }
-    <span class="form__file-close" data-role="remove"></span>
-    { endif }
-    <label class="form__file{ if (str_len(data)) } form__file--choosen{ endif }{ if (str_len(previewData) || str_len(data)) } form__file--previewed{ endif }">
-      { if (str_len(data)) }
-        { if (str_len(previewData) || str_len(data)) }
-          { path = field.settings.path }
-          { if (field.settings.storage == 's3') }
-            { path = 'https://s3-' ++ field.settings.s3BucketLocation ++ '.amazonaws.com/' ++ field.settings.s3Bucket ++ '/' }
-          { endif }
-          <span class="form__file-preview-contain" style="background-image: url(\'{ if (str_len(previewData)) }{ previewData }{ else }{ path }{ data }{ endif }\')"></span>
-        { endif }
-        <span class="form__file-filename">{ if (str_len(data)) }{ data }{ endif }</span>
-      { endif }
-      <input
-        type="file"
-        name="{ field.alias }"
-        id="{ field.alias }"
-        value=""
-        data-role="image"
-        onfocus="this.parentNode.parentNode.className = \'form__file-wrap form__file-wrap--active\'"
-        onblur="this.parentNode.parentNode.className = \'form__file-wrap\'"
-      />
-    </label>
+<component>
+  <param name={$previewData} value="" />
+  <param name={$data} value="" />
+
+  <div class="form__inp-contain" data-role="input-contain">
+    <div class="form__file-wrap">
+      <if test={str_len($data)}>
+        <span class="form__file-close" data-role="remove"></span>
+      </if>
+
+      <variable name={$form-label-class} value={['form__file']} />
+      <if test={str_len($data)}>
+        {arr_push($form-label-class, 'form__file--choosen')}
+      </if>
+      <if test={str_len($previewData) || str_len($data)}>
+        {arr_push($form-label-class, 'form__file--previewed')}
+      </if>
+
+      <label class={arr_join($form-label-class, ' ')}>
+        <if test={str_len($data)}>
+          <if test={str_len($previewData) || str_len($data)}>
+            <variable name={$path} value={$field.settings.path} />
+            <if test={$field.settings.storage == 's3'}>
+              <variable name={$path} value={'https://s3-' ++ $field.settings.s3BucketLocation ++ '.amazonaws.com/' ++ $field.settings.s3Bucket ++ '/'} />
+            </if>
+
+            <switch>
+              <case test={str_len($previewData)}>
+                <variable name={$image-background} value={$previewData} />
+              </case>
+              <default>
+                <variable name={$image-background} value={ $path ++ $data } />
+              </default>
+            </switch>
+            <span class="form__file-preview-contain" style={"background-image: url('" ++ $image-background ++ "')"}></span>
+          </if>
+          <span class="form__file-filename"><if test={str_len($data)}>{$data}</if></span>
+        </if>
+        <input
+          type="file"
+          name={$field.alias}
+          id={$field.alias}
+          value=""
+          data-role="image"
+          onfocus="this.parentNode.parentNode.className = 'form__file-wrap form__file-wrap--active'"
+          onblur="this.parentNode.parentNode.className = 'form__file-wrap'"
+        />
+      </label>
+    </div>
   </div>
-</div>
+</component>

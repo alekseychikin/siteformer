@@ -1,6 +1,6 @@
 Model = require "model.coffee"
-httpGet = (require "ajax.coffee").httpGet
-httpPost = (require "ajax.coffee").httpPost
+{httpGet, httpPost} = require "ajax.coffee"
+{cloneObject} = require "helpers.coffee"
 
 module.exports = class AddConfigsModel extends Model
   constructor: (state = {}) ->
@@ -16,7 +16,7 @@ module.exports = class AddConfigsModel extends Model
 
     httpGet window.location.pathname
       .then (response) =>
-        state = Object.assign {}, response
+        state = cloneObject response
         console.log state
         @replace state
 
@@ -35,7 +35,7 @@ module.exports = class AddConfigsModel extends Model
 
     for typeItem in @state.types
       if typeItem.type == "string"
-        field[0].settings = Object.assign {}, typeItem.defaultSettings
+        field[0].settings = cloneObject typeItem.defaultSettings
 
     @set fields: @state.fields.concat field
 
@@ -85,7 +85,7 @@ module.exports = class AddConfigsModel extends Model
     type = fields[index].type
     for typeItem in @state.types
       if typeItem.type == type
-        fields[index].settings = Object.assign {}, typeItem.defaultSettings
+        fields[index].settings = cloneObject typeItem.defaultSettings
     @set {fields}
 
   removeField: (index) ->
@@ -94,13 +94,13 @@ module.exports = class AddConfigsModel extends Model
     fields.forEach (field, index) -> field.position = index
     @set {fields}
 
-  getFieldByIndex: (index) -> Object.assign {}, @state.fields[index]
+  getFieldByIndex: (index) -> cloneObject @state.fields[index]
 
   getFields: -> @state.fields.slice()
 
   saveFieldSettings: (state) ->
     fields = @state.fields.slice()
-    fields[state.index].settings = Object.assign {}, state.settings
+    fields[state.index].settings = cloneObject state.settings
     if @state.errorFieldsField? && @state.errorFieldsField == "settings"
       @set
         fields: fields

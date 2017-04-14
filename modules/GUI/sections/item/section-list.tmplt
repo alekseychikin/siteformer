@@ -1,61 +1,77 @@
-{ import(Checkbox, './types/checkbox/table-item') }
-{ import(Date, './types/date/table-item') }
-{ import(Image, './types/image/table-item') }
-{ import(Radio, './types/radio/table-item') }
-{ import(Section, './types/section/table-item') }
-{ import(Select, './types/select/table-item') }
-{ import(String, './types/string/table-item') }
-{ import(Tags, './types/tags/table-item') }
-{ import(Url, './types/url/table-item') }
+<component>
+  <import name="x-checkbox" from="../../types/checkbox/table-item.tmplt" />
+  <import name="x-date" from="../../types/date/table-item.tmplt" />
+  <import name="x-image" from="../../types/image/table-item.tmplt" />
+  <import name="x-radio" from="../../types/radio/table-item.tmplt" />
+  <import name="x-section" from="../../types/section/table-item.tmplt" />
+  <import name="x-select" from="../../types/select/table-item.tmplt" />
+  <import name="x-string" from="../../types/string/table-item.tmplt" />
+  <import name="x-tags" from="../../types/tags/table-item.tmplt" />
+  <import name="x-url" from="../../types/url/table-item.tmplt" />
 
-{ checkedItems = 0 }
+  <param name={$user-fields} value={[]} />
+  <variable name={$checked-items} value={0} />
+  <variable name={$reduced-user-fields} value={$user-fields} />
 
-{ userFields = user_fields }
+  <if test={!arr_len($user-fields)}>
+    <variable name={$reduced-user-fields} value={arr_slice($fields, 0, 5)} />
+  </if>
 
-{ if (!count(user_fields)) }
-  { userFields = arr_slice(fields, 0, 5) }
-{ endif }
-
-<table class="table">
-  <colgroup>
-    { for(field, userFields) }
-      <col width="*" />
-    { endfor }
-  </colgroup>
-  <thead>
-    <tr>
-      { for(field, userFields) }
-        <th>{ field.title }</th>
-      { endfor }
-    </tr>
-  </thead>
-  <tbody>
-    { for (i, dataRow, data) }
-      <tr class="table__link">
-        { for (j, field, userFields) }
-          <td><a href="/cms/{ section }/{ dataRow.id }/"{ if (j != 0) } tabindex="-1"{ endif }>
-            { if (field.type == 'checkbox') }
-              <Checkbox field={field} value={dataRow[field.alias]} />
-            { elseif (field.type == 'date') }
-              <Date field={field} value={dataRow[field.alias]} />
-            { elseif (field.type == 'image') }
-              <Image field={field} value={dataRow[field.alias]} />
-            { elseif (field.type == 'radio') }
-              <Radio field={field} value={dataRow[field.alias]} />
-            { elseif (field.type == 'section') }
-              <Section field={field} value={dataRow[field.alias]} />
-            { elseif (field.type == 'select') }
-              <Select field={field} value={dataRow[field.alias]} />
-            { elseif (field.type == 'string') }
-              <String field={field} value={dataRow[field.alias]} />
-            { elseif (field.type == 'tags') }
-              <Tags field={field} value={dataRow[field.alias]} />
-            { elseif (field.type == 'url') }
-              <Url field={field} value={dataRow[field.alias]} />
-            { endif }
-          </a></td>
-        { endfor }
+  <table class="table">
+    <colgroup>
+      <for-each item={$field} from={$reduced-user-fields}>
+        <col width="*" />
+      </for-each>
+    </colgroup>
+    <thead>
+      <tr>
+        <for-each item={$field} from={$reduced-user-fields}>
+          <th>{$field.title}</th>
+        </for-each>
       </tr>
-    { endfor }
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+      <for-each key={$i} item={$data-row} from={$data}>
+        <tr class="table__link">
+          <for-each key={$j} item={$field} from={$reduced-user-fields}>
+            <td><a href={"/cms/" ++ $section ++ "/" ++ $data-row.id ++ "/"}>
+              <if test={$j != 0}>
+                <attribute name="tabindex" value="-1" />
+              </if>
+
+              <switch>
+                <case test={$field.type == 'checkbox'}>
+                  <x-checkbox field={$field} value={$data-row[$field.alias]} />
+                </case>
+                <case test={$field.type == 'date'}>
+                  <x-date field={$field} value={$data-row[$field.alias]} />
+                </case>
+                <case test={$field.type == 'image'}>
+                  <x-image field={$field} value={$data-row[$field.alias]} />
+                </case>
+                <case test={$field.type == 'radio'}>
+                  <x-radio field={$field} value={$data-row[$field.alias]} />
+                </case>
+                <case test={$field.type == 'section'}>
+                  <x-section field={$field} value={$data-row[$field.alias]} />
+                </case>
+                <case test={$field.type == 'select'}>
+                  <x-select field={$field} value={$data-row[$field.alias]} />
+                </case>
+                <case test={$field.type == 'string'}>
+                  <x-string field={$field} value={$data-row[$field.alias]} />
+                </case>
+                <case test={$field.type == 'tags'}>
+                  <x-tags field={$field} value={$data-row[$field.alias]} />
+                </case>
+                <case test={$field.type == 'url'}>
+                  <x-url field={$field} value={$data-row[$field.alias]} />
+                </case>
+              </switch>
+            </a></td>
+          </for-each>
+        </tr>
+      </for-each>
+    </tbody>
+  </table>
+</component>

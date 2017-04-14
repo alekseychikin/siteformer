@@ -1,22 +1,28 @@
-{ import (UserBlock, './components/user-block/user-block') }
-{ import (Menu, './components/menu/menu') }
+<component>
+  <import name="user-block" from="../../components/user-block/user-block.tmplt" />
+  <import name="x-menu" from="../../components/menu/menu.tmplt" />
 
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-  <meta charset="UTF-8">
-  <title>{ pageTitle }</title>
-  <link rel="stylesheet" href="/sf-engine/modules/GUI/dist/main.css" />
-</head>
-<body>
-  <div class="section">
-    <div class="aside">
-      <div class="header">
-        <UserBlock />
+  <param name={$page-title} value="" />
+  <param name={$sections} value={[]} />
+  <param name={$section} value="" />
+
+  <!DOCTYPE html>
+  <html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{$page-title}</title>
+    <link rel="stylesheet" href="/sf-engine/modules/GUI/dist/main.css" />
+  </head>
+  <body>
+    <div class="section">
+      <div class="aside">
+        <div class="header">
+          <user-block />
+        </div>
+        <x-menu sections={$sections} section={$section} />
       </div>
-      <Menu sections={sections} section={section} />
+      {$children}
     </div>
-    { childs }
-  </div>
-</body>
-</html>
+  </body>
+  </html>
+</component>

@@ -9,9 +9,9 @@ module.exports = class ItemIndexModel extends Model
       .then (response) => @replace response
 
   getFields: -> @state.fields
-  getUserFields: -> @state.user_fields
+  getUserFields: -> @state["user-fields"]
 
-  setUserFields: (fields) -> @set user_fields: fields
+  setUserFields: (fields) -> @set "user-fields": fields
 
   updateUserFields: (userFields) ->
     httpPost "/?graph",
@@ -19,4 +19,4 @@ module.exports = class ItemIndexModel extends Model
         usersonly: true
         section: @state.section
         fields:  userFields
-    @set user_fields: userFields
+    @set "user-fields": userFields

@@ -1,16 +1,25 @@
-{ import(AddForm, './sections/item/add-form') }
-{ import(Main, './sections/main/main') }
-{ import(Scripts, './sections/main/scripts') }
+<component>
+  <import name="x-add-form" from="./add-form.tmplt" />
+  <import name="x-main" from="../main/main.tmplt" />
+  <import name="x-scripts" from="../main/scripts.tmplt" />
 
-<Main pageTitle="{page_title}" sections={sections} section={section}>
-  <h1 class="head">Добавить запись в «{sectionName}»</h1>
-  <article class="content">
-    <form class="form" action="" data-role="item-add-form">
-      <AddForm fields={fields} section={section} data={data} />
-    </form>
-  </article>
+  <param name={$page-title} value="" />
+  <param name={$section-name} value="" />
+  <param name={$sections} value={[]} />
+  <param name={$section} value="" />
+  <param name={$fields} value={[]} />
+  <param name={$data} value={[]} />
 
-  <Scripts>
-    <script src="/sf-engine/modules/GUI/dist/item/add.js"></script>
-  </Scripts>
-</Main>
+  <x-main page-title={$page-title} sections={$sections} section={$section}>
+    <h1 class="head">Добавить запись в «{$section-name}»</h1>
+    <article class="content">
+      <form class="form" action="" data-role="item-add-form">
+        <x-add-form fields={$fields} section={$section} data={$data} />
+      </form>
+    </article>
+
+    <x-scripts>
+      <script src="/sf-engine/modules/GUI/dist/item/add.js"></script>
+    </x-scripts>
+  </x-main>
+</component>

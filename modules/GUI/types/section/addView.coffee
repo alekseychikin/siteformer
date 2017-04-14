@@ -1,12 +1,12 @@
 View = require "view.coffee"
 Render = require "render"
-itemTemplate = require "types/section/item"
+itemTemplate = require "types/section/item.tmplt"
 
 module.exports = class SectionDataView extends View
   constructor: (target, model) ->
     super target, model
 
-    @templateRender = Render itemTemplate, @contain[0]
+    @templateRender = Render itemTemplate, @contain
 
   events:
     "change input keyup: [data-role='section']": (e) ->
@@ -16,7 +16,7 @@ module.exports = class SectionDataView extends View
     "click: [data-role='cancel']": ->
       @model.emptyValue()
       setTimeout =>
-        @contain.find("[data-role='section']").focus()
+        @contain.querySelector("[data-role='section']").focus()
       , 50
 
   render: (state) -> @templateRender state

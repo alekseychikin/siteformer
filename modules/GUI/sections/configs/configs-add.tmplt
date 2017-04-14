@@ -1,108 +1,127 @@
-{ import(TableModuleField, './sections/configs/table-module-field') }
+<component>
+  <import name="table-module-field" from="./table-module-field.tmplt" />
 
-<h1 class="head">{ if (id) }Редактировать{ else }Добавить{ endif } раздел</h1>
+  <param name={$modules} value={[]} />
+  <param name={$id} value={false} />
+  <param name={$section-title} value="Добавить" />
+  <param name={$section-url} value="add" />
+  <param name={$save-button-label} value="Создать" />
+  <param name={$error-title} value={false} />
+  <param name={$error-alias} value={false} />
+  <param name={$error-fields-index} value={false} />
+  <param name={$error-fields-field} value={false} />
+  <param name={$error-fields-message} value={false} />
 
-<form action="/cms/configs/{ if (id) }{ alias }{ else }add{ endif }/" class="form" data-role="configs-add-form">
-  <div class="form__item">
-    <label for="name" class="form__label">Название</label>
-    <div class="form__inp-contain">
-      <input
-        type="text"
-        class="form__inp"
-        value="{ title }"
-        name="name"
-        id="name"
-        data-role="configs-add-title"
-        { if (errorTitle? && str_len(errorTitle)) }focus{ endif }
-      />
+  <if test={$id}>
+    <variable name={$section-title} value="Редактировать" />
+    <variable name={$section-url} value={$alias} />
+    <variable name={$save-button-label} value="Сохранить" />
+  </if>
 
-      { if (errorTitle? && str_len(errorTitle)) }
-        <span class="form__error">{errorTitle}</span>
-      { endif }
-    </div>
-  </div>
+  <h1 class="head">{$section-title} раздел</h1>
 
-  <div class="form__item">
-    <label for="alias" class="form__label">Веб-имя</label>
-    <div class="form__inp-contain">
-      <input
-        type="text"
-        class="form__inp"
-        value="{ alias }"
-        name="alias"
-        id="alias"
-        data-role="configs-add-alias"
-        { if (id) }disabled{ endif }
-        { if (errorAlias? && str_len(errorAlias)) }focus{ endif }
-      />
-      { if (errorAlias? && str_len(errorAlias)) }
-        <span class="form__error">{errorAlias}</span>
-      { endif }
-    </div>
-  </div>
-
-  { if (arr_len(modules)) }
+  <form action={"/cms/configs/" ++ $section-url ++ "/"} class="form" data-role="configs-add-form">
     <div class="form__item">
-      <label for="module" class="form__label">Модуль</label>
+      <label for="name" class="form__label">Название</label>
       <div class="form__inp-contain">
-        <label class="form__select">
-          <select name="module" id="module" data-role="configs-add-module">
-            <option value="default"{ if (module == "default") } selected{ endif }>Стандартный</option>
-            { for (modulesItem, modules) }
-            <option value="{ modulesItem }"{ if (module == modulesItem) } selected{ endif }>{ modulesItem }</option>
-            { endfor }
-          </select>
-        </label>
+        <input
+          type="text"
+          class="form__inp"
+          value={$section-url}
+          name="name"
+          id="name"
+          data-role="configs-add-title"
+          focus={$error-title}
+        />
+
+        <if test={$error-title}>
+          <span class="form__error">{$error-title}</span>
+        </if>
       </div>
     </div>
-  { endif }
 
-  <div class="form__separate">
-    <span class="form__separate-text">Поля</span>
-  </div>
-
-  <div class="form__table" data-role="module-fields">
-    <table class="form-table">
-      <colgroup>
-        <col width="30%" />
-        <col width="30%" />
-        <col width="*" />
-        <col width="75" />
-        <col width="75" />
-        <col width="75" />
-        <col width="40" />
-      </colgroup>
-      <thead>
-        <tr class="form-table__row form-table__row--head">
-          <th class="form-table__cell">Заголовок</th>
-          <th class="form-table__cell">Веб-имя</th>
-          <th class="form-table__cell">Тип</th>
-          <th title="Обязательное к заполнению">Обяз.</th>
-          <th></th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody data-role="tbody-module-fields">
-        <TableModuleField
-          fields={fields}
-          types={types}
-          errorFieldsIndex={errorFieldsIndex}
-          errorFieldsField={errorFieldsField}
-          errorFieldsMessage={errorFieldsMessage}
+    <div class="form__item">
+      <label for="alias" class="form__label">Веб-имя</label>
+      <div class="form__inp-contain">
+        <input
+          type="text"
+          class="form__inp"
+          value={$alias}
+          name="alias"
+          id="alias"
+          data-role="configs-add-alias"
+          disabled={$id}
+          focus={$error-alias}
         />
-      </tbody>
-    </table>
-    <div class="form__row">
-      <button data-role="btn-add-field" class="form__btn" type="button">Добавить поле</button>
+        <if test={$error-alias}>
+          <span class="form__error">{$error-alias}</span>
+        </if>
+      </div>
     </div>
-  </div>
 
-  <div class="form__submit">
-    <button class="form__btn form__btn--submit">{ if (id) }Сохранить{ else }Создать{ endif }</button>
-    <a href="/cms/configs/" class="form__btn">Отменить</a>
+    <if test={arr_len($modules)}>
+      <div class="form__item">
+        <label for="module" class="form__label">Модуль</label>
+        <div class="form__inp-contain">
+          <label class="form__select">
+            <select name="module" id="module" data-role="configs-add-module">
+              <option value="default" selected={$module == "default"}>Стандартный</option>
+              <for-each item={$modules-item} from={$modules}>
+                <option value={$modules-item} selected={$module == $modules-item}>{$modules-item}</option>
+              </for-each>
+            </select>
+          </label>
+        </div>
+      </div>
+    </if>
 
-    { if (id) }
-      <button class="form__btn form__btn--delete" type="button" data-role="delete">Удалить</button>
-    { endif }
-  </div>
-</form>
+    <div class="form__separate">
+      <span class="form__separate-text">Поля</span>
+    </div>
+
+    <div class="form__table" data-role="module-fields">
+      <table class="form-table">
+        <colgroup>
+          <col width="30%" />
+          <col width="30%" />
+          <col width="*" />
+          <col width="75" />
+          <col width="75" />
+          <col width="75" />
+          <col width="40" />
+        </colgroup>
+        <thead>
+          <tr class="form-table__row form-table__row--head">
+            <th class="form-table__cell">Заголовок</th>
+            <th class="form-table__cell">Веб-имя</th>
+            <th class="form-table__cell">Тип</th>
+            <th title="Обязательное к заполнению">Обяз.</th>
+            <th></th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody data-role="tbody-module-fields">
+          <table-module-field
+            fields={$fields}
+            types={$types}
+            error-fields-index={$error-fields-index}
+            error-fields-field={$error-fields-field}
+            error-fields-message={$error-fields-message}
+          />
+        </tbody>
+      </table>
+      <div class="form__row">
+        <button data-role="btn-add-field" class="form__btn" type="button">Добавить поле</button>
+      </div>
+    </div>
+
+    <div class="form__submit">
+      <button class="form__btn form__btn--submit">{$save-button-label}</button>
+      <a href="/cms/configs/" class="form__btn">Отменить</a>
+
+      <if test={$id}>
+        <button class="form__btn form__btn--delete" type="button" data-role="delete">Удалить</button>
+      </if>
+    </div>
+  </form>
+</component>

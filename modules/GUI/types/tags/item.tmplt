@@ -1,19 +1,24 @@
-{ import(Suggest, './components/form-suggests/form-suggests') }
+<component>
+  <import name="x-suggest" from="../../components/form-suggests/form-suggests.tmplt" />
 
-<div class="form__inp-contain" data-role="input-contain">
-  { rows = [] }
-  { if (searchResult?) }
-    { rows = searchResult }
-  { endif }
-  <Suggest rows={rows}>
-    <input
-      type="text"
-      name="{ field.alias }"
-      id="{ field.alias }"
-      class="form__inp"
-      value="{ data }"
-      data-role="tags"
-      autocomplete="off"
-    />
-  </Suggest>
-</div>
+  <param name={$field} value={['alias': '']} />
+  <param name={$searchResult} value={false} />
+
+  <div class="form__inp-contain" data-role="input-contain">
+    <variable name={$rows} value={[]} />
+    <if test={$searchResult}>
+      <variable name={$rows} value={$searchResult} />
+    </if>
+    <x-suggest rows={$rows}>
+      <input
+        type="text"
+        name={$field.alias}
+        id={$field.alias}
+        class="form__inp"
+        value={$data}
+        data-role="tags"
+        autocomplete="off"
+      />
+    </x-suggest>
+  </div>
+</component>

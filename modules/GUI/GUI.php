@@ -38,12 +38,12 @@ class SFGUI
     SFRouter::addRule('/cms/', MODULES . 'GUI/sections/main/index');
     SFRouter::addRule('/cms/configs/', [
       'data' => [
-        'page_title' => 'gui-scalar?value=Настройки',
+        'page-title' => 'gui-scalar?value=Настройки',
         'section' => 'gui-scalar?value=configs',
         'sections' => 'gui-sections',
         'modules' => 'gui-modules'
       ],
-      'template' => 'sections/configs/index'
+      'template' => 'sections/configs/index.tmplt'
     ]);
     SFRouter::addRule('/cms/configs/add/', [
       'data' => [
@@ -53,18 +53,18 @@ class SFGUI
         'fields' => 'gui-fields?section=new',
         'section' => 'gui-scalar?value=section',
         'title' => 'gui-scalar?value=',
-        'page_title' => 'gui-scalar?value=Добавить раздел',
+        'page-title' => 'gui-scalar?value=Добавить раздел',
         'alias' => 'gui-scalar?value=',
         'module' => 'gui-scalar?value=default'
       ],
-      'template' => 'sections/configs/add'
+      'template' => 'sections/configs/add.tmplt'
     ]);
     SFRouter::addRule('/cms/configs/action_save/', MODULES . 'GUI/sections/configs/action_save');
     SFRouter::addRule('/cms/configs/action_delete/', MODULES . 'GUI/sections/configs/action_delete');
     SFRouter::addRule('/cms/configs/{section}/', [
       'data' => [
         'title' => 'gui-sections?section={section}&field=title',
-        'page_title' => 'gui-scalar?value=Редактировать раздел «{title}»',
+        'page-title' => 'gui-scalar?value=Редактировать раздел «{title}»',
         'id' => 'gui-sections?section={section}&field=id',
         'alias' => 'gui-sections?section={section}&field=alias',
         'module' => 'gui-sections?section={section}&field=module',
@@ -74,31 +74,31 @@ class SFGUI
         'sections' => 'gui-sections',
         'modules' => 'gui-modules'
       ],
-      'template' => 'sections/configs/add'
+      'template' => 'sections/configs/add.tmplt'
     ]);
     SFRouter::addRule('/cms/types/{type}/{handle}/', MODULES . 'GUI/sections/main/type');
     SFRouter::addRule('/cms/{section}/', [
       'data' => [
         'title' => 'gui-sections?section={section}&field=title',
-        'page_title' => 'gui-scalar?value=Редактировать раздел «{title}»',
+        'page-title' => 'gui-scalar?value=Редактировать раздел «{title}»',
         'fields' => 'gui-fields?section={section}',
-        'user_fields' => 'gui-fields?section={section}&usersonly',
+        'user-fields' => 'gui-fields?section={section}&usersonly',
         'section' => 'gui-scalar?value={section}',
         'sections' => 'gui-sections',
         'data' => 'gui-item-list?section={section}&offset=0&limit=10&status=public,draft'
       ],
-      'template' => 'sections/item/index'
+      'template' => 'sections/item/index.tmplt'
     ]);
     SFRouter::addRule('/cms/{section}/add/', [
       'data' => [
         'sections' => 'gui-sections',
         'fields' => 'gui-fields?section={section}',
         'section' => 'gui-sections?section={section}&field=alias',
-        'sectionName' => 'gui-sections?section={section}&field=title',
-        'page_title' => 'gui-scalar?value=Добавить запись в «{sectionName}»',
+        'section-name' => 'gui-sections?section={section}&field=title',
+        'page-title' => 'gui-scalar?value=Добавить запись в «{sectionName}»',
         'data' => 'gui-section-data?section={section}'
       ],
-      'template' => 'sections/item/add'
+      'template' => 'sections/item/add.tmplt'
     ]);
     SFRouter::addRule('/cms/{section}/action_save/', MODULES . 'GUI/sections/item/action_save');
     SFRouter::addRule('/cms/{section}/action_delete/', MODULES . 'GUI/sections/item/action_delete');
@@ -107,11 +107,11 @@ class SFGUI
         'sections' => 'gui-sections',
         'fields' => 'gui-fields?section={section}',
         'section' => 'gui-sections?section={section}&field=alias',
-        'sectionName' => 'gui-sections?section={section}&field=title',
-        'page_title' => 'gui-scalar?value=Добавить запись в «{sectionName}»',
+        'section-name' => 'gui-sections?section={section}&field=title',
+        'page-title' => 'gui-scalar?value=Добавить запись в «{sectionName}»',
         'data' => 'gui-section-data?section={section}&id={id}'
       ],
-      'template' => 'sections/item/add'
+      'template' => 'sections/item/add.tmplt'
     ]);
 
     define('GUI_COMPILE_TEMPLATES', ENGINE . 'modules/GUI/dist/');

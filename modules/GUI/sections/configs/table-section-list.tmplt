@@ -1,28 +1,32 @@
-<div class="section__row">
-  <a href="/cms/configs/add/" class="form__btn">Добавить раздел</a>
-</div>
-<div class="section__row" data-role="section-list">
-  <table class="table">
-    <colgroup>
-      <col width="*" />
-      <col width="*" />
-      <col width="*" />
-    </colgroup>
-    <thead>
-      <tr>
-        <th>Название</th>
-        <th>Веб-имя</th>
-        <th>Модуль</th>
-      </tr>
-    </thead>
-    <tbody>
-      { for (i, sectionsItem, sections) }
-      <tr class="table__link" data-role="section-row" data-id="{ i }">
-        <td><a href="/cms/configs/{ sectionsItem.alias }/">{ sectionsItem.title }</a></td>
-        <td><a href="/cms/configs/{ sectionsItem.alias }/" tabindex="-1">{ sectionsItem.alias }</a></td>
-        <td><a href="/cms/configs/{ sectionsItem.alias }/" tabindex="-1">{ sectionsItem.module }</a></td>
-      </tr>
-      { endfor }
-    </tbody>
-  </table>
-</div>
+<component>
+  <param name={$sections} value={[]} />
+
+  <div class="section__row">
+    <a href="/cms/configs/add/" class="form__btn">Добавить раздел</a>
+  </div>
+  <div class="section__row" data-role="section-list">
+    <table class="table">
+      <colgroup>
+        <col width="*" />
+        <col width="*" />
+        <col width="*" />
+      </colgroup>
+      <thead>
+        <tr>
+          <th>Название</th>
+          <th>Веб-имя</th>
+          <th>Модуль</th>
+        </tr>
+      </thead>
+      <tbody>
+        <for-each key={$i} item={$sections-item} from={$sections}>
+          <tr class="table__link" data-role="section-row" data-id={$i}>
+            <td><a href={"/cms/configs/" ++ $sections-item.alias ++ "/"}>{$sections-item.title}</a></td>
+            <td><a href={"/cms/configs/" ++ $sections-item.alias ++ "/"} tabindex="-1">{$sections-item.alias}</a></td>
+            <td><a href={"/cms/configs/" ++ $sections-item.alias ++ "/"} tabindex="-1">{$sections-item.module}</a></td>
+          </tr>
+        </for-each>
+      </tbody>
+    </table>
+  </div>
+</component>

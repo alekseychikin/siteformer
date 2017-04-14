@@ -1,23 +1,27 @@
-{ import(Suggest, './components/form-suggests/form-suggests') }
+<component>
+  <param name={$rows} value={[]} />
+  <param name={$search-result} value={false} />
 
-<div class="form__inp-contain" data-role="input-contain" data-alias={field.alias}>
-  { rows = [] }
-  { if (searchResult?) }
-    { rows = searchResult }
-  { endif }
-  <Suggest title="{data.title}" id="{data.id}" rows={rows}>
-    <input
-      type="text"
-      name="{ field.alias }"
-      id="{ field.alias }"
-      class="form__inp"
-      value="{ data.title }"
-      data-role="section"
-      autocomplete="off"
-    />
-    { if (data.id != '') }
-      <div class="form-suggests__value">{data.title}</div>
-      <button class="form-suggests__cancel" type="button" data-role="cancel">Отменить</button>
-    { endif }
-  </Suggest>
-</div>
+  <import name="x-suggest" from="../../components/form-suggests/form-suggests.tmplt" />
+
+  <div class="form__inp-contain" data-role="input-contain" data-alias={$field.alias}>
+    <if test={$search-result}>
+      <variable name={$rows} value={$search-result} />
+    </if>
+    <x-suggest title={$data.title} id={$data.id} rows={$rows}>
+      <input
+        type="text"
+        name={$field.alias}
+        id={$field.alias}
+        class="form__inp"
+        value={$data.title}
+        data-role="section"
+        autocomplete="off"
+      />
+      <if test={str_len($data.id)}>
+        <div class="form-suggests__value">{$data.title}</div>
+        <button class="form-suggests__cancel" type="button" data-role="cancel">Отменить</button>
+      </if>
+    </x-suggest>
+  </div>
+</component>

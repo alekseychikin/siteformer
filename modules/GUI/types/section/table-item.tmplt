@@ -1,1 +1,3 @@
-{ value[field.settings.field]? }
+<component>
+  {$value[$field.settings.field]?}
+</component>

@@ -1,10 +1,14 @@
-{ if (value) }
-  { if (str_len(value.date)) }
-    { date = str_split(value.date, '-') }
-    { time = str_split(value.time, ':') }
-    { date[2] }.{ date[1] }.{ date[0] }
-    { if (field.settings.useTime) }
-      { time[0] }:{ time[1] }
-    { endif }
-  { endif }
-{ endif }
+<component>
+  <param name={$value} value={false} />
+
+  <if test={$value}>
+    <if test={str_len($value.date)}>
+      <variable name={$date} value={str_split($value.date, '-')} />
+      <variable name={$time} value={str_split($value.time, ':')} />
+      {$date[2]}.{$date[1]}.{$date[0]}
+      <if test={$field.settings.useTime}>
+        {$time[0]}:{$time[1]}
+      </if>
+    </if>
+  </if>
+</component>

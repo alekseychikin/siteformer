@@ -1,12 +1,12 @@
 View = require "view.coffee"
 Render = require "render"
-modalWindowTemplate = require "types/table/modal"
+modalWindowTemplate = require "types/table/modal.tmplt"
 
 module.exports = class TableConfigsView extends View
   constructor: (target, model) ->
     super target, model
 
-    @modalContain = Render modalWindowTemplate, @contain[0]
+    @modalContain = Render modalWindowTemplate, @contain
     @render @model.state
 
   events:
@@ -14,8 +14,9 @@ module.exports = class TableConfigsView extends View
     "change: [data-role='configs-table-rows']": "changeConfigsTableRows"
     "change: [data-role='configs-table-columns']": "changeConfigsTableColumns"
     "change: [data-role='configs-table-cell']": (e) ->
-      $cell = $ e.target
-      @model.updateCellData ($cell.data "row"), ($cell.data "column"), ($cell.val())
+      @model.updateCellData (e.target.getAttribute "data-row"),
+        e.target.getAttribute "data-column"
+        e.target.value
 
     "keydown: [data-role='configs-table-rows']": (e) ->
       @changeConfigsTableRows e
@@ -36,4 +37,4 @@ module.exports = class TableConfigsView extends View
 
   submitConfigsForm: (e) ->
     @trigger "save-configs-modal", @model.getState()
-    return false
+    e.preventDefault()

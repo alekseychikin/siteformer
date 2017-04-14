@@ -1,10 +1,19 @@
-{ import(MenuItems, "./components/menu/menu-items") }
+<component>
+  <import name="menu-items" from="./menu-items.tmplt" />
+  <param name={$sections} value={[]} />
+  <param name={$section} value="" />
 
-<menu class="menu" data-role="sections-menu">
-  <MenuItems sections={sections} section={section} />
-</menu>
-<menu class="menu">
-  <li class="menu__item menu__item--configs{ if (section == "configs") } menu__item--active{ endif }">
-    <a href="/cms/configs/" class="menu__link">Настройки</a>
-  </li>
-</menu>
+  <menu class="menu" data-role="sections-menu">
+    <menu-items sections={$sections} section={$section} />
+  </menu>
+
+  <menu class="menu">
+    <li class="menu__item menu__item--configs">
+      <if test={$section == "configs"}>
+        <attribute name="class" value="menu__item menu__item--configs menu__item--active" />
+      </if>
+
+      <a href="/cms/configs/" class="menu__link">Настройки</a>
+    </li>
+  </menu>
+</component>

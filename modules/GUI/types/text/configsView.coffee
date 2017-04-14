@@ -1,12 +1,12 @@
 View = require "view.coffee"
 Render = require "render"
-modalWindowTemplate = require "types/text/modal"
+modalWindowTemplate = require "types/text/modal.tmplt"
 
 module.exports = class TextConfigsView extends View
   constructor: (target, model) ->
     super target, model
 
-    @modalContain = Render modalWindowTemplate, @contain[0]
+    @modalContain = Render modalWindowTemplate, @contain
     @render @model.state
 
   events:
@@ -18,4 +18,4 @@ module.exports = class TextConfigsView extends View
 
   submitConfigsForm: ->
     @trigger "save-configs-modal", @model.getState()
-    return false
+    e.preventDefault()

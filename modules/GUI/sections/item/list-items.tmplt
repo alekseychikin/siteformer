@@ -1,10 +1,18 @@
-{ import(SectionList, './sections/item/section-list') }
+<component>
+  <import name="section-list" from="./section-list.tmplt" />
 
-<div class="section__row">
-  <a href="/cms/{section}/add/" class="form__btn">Добавить запись</a>
+  <param name={$sections} value={[]} />
+  <param name={$section} value="" />
+  <param name={$user-fields} value={[]} />
+  <param name={$fields} value={[]} />
+  <param name={$data} value={[]} />
 
-  <button class="form__btn form__btn--right" data-role="config-user-fields" type="button">Настроить поля</button>
-</div>
-<div class="section__row" data-role="section-list">
-  <SectionList user_fields={user_fields} fields={fields} data={data} section={section} />
-</div>
+  <div class="section__row">
+    <a href={"/cms/" ++ $section ++ "/add/"} class="form__btn">Добавить запись</a>
+
+    <button class="form__btn form__btn--right" data-role="config-user-fields" type="button">Настроить поля</button>
+  </div>
+  <div class="section__row" data-role="section-list">
+    <section-list user-fields={$user-fields} fields={$fields} data={$data} section={$section} />
+  </div>
+</component>

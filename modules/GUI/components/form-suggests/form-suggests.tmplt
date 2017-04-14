@@ -1,18 +1,21 @@
-<div class="form-suggests">
-  { childs }
-  { issetResults = rows? && arr_len(rows) }
-  { if (issetResults) }
-    <div class="form-suggests__results">
-      { for (row, rows) }
-        <div
-          class="form-suggests__item"
-          data-role="suggest-item"
-          data-id="{row.id}"
-          data-title="{row.title}"
-        >
-          {row.title}
-        </div>
-      { endfor }
-    </div>
-  { endif }
-</div>
+<component>
+  <div class="form-suggests">
+    {$children}
+    <variable name={$issetResults} value={$rows? && arr_len($rows)} />
+
+    <if test={$issetResults}>
+      <div class="form-suggests__results">
+        <for-each item={$row} from={$rows}>
+          <div
+            class="form-suggests__item"
+            data-role="suggest-item"
+            data-id={$row.id}
+            data-title={$row.title}
+          >
+            {$row.title}
+          </div>
+        </for-each>
+      </div>
+    </if>
+  </div>
+</component>

@@ -1,9 +1,11 @@
-<div class="form__inp-contain" data-role="input-contain">
-  <label class="form__select">
-    <select name="{ field.alias }" id="{ field.alias }" data-role="select">
-    { for (i, dataItem, field.settings.defaultData) }
-      <option value="{ i }"{ if (data == i) } selected{ endif }>{ dataItem }</option>
-    { endfor }
-    </select>
-  </label>
-</div>
+<component>
+  <div class="form__inp-contain" data-role="input-contain">
+    <label class="form__select">
+      <select name={$field.alias} id={$field.alias} data-role="select">
+        <for-each key={$i} item={$data-item} from={$field.settings.defaultData}>
+          <option value={$i} selected={$data == $i}>{$data-item}</option>
+        </for-each>
+      </select>
+    </label>
+  </div>
+</component>

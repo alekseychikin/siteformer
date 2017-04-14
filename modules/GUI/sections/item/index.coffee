@@ -9,20 +9,22 @@ indexModel = new IndexModel()
 
 Popup = require "popup"
 
-indexView = new IndexView ($ "[data-role='item-list']"), indexModel
+configsPopupSelector = "[data-role='item-list']"
+itemListContainer = document.querySelector configsPopupSelector
+indexView = new IndexView itemListContainer, indexModel
 
-configsPopupSelector = "[data-role='configs-popup']"
+configsPopupContainer = document.querySelector "[data-role='configs-popup']"
 
 indexView.on "open-user-fields-popup", ->
   Popup.open configsPopupSelector
 
-  ($ configsPopupSelector).html ""
+  # configsPopupContainer.innerHTML = ""
 
   userFieldsPopupModel = new UserFieldsPopupModel
-    userFields: indexModel.getUserFields()
+    "user-fields": indexModel.getUserFields()
     fields: indexModel.getFields()
 
-  userFieldsPopupView = new UserFieldsPopupView ($ configsPopupSelector), userFieldsPopupModel
+  userFieldsPopupView = new UserFieldsPopupView configsPopupContainer, userFieldsPopupModel
 
   userFieldsPopupView.on "save-user-fields", (userFields) ->
     indexModel.updateUserFields userFields

@@ -1,10 +1,15 @@
-{ import (EditArea, './components/editarea/editarea') }
+<component>
+  <import name="edit-area" from="../../components/editarea/editarea.tmplt" />
 
-<div class="form__inp-contain form__inp-contain--full-width" data-role="input-contain">
-  <EditArea
-    id="{field.alias}"
-    role="area"
-    name="{field.alias}"
-    value={data}
-  />
-</div>
+  <param name={$field} value={['alias': '']} />
+  <param name={$data} value="" />
+
+  <div class="form__inp-contain form__inp-contain--full-width" data-role="input-contain">
+    <edit-area
+      id={$field.alias}
+      role="area"
+      name={$field.alias}
+      value={$data}
+    />
+  </div>
+</component>

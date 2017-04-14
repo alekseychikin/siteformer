@@ -1,3 +1,13 @@
-{ for (sectionsItem, sections) }
-  <li class="menu__item{ if (section == sectionsItem.alias) } menu__item--active{ endif }"><a href="/cms/{ sectionsItem.alias }/" class="menu__link">{ sectionsItem.title }</a></li>
-{ endfor }
+<component>
+  <param name={$sections} value={[]} />
+
+  <for-each item={$sections-item} from={$sections}>
+    <li class="menu__item">
+      <if test={$section == $sections-item.alias}>
+        <attribute name="class" value="menu__item menu__item--active" />
+      </if>
+
+      <a href={"/cms/" ++ $sections-item.alias ++ "/"} class="menu__link">{ $sections-item.title }</a>
+    </li>
+  </for-each>
+</component>

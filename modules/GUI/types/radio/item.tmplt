@@ -1,17 +1,21 @@
-<div class="form__inp-contain" data-role="input-contain">
-  { for (i, dataItem, field.settings.defaultData) }
-  <div class="form__row-option">
-    <input
-      class="form__radio"
-      type="radio"
-      id="{ field.alias }{ i }"
-      name="{ field.alias }"
-      data-role="radio"
-      data-index="{ i }"
-      { if (data == i) } checked{ endif }
-    />
-    <label class="form__radio-label" for="{ field.alias }{ i }"></label>
-    <label for="{ field.alias }{ i }">{ dataItem }</label>
+<component>
+  <param name={$field} value={['settings': ['defaultData': []]]} />
+
+  <div class="form__inp-contain" data-role="input-contain">
+    <for-each key={$i} item={$data-item} from={$field.settings.defaultData}>
+      <div class="form__row-option">
+        <input
+          class="form__radio"
+          type="radio"
+          id={$field.alias ++ $i}
+          name={$field.alias}
+          data-role="radio"
+          data-index={$i}
+          checked={$data == $i}
+        />
+        <label class="form__radio-label" for={$field.alias ++ $i}></label>
+        <label for={$field.alias ++ $i}>{$data-item}</label>
+      </div>
+    </for-each>
   </div>
-  { endfor }
-</div>
+</component>

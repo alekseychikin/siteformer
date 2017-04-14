@@ -1,71 +1,79 @@
-var $ = require('jquery-plugins.coffee');
+var {emmitEvent} = require('helpers.coffee');
 var initiatedElements = [];
 var openned;
-var $body = $(document.body);
 
-$body.on('keydown', function (e)
-{
+document.body.addEventListener('keydown', function (e) {
   if (openned && e.keyCode === 27) {
-    var node = $(e.target).get(0);
-    if (node.nodeName.toLowerCase() === 'input') {
-      node.blur();
-    }
-    else {
+    if (e.target.nodeName.toLowerCase() === 'input') {
+      e.target.blur();
+    } else {
       Popup.close(openned);
     }
   }
 });
 
-$body.on('click', function ()
-{
+document.body.addEventListener('click', function () {
   if (openned) {
     Popup.close(openned);
   }
 });
 
-function initial(element)
-{
-  initiatedElements.push(element);
-  var $element = $(element);
-  $element.on('click', '.popup__close', function ()
-  {
-    Popup.close(element);
-  });
-  $element.on('click', '.popup__cancel', function ()
-  {
-    Popup.close(element);
-  });
-  $element.on('click', function (e)
-  {
+function elementClickHandler (e) {
+  if (e.target.matches('.popup__close') || e.target.closest('.popup__close')) {
+    Popup.close(this);
+  } else if (e.target.matches('.popup__cancel') || e.target.closest('.popup__cancel')) {
+    Popup.close(this);
+  } else {
     e.stopPropagation();
-  });
+  }
+}
+
+function initial(element) {
+  initiatedElements.push(element);
+
+  element.addEventListener('click', elementClickHandler);
 }
 
 var Popup = {
-  open: function (element)
+  open: function (selector)
   {
-    var $element = $(element);
-    var $wrap;
+    var wrap, firstElement, element;
+
+    if (typeof selector === 'string') {
+      element = document.querySelector(selector);
+    } else {
+      element = selector;
+    }
+
     if (openned) {
-      $wrap = $(openned).parent();
+      wrap = openned.parentNode;
       Popup.close(openned, false);
-      $wrap.append($element);
+      wrap.appendChild(element);
+    } else {
+      wrap = document.createElement('div');
+      wrap.className = 'popup__wrap';
+      element.parentNode.appendChild(wrap);
+      wrap.appendChild(element);
     }
-    else {
-      $element.wrap('<div class="popup__wrap"></div>');
-    }
+
     if (initiatedElements.indexOf(element) === -1) {
       initial(element);
     }
+
     setTimeout(function () {
       openned = element;
     }, 10);
-    $wrap = $element.parent();
+
     setTimeout(function () {
-      $element.addClass('popup--open');
-      $wrap.addClass('popup__wrap--open');
-      $element.find('input[type="text"], input[type="password"]').eq(0).focus();
-      $body.addClass('g-fix');
+      element.classList.add('popup--open');
+      wrap.classList.add('popup__wrap--open');
+
+      firstElement = element.querySelector('input[type="text"], input[type="password"]');
+      if (firstElement) {
+        firstElement.focus();
+      }
+
+      document.body.classList.add('g-fix');
     }, 0);
   },
   close: function (element, closeBack)
@@ -73,34 +81,43 @@ var Popup = {
     if (typeof element === 'undefined') {
       element = openned;
     }
+
     if (typeof closeBack !== 'boolean') {
       closeBack = true;
     }
-    var $element = $(element);
-    var $parent = $element.parent();
-    $element.removeClass('popup--open');
-    $element.trigger('popup-close');
+
+    var parent = element.parentNode;
+    element.classList.remove('popup--open');
+    emmitEvent('popup-close', element);
+
     if (closeBack) {
-      $parent.removeClass('popup__wrap--open');
-      $body.removeClass('g-fix');
+      parent.classList.remove('popup__wrap--open');
+      document.body.classList.remove('g-fix');
     }
+
     openned = null;
-    setTimeout(function ()
-    {
-      if ($parent.hasClass('popup__wrap')) {
-        $parent.after($element);
+
+    setTimeout(function () {
+      if (parent.classList.contains('popup__wrap')) {
+        if (parent.nextSibling) {
+          parent.parentNode.insertBefore(element, parent.nextSibling);
+        } else {
+          parent.parentNode.appendChild(element);
+        }
+
+        parent.after(element);
+
         if (closeBack) {
-          $parent.remove();
+          parent.parentNode.removeChild(parent);
         }
       }
     }, 250);
   }
 };
 
-$('[data-popup]').each(function () {
-  var $item = $(this);
-  $item.on('click', function () {
-    Popup.open('#popup-' + $item.data('popup'));
+Array.prototype.slice.call(document.querySelectorAll('[data-popup]')).forEach(function (item) {
+  item.addEventListener('click', function () {
+    Popup.open('#popup-' + item.getAttribute('data-popup'));
   });
 });
 

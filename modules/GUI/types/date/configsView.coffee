@@ -1,12 +1,12 @@
 View = require "view.coffee"
 Render = require "render"
-modalWindowTemplate = require "types/date/modal"
+modalWindowTemplate = require "types/date/modal.tmplt"
 
 module.exports = class DateConfigsView extends View
   constructor: (target, model) ->
     super target, model
 
-    @modalContain = Render modalWindowTemplate, @contain[0]
+    @modalContain = Render modalWindowTemplate, @contain
     @render @model.state
 
   events:
@@ -19,4 +19,4 @@ module.exports = class DateConfigsView extends View
 
   submitConfigsForm: (e) ->
     @trigger "save-configs-modal", @model.getState()
-    return false
+    e.preventDefault()

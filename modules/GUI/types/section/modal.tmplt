@@ -1,47 +1,49 @@
-<div class="popup__head">Настройки секции</div>
-<form action="" class="form" data-role="configs-form">
-  <div class="form__item">
-    <label for="configs-section-section" class="form__label">Секция</label>
-    <div class="form__inp-contain">
-      <label class="form__select">
-        <select data-role="configs-section-section" id="configs-section-section">
-          <option value=""></option>
-          { if (arr_len(sections)) }
-            { for (sectionItem, sections) }
-              <option value="{ sectionItem.alias }"{ if (sectionItem.alias == settings.section) } selected{ endif }>{ sectionItem.title }</option>
-            { endfor }
-          { endif }
-        </select>
-      </label>
-      { if (settings.errorCode && settings.errorIndex? && settings.errorIndex[0] == 'section' && settings.errorCode == 'EEMPTYREQUIRED') }
-        <span class="form__error">Задайте секцию</span>
-      { endif }
+<component>
+  <div class="popup__head">Настройки секции</div>
+  <form action="" class="form" data-role="configs-form">
+    <div class="form__item">
+      <label for="configs-section-section" class="form__label">Секция</label>
+      <div class="form__inp-contain">
+        <label class="form__select">
+          <select data-role="configs-section-section" id="configs-section-section">
+            <option value=""></option>
+            <if test={arr_len($sections)}>
+              <for-each item={$sectionItem} from={$sections}>
+                <option value={$sectionItem.alias} selected={$sectionItem.alias == $settings.section}>{$sectionItem.title}</option>
+              </for-each>
+            </if>
+          </select>
+        </label>
+        <if test={$settings.errorCode && $settings.errorIndex? && $settings.errorIndex[0] == 'section' && $settings.errorCode == 'EEMPTYREQUIRED'}>
+          <span class="form__error">Задайте секцию</span>
+        </if>
+      </div>
     </div>
-  </div>
-  <div class="form__item">
-    <label for="configs-section-field" class="form__label">Поиск по полю</label>
-    <div class="form__inp-contain">
-      <label class="form__select">
-        <select data-role="configs-section-field" id="configs-section-field">
-          <option value=""></option>
-          { if (arr_len(sections) && str_len(settings.section)) }
-            { for (sectionIndex, sectionItem, sections) }
-              { if (sectionItem.alias == section || (!section && sectionIndex == 0)) }
-                { for (fieldItem, sectionItem.fields) }
-                  <option value="{ fieldItem.alias }"{ if (settings.field == fieldItem.alias) } selected{ endif }>{ fieldItem.title }</option>
-                { endfor }
-              { endif }
-            { endfor }
-          { endif }
-        </select>
-      </label>
-      { if (settings.errorCode && settings.errorIndex? && settings.errorIndex[0] == 'field' && settings.errorCode == 'EEMPTYREQUIRED') }
-        <span class="form__error">Задайте поле</span>
-      { endif }
+    <div class="form__item">
+      <label for="configs-section-field" class="form__label">Поиск по полю</label>
+      <div class="form__inp-contain">
+        <label class="form__select">
+          <select data-role="configs-section-field" id="configs-section-field">
+            <option value=""></option>
+            <if test={arr_len($sections) && str_len($settings.section)}>
+              <for-each key={$sectionIndex} item={$sectionItem} from={$sections}>
+                <if test={$sectionItem.alias == $section || (!$section && $sectionIndex == 0)}>
+                  <for-each item={$fieldItem} from={$sectionItem.fields}>
+                    <option value={$fieldItem.alias} selected={$settings.field == $fieldItem.alias}>{$fieldItem.title}</option>
+                  </for-each>
+                </if>
+              </for-each>
+            </if>
+          </select>
+        </label>
+        <if test={$settings.errorCode && $settings.errorIndex? && $settings.errorIndex[0] == 'field' && $settings.errorCode == 'EEMPTYREQUIRED'}>
+          <span class="form__error">Задайте поле</span>
+        </if>
+      </div>
     </div>
-  </div>
-  <div class="form__submit">
-    <button class="form__btn form__btn--submit">Сохранить</button>
-    <button type="button" class="form__btn popup__cancel">Отменить</button>
-  </div>
-</form>
+    <div class="form__submit">
+      <button class="form__btn form__btn--submit">Сохранить</button>
+      <button type="button" class="form__btn popup__cancel">Отменить</button>
+    </div>
+  </form>
+</component>

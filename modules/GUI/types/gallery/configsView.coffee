@@ -1,12 +1,12 @@
 View = require "view.coffee"
 Render = require "render"
-modalWindowTemplate = require "types/gallery/modal"
+modalWindowTemplate = require "types/gallery/modal.tmplt"
 
 module.exports = class GalleryConfigsView extends View
   constructor: (target, model) ->
     super target, model
 
-    @modalContain = Render modalWindowTemplate, @contain[0]
+    @modalContain = Render modalWindowTemplate, @contain
     @render @model.state
 
   events:
@@ -36,4 +36,4 @@ module.exports = class GalleryConfigsView extends View
 
   submitConfigsForm: (e) ->
     @trigger "save-configs-modal", @model.getState()
-    return false
+    e.preventDefault()

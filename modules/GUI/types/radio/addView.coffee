@@ -5,4 +5,4 @@ module.exports = class RadioDataView extends View
 
   events:
     "change: [data-role='radio']": (e) ->
-      @model.update Number(e.target.getAttribute "data-index")
+      @model.update Number e.target.getAttribute "data-index"

@@ -1,48 +1,40 @@
-{ import(Main, './sections/main/main') }
-{ import(Scripts, './sections/main/scripts') }
-{ import(ConfigsAdd, './sections/configs/configs-add') }
+<component>
+  <import name="configs-add" from="./configs-add.tmplt" />
+  <import name="x-main" from="../main/main.tmplt" />
+  <import name="x-scripts" from="../main/scripts.tmplt" />
 
-{ if (!id?) }
-  { id = false }
-{ endif }
-{ if (!errorTitle?) }
-  { errorTitle = '' }
-{ endif }
-{ if (!errorAlias?) }
-  { errorAlias = '' }
-{ endif }
-{ if (!errorFieldsIndex?) }
-  { errorFieldsIndex = false }
-{ endif }
-{ if (!errorFieldsField?) }
-  { errorFieldsField = '' }
-{ endif }
-{ if (!errorFieldsMessage?) }
-  { errorFieldsMessage = '' }
-{ endif }
+  <param name={$id} value={false} />
+  <param name={$section} value="" />
+  <param name={$sections} value={[]} />
+  <param name={$error-title} value="" />
+  <param name={$error-alias} value="" />
+  <param name={$error-fields-index} value={false} />
+  <param name={$error-fields-field} value="" />
+  <param name={$error-fields-message} value="" />
 
-<Main pageTitle="{page_title}" sections={sections} section={section}>
-  <article class="content" data-role="configs-add">
-    <ConfigsAdd
-      id={id}
-      title={title}
-      alias={alias}
-      errorTitle={errorTitle}
-      errorAlias={errorAlias}
-      errorFieldsIndex={errorFieldsIndex}
-      errorFieldsField={errorFieldsField}
-      errorFieldsMessage={errorFieldsMessage}
-      modules={modules}
-      module={module}
-      fields={fields}
-      types={types}
-    />
-  </article>
+  <x-main page-title={$page-title} sections={$sections} section={$section}>
+    <article class="content" data-role="configs-add">
+      <configs-add
+        id={$id}
+        title={$title}
+        alias={$alias}
+        error-title={$error-title}
+        error-alias={$error-alias}
+        error-fields-index={$error-fields-index}
+        error-fields-field={$error-fields-field}
+        error-fields-message={$error-fields-message}
+        modules={$modules}
+        module={$module}
+        fields={$fields}
+        types={$types}
+      />
+    </article>
 
-  <div class="popup" data-role="configs-popup">
-  </div>
+    <div class="popup" data-role="configs-popup">
+    </div>
 
-  <Scripts>
-    <script src="/sf-engine/modules/GUI/dist/configs/add.js"></script>
-  </Scripts>
-</Main>
+    <x-scripts>
+      <script src="/sf-engine/modules/GUI/dist/configs/add.js"></script>
+    </x-scripts>
+  </x-main>
+</component>

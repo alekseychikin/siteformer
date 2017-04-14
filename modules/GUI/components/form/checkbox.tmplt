@@ -1,0 +1,16 @@
+<component>
+  <param name={$role} value="" />
+  <param name={$name} value="" />
+  <param name={$id} value="" />
+  <param name={$value} value="" />
+
+  <input
+    class="form__checkbox"
+    type="checkbox"
+    data-role={$role}
+    name={$name}
+    id={$id}
+    checked={$value}
+  />
+  <label class="form__checkbox-label" for={$id}></label>
+</component>

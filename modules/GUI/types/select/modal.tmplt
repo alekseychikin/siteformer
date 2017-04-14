@@ -1,40 +1,58 @@
-<div class="popup__head">Настройки выпадайки</div>
-<form action="" class="form" data-role="configs-form">
-  <div class="form__item">
-    <label for="configs-select-num-options" class="form__label">Количество вариантов ответа</label>
-    <div class="form__inp-contain">
-      <input type="text" class="form__inp form__inp--very-short" value="{ settings.numOptions }" data-role="configs-select-num-options" id="configs-select-num-options" />
-    </div>
-  </div>
-  <div class="form__item">
-    <label class="form__label">Варианты ответов:</label>
-    <div class="form__inp-contain form__inp-contain--full-width">
-      <div class="form__row-option">
-        <input type="radio" class="form__radio" data-role="configs-select-option" value="-1" id="configs-select-option--1" name="configs-select-option"{ if (settings.defaultValue == -1) } checked{ endif } />
-        <label class="form__radio-label" for="configs-select-option--1"></label>
-        <label for="configs-select-option--1"><i>Ничего не выбрано по умолчанию</i></label>
+<component>
+  <div class="popup__head">Настройки выпадайки</div>
+  <form action="" class="form" data-role="configs-form">
+    <div class="form__item">
+      <label for="configs-select-num-options" class="form__label">Количество вариантов ответа</label>
+      <div class="form__inp-contain">
+        <input type="text" class="form__inp form__inp--very-short" value={$settings.numOptions} data-role="configs-select-num-options" id="configs-select-num-options" />
       </div>
-      <div data-role="configs-select-options-contain">
-        { for (i, option, settings.defaultData) }
+    </div>
+    <div class="form__item">
+      <label class="form__label">Варианты ответов:</label>
+      <div class="form__inp-contain form__inp-contain--full-width">
         <div class="form__row-option">
-          <input type="radio" class="form__radio" data-role="configs-select-option" value="{ i }" id="configs-select-option-{ i }" name="configs-select-option"{ if (settings.defaultValue == i) } checked{ endif } />
-          <label class="form__radio-label" for="configs-select-option-{ i }"></label>
-          <label><input type="text" class="form__inp form__inp--half-width" value="{ option }" data-role="configs-select-option-label" data-index="{ i }" /></label>
-
-          { if (settings.errorCode && settings.errorIndex? && settings.errorIndex[1]? && settings.errorIndex[0] == 'defaultData' && settings.errorCode == 'ENOTUNIQUEVALUE' && settings.errorIndex[1] == i) }
-            <span class="form__error">Варианты должны быть уникальными</span>
-          { endif }
+          <input
+            type="radio"
+            class="form__radio"
+            data-role="configs-select-option"
+            value="-1"
+            id="configs-select-option--1"
+            name="configs-select-option"
+            checked={$settings.defaultValue == -1}
+          />
+          <label class="form__radio-label" for="configs-select-option--1"></label>
+          <label for="configs-select-option--1"><i>Ничего не выбрано по умолчанию</i></label>
         </div>
-        { endfor }
-      </div>
+        <div data-role="configs-select-options-contain">
+          <for-each key={$i} item={$option} from={$settings.defaultData}>
+            <div class="form__row-option">
+              <input
+                type="radio"
+                class="form__radio"
+                data-role="configs-select-option"
+                value={$i}
+                id={"configs-select-option-" ++ $i}
+                name="configs-select-option"
+                checked={$settings.defaultValue == $i}
+              />
+              <label class="form__radio-label" for={"configs-select-option-" ++ $i}></label>
+              <label><input type="text" class="form__inp form__inp--half-width" value={$option} data-role="configs-select-option-label" data-index={$i} /></label>
 
-      { if (settings.errorCode && settings.errorIndex? && settings.errorIndex[0] == 'defaultData' && settings.errorCode == 'EMINLENGTH') }
-        <span class="form__error">Задайте хотя бы один вариант</span>
-      { endif }
+              <if test={$settings.errorCode && $settings.errorIndex? && $settings.errorIndex[1]? && $settings.errorIndex[0] == 'defaultData' && $settings.errorCode == 'ENOTUNIQUEVALUE' && $settings.errorIndex[1] == $i}>
+                <span class="form__error">Варианты должны быть уникальными</span>
+              </if>
+            </div>
+          </for-each>
+        </div>
+
+        <if test={$settings.errorCode && $settings.errorIndex? && $settings.errorIndex[0] == 'defaultData' && $settings.errorCode == 'EMINLENGTH'}>
+          <span class="form__error">Задайте хотя бы один вариант</span>
+        </if>
+      </div>
     </div>
-  </div>
-  <div class="form__submit">
-    <button class="form__btn form__btn--submit">Сохранить</button>
-    <button type="button" class="form__btn popup__cancel">Отменить</button>
-  </div>
-</form>
+    <div class="form__submit">
+      <button class="form__btn form__btn--submit">Сохранить</button>
+      <button type="button" class="form__btn popup__cancel">Отменить</button>
+    </div>
+  </form>
+</component>

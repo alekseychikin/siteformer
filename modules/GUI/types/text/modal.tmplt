@@ -1,20 +1,25 @@
-{ import (EditArea, './components/editarea/editarea') }
-<div class="popup__head">Настройки текста</div>
+<component>
+  <import name="edit-area" from="../../components/editarea/editarea.tmplt" />
 
-<form action="" class="form" data-role="configs-form">
-  <div class="form__item">
-    <label for="configs-text-default-text" class="form__label">Текст по умолчанию</label>
-      <EditArea
-        value={settings.defaultText}
-        name="configs-text-default-text"
-        role="configs-text-default-text"
-        id="configs-text-default-text"
-      />
-    <div class="form__inp-contain">
+  <param name={$settings} value={['defaultText': '']} />
+
+  <div class="popup__head">Настройки текста</div>
+
+  <form action="" class="form" data-role="configs-form">
+    <div class="form__item">
+      <label for="configs-text-default-text" class="form__label">Текст по умолчанию</label>
+        <edit-area
+          value={$settings.defaultText}
+          name="configs-text-default-text"
+          role="configs-text-default-text"
+          id="configs-text-default-text"
+        />
+      <div class="form__inp-contain">
+      </div>
     </div>
-  </div>
-  <div class="form__submit">
-    <button class="form__btn form__btn--submit">Сохранить</button>
-    <button type="button" class="form__btn popup__cancel">Отменить</button>
-  </div>
-</form>
+    <div class="form__submit">
+      <button class="form__btn form__btn--submit">Сохранить</button>
+      <button type="button" class="form__btn popup__cancel">Отменить</button>
+    </div>
+  </form>
+</component>

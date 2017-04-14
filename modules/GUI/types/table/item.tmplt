@@ -1,41 +1,48 @@
-<div class="form__inp-contain" data-role="input-contain">
-  <table class="table">
-    { if (data) }
-      { for (rowIndex, row, data) }
-        <tr>
-        { for (columnIndex, column, row) }
-          <td>
-            <input
-              class="form__inp"
-              type="text"
-              id="{ field.alias }{ rowIndex }_{ columnIndex }"
-              data-role="cell"
-              value="{ column }"
-              data-row="{ rowIndex }"
-              data-column="{ columnIndex }"
-            />
-          </td>
-        { endfor }
-        </tr>
-      { endfor }
-    { else }
-      { for (rowIndex, row, field.settings.defaultData) }
-        <tr>
-        { for (columnIndex, column, row) }
-          <td>
-            <input
-              class="form__inp"
-              type="text"
-              id="{ field.alias }{ rowIndex }_{ columnIndex }"
-              data-role="cell"
-              value=""
-              data-row="{ rowIndex }"
-              data-column="{ columnIndex }"
-            />
-          </td>
-        { endfor }
-        </tr>
-      { endfor }
-    { endif }
-  </table>
-</div>
+<component>
+  <div class="form__inp-contain" data-role="input-contain">
+    <param name={$data} value={[]} />
+
+    <table class="table">
+      <switch>
+        <case test={arr_len($data)}>
+          <for-each key={$rowIndex} item={$row} from={$data}>
+            <tr>
+              <for-each key={$columnIndex} item={$column} from={$row}>
+                <td>
+                  <input
+                    class="form__inp"
+                    type="text"
+                    id={$field.alias ++ $rowIndex ++ "_" ++ $columnIndex }
+                    data-role="cell"
+                    value={$column}
+                    data-row={$rowIndex}
+                    data-column={$columnIndex}
+                  />
+                </td>
+              </for-each>
+            </tr>
+          </for-each>
+        </case>
+        <default>
+          <for-each key={$rowIndex} item={$row} from={$field.settings.defaultData}>
+            <tr>
+              <for-each key={$columnIndex} item={$column} from={$row}>
+                <td>
+                  <input
+                    class="form__inp"
+                    type="text"
+                    id={$field.alias ++ $rowIndex ++ "_" ++ $columnIndex}
+                    data-role="cell"
+                    value=""
+                    data-row={$rowIndex}
+                    data-column={$columnIndex}
+                  />
+                </td>
+              </for-each>
+            </tr>
+          </for-each>
+        </default>
+      </switch>
+    </table>
+  </div>
+</component>

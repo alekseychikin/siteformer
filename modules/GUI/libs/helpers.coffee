@@ -32,3 +32,34 @@ module.exports.emmitEvent = (eventName, element, params = {}) ->
   event.initEvent eventName, true, true
   event[index] = value for index, value of params
   element.dispatchEvent event
+
+cloneObject = (obj, cachedElements = []) ->
+  copy = null
+
+  if null == obj || "object" != typeof obj
+    return obj
+
+  if obj instanceof Date
+    copy = new Date()
+    copy.setTime obj.getTime()
+    return copy
+
+  if (cachedElements.indexOf obj) == -1
+    cachedElements.push obj
+    if obj instanceof Array
+      copy = []
+      for elem, i in obj
+        copy[i] = cloneObject elem, cachedElements
+      return copy
+
+    if obj instanceof Object
+      copy = {}
+      for i, attr of obj
+        copy[i] = cloneObject attr, cachedElements
+      return copy
+  else
+    return "*RECURSION*"
+
+  throw new Error "Unable to copy obj! Its type isn't supported."
+
+module.exports.cloneObject = cloneObject

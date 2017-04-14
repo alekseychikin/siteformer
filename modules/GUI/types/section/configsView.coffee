@@ -1,12 +1,12 @@
 View = require "view.coffee"
 Render = require "render"
-modalWindowTemplate = require "types/section/modal"
+modalWindowTemplate = require "types/section/modal.tmplt"
 
 module.exports = class SectionConfigsView extends View
   constructor: (target, model) ->
     super target, model
 
-    @modalContain = Render modalWindowTemplate, @contain[0]
+    @modalContain = Render modalWindowTemplate, @contain
     @render @model.state
 
   events:
@@ -20,4 +20,4 @@ module.exports = class SectionConfigsView extends View
 
   submitConfigsForm: (e) ->
     @trigger "save-configs-modal", @model.getState()
-    return false
+    e.preventDefault()

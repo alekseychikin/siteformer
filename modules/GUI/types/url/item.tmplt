@@ -1,14 +1,20 @@
-<div class="form__inp-contain" data-role="input-contain">
-  <input
-    class="form__inp"
-    type="text"
-    name="{ field.alias }"
-    id="{ field.alias }"
-    value="{ data }"
-    data-role="url"
-    { if (error? && str_len(error)) }focus{ endif }
-  />
-  { if (error? && str_len(error)) }
-    <span class="form__error">{error}</span>
-  { endif }
-</div>
+<component>
+  <param name={$field} value={['alias': '']} />
+  <param name={$error} value={false} />
+  <param name={$data} value="" />
+
+  <div class="form__inp-contain" data-role="input-contain">
+    <input
+      class="form__inp"
+      type="text"
+      name={$field.alias}
+      id={$field.alias}
+      value={$data}
+      data-role="url"
+      focus={$error}
+    />
+    <if test={$error}>
+      <span class="form__error">{$error}</span>
+    </if>
+  </div>
+</component>

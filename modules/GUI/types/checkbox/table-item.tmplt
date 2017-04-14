@@ -1,9 +1,13 @@
-{ values = [] }
-{ for (i, item, field.settings.defaultData)}
-  { if ((i + 1) & value) }
-    { arr_push(values, item.label) }
-  { endif }
-{ endfor }
-{ for (i, item, values) }
-  { item }{ if (i != arr_len(values) - 1) },{ endif }
-{ endfor }
+<component>
+  <param name={$values} value={[]} />
+  <param name={$field} value={['settings': ['defaultData': []]]} />
+
+  <for-each key={$i} item={$item} from={$field.settings.defaultData}>
+    <if test={($i + 1) & $value}>
+      {arr_push($values, $item.label)}
+    </if>
+  </for-each>
+  <for-each key={$i} item={$item} from={$values}>
+    {$item}<if test={$i != arr_len($values) - 1}>,</if>
+  </for-each>
+</component>

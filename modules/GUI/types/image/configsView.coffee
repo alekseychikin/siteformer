@@ -1,17 +1,17 @@
 View = require "view.coffee"
 Render = require "render"
-modalWindowTemplate = require "types/image/modal"
+modalWindowTemplate = require "types/image/modal.tmplt"
 
 module.exports = class ImageConfigsView extends View
   constructor: (target, model) ->
     super target, model
 
-    @modalContain = Render modalWindowTemplate, @contain[0]
+    @modalContain = Render modalWindowTemplate, @contain
     @render @model.state
 
   events:
     "submit: [data-role='configs-form']": "submitConfigsForm"
-    "click: [data-role='configs-image-storage']": (e) -> @model.updateStorage ($ e.target).data "value"
+    "click: [data-role='configs-image-storage']": (e) -> @model.updateStorage e.target.getAttribute "data-value"
     "keydown: [data-role='configs-image-path']": (e) -> @model.resetPath()
     "keyup input: [data-role='configs-image-path']": (e) ->  @throttling 500, => @model.updatePath e.target.value
     "change: [data-role='configs-image-path']": (e) ->  @model.updatePath e.target.value
@@ -36,4 +36,4 @@ module.exports = class ImageConfigsView extends View
 
   submitConfigsForm: (e) ->
     @trigger "save-configs-modal", @model.getState()
-    return false
+    e.preventDefault()

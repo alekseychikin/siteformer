@@ -1,10 +1,16 @@
-{ import(TableSectionsList, './sections/configs/table-section-list') }
-{ import(Main, './sections/main/main') }
+<component>
+  <import name="table-sections-list" from="./table-section-list.tmplt" />
+  <import name="x-main" from="../main/main.tmplt" />
 
-<Main pageTitle="{page_title}" sections={sections} section={section}>
-  <h1 class="head">Настройки</h1>
+  <param name={$page-title} value="" />
+  <param name={$sections} value={[]} />
+  <param name={$section} value="" />
 
-  <div class="section__wrap" data-role="sections">
-    <TableSectionsList sections={sections} />
-  </div>
-</Main>
+  <x-main page-title={$page-title} sections={$sections} section={$section}>
+    <h1 class="head">Настройки</h1>
+
+    <div class="section__wrap" data-role="sections">
+      <table-sections-list sections={$sections} />
+    </div>
+  </x-main>
+</component>

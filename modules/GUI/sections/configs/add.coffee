@@ -1,9 +1,10 @@
 AddConfigsModel = require "./addModel.coffee"
 AddConfigsView = require "./addView.coffee"
-$ = require "jquery-plugins.coffee"
+
+configsContainer = document.querySelector "[data-role='configs-add']"
 
 addModel = new AddConfigsModel()
-addView = new AddConfigsView ($ "[data-role='configs-add']"), addModel
+addView = new AddConfigsView configsContainer, addModel
 
 models =
   checkbox: require "checkbox/configsModel.coffee"
@@ -45,8 +46,9 @@ addView.on "open-configs-modal", (index, field, fields = []) ->
     fields: fields
     sections: sections
 
-  ($ "[data-role='configs-popup']").html ""
-  view = new views[field.type] ($ "[data-role='configs-popup']"), model
+  popupContainer = document.querySelector "[data-role='configs-popup']"
+  popupContainer.innerHTML = ""
+  view = new views[field.type] popupContainer, model
 
   view.on "save-configs-modal", (state) ->
     console.log state
@@ -59,33 +61,3 @@ addModel.on "save-section", (alias) ->
 
 addModel.on "delete-section", ->
   window.location.href = "/cms/configs/"
-
-# setTimeout =>
-#   ($ "@btn-add-field").trigger "click"
-#   ($ "@configs-add-title")
-#     .val "Заметки"
-#     .trigger "change"
-#
-#   ($ "@configs-add-alias")
-#     .val "notes"
-#     .trigger "change"
-#
-#   setTimeout =>
-#     ($ "@row-module-fields:nth-child(12) @field-title")
-#       .val "Галерея"
-#       .trigger "change"
-#
-#     ($ "@row-module-fields:nth-child(12) @field-alias")
-#       .val "gallery"
-#       .trigger "change"
-#
-#     ($ "@row-module-fields:nth-child(12) @field-type")
-#       .val "gallery"
-#       .trigger "change"
-#
-#     setTimeout =>
-#       ($ "@row-module-fields:nth-child(12) @btn-config-field").trigger "click"
-#     , 200
-#
-#   , 200
-# , 500
