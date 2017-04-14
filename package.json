@@ -29,6 +29,7 @@
     "gulp-rename": "^1.2.2",
     "gulp-sourcemaps": "^1.6.0",
     "gulp-uglify": "^1.5.1",
+    "gulp-using": "^0.1.1",
     "gulp-util": "^3.0.7",
     "gutt": "0.0.5",
     "gutt-browser-stringifier": "0.0.4",
