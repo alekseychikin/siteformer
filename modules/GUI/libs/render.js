@@ -295,29 +295,29 @@
 		var obj = [];
 		var nodeObj;
 		var child;
+		var i;
 
-		for (child in children) {
-			if (_hasProp.call(children, child)) {
-				child = children[child];
+		for (i = 0; i < children.length; i++) {
+			child = children[i];
 
-				switch (child.nodeType) {
-					case 3: // text node
-						if (child.nodeValue.trim().length) {
-							obj.push(child.nodeValue);
-						} else {
-							child.parentNode.removeChild(child);
-						}
+			switch (child.nodeType) {
+				case 3: // text node
+					if (child.nodeValue.trim().length) {
+						obj.push(child.nodeValue);
+					} else {
+						child.parentNode.removeChild(child);
+						i--;
+					}
 
-						break;
-					case 1: // tag
-						obj.push({
-							tag: child.nodeName.toLowerCase(),
-							attrs: getAttributes(child),
-							children: generateObjectByNode(child.childNodes)
-						});
+					break;
+				case 1: // tag
+					obj.push({
+						tag: child.nodeName.toLowerCase(),
+						attrs: getAttributes(child),
+						children: generateObjectByNode(child.childNodes)
+					});
 
-						break;
-				}
+					break;
 			}
 		}
 
@@ -328,7 +328,6 @@
 	}
 
 	var cacheObj = generateObjectByNode(node.childNodes);
-
 	var genObj;
 
 	function handleChildren(cacheObj, genObj, parentNode) {
