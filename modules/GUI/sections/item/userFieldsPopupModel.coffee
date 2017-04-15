@@ -3,7 +3,6 @@ Model = require "model.coffee"
 module.exports = class UserFieldsModel extends Model
   constructor: (state = {"user-fields": [], fields: []}) ->
     super state
-    console.log state
 
   getUserFields: -> @state["user-fields"]
 

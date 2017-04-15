@@ -43,6 +43,7 @@
     {
       $sql = 'CREATE TABLE IF NOT EXISTS `' . $this->tableName . '` (' . "\n";
       $fields = array();
+
       foreach ($this->fields as $field) {
         $fields[] = $this->makeStringOfField($field);
       }

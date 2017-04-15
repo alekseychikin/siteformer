@@ -9,16 +9,13 @@ indexModel = new IndexModel()
 
 Popup = require "popup"
 
-configsPopupSelector = "[data-role='item-list']"
-itemListContainer = document.querySelector configsPopupSelector
+itemListContainer = document.querySelector "[data-role='item-list']"
 indexView = new IndexView itemListContainer, indexModel
 
 configsPopupContainer = document.querySelector "[data-role='configs-popup']"
 
 indexView.on "open-user-fields-popup", ->
-  Popup.open configsPopupSelector
-
-  # configsPopupContainer.innerHTML = ""
+  Popup.open "[data-role='configs-popup']"
 
   userFieldsPopupModel = new UserFieldsPopupModel
     "user-fields": indexModel.getUserFields()

@@ -63,6 +63,7 @@ httpPost = (url, data) ->
     req.setRequestHeader "Accept", "application/json"
     req.setRequestHeader "Content-type", "application/x-www-form-urlencoded; charset=UTF-8"
     req.onreadystatechange = readyStateChange req, resolve, reject
+    console.log parsePostData data
     req.send parsePostData data
 
 httpFile = (url, data) ->

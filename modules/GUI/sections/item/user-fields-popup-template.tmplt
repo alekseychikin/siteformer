@@ -3,6 +3,7 @@
   <param name={$user-fields} value={[]} />
 
   <div class="popup__head">Настройки полей</div>
+
   <form action="" class="form" data-role="fields-config">
     <div class="form__item">
       <div class="form__inp-contain form__inp-contain--full-width">

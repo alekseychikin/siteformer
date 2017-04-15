@@ -110,16 +110,33 @@ module.exports = class AddConfigsModel extends Model
     else
       @set {fields}
 
-  updatePosition: (rowIndex, position) ->
+  updatePosition: (currentIndex, newIndex) ->
     fields = @getFields()
 
-    different = rowIndex - position
+    different = newIndex - currentIndex
 
     if different
-      fields.forEach (field, index) -> field.position += different if index >= position
-      fields[rowIndex].position = position
+      if different > 0
+        fields.forEach (field) ->
+          if currentIndex < field.position <= newIndex
+            field.position -= 1
+            return
+
+          if field.position == currentIndex
+            field.position = newIndex
+            return
+
+      if different < 0
+        fields.forEach (field) ->
+          if currentIndex > field.position >= newIndex
+            field.position += 1
+            return
+
+          if field.position == currentIndex
+            field.position = newIndex
+            return
+
       fields.sort (a, b) -> a.position - b.position
-      fields.forEach (field, index) -> field.position = index
 
       @set {fields}
 

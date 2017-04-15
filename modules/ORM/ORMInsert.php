@@ -49,6 +49,7 @@
     {
       $sql = $this->getQuery($alias, $getObject);
       parent::query($sql, $alias, true);
+      parent::updateExistsTableList();
       if (!$getObject) {
         return $this->lastId($alias);
       }

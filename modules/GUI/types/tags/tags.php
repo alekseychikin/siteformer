@@ -13,8 +13,7 @@ class SFTypeTags extends SFType
           'name' => 'id',
           'type' => 'INT(11) UNSIGNED',
           'autoincrement' => true,
-          'null' => 'NULL',
-          'default' => NULL
+          'null' => false
         ])
         ->addField([
           'name' => 'section',
@@ -34,7 +33,7 @@ class SFTypeTags extends SFType
         ])
         ->addKey('id', 'primary key')
         ->addKey(['section', 'field'])
-        ->addKey(['section', 'field', 'title'])
+        ->addKey(['section', 'field', 'tag'])
         ->exec();
     }
 
@@ -45,14 +44,12 @@ class SFTypeTags extends SFType
         ->addField([
           'name' => 'record',
           'type' => 'INT(11) UNSIGNED',
-          'null' => 'NULL',
-          'default' => NULL
+          'null' => false
         ])
         ->addField([
           'name' => 'tag',
           'type' => 'INT(11) UNSIGNED',
-          'null' => 'NULL',
-          'default' => NULL
+          'null' => false
         ])
         ->addKey(['record', 'tag'], 'primary key')
         ->exec();

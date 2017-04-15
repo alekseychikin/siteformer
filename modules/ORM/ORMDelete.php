@@ -32,7 +32,9 @@
     public function execute($alias = 'default')
     {
       $sql = $this->getQuery($alias);
-      return parent::query($sql, $alias, true);
+      $result = parent::query($sql, $alias, true);
+      parent::updateExistsTableList();
+      return $result;
     }
   }
 

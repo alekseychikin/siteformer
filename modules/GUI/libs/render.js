@@ -434,9 +434,14 @@
 		for (attr in elementAttrs) {
 			if (_hasProp.call(elementAttrs, attr)) {
 				if (~logicAttrs.indexOf(attr)) {
-					currNode[attr] = true;
+					currNode[attr] = elementAttrs[attr] !== false;
 				} else if (attr === 'focus') {
-					currNode.focus();
+					if ((typeof elementAttrs[attr] === 'boolean' && elementAttrs[attr] !== false) ||
+						(typeof elementAttrs[attr] === 'number' && elementAttrs[attr] !== 0) ||
+						(typeof elementAttrs[attr] === 'string' && elementAttrs[attr].length)
+					) {
+						currNode.focus();
+					}
 				} else if (attr === 'value') {
 					if (currNode.nodeName.toLowerCase() === 'option') {
 						currNode.setAttribute('value', elementAttrs[attr]);

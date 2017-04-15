@@ -70,7 +70,7 @@ class SFValidate
     } else {
       $data = $source;
 
-      if (isset($params['default']) && empty($data)) {
+      if (array_key_exists('default', $params) && empty($data)) {
         $data = $params['default'];
       }
 

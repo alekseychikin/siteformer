@@ -5,27 +5,29 @@
   class SFORMDatabase
   {
     private static $supportPDO;
-    private static $connections = array();
-    private static $databases = array();
-    private static $inits = array();
+    private static $connections = [];
+    private static $databases = [];
+    private static $inits = [];
     private static $lastSQL;
     private static $showError = false;
     private static $lastRes;
     protected static $defaultBase = 'default';
     private static $reports = false;
-    private static $cachedPrimaryFields = array();
-    private static $cachedFields = array();
-    private static $cachedTables = array();
+    private static $cachedPrimaryFields = [];
+    private static $cachedFields = [];
+    private static $cachedTables = [];
     public static $countQueries = 0;
+    private static $existsTableList = [];
 
     protected function makeStringOfField($field)
     {
-      return '`' . $field['name'] . '` ' . $field['type'] .
-        ($field['null'] !== false ? ' ' . $field['null'] : '') .
-        (strlen($field['autoincrement']) ? ' ' . $field['autoincrement'] : '') .
-        ($field['default'] !== false && mb_strtolower($field['type']) !== 'text' ?
-          ' DEFAULT ' . ($field['default'] === NULL ? 'NULL' : $this->quote($field['default'])) : ''
-        );
+      $null = ($field['null'] !== false ? ' NULL' : ' NOT NULL');
+      $autoincrement = ($field['autoincrement'] ? ' AUTO_INCREMENT' : '');
+      $default = ($field['default'] !== false && mb_strtolower($field['type']) !== 'text' ?
+        ' DEFAULT ' . ($field['default'] === NULL ? 'NULL' : $this->quote($field['default'])) : ''
+      );
+
+      return '`' . $field['name'] . '` ' . $field['type'] . $null . $autoincrement . $default;
     }
 
     protected function validateField($field)
@@ -38,19 +40,13 @@
           'required' => true
         ],
         'null' => [
-          'default' => NULL
+          'default' => false
         ],
         'autoincrement' => [
-          'default' => false,
-          'modify' => function ($value) {
-            return ($value ? 'AUTO_INCREMENT' : '');
-          }
+          'default' => false
         ],
         'default' => [
-          'default' => NULL,
-          'modify' => function ($value) {
-            return $value;
-          }
+          'default' => false
         ]
       ], $field);
     }
@@ -62,13 +58,20 @@
 
     protected static function exists($table)
     {
-      $tables = array();
+      return in_array($table, self::$existsTableList);
+    }
+
+    protected static function updateExistsTableList()
+    {
+      $tables = [];
       $res = self::query('SHOW TABLES');
+
       foreach ($res as $tabs) {
         list($index, $tab) = each ($tabs);
         $tables[] = $tab;
       }
-      return in_array($table, $tables);
+
+      self::$existsTableList = $tables;
     }
 
     private static function makeException($sqlError)
@@ -142,7 +145,7 @@
         return $res;
       }
       $firstRow = true;
-      $result = array();
+      $result = [];
       while ($row = self::fetch($res, $firstRow)) {
         $result[] = $row;
         $firstRow = false;
@@ -202,25 +205,31 @@
     public static function init($configs)
     {
       self::$supportPDO = defined('PDO::ATTR_DRIVER_NAME');
+
       if (!isset($configs['alias'])) {
         $configs['alias'] = 'default';
       }
+
       if (isset(self::$connections[$configs['alias']]) && self::$connections[$configs['alias']]) {
         self::close($configs['alias']);
       }
+
       if (self::$supportPDO) {
         self::$connections[$configs['alias']] = new PDO('mysql:dbname=' . $configs['database'] . ';' . $configs['host'], $configs['user'], $configs['password']);
-      }
-      else  {
+      } else  {
         self::$connections[$configs['alias']] = mysql_connect($configs['host'], $configs['user'], $configs['password']);
         if (self::$connections[$params['alias']]) {
           mysql_select_db($configs['database'], self::$connections[$params['alias']]);
         }
       }
+
       self::$databases[$configs['alias']] = $configs['database'];
+
       if (isset($configs['reports'])) {
         self::$reports = $configs['reports'];
       }
+
+      self::updateExistsTableList();
     }
 
     private static function fetch($result, $firstRow = false)
@@ -248,12 +257,12 @@
     {
       if (!isset(self::$connections[$alias]) || !self::$connections[$alias]) self::makeException('There is no MySQL connection');
       if (!isset(self::$cachedPrimaryFields[$alias])) {
-        self::$cachedPrimaryFields[$alias] = array();
+        self::$cachedPrimaryFields[$alias] = [];
       }
       if (isset(self::$cachedPrimaryFields[$alias][$table])) {
         return self::$cachedPrimaryFields[$alias][$table];
       }
-      $primaryFields = array();
+      $primaryFields = [];
       $result = self::query('SELECT * FROM `'.$table.'` LIMIT 1', $alias, true, false);
       if (self::$supportPDO) {
         $numFields = $result->columnCount();
@@ -293,12 +302,12 @@
     {
       if (!self::$connections[$alias]) die('There is no MySQL connection');
       if (!isset(self::$cachedFields[$alias])) {
-        self::$cachedFields[$alias] = array();
+        self::$cachedFields[$alias] = [];
       }
       if (isset(self::$cachedFields[$alias][$table])) {
         return self::$cachedFields[$alias][$table];
       }
-      $fields = array();
+      $fields = [];
       $result = self::query('SELECT * FROM `'.$table.'` LIMIT 1', $alias, true, false);
       if (self::$supportPDO) {
         $numFields = $result->columnCount();
@@ -335,7 +344,7 @@
       if (isset(self::$databases[$alias])) {
         $database = self::$databases[$alias];
         if (!isset($cachedTables[$database]) || $force) {
-          $tables = array();
+          $tables = [];
           $result = self::query('SHOW TABLES FROM `' . $database . '`', $alias, false, false);
           foreach ($result as $item) {
             list($index, $table) = each($item);

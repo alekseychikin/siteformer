@@ -1,30 +1,26 @@
-$ = require "jquery-plugins.coffee"
 View = require "view.coffee"
 Render = require "render"
-Popup = require "popup"
 configsAddTemplate = require "sections/configs/configs-add.tmplt"
-$body = $ document.body
 
 createDuplicateRow = (rowRaw) ->
   fakeRow = document.createElement "div"
   fakeRow.className = "form-table__row-fake"
-  @position = rowRaw.getBoundingClientRect()
+  @position =
+    top: rowRaw.getBoundingClientRect().top
+    left: rowRaw.getBoundingClientRect().left
   scrollTop = document.body.scrollTop || document.documentElement.scrollTop || 0
-  console.log @position.top
   @position.top += scrollTop
-  console.log scrollTop
-  console.log @position.top
   @fakeRowHeight = rowRaw.offsetHeight
-  tdsRaw = rowRaw.querySelectorAll ".form-table__cell"
+  tdsRaw = Array.from rowRaw.querySelectorAll ".form-table__cell"
 
-  (Array.prototype.slice.call tdsRaw).forEach (tdRaw) ->
-    tdChildsRaw = tdRaw.childNodes
+  tdsRaw.forEach (tdRaw) ->
+    tdChildsRaw = Array.from tdRaw.childNodes
     fakeCell = document.createElement "div"
     fakeCell.className = "form-table__cell-fake"
     fakeCell.style.width = "#{tdRaw.offsetWidth}px"
     fakeCell.style.height = "#{tdRaw.offsetHeight}px"
 
-    (Array.prototype.slice.call tdChildsRaw).forEach (child) -> fakeCell.appendChild child.cloneNode true
+    tdChildsRaw.forEach (child) -> fakeCell.appendChild child.cloneNode true
 
     fakeRow.appendChild fakeCell
 
@@ -84,10 +80,10 @@ module.exports = class AddConfigsView extends View
 
     @dragging = true
     @rowOffsets = []
-    rows = @contain.querySelectorAll "[data-role='row-module-fields']"
+    rows = Array.from @contain.querySelectorAll "[data-role='row-module-fields']"
 
     scrollTop = document.body.scrollTop || document.documentElement.scrollTop || 0
-    (Array.prototype.slice.call rows).forEach (rowItem) =>
+    rows.forEach (rowItem) =>
       @rowOffsets.push rowItem.getBoundingClientRect().top + scrollTop
 
     @row.style.display = "none"

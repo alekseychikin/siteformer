@@ -606,34 +606,33 @@ class SFGUI
 
   private static function checkTables() {
     if (!SFORM::exists('section_fields')) {
-      echo SFORM::create('section_fields')
+      SFORM::create('section_fields')
         ->addField([
           'name' => 'id',
           'type' => 'INT(11) UNSIGNED',
           'autoincrement' => true,
-          'null' => 'NULL',
-          'default' => NULL
+          'null' => false
         ])
         ->addField([
           'name' => 'section',
           'type' => 'INT(11) UNSIGNED',
-          'null' => 'NULL',
+          'null' => true,
           'default' => NULL
         ])
         ->addField([
           'name' => 'title',
           'type' => 'VARCHAR(60)',
-          'null' => 'NOT NULL'
+          'null' => false
         ])
         ->addField([
           'name' => 'alias',
           'type' => 'VARCHAR(60)',
-          'null' => 'NOT NULL'
+          'null' => false
         ])
         ->addField([
           'name' => 'type',
           'type' => 'VARCHAR(20)',
-          'null' => 'NOT NULL'
+          'null' => false
         ])
         ->addField([
           'name' => 'settings',
@@ -642,7 +641,7 @@ class SFGUI
         ->addField([
           'name' => 'position',
           'type' => 'INT(3)',
-          'null' => 'NOT NULL',
+          'null' => false,
           'default' => 0
         ])
         ->addKey('id', 'primary key')
@@ -658,20 +657,17 @@ class SFGUI
           'name' => 'user',
           'type' => 'INT(11) UNSIGNED',
           'autoincrement' => true,
-          'null' => 'NULL',
-          'default' => NULL
+          'null' => false
         ])
         ->addField([
           'name' => 'section',
           'type' => 'INT(11) UNSIGNED',
-          'null' => 'NULL',
-          'default' => NULL
+          'null' => false
         ])
         ->addField([
           'name' => 'field',
           'type' => 'INT(11) UNSIGNED',
-          'null' => 'NULL',
-          'default' => NULL
+          'null' => false
         ])
         ->addKey(['user', 'section', 'field'], 'primary key')
         ->addKey(['user', 'section'])

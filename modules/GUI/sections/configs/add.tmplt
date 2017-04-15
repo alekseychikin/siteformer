@@ -30,8 +30,7 @@
       />
     </article>
 
-    <div class="popup" data-role="configs-popup">
-    </div>
+    <div class="popup" data-role="configs-popup"></div>
 
     <x-scripts>
       <script src="/sf-engine/modules/GUI/dist/configs/add.js"></script>

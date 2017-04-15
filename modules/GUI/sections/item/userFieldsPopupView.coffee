@@ -15,6 +15,7 @@ module.exports = class UserFieldsView extends View
     "submit: [data-role='fields-config']": (e) ->
       @trigger "save-user-fields", @model.getUserFields()
 
+      e.preventDefault()
       false
 
     "change: [data-role='configs-checkbox-option']": (e) ->

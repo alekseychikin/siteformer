@@ -6,11 +6,11 @@
   <param name={$section-title} value="Добавить" />
   <param name={$section-url} value="add" />
   <param name={$save-button-label} value="Создать" />
-  <param name={$error-title} value={false} />
-  <param name={$error-alias} value={false} />
+  <param name={$error-title} value="" />
+  <param name={$error-alias} value="" />
   <param name={$error-fields-index} value={false} />
-  <param name={$error-fields-field} value={false} />
-  <param name={$error-fields-message} value={false} />
+  <param name={$error-fields-field} value="" />
+  <param name={$error-fields-message} value="" />
 
   <if test={$id}>
     <variable name={$section-title} value="Редактировать" />
@@ -31,10 +31,10 @@
           name="name"
           id="name"
           data-role="configs-add-title"
-          focus={$error-title}
+          focus={str_len($error-title)}
         />
 
-        <if test={$error-title}>
+        <if test={str_len($error-title)}>
           <span class="form__error">{$error-title}</span>
         </if>
       </div>
@@ -51,9 +51,9 @@
           id="alias"
           data-role="configs-add-alias"
           disabled={$id}
-          focus={$error-alias}
+          focus={str_len($error-alias)}
         />
-        <if test={$error-alias}>
+        <if test={str_len($error-alias)}>
           <span class="form__error">{$error-alias}</span>
         </if>
       </div>
@@ -82,8 +82,8 @@
     <div class="form__table" data-role="module-fields">
       <table class="form-table">
         <colgroup>
-          <col width="30%" />
-          <col width="30%" />
+          <col width="26%" />
+          <col width="26%" />
           <col width="*" />
           <col width="75" />
           <col width="75" />

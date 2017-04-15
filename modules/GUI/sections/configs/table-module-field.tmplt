@@ -1,8 +1,8 @@
 <component>
   <param name={$fields} value={[]} />
   <param name={$error-fields-index} value={false} />
-  <param name={$error-fields-field} value={false} />
-  <param name={$error-fields-message} value={false} />
+  <param name={$error-fields-field} value="" />
+  <param name={$error-fields-message} value="" />
 
   <for-each key={$index} item={$field} from={$fields}>
     <tr class="form-table__row" data-role="row-module-fields" data-key={$index}>
@@ -12,10 +12,10 @@
           class="form__inp"
           value={$field.title}
           data-role="field-title"
-          focus={$error-fields-field? && str_len($error-fields-field) && $error-fields-field == 'title' && $error-fields-index == $index}
+          focus={str_len($error-fields-field) && $error-fields-field == 'title' && $error-fields-index == $index}
         />
 
-        <if test={$error-fields-field? && str_len($error-fields-field) && $error-fields-field == 'title' && $error-fields-index == $index}>
+        <if test={str_len($error-fields-field) && $error-fields-field == 'title' && $error-fields-index == $index}>
           <span class="form__error">{$error-fields-message}</span>
         </if>
       </td>
@@ -26,10 +26,10 @@
           class="form__inp"
           value={$field.alias}
           data-role="field-alias"
-          focus={$error-fields-field? && str_len($error-fields-field) && $error-fields-field == 'alias' && $error-fields-index == $index}
+          focus={str_len($error-fields-field) && $error-fields-field == 'alias' && $error-fields-index == $index}
         />
 
-        <if test={$error-fields-field? && str_len($error-fields-field) && $error-fields-field == 'alias' && $error-fields-index == $index}>
+        <if test={str_len($error-fields-field) && $error-fields-field == 'alias' && $error-fields-index == $index}>
           <span class="form__error">{$error-fields-message}</span>
         </if>
       </td>
@@ -69,11 +69,11 @@
           class="form__btn"
           type="button"
           data-role="btn-config-field"
-          focus={$error-fields-field? && str_len($error-fields-field) && $error-fields-field == 'settings' && $error-fields-index == $index}
+          focus={str_len($error-fields-field) && $error-fields-field == 'settings' && $error-fields-index == $index}
         >Н</button>
         </if>
 
-        <if test={$error-fields-field? && str_len($error-fields-field) && $error-fields-field == 'settings' && $error-fields-index == $index}>
+        <if test={str_len($error-fields-field) && $error-fields-field == 'settings' && $error-fields-index == $index}>
           <span class="form__error">{$error-fields-message}</span>
         </if>
       </td>

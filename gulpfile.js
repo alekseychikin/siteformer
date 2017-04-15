@@ -167,7 +167,8 @@ function filterComponentsEntiries(opts)
 var polyfills = [
   'node_modules/promise-polyfill/promise.js',
   'modules/GUI/libs/polyfills.js',
-  'modules/GUI/libs/object-assign.js'
+  'modules/GUI/libs/object-assign.js',
+  'modules/GUI/libs/array-from.js'
 ];
 var commonBundle = [
   'modules/GUI/libs/jquery-plugins.coffee',
