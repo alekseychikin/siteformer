@@ -62,7 +62,7 @@ module.exports = class View
         target.addEventListener event, bindedHandler
     else
       if @debug
-        console.log "Add event `#{event}` at `#{selector}` (#{(@contain.find selector).length} selectors)"
+        console.log "Add event `#{event}` at `#{selector}` (#{(@contain.querySelectorAll selector).length} selectors)"
 
       for event in events
         @contain.addEventListener event, @bindedLiveEventsHandler if !@lclLiveEvents[event]

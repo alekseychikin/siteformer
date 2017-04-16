@@ -1,19 +1,14 @@
-$ = require "jquery-plugins.coffee"
+{emmitEvent} = require "helpers.coffee"
 
-$lastFakeInp = null
 stayOpening = false
 skipGenerateTable = false
-$body = $ document.body
-template = "<div class='form__calendar'>
+template = """
   <span class='form__calendar-arrow form__calendar-arrow--left'></span>
   <span class='form__calendar-arrow form__calendar-arrow--right'></span>
   <div class='form__calendar-month'></div>
-  <div class='form__calendar-days'>
-  </div>
-</div>"
-$document = $ document
+  <div class='form__calendar-days'></div>
+"""
 
-INPUT_HEIGHT = 50
 MONTHS = [
   "Январь"
   "Февраль"
@@ -34,10 +29,12 @@ isTouchDevice = ->
   (navigator.MaxTouchPoints > 0) ||
   (navigator.msMaxTouchPoints > 0)
 
-makeFakeInput = ($src) ->
-  $input = $ "<input class='form__date-fake' type='text' />"
-  $body.append $input
-  $input
+makeFakeInput = ->
+  input = document.createElement "input"
+  input.classList.add "form__date-fake"
+  input.type = "text"
+  document.body.appendChild input
+  input
 
 formateDate = (date) ->
   value = date.match /^(\d{1,2})[^\d]+(\d{1,2})[^\d]+(\d{4})$/
@@ -49,68 +46,80 @@ formateDate = (date) ->
 
 class DateControl
   constructor: (input) ->
-    @$fakeInp = makeFakeInput $input
+    @fakeInp = makeFakeInput()
 
-    @$calendar = $ template
-    @$calendarDays = @$calendar.find ".form__calendar-days"
-    @$formCalendarMonth = @$calendar.find ".form__calendar-month"
-    $formCalendarArrowLeft = @$calendar.find ".form__calendar-arrow--left"
-    $formCalendarArrowRight = @$calendar.find ".form__calendar-arrow--right"
+    @calendar = document.createElement "div"
+    @calendar.classList.add "form__calendar"
+    @calendar.innerHTML = template
+    @calendarDays = @calendar.querySelector ".form__calendar-days"
+    @formCalendarMonth = @calendar.querySelector ".form__calendar-month"
+    formCalendarArrowLeft = @calendar.querySelector ".form__calendar-arrow--left"
+    formCalendarArrowRight = @calendar.querySelector ".form__calendar-arrow--right"
 
     @lastDate
 
-    $body.append @$calendar
+    document.body.appendChild @calendar
 
-    @$calendar.on "mousedown", ".form__calendar-cell", (e) ->
-      stayOpening = true
+    @calendar.addEventListener "mousedown", (e) ->
+      if e.target.closest ".form__calendar-cell" || e.target.matches ".form__calendar-cell"
+        stayOpening = true
 
     self = @
 
-    @$calendar.on "click", ".form__calendar-cell", (e) ->
-      $cell = $ @
-      date = $cell.attr "data-value"
-      self.$fakeInp.val date
-      self.$fakeInp.trigger "change"
+    @calendar.addEventListener "click", (e) =>
+      cell = if e.target.matches ".form__calendar-cell" then e.target else e.target.closest ".form__calendar-cell"
 
-    $formCalendarArrowLeft.on "mousedown", ->
+      if cell
+        date = cell.getAttribute "data-value"
+        @fakeInp.value = date
+        emmitEvent "change", @fakeInp
+
+    formCalendarArrowLeft.addEventListener "mousedown", ->
       stayOpening = true
       skipGenerateTable = true
 
-    $formCalendarArrowLeft.on "click", =>
+    formCalendarArrowLeft.addEventListener "click", =>
       date = new Date @lastDate[1], @lastDate[2] - 1, @lastDate[3]
       @generateTable "#{date.getFullYear()}-#{date.getMonth() + 1}-#{date.getDate()}"
-      @$fakeInp.focus()
+      @fakeInp.focus()
 
-    $formCalendarArrowRight.on "mousedown", ->
+    formCalendarArrowRight.addEventListener "mousedown", ->
       stayOpening = true
       skipGenerateTable = true
 
-    $formCalendarArrowRight.on "click", =>
+    formCalendarArrowRight.addEventListener "click", =>
       date = new Date @lastDate[1], @lastDate[2] + 1, @lastDate[3]
       @generateTable "#{date.getFullYear()}-#{date.getMonth() + 1}-#{date.getDate()}"
-      @$fakeInp.focus()
+      @fakeInp.focus()
 
-    $input = $ input
+    @updateFakeInputValue input
 
-    @updateFakeInputValue $input
+    input.addEventListener "change", =>
+      @updateFakeInputValue input
 
-    $input.on "change", =>
-      @updateFakeInputValue $input
+    input.parentNode.querySelector(".form__inp-empty").addEventListener "click", =>
+      @fakeInp.value = ""
+      emmitEvent "change", @fakeInp
 
-    $input
-      .siblings ".form__inp-empty"
-      .on "click", =>
-        @$fakeInp
-          .val ""
-          .trigger "change"
+    input.addEventListener "focus", =>
+      @fakeInp.focus()
 
-    $input.on "focus", =>
-      @$fakeInp.focus()
-
-    @$fakeInp.on "focus", =>
-      $input.addClass "focus"
-      value = $input.val().match /^(\d{4})[^\d]+(\d{1,2})[^\d]+(\d{1,2})$/
-      offset = @$fakeInp.offset()
+    @fakeInp.addEventListener "focus", =>
+      input.classList.add "focus"
+      inputHeight = input.offsetHeight
+      value = input.value.match /^(\d{4})[^\d]+(\d{1,2})[^\d]+(\d{1,2})$/
+      scrollTop = document.body.scrollTop || document.documentElement.scrollTop || 0
+      offset = @fakeInp.getBoundingClientRect()
+      offset =
+        top: offset.top + scrollTop
+        left: offset.left
+      documentHeight = Math.max(
+        document.body.scrollHeight,
+        document.body.offsetHeight,
+        document.documentElement.clientHeight,
+        document.documentElement.scrollHeight,
+        document.documentElement.offsetHeight
+      )
 
       if !value
         value = new Date()
@@ -125,77 +134,66 @@ class DateControl
       else
         @generateTable "#{value[1]}-#{value[2]}-#{value[3]}"
 
-      height = @$calendar.outerHeight()
+      calendarHeight = @calendar.offsetHeight
 
-      if offset.top + height + INPUT_HEIGHT > $document.outerHeight()
-        @$calendar
-          .addClass "form__calendar--top"
-          .css
-            top: "#{offset.top - height - 15}px"
-            left: "#{offset.left}px"
-          .addClass "form__calendar--show"
+      if offset.top + calendarHeight + inputHeight > documentHeight
+        @calendar.classList.add "form__calendar--top"
+        @calendar.style.top = "#{offset.top - calendarHeight - 15}px"
+        @calendar.style.left = "#{offset.left}px"
+        @calendar.classList.add "form__calendar--show"
       else
-        @$calendar
-          .removeClass "form__calendar--top"
-          .css
-            top: "#{offset.top + INPUT_HEIGHT}px"
-            left: "#{offset.left}px"
+        @calendar.classList.remove "form__calendar--top"
+        @calendar.style.top = "#{offset.top + inputHeight + 15}px"
+        @calendar.style.left = "#{offset.left}px"
 
-    @$fakeInp.on "change", =>
-      value = @$fakeInp.val()
-      @$fakeInp.val formateDate value
+    @fakeInp.addEventListener "change", =>
+      value = @fakeInp.value
+      @fakeInp.value = formateDate value
       value = value.match /^(\d{1,2})[^\d]+(\d{1,2})[^\d]+(\d{4})$/
 
       if value
         value[1] = if value[1].length == 1 then "0#{value[1]}" else value[1]
         value[2] = if value[2].length == 1 then "0#{value[2]}" else value[2]
-        $input.val "#{value[3]}-#{value[2]}-#{value[1]}"
+        input.value = "#{value[3]}-#{value[2]}-#{value[1]}"
       else
-        $input.val ""
+        input.value = ""
 
-      $input.trigger "change"
-      @$fakeInp.trigger "blur"
+      emmitEvent "change", input
+      emmitEvent "blur", @fakeInp
 
-    @$fakeInp.on "blur", =>
+    @fakeInp.addEventListener "blur", =>
       setTimeout =>
         if !stayOpening
-          @$calendar
-            .removeClass "form__calendar--show"
-            .css
-              left: ""
-          $input.removeClass "focus"
+          @calendar.classList.remove "form__calendar--show"
+          @calendar.style.left = ""
+          input.classList.remove "focus"
         stayOpening = false
       , 10
 
-    @$fakeInp.on "keydown", (e) ->
+    @fakeInp.addEventListener "keydown", (e) ->
       if e.keyCode == 9
-        $inputs = $body.find "input, select, button"
-        prevInput = $inputs[$inputs.length - 1]
+        inputs = Array.from document.body.querySelectorAll "input, select, button"
+        prevInput = inputs[inputs.length - 1]
         nextInput = false
 
         if e.shiftKey
-          $inputs.each ->
-            if @ == $input[0]
-              $ prevInput
-                .focus()
+          inputs.forEach (item) ->
+            if item == input
+              prevInput.focus()
 
               return false
-            prevInput = @
+            prevInput = item
         else
-          $inputs.each ->
+          inputs.forEach (item) ->
             if nextInput
-              $ @
-                .focus()
+              item.focus()
 
               return false
 
-            if @ == $input[0]
-              nextInput = @
+            nextInput = item if item == input
 
           if !nextInput
-            $inputs
-            .first()
-            .focus()
+            inputs[0].focus()
 
         e.preventDefault()
 
@@ -253,18 +251,21 @@ class DateControl
 
     monthCalendar += "</table>"
 
-    @$calendarDays.html monthCalendar
-    @$formCalendarMonth.html MONTHS[date[2]]
+    @calendarDays.innerHTML = monthCalendar
+    @formCalendarMonth.innerHTML = MONTHS[date[2]]
 
-  updateFakeInputValue: ($src) ->
-    offset = $src.offset()
-    value = $src.val().match /^(\d{4})[^\d]+(\d{1,2})[^\d]+(\d{1,2})$/
+  updateFakeInputValue: (src) ->
+    scrollTop = document.body.scrollTop || document.documentElement.scrollTop || 0
+    offset = src.getBoundingClientRect()
+    offset =
+      top: offset.top + scrollTop
+      left: offset.left
+    value = src.value.match /^(\d{4})[^\d]+(\d{1,2})[^\d]+(\d{1,2})$/
 
-    @$fakeInp.val "#{value[3]}.#{value[2]}.#{value[1]}" if value
+    @fakeInp.value = "#{value[3]}.#{value[2]}.#{value[1]}" if value
 
-    @$fakeInp.css
-      top: "#{offset.top}px"
-      left: "#{offset.left}px"
+    @fakeInp.style.top = "#{offset.top}px"
+    @fakeInp.style.left = "#{offset.left}px"
 
 if !isTouchDevice()
-  ($ "[type=date]").each -> new DateControl @
+  Array.from(document.querySelectorAll "[type=date]").forEach (item) -> new DateControl item

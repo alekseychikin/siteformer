@@ -1,4 +1,3 @@
-$ = require "jquery-plugins.coffee"
 IndexView = require "./indexView.coffee"
 IndexModel = require "./indexModel.coffee"
 

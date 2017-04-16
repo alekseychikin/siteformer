@@ -171,7 +171,6 @@ var polyfills = [
   'modules/GUI/libs/array-from.js'
 ];
 var commonBundle = [
-  'modules/GUI/libs/jquery-plugins.coffee',
   'modules/GUI/libs/view.coffee',
   'modules/GUI/libs/model.coffee',
   'modules/GUI/libs/render.js',
@@ -180,7 +179,6 @@ var commonBundle = [
   'modules/GUI/libs/components.coffee'
 ];
 var exposeCommonBundle = {
-  'modules/GUI/libs/jquery-plugins.coffee': 'jquery-plugins.coffee',
   'modules/GUI/libs/view.coffee': 'view.coffee',
   'modules/GUI/libs/model.coffee': 'model.coffee',
   'modules/GUI/libs/render.js': 'render',

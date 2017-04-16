@@ -1,15 +1,16 @@
-$ = require "jquery-plugins.coffee"
-$body = $ document.body
+{emmitEvent} = require "helpers.coffee"
 
 isTouchDevice = ->
   ("ontouchstart" in window) ||
   (navigator.MaxTouchPoints > 0) ||
   (navigator.msMaxTouchPoints > 0)
 
-makeFakeInput = ($src) ->
-  $input = $ "<input class='form__time-fake' type='text' />"
-  $body.append $input
-  $input
+makeFakeInput = (src) ->
+  input = document.createElement "input"
+  input.classList.add "form__time-fake"
+  input.type = "text"
+  document.body.appendChild input
+  input
 
 formateDate = (date) ->
   value = date.match /^(\d{1,2})[^\d]+(\d{1,2})$/
@@ -22,85 +23,80 @@ formateDate = (date) ->
 
 class TimeControl
   constructor: (input) ->
-    $input = $ input
-    @$fakeInp = makeFakeInput $input
+    @fakeInp = makeFakeInput()
 
-    @updateFakeInputValue $input
+    @updateFakeInputValue input
 
-    $input.on "change", => @updateFakeInputValue $input
+    input.addEventListener "change", => @updateFakeInputValue input
 
-    $input
-      .siblings ".form__inp-empty"
-      .on "click", =>
-        @$fakeInp
-        .val ""
-        .trigger "change"
+    input.parentNode.querySelector ".form__inp-empty"
+    input.addEventListener "click", =>
+      @fakeInp.value = ""
+      emmitEvent "change", @fakeInp
 
-    $input.on "focus", =>
-      @$fakeInp.focus()
+    input.addEventListener "focus", =>
+      @fakeInp.focus()
 
-    @$fakeInp.on "focus", =>
-      @$fakeInp.addClass "focus"
+    @fakeInp.addEventListener "focus", =>
+      @fakeInp.classList.add "focus"
 
-    @$fakeInp.on "blur", =>
-      @$fakeInp.removeClass "focus"
+    @fakeInp.addEventListener "blur", =>
+      @fakeInp.classList.remove "focus"
 
-    @$fakeInp.on "change", =>
-      value = @$fakeInp.val()
-      @$fakeInp.val formateDate value
+    @fakeInp.addEventListener "change", =>
+      value = @fakeInp.value
+      @fakeInp.value = formateDate value
       value = value.match /^(\d{1,2})[^\d]+(\d{1,2})$/
 
       if value
         value[1] = if value[1].length == 1 then "0#{value[1]}" else value[1]
         value[2] = if value[2].length == 1 then "0#{value[2]}" else value[2]
-        $input.val "#{value[1]}:#{value[2]}"
+        input.value = "#{value[1]}:#{value[2]}"
       else
-        $input.val ""
+        input.value = ""
 
-      $input.trigger "change"
-      @$fakeInp.trigger "blur"
+      emmitEvent "change", input
+      emmitEvent "blur", @fakeInp
 
-    @$fakeInp.on "keydown", (e) ->
+    @fakeInp.addEventListener "keydown", (e) ->
       if e.keyCode == 9
-        $inputs = $body.find "input, select, button"
-        prevInput = $inputs[$inputs.length - 1]
+        inputs = Array.from document.body.querySelectorAll "input, select, button"
+        prevInput = inputs[inputs.length - 1]
         nextInput = false
 
         if e.shiftKey
-          $inputs.each ->
-            if @ == $input[0]
-              $ prevInput
-                .focus()
+          inputs.forEach (item) ->
+            if item == input
+              prevInput.focus()
 
               return false
-            prevInput = @
+            prevInput = item
         else
-          $inputs.each ->
+          inputs.forEach (item) ->
             if nextInput
-              $ @
-                .focus()
+              item.focus()
 
               return false
 
-            nextInput = @ if @ == $input[0]
+            nextInput = item if item == input
 
           if !nextInput
-            $inputs
-              .first()
-              .focus()
+            inputs[0].focus()
 
         e.preventDefault()
 
-  updateFakeInputValue: ($src) ->
-    offset = $src.offset()
-    value = $src.val().match /^(\d{1,2})[^\d]+(\d{1,2})$/
+  updateFakeInputValue: (src) ->
+    scrollTop = document.body.scrollTop || document.documentElement.scrollTop || 0
+    offset = src.getBoundingClientRect()
+    offset =
+      top: offset.top + scrollTop
+      left: offset.left
+    value = src.value.match /^(\d{1,2})[^\d]+(\d{1,2})$/
 
-    @$fakeInp.val "#{value[1]}:#{value[2]}" if value
+    @fakeInp.value = "#{value[1]}:#{value[2]}" if value
 
-    @$fakeInp.css
-      top: "#{offset.top}px"
-      left: "#{offset.left}px"
-
+    @fakeInp.style.top = "#{offset.top}px"
+    @fakeInp.style.left = "#{offset.left}px"
 
 if !isTouchDevice()
-  ($ "[type=time]").each -> new TimeControl @
+  Array.from(document.querySelectorAll "[type=time]").forEach (item) -> new TimeControl item

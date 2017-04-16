@@ -1,4 +1,4 @@
-emmitEvent = require("helpers.coffee").emmitEvent
+{emmitEvent} = require "helpers.coffee"
 
 editAreaSelector = ".editarea"
 

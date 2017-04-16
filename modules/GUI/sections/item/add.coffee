@@ -1,4 +1,3 @@
-$ = require "jquery-plugins.coffee"
 httpGet = (require "ajax.coffee").httpGet
 
 AddModel = require "./addModel.coffee"
@@ -41,7 +40,7 @@ httpGet window.location.href
       id: response.data.id
     addFormContainer = document.querySelector "[data-role='item-add-form']"
     addView = new AddView addFormContainer, addModel
-    $rows = addFormContainer.querySelectorAll "[data-placeholder]"
+    rows = addFormContainer.querySelectorAll "[data-placeholder]"
     index = 0
 
     for field in response.fields
@@ -51,7 +50,7 @@ httpGet window.location.href
           addModel.add field.alias, model
 
           if views[field.type]? && (!field.settings.hide? || (field.settings.hide? && !field.settings.hide))
-            new views[field.type] $rows[index], model
+            new views[field.type] rows[index], model
 
             index++
 
