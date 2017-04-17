@@ -1,6 +1,6 @@
-View = require "view.coffee"
-Render = require "render"
-configsAddTemplate = require "sections/configs/configs-add.tmplt"
+View = require "libs/view.coffee"
+Render = require "libs/render"
+configsAddTemplate = require "dist/sections/configs/configs-add.tmplt"
 
 createDuplicateRow = (rowRaw) ->
   fakeRow = document.createElement "div"

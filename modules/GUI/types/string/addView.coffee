@@ -1,6 +1,6 @@
-View = require "view.coffee"
-itemTemplate = require "types/string/item.tmplt"
-Render = require "render"
+View = require "libs/view.coffee"
+itemTemplate = require "dist/types/string/item.tmplt"
+Render = require "libs/render"
 
 module.exports = class StringDataView extends View
   constructor: (target, model) ->

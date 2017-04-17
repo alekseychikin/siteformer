@@ -11,6 +11,7 @@ var yargs = require('yargs')
 var plumber = require('gulp-plumber')
 var sourcemaps = require('gulp-sourcemaps')
 var cached = require('gulp-cached')
+var browserSync = require('browser-sync').create()
 
 function pass() {
   return through.obj()
@@ -39,5 +40,6 @@ module.exports = function (src, pwd, dest, bundleName) {
       .pipe(PRODUCTION ? pass() : sourcemaps.write('.'))
       .pipe(PRODUCTION ? csso() : pass())
       .pipe(gulp.dest(dest))
+      .pipe(browserSync.stream())
   }
 }

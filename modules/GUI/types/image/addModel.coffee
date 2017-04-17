@@ -1,5 +1,5 @@
-Model = require "model.coffee"
-httpFile = (require "ajax.coffee").httpFile
+Model = require "libs/model.coffee"
+{httpFile} = require "libs/ajax.coffee"
 
 module.exports = class ImageDataModel extends Model
   constructor: (state = {}) ->

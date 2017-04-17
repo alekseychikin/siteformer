@@ -1,6 +1,6 @@
-View = require "view.coffee"
-Render = require "render"
-itemTemplate = require "types/tags/item.tmplt"
+View = require "libs/view.coffee"
+Render = require "libs/render"
+itemTemplate = require "dist/types/tags/item.tmplt"
 
 module.exports = class TagsDataView extends View
   constructor: (target, model) ->

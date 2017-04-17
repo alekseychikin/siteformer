@@ -7,7 +7,10 @@ var gutil = require('gulp-util')
 var path = require('path')
 var uglify = require('gulp-uglify')
 var cache = require('gulp-cached')
+var browserSync = require('browser-sync').create()
+var yargs = require('yargs')
 
+var watch = require('./tasks/watch')
 var templatesTask = require('./tasks/templates')
 var imagesTask = require('./tasks/images')
 var stylesTask = require('./tasks/styles')
@@ -21,15 +24,23 @@ var LIBS_PATH = 'modules/GUI/libs'
 
 var requirePaths = [
   'node_modules',
-  'modules/GUI/libs',
-  'modules/GUI/types',
-  'modules/GUI/dist',
   'modules/GUI'
 ]
 
-gulp.task('default', ['styles', 'polyfills', 'scripts', 'scripts-lib', 'images'])
+gulp.task('default', ['styles', 'polyfills', 'templates', 'scripts', 'scripts-lib', 'images'])
 
 gulp.task('watch', ['default'], function () {
+  if (!yargs.argv.host) {
+    throw new Error(
+      'Watch task open with proxy over existing server. Pass host parameter like at example:\n' +
+      'gulp watch --host localhost:8080\n'
+    )
+  }
+
+  browserSync.init({
+    proxy: yargs.argv.host
+  })
+
   watch('modules/GUI/**/*.html', 'scripts')
   watch('modules/GUI/sections/**/*.css', 'styles')
   watch('modules/GUI/components/**/*.css', 'styles')
@@ -85,7 +96,9 @@ var exposeCommonBundle = {
   'modules/GUI/libs/model.coffee': 'model.coffee',
   'modules/GUI/libs/render.js': 'render',
   'modules/GUI/libs/ajax.coffee': 'ajax.coffee',
-  'modules/GUI/libs/popup.js': 'popup'
+  'modules/GUI/libs/popup.js': 'popup',
+  'modules/GUI/libs/components.coffee': 'components.coffee',
+  'modules/GUI/libs/helpers.coffee': 'helpers.coffee'
 }
 
 gulp.task('polyfills', function () {

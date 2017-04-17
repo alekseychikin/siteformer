@@ -1,6 +1,6 @@
-View = require "view.coffee"
-Render = require "render"
-modalWindowTemplate = require "types/gallery/modal.tmplt"
+View = require "libs/view.coffee"
+Render = require "libs/render"
+modalWindowTemplate = require "dist/types/gallery/modal.tmplt"
 
 module.exports = class GalleryConfigsView extends View
   constructor: (target, model) ->

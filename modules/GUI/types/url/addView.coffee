@@ -1,6 +1,6 @@
-View = require "view.coffee"
-itemTemplate = require "types/url/item.tmplt"
-Render = require "render"
+View = require "libs/view.coffee"
+itemTemplate = require "dist/types/url/item.tmplt"
+Render = require "libs/render"
 
 module.exports = class UrlDataView extends View
   constructor: (target, model) ->

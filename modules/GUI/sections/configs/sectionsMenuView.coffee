@@ -1,6 +1,6 @@
-Render = require "render"
-View = require "view.coffee"
-menuTemplate = require "components/menu/menu-items.tmplt"
+Render = require "libs/render"
+View = require "libs/view.coffee"
+menuTemplate = require "dist/components/menu/menu-items.tmplt"
 
 module.exports = class SectionsMenuView extends View
   constructor: (target, model) ->

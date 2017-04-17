@@ -1,6 +1,6 @@
-View = require "view.coffee"
-Render = require "render"
-itemTemplate = require "types/section/item.tmplt"
+View = require "libs/view.coffee"
+Render = require "libs/render"
+itemTemplate = require "dist/types/section/item.tmplt"
 
 module.exports = class SectionDataView extends View
   constructor: (target, model) ->

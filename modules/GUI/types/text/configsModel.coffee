@@ -1,4 +1,4 @@
-Model = require "model.coffee"
+Model = require "libs/model.coffee"
 configs = require "types/text/configs.json"
 
 module.exports = class TextConfigsModel extends Model

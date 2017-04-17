@@ -1,6 +1,6 @@
-View = require "view.coffee"
-template = require "types/image/item.tmplt"
-Render = require "render"
+View = require "libs/view.coffee"
+template = require "dist/types/image/item.tmplt"
+Render = require "libs/render"
 
 module.exports = class ImageDataView extends View
   constructor: (target, model) ->

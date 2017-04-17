@@ -1,4 +1,4 @@
-Model = require "model.coffee"
+Model = require "libs/model.coffee"
 
 module.exports = class TableDataModel extends Model
   constructor: (state = {}) -> super state

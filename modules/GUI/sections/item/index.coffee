@@ -6,7 +6,7 @@ UserFieldsPopupView = require "./userFieldsPopupView.coffee"
 
 indexModel = new IndexModel()
 
-Popup = require "popup"
+Popup = require "libs/popup"
 
 itemListContainer = document.querySelector "[data-role='item-list']"
 indexView = new IndexView itemListContainer, indexModel

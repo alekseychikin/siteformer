@@ -1,4 +1,4 @@
-Model = require "model.coffee"
+Model = require "libs/model.coffee"
 configs = require "types/date/configs.json"
 
 module.exports = class DateConfigsModel extends Model

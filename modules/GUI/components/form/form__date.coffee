@@ -1,4 +1,4 @@
-{emmitEvent} = require "helpers.coffee"
+{emmitEvent} = require "libs/helpers.coffee"
 
 stayOpening = false
 skipGenerateTable = false

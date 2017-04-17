@@ -1,6 +1,6 @@
-View = require "view.coffee"
-popupTemplate = require "sections/item/user-fields-popup-template.tmplt"
-Render = require "render"
+View = require "libs/view.coffee"
+popupTemplate = require "dist/sections/item/user-fields-popup-template.tmplt"
+Render = require "libs/render"
 
 module.exports = class UserFieldsView extends View
   constructor: (target, model) ->

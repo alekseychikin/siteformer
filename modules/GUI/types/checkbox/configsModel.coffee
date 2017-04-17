@@ -1,4 +1,4 @@
-Model = require "model.coffee"
+Model = require "libs/model.coffee"
 configs = require "types/checkbox/configs.json"
 
 module.exports = class CheckboxConfigsModel extends Model

@@ -1,4 +1,4 @@
-Model = require "model.coffee"
+Model = require "libs/model.coffee"
 
 module.exports = class StringConfigsModel extends Model
   constructor: (state = {}) ->

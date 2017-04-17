@@ -1,6 +1,5 @@
-Model = require "model.coffee"
-httpGet = (require "ajax.coffee").httpGet
-httpPost = (require "ajax.coffee").httpPost
+Model = require "libs/model.coffee"
+{httpGet, httpPost} = require "libs/ajax.coffee"
 configs = require "types/file/configs.json"
 
 module.exports = class GalleryConfigsModel extends Model

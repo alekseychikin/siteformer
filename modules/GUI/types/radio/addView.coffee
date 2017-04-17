@@ -1,4 +1,4 @@
-View = require "view.coffee"
+View = require "libs/view.coffee"
 
 module.exports = class RadioDataView extends View
   constructor: (target, model) -> super target, model

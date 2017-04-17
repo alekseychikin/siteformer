@@ -1,5 +1,5 @@
-Model = require "model.coffee"
-{httpGet, httpPost} = require "ajax.coffee"
+Model = require "libs/model.coffee"
+{httpGet, httpPost} = require "libs/ajax.coffee"
 
 module.exports = class ItemIndexModel extends Model
   constructor: (state = {}) ->

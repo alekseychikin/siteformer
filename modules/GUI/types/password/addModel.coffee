@@ -1,4 +1,4 @@
-Model = require "model.coffee"
+Model = require "libs/model.coffee"
 
 module.exports = class PasswordDataModel extends Model
   constructor: (state = {data: ""}) -> super state

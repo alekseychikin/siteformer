@@ -1,6 +1,6 @@
-View = require "view.coffee"
-modalWindowTemplate = require "types/url/modal.tmplt"
-Render = require "render"
+View = require "libs/view.coffee"
+modalWindowTemplate = require "dist/types/url/modal.tmplt"
+Render = require "libs/render"
 
 module.exports = class UrlConfigsView extends View
   constructor: (target, model) ->

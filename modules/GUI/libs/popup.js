@@ -1,4 +1,4 @@
-var {emmitEvent} = require('helpers.coffee');
+var {emmitEvent} = require('libs/helpers.coffee');
 var initiatedElements = [];
 var openned;
 

@@ -1,6 +1,6 @@
-Model = require "model.coffee"
-{httpGet} = require "ajax.coffee"
-{skipEmptyQuery, skipLastQuery, throttle} = require "helpers.coffee"
+Model = require "libs/model.coffee"
+{httpGet} = require "libs/ajax.coffee"
+{skipEmptyQuery, skipLastQuery, throttle} = require "libs/helpers.coffee"
 
 fetchData = (url, section, field) -> (query) -> httpGet url,
   src: query

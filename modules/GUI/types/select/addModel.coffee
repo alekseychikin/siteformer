@@ -1,4 +1,4 @@
-Model = require "model.coffee"
+Model = require "libs/model.coffee"
 
 module.exports = class SelectDataModel extends Model
   constructor: (state= {data: -1}) -> super state

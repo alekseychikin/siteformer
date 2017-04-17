@@ -8,6 +8,7 @@ var browserStringifier = require('gutt-browser-stringifier');
 var using = require('gulp-using');
 var cache = require('gulp-cached');
 var rename = require('gulp-rename');
+var browserSync = require('browser-sync').create()
 
 function generatePhpTemplates () {
 	return through.obj(function (file, enc, next) {
@@ -29,7 +30,6 @@ function generateBrowserTemplates () {
 	})
 }
 
-
 module.exports = function (src, pwd, dest) {
   return function () {
     var results = {};
@@ -44,7 +44,7 @@ module.exports = function (src, pwd, dest) {
       }))
       .pipe(gulp.dest(dest))
 
-    gulp
+    return gulp
       .src(src.files, {base: src.base})
       .pipe(generateBrowserTemplates())
       .pipe(rename(function (path) {
@@ -52,5 +52,6 @@ module.exports = function (src, pwd, dest) {
         return path
       }))
       .pipe(gulp.dest(dest))
+      .pipe(browserSync.stream())
   }
 };

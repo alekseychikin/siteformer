@@ -1,6 +1,6 @@
-View = require "view.coffee"
-Render = require "render"
-tableTemplate = require "sections/item/section-list.tmplt"
+View = require "libs/view.coffee"
+Render = require "libs/render"
+tableTemplate = require "dist/sections/item/section-list.tmplt"
 
 module.exports = class ItemIndexView extends View
   constructor: (target, model) ->
