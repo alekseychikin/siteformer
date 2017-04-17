@@ -1,4 +1,4 @@
-require "components/form/form__date.coffee"
-require "components/form/form__time.coffee"
-require "components/form/form__select.coffee"
-require "components/editarea/editarea-handler.coffee"
+require "./form__date.coffee"
+require "./form__time.coffee"
+require "./form__select.coffee"
+require "../editarea/editarea-handler.coffee"

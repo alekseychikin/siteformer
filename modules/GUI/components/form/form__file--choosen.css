@@ -1,7 +1,0 @@
-.form__file--choosen:after {
-  margin: calc(height('form__file.svg') / - 4 + 30) 0 0 calc(width('form__file.svg') / - 2);
-}
-
-.form__file--choosen {
-  
-}

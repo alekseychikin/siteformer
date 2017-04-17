@@ -1,7 +1,7 @@
 <component>
   <div class="user-block">
     <a href="" class="user-block__link">
-      <img src="/sf-engine/modules/GUI/dist/userpic.png" alt="" class="user-block__pic" />
+      <img src="/sf-engine/modules/GUI/dist/user-block/userpic.png" alt="" class="user-block__pic" />
     </a>
     <div class="user-block__name">
       <a href="" class="user-block__nick">Konstatinopolsky</a>

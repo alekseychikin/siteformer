@@ -30,7 +30,7 @@ function generateBrowserTemplates () {
 }
 
 
-module.exports = (function (src, pwd, dest) {
+module.exports = function (src, pwd, dest) {
   return function () {
     var results = {};
 
@@ -46,7 +46,6 @@ module.exports = (function (src, pwd, dest) {
 
     gulp
       .src(src.files, {base: src.base})
-      .pipe(using({}))
       .pipe(generateBrowserTemplates())
       .pipe(rename(function (path) {
         path.extname = '.tmplt.js'
@@ -54,4 +53,4 @@ module.exports = (function (src, pwd, dest) {
       }))
       .pipe(gulp.dest(dest))
   }
-});
+};

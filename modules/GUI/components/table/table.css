@@ -1,31 +1,51 @@
 .table {
   width: 100%;
   border-collapse: separate;
-}
 
-.table td,
-.table th {
-  font-size: 15px;
-  padding: 10px 20px;
-  vertical-align: top;
-}
+  & td,
+  & th {
+    font-size: 15px;
+    padding: 10px 20px;
+    vertical-align: top;
+  }
 
-.table thead td,
-.table thead th {
-  background-color: #EFEFEF;
-  font-weight: bold;
-  font-size: 14px;
-  color: #5d5d5d;
-}
+  & thead td,
+  & thead th {
+    background-color: #EFEFEF;
+    font-weight: bold;
+    font-size: 14px;
+    color: #5d5d5d;
+  }
 
-.table a {
-  color: #000;
-  text-decoration: none;
-  display: block;
-  padding: 10px 20px;
-  margin: -10px -20px;
-}
+  & a {
+    color: #000;
+    text-decoration: none;
+    display: block;
+    padding: 10px 20px;
+    margin: -10px -20px;
+  }
 
-.table tbody tr:nth-child(even) td {
-  background-color: #f7f7f7;
+  & tbody tr:nth-child(even) td {
+    background-color: #f7f7f7;
+  }
+
+  &--responsive {
+    width: auto;
+  }
+
+  &--responsive td {
+    padding: 5px 10px;
+  }
+
+  &--straight-sides td:first-child {
+    padding-left: 0;
+  }
+
+  &--straight-sides td:last-child {
+    padding-right: 0;
+  }
+
+  &__link:hover td {
+    background-color: #f4f1f1 !important;
+  }
 }

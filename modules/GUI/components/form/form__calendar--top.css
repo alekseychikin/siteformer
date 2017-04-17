@@ -1,8 +1,0 @@
-.form__calendar--top {
-  &:before {
-    border-bottom: 0;
-    border-top: 9px solid #fff;
-    top: auto;
-    bottom: -9px;
-  }
-}

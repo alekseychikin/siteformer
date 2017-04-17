@@ -1,1 +1,1 @@
-require "components/form/form"
+require "components/form/form.coffee"

@@ -1,7 +1,0 @@
-.section__row {
-
-}
-
-* + .section__row {
-  margin-top: 15px;
-}

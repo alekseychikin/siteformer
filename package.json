@@ -19,11 +19,8 @@
     "coffeeify": "^2.0.1",
     "gulp": "^3.9.1",
     "gulp-cached": "^1.1.0",
-    "gulp-concat": "^2.6.0",
-    "gulp-cssi": "0.0.5",
+    "gulp-concat": "^2.6.1",
     "gulp-csso": "^1.0.1",
-    "gulp-imagemin": "^2.4.0",
-    "gulp-livereload": "^3.8.1",
     "gulp-plumber": "^1.0.1",
     "gulp-postcss": "^6.0.1",
     "gulp-rename": "^1.2.2",
@@ -34,15 +31,14 @@
     "gutt": "0.0.5",
     "gutt-browser-stringifier": "0.0.4",
     "gutt-php-stringifier": "0.0.2",
-    "imagemin-pngquant": "^4.2.0",
     "path": "^0.12.7",
     "postcss-assets": "^3.0.3",
-    "postcss-calc": "^5.0.0",
-    "postcss-custom-properties": "^5.0.0",
+    "postcss-cssnext": "^2.10.0",
     "postcss-import": "^7.1.3",
-    "postcss-nested": "^1.0.0",
+    "postcss-size": "^1.1.1",
     "stream": "0.0.2",
-    "through2": "^2.0.1"
+    "through2": "^2.0.1",
+    "yargs": "^7.1.0"
   },
   "dependencies": {
     "promise-polyfill": "^6.0.2"

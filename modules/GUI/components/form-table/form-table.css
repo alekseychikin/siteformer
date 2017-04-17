@@ -1,4 +1,75 @@
 .form-table {
   width: 100%;
   border-collapse: collapse;
+
+  &__row-fake {
+    position: absolute;
+    font-size: 0;
+    background-color: #fff;
+    box-shadow: 0 0 10px #ddd;
+    opacity: 0.8;
+    padding: 3px 10px;
+    margin: -3px 0 0 -10px;
+    z-index: 10;
+  }
+
+  &__row {
+    &--head {
+      color: #353535;
+      font-size: 12px;
+      font-weight: bold;
+    }
+  }
+
+  &__move {
+    cursor: pointer;
+    display: inline-block;
+    height: 38px;
+    vertical-align: middle;
+    width: 26px;
+    background: resolve('form-table__move.svg') center no-repeat;
+  }
+
+  &__line {
+    position: absolute;
+    height: 1px;
+    width: 100%;
+    left: 0;
+    background-color: #FF0000;
+    box-shadow: 0 0 7px #FF0000;
+  }
+
+  &__cell {
+    position: relative;
+    text-align: left;
+    padding: 5px 10px;
+
+    &:first-child {
+      padding-left: 0;
+    }
+
+    &:last-child {
+      padding-right: 0;
+    }
+
+    &--center {
+      text-align: center;
+    }
+  }
+
+  &__cell-fake {
+    box-sizing: border-box;
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 16px;
+    padding: 5px 10px;
+
+    &:first-child {
+      padding-left: 0;
+    }
+
+    &:last-child {
+      padding-right: 0;
+    }
+  }
 }
