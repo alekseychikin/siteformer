@@ -1,0 +1,90 @@
+# SFURI class
+
+## `init`
+Static constructor
+
+### Params
+
+#### `$path`
+
+Required
+String of request uri path
+
+#### `$domain`
+
+Not required
+Request domain. It's going to be splited into array by dot
+Default value is `$_SERVER['SERVER_NAME']`
+
+#### `$port`
+
+Not required
+Request port.
+Default value is `$_SERVER['SERVER_PORT']`
+
+## `getUri`
+
+Returns full URI of part of them
+
+### Params
+
+If you send lack of parameters then it returns string of query.
+
+### `$index`
+
+Returns one part of path. Example:
+```
+SFURI::init('/one/two/three');
+echo SFURI::getUri(1);
+// output: two
+```
+
+## `getUriRaw`
+
+Returns array of parts
+
+## `getFirstUri`
+
+Returns first part
+
+## `getLastUri`
+
+Returns last part
+
+## `getUriLength`
+
+Returns amount of parts
+
+## `getDomain`
+
+Returns full domain of part of it
+
+### `Params`
+
+If you send lack of parameters then it returns string of full domain
+
+#### `$index`
+
+Returns one part of domain. Example:
+
+```
+SFURI::init('/one/two/three', 'sub.domain.com.uk', '8080');
+echo SFURI::getDomain(2);
+// output: com
+```
+
+## `getFirstDomain`
+
+Returns first part
+
+## `getLastDomain`
+
+Returns last part
+
+## `getDomainsLength`
+
+Returns amount of domain parts
+
+## `getPort`
+
+Returns port
