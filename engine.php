@@ -75,28 +75,24 @@ try {
     SFResponse::render();
   }
 
-  if (SFResponse::isWorking()) {
-    if (file_exists(ACTIONS . '__before.php')) {
-      SFResponse::run(ACTIONS . '__before');
-    }
+  if (file_exists(ACTIONS . '__before.php')) {
+    SFResponse::run(ACTIONS . '__before');
+  }
 
-    $request = substr($_SERVER['REQUEST_URI'], 1, -1);
+  $request = substr($_SERVER['REQUEST_URI'], 1, -1);
 
-    if (!SFResponse::actionExists(ACTIONS . $request)) {
-      throw new PageNotFoundException(ACTIONS . $request);
-    }
+  if (!SFResponse::actionExists(ACTIONS . $request)) {
+    throw new PageNotFoundException(ACTIONS . $request);
+  }
 
-    SFResponse::run(ACTIONS . $request);
+  SFResponse::run(ACTIONS . $request);
 
-    if (file_exists(ACTIONS . '__after.php')) {
-      SFResponse::run(ACTIONS . '__after');
-    }
+  if (file_exists(ACTIONS . '__after.php')) {
+    SFResponse::run(ACTIONS . '__after');
   }
 
   SFResponse::render();
 } catch (PageNotFoundException $e) {
-  SFResponse::code('404');
-
   if (SFResponse::actionExists('404')) {
     SFResponse::run('404');
   } else {

@@ -1,6 +1,9 @@
 <?php if (!defined('ROOT')) die('You can\'t just open this file, dude');
 
-require_once __dir__ . '/RouterModel.php';
+require_once __DIR__ . '/../../classes/uri.php';
+require_once __DIR__ . '/../../classes/response.php';
+require_once __DIR__ . '/../../classes/models.php';
+require_once __DIR__ . '/RouterModel.php';
 
 class SFRouter
 {
@@ -64,7 +67,7 @@ class SFRouter
     }
 
     if (isset($data['template'])) {
-      echo SFTemplater::render($data['template'], SFResponse::getResults());
+      echo SFTemplater::render($data['template'], SFResponse::getState());
     }
   }
 

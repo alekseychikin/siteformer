@@ -1,5 +1,7 @@
 <?php if (!defined('ROOT')) die('You can\'t just open this file, dude');
 
+require_once __DIR__ . '/validation_exception.php';
+
 class SkipEmptyException extends Exception {}
 
 class SFValidate
