@@ -40,7 +40,7 @@ class SFValidate
     return $result;
   }
 
-  public static function value($params, $source, $index = [], & $uniqueCache = []) {
+  public static function value($params, $source = false, $index = [], & $uniqueCache = []) {
     $typeIsArray = isset($params['type']) && $params['type'] === 'array';
 
     if (!isset($params['collection']) && gettype($source) === 'array' && !$typeIsArray) {
@@ -116,7 +116,7 @@ class SFValidate
       }
 
       if (isset($params['unique'])) {
-        if (gettype($params['unique']) === 'object') {
+        if (gettype($params['unique']) === 'object' && is_callable($params['unique'])) {
           if (!$params['unique']($data)) {
             return self::returnError('ENOTUNIQUEVALUE', $index, $data);
           }
@@ -146,7 +146,7 @@ class SFValidate
       if (isset($params['modify'])) {
         if (gettype($params['modify']) === 'string') {
           $data = call_user_func($params['modify'], $data);
-        } elseif (gettype($params['modify']) === 'object') {
+        } elseif (gettype($params['modify']) === 'object' && is_callable($params['modify'])) {
           $data = $params['modify']($data);
         }
       }
