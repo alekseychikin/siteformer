@@ -41,9 +41,9 @@ class SFValidate
   }
 
   public static function value($params, $source = false, $index = [], & $uniqueCache = []) {
-    $typeIsArray = isset($params['type']) && $params['type'] === 'array';
+    $isTypeArray = isset($params['type']) && $params['type'] === 'array';
 
-    if (!isset($params['collection']) && gettype($source) === 'array' && !$typeIsArray) {
+    if (!isset($params['collection']) && gettype($source) === 'array' && !$isTypeArray) {
       $data = [];
 
       foreach ($params as $field => $param) {
@@ -65,7 +65,7 @@ class SFValidate
       }
 
       if (isset($params['maxlength'])) {
-        if (count($data) < $params['maxlength']) {
+        if (count($data) > $params['maxlength']) {
           return self::returnError('EMAXLENGTH', $index, $data);
         }
       }
