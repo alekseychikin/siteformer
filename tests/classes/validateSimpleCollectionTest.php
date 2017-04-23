@@ -5,7 +5,7 @@ if (!defined('ROOT')) {
 }
 
 require_once ROOT . 'classes/validate.php';
-require_once ROOT . 'classes/validation_exception.php';
+require_once ROOT . 'classes/validate-exception.php';
 
 class ValidateSimpleCollectionTest extends PHPUnit_Framework_TestCase
 {
@@ -80,7 +80,7 @@ class ValidateSimpleCollectionTest extends PHPUnit_Framework_TestCase
       ]);
 
       $this->assertEquals(true, 'Never happend');
-    } catch (ValidationException $e) {
+    } catch (ValidateException $e) {
       $message = $e->getOriginMessage();
 
       $this->assertEquals('ENOTVALIDTYPE', $message['code']);
@@ -115,7 +115,7 @@ class ValidateSimpleCollectionTest extends PHPUnit_Framework_TestCase
       ]);
 
       $this->assertEquals(true, 'Never happend');
-    } catch (ValidationException $e) {
+    } catch (ValidateException $e) {
       $message = $e->getOriginMessage();
 
       $this->assertEquals('EEMPTYREQUIRED', $message['code']);
@@ -152,7 +152,7 @@ class ValidateSimpleCollectionTest extends PHPUnit_Framework_TestCase
       ]);
 
       $this->assertEquals(true, 'Never happend');
-    } catch (ValidationException $e) {
+    } catch (ValidateException $e) {
       $message = $e->getOriginMessage();
 
       $this->assertEquals('ENOTVALIDVALUE', $message['code']);
@@ -173,7 +173,7 @@ class ValidateSimpleCollectionTest extends PHPUnit_Framework_TestCase
       ]);
 
       $this->assertEquals(true, 'Never happend');
-    } catch (ValidationException $e) {
+    } catch (ValidateException $e) {
       $message = $e->getOriginMessage();
 
       $this->assertEquals('ENOTVALIDVALUE', $message['code']);
@@ -211,6 +211,37 @@ class ValidateSimpleCollectionTest extends PHPUnit_Framework_TestCase
     $this->assertEquals($collection, ['name' => 'Elen', 'age' => '11']);
   }
 
+  public function testValuesNegativeCollection() {
+    try {
+      $collection = SFValidate::value([
+        'name' => [
+          'values' => ['Andy', 'Rendy', 'Mini', 'Wendy']
+        ]
+      ], [
+        'name' => 'Elle'
+      ]);
+
+      $this->assertEquals(true, 'Never happend');
+    } catch (ValidateException $e) {
+      $message = $e->getOriginMessage();
+
+      $this->assertEquals('EVALUESNOTMATCHED', $message['code']);
+      $this->assertEquals(['name'], $message['index']);
+    }
+  }
+
+  public function testValuesPositiveCollection() {
+    $collection = SFValidate::value([
+      'name' => [
+        'values' => ['Andy', 'Rendy', 'Mini', 'Wendy', 'Elle']
+      ]
+    ], [
+      'name' => 'Elle'
+    ]);
+
+    $this->assertEquals($collection, ['name' => 'Elle']);
+  }
+
   public function testUniqueCallbackNegative() {
     try {
       $collection = SFValidate::value([
@@ -226,7 +257,7 @@ class ValidateSimpleCollectionTest extends PHPUnit_Framework_TestCase
       ]);
 
       $this->assertEquals(true, 'Never happend');
-    } catch (ValidationException $e) {
+    } catch (ValidateException $e) {
       $message = $e->getOriginMessage();
 
       $this->assertEquals('ENOTUNIQUEVALUE', $message['code']);

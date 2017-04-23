@@ -20,7 +20,7 @@ header('Content-type: text/html; charset=utf8');
 define('CLASSES', ENGINE . 'classes/');
 
 require_once CLASSES . 'clear_cache.php';
-require_once CLASSES . 'validation_exception.php';
+require_once CLASSES . 'validate-exception.php';
 require_once CLASSES . 'page_not_found_exception.php';
 
 
@@ -98,7 +98,7 @@ try {
   } else {
     SFResponse::error(404, 'Page not found');
   }
-} catch (ValidationException $e) {
+} catch (ValidateException $e) {
   $e->message();
 } catch (BaseException $e) {
   SFResponse::error(400, $e->message());

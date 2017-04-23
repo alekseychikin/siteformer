@@ -5,7 +5,7 @@ if (!defined('ROOT')) {
 }
 
 require_once ROOT . 'classes/validate.php';
-require_once ROOT . 'classes/validation_exception.php';
+require_once ROOT . 'classes/validate-exception.php';
 
 class ValidateSimpleTest extends PHPUnit_Framework_TestCase
 {
@@ -16,7 +16,7 @@ class ValidateSimpleTest extends PHPUnit_Framework_TestCase
       ], 'string');
 
       $this->assertEquals(false, $newValue);
-    } catch (ValidationException $e) {
+    } catch (ValidateException $e) {
       $message = $e->getOriginMessage();
 
       $this->assertEquals('ENOTVALIDTYPE', $message['code']);
@@ -75,7 +75,7 @@ class ValidateSimpleTest extends PHPUnit_Framework_TestCase
       ], '');
 
       $this->assertEquals(true, 'Never happend');
-    } catch (ValidationException $e) {
+    } catch (ValidateException $e) {
       $message = $e->getOriginMessage();
 
       $this->assertEquals('EEMPTYREQUIRED', $message['code']);
@@ -90,7 +90,7 @@ class ValidateSimpleTest extends PHPUnit_Framework_TestCase
       ], '0');
 
       $this->assertEquals(true, 'Never happend');
-    } catch (ValidationException $e) {
+    } catch (ValidateException $e) {
       $message = $e->getOriginMessage();
 
       $this->assertEquals('EEMPTYREQUIRED', $message['code']);
@@ -105,7 +105,7 @@ class ValidateSimpleTest extends PHPUnit_Framework_TestCase
       ], 0);
 
       $this->assertEquals(true, 'Never happend');
-    } catch (ValidationException $e) {
+    } catch (ValidateException $e) {
       $message = $e->getOriginMessage();
 
       $this->assertEquals('EEMPTYREQUIRED', $message['code']);
@@ -120,7 +120,7 @@ class ValidateSimpleTest extends PHPUnit_Framework_TestCase
       ], false);
 
       $this->assertEquals(true, 'Never happend');
-    } catch (ValidationException $e) {
+    } catch (ValidateException $e) {
       $message = $e->getOriginMessage();
 
       $this->assertEquals('EEMPTYREQUIRED', $message['code']);
@@ -143,7 +143,7 @@ class ValidateSimpleTest extends PHPUnit_Framework_TestCase
       ], '1');
 
       $this->assertEquals(true, 'Never happend');
-    } catch (ValidationException $e) {
+    } catch (ValidateException $e) {
       $message = $e->getOriginMessage();
 
       $this->assertEquals([], $message['index']);
@@ -160,7 +160,7 @@ class ValidateSimpleTest extends PHPUnit_Framework_TestCase
       ], '1');
 
       $this->assertEquals(true, 'Never happend');
-    } catch (ValidationException $e) {
+    } catch (ValidateException $e) {
       $message = $e->getOriginMessage();
 
       $this->assertEquals([], $message['index']);
@@ -193,7 +193,7 @@ class ValidateSimpleTest extends PHPUnit_Framework_TestCase
       ], 5);
 
       $this->assertEquals(true, 'Never happend');
-    } catch (ValidationException $e) {
+    } catch (ValidateException $e) {
       $message = $e->getOriginMessage();
 
       $this->assertEquals([], $message['index']);
@@ -218,7 +218,7 @@ class ValidateSimpleTest extends PHPUnit_Framework_TestCase
       ], 5);
 
       $this->assertEquals(true, 'Never happend');
-    } catch (ValidationException $e) {
+    } catch (ValidateException $e) {
       $message = $e->getOriginMessage();
 
       $this->assertEquals([], $message['index']);

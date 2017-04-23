@@ -1,6 +1,6 @@
 <?php if (!defined('ROOT')) die('You can\'t just open this file, dude');
 
-require_once __DIR__ . '/validation_exception.php';
+require_once __DIR__ . '/validate-exception.php';
 
 class SkipEmptyException extends Exception {}
 
@@ -156,6 +156,6 @@ class SFValidate
   }
 
   private static function returnError($code, $index, $source) {
-    throw new ValidationException(['code' => $code, 'index' => $index, 'source' => $source]);
+    throw new ValidateException(['code' => $code, 'index' => $index, 'source' => $source]);
   }
 }

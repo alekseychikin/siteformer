@@ -579,10 +579,10 @@ class SFGUI
       if (class_exists($className)) {
         try {
           $data['fields'][$index]['settings'] = $className::validateSettings($field['settings'], $data['fields'], $field['alias']);
-        } catch (ValidationException $e) {
+        } catch (ValidateException $e) {
           $message = $e->getOriginMessage();
 
-          throw new ValidationException([
+          throw new ValidateException([
             'code' => $message['code'],
             'index' => array_merge(['fields', $index, 'settings'], $message['index']),
             'source' => $message['source']

@@ -59,7 +59,7 @@ if (isset($data['id']) && isset($data['section'])) {
   if ($status === 'public') {
     foreach ($fields as $field) {
       if ($field['required'] == "1" && (empty($newData[$field['alias']]))) {
-        throw new ValidationException([
+        throw new ValidateException([
           'index' => [$field['alias']],
           'code' => 'EEMPTYREQUIREDVALUE'
         ]);
@@ -93,7 +93,7 @@ if (isset($data['id']) && isset($data['section'])) {
   if ($status === 'public') {
     foreach ($fields as $field) {
       if ($field['required'] == "1" && (empty($newData[$field['alias']]))) {
-        throw new ValidationException([
+        throw new ValidateException([
           'index' => [$field['alias']],
           'code' => 'EEMPTYREQUIREDVALUE'
         ]);
