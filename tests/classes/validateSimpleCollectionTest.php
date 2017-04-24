@@ -281,7 +281,7 @@ class ValidateSimpleCollectionTest extends PHPUnit_Framework_TestCase
     $this->assertEquals($collection, ['name' => 'Elen', 'age' => 'eleven']);
   }
 
-  public function testModify() {
+  public function testModifyCollection() {
     $collection = SFValidate::value([
       'name' => [
         'modify' => function ($value) {

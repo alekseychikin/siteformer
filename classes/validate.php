@@ -98,7 +98,7 @@ class SFValidate
       }
 
       if (isset($params['valid'])) {
-        if (gettype($params['valid']) === 'object') {
+        if (gettype($params['valid']) === 'object' && is_callable($params['valid'])) {
           if (!$params['valid']($data)) {
             return self::returnError('ENOTVALIDVALUE', $index, $data);
           }
