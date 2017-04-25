@@ -1,18 +1,18 @@
 <?php if (!defined('ROOT')) die('You can\'t just open this file, dude');
 
-require_once $modulePath . 'SFDB.php';
-require_once $modulePath . 'ORMDatabase.php';
-require_once $modulePath . 'ORMAlter.php';
-require_once $modulePath . 'ORMCreate.php';
-require_once $modulePath . 'ORMWhere.php';
-require_once $modulePath . 'ORMSelect2.php';
-require_once $modulePath . 'ORMDelete.php';
-require_once $modulePath . 'ORMUpdate.php';
-require_once $modulePath . 'ORMInsert.php';
-require_once $modulePath . 'ORMMigrate.php';
-require_once $modulePath . 'ORMField.php';
-require_once $modulePath . 'ORMFunc.php';
-require_once $modulePath . 'ORMCustomValue.php';
+require_once __DIR__ . '/SFDB.php';
+require_once __DIR__ . '/ORMDatabase.php';
+require_once __DIR__ . '/ORMAlter.php';
+require_once __DIR__ . '/ORMCreate.php';
+require_once __DIR__ . '/ORMWhere.php';
+require_once __DIR__ . '/ORMSelect2.php';
+require_once __DIR__ . '/ORMDelete.php';
+require_once __DIR__ . '/ORMUpdate.php';
+require_once __DIR__ . '/ORMInsert.php';
+require_once __DIR__ . '/ORMMigrate.php';
+require_once __DIR__ . '/ORMField.php';
+require_once __DIR__ . '/ORMFunc.php';
+require_once __DIR__ . '/ORMCustomValue.php';
 
 class SFORM extends SFORMDatabase
 {

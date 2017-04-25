@@ -45,7 +45,7 @@ require_once CLASSES . 'array.php';
 require_once CLASSES . 'models.php';
 require_once CLASSES . 'uri.php';
 require_once CLASSES . 'validate.php';
-require_once CLASSES . 'paths.php';
+require_once CLASSES . 'path.php';
 require_once CLASSES . 'text.php';
 require_once CLASSES . 'socket.php';
 require_once CLASSES . 'error.php';

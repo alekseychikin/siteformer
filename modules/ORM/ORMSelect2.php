@@ -1,5 +1,9 @@
 <?php if (!defined('ROOT')) die('You can\'t just open this file, dude');
 
+require_once __DIR__ . '/ORM.php';
+require_once __DIR__ . '/ORMCustomValue.php';
+require_once __DIR__ . '/ORMDatabase.php';
+
 class SFORMSelect extends SFORMDatabase
 {
   private $selectFields;

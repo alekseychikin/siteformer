@@ -13,7 +13,7 @@ define('ENGINE', realpath(dirname(__FILE__)) . '/');
 define('ENGINE_TEMP', ENGINE . 'temp/');
 
 require_once __DIR__ . '/classes/response.php';
-require_once __DIR__ . '/classes/base_exception.php';
+require_once __DIR__ . '/classes/base-exception.php';
 require_once __DIR__ . '/classes/error_handler.php';
 register_shutdown_function('fatalErrorHandler');
 set_error_handler('errorHandler');
