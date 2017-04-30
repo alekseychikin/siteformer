@@ -35,19 +35,19 @@ class ResponseTest extends PHPUnit_Framework_TestCase
     $this->assertEquals(false, SFResponse::actionExists('/action.php'));
     $this->assertEquals(false, SFResponse::actionExists('/action/index.php'));
 
-    $this->assertEquals(true, SFResponse::actionExists(ROOT . 'tests/action'));
-    $this->assertEquals(true, SFResponse::actionExists(ROOT . 'tests/action/index'));
-    $this->assertEquals(false, SFResponse::actionExists(ROOT . 'tests/action.php'));
-    $this->assertEquals(true, SFResponse::actionExists(ROOT . 'tests/action/index.php'));
-    $this->assertEquals(true, SFResponse::actionExists(ROOT . 'tests/action/'));
-    $this->assertEquals(false, SFResponse::actionExists(ROOT . 'tests/action/index/'));
+    $this->assertEquals(true, SFResponse::actionExists(ROOT . 'unit-tests/action'));
+    $this->assertEquals(true, SFResponse::actionExists(ROOT . 'unit-tests/action/index'));
+    $this->assertEquals(false, SFResponse::actionExists(ROOT . 'unit-tests/action.php'));
+    $this->assertEquals(true, SFResponse::actionExists(ROOT . 'unit-tests/action/index.php'));
+    $this->assertEquals(true, SFResponse::actionExists(ROOT . 'unit-tests/action/'));
+    $this->assertEquals(false, SFResponse::actionExists(ROOT . 'unit-tests/action/index/'));
 
-    $this->assertEquals(true, SFResponse::actionExists('tests/action'));
-    $this->assertEquals(true, SFResponse::actionExists('tests/action/index'));
-    $this->assertEquals(true, SFResponse::actionExists('tests/action/'));
-    $this->assertEquals(false, SFResponse::actionExists('tests/action/index/'));
-    $this->assertEquals(false, SFResponse::actionExists('tests/action.php'));
-    $this->assertEquals(true, SFResponse::actionExists('tests/action/index.php'));
+    $this->assertEquals(true, SFResponse::actionExists('unit-tests/action'));
+    $this->assertEquals(true, SFResponse::actionExists('unit-tests/action/index'));
+    $this->assertEquals(true, SFResponse::actionExists('unit-tests/action/'));
+    $this->assertEquals(false, SFResponse::actionExists('unit-tests/action/index/'));
+    $this->assertEquals(false, SFResponse::actionExists('unit-tests/action.php'));
+    $this->assertEquals(true, SFResponse::actionExists('unit-tests/action/index.php'));
   }
 
   public function testGetState() {
