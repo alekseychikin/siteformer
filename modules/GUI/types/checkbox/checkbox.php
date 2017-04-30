@@ -2,8 +2,9 @@
 
 require_once ENGINE . 'classes/validate.php';
 require_once ENGINE . 'classes/text.php';
+require_once __DIR__ . '/../../GUIType.php';
 
-class SFTypeCheckbox extends SFType
+class SFTypeCheckbox extends SFGUIType
 {
   public static function getSqlField($params) {
     $params = parseJSON($params);

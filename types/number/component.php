@@ -1,6 +1,6 @@
 <?
 
-  class SFTypeNumber extends SFType
+  class SFTypeNumber extends SFGUIType
   {
     public static function getSqlType($length = 10)
     {

@@ -1,6 +1,6 @@
 <?
 
-	class SFTypeArray extends SFType
+	class SFTypeArray extends SFGUIType
 	{
 
 	}

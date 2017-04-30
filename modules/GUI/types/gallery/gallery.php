@@ -1,8 +1,9 @@
 <?php if (!defined('ROOT')) die('You can\'t just open this file, dude');
 
 require_once ENGINE . 'classes/validate.php';
+require_once __DIR__ . '/../../GUIType.php';
 
-class SFTypeGallery extends SFType
+class SFTypeGallery extends SFGUIType
 {
   public static function getSqlField($params)
   {

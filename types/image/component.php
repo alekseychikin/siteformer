@@ -1,6 +1,6 @@
 <?
 
-	class SFTypeImage extends SFType
+	class SFTypeImage extends SFGUIType
 	{
 
 		/**

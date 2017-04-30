@@ -1,6 +1,6 @@
 <?
 
-	class SFTypePassword extends SFType
+	class SFTypePassword extends SFGUIType
 	{
 		public function set($value)
 		{

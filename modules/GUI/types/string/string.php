@@ -1,20 +1,21 @@
 <?php if (!defined('ROOT')) die('You can\'t just open this file, dude');
 
 require_once ENGINE . 'classes/validate.php';
+require_once __DIR__ . '/../../GUIType.php';
 
-class SFTypeString extends SFType
+class SFTypeString extends SFGUIType
 {
-  public static function whereExpression($databaseQuery, $section, $field, $value, $params) {
+  public static function whereExpression($section, $field, $value, $params) {
     if (isset($params['find'])) {
       if ($params['find'] === 'prefix') {
-        $databaseQuery->where(SFORM::generateValue(':field LIKE ":value%" ', [
+        return SFORM::generateValue(':field LIKE ":value%" ', [
           'section' => $section,
           'field' => $field,
           'value' => $value
-        ]));
+        ]);
       }
     } else {
-      $databaseQuery->where($field, $value);
+      return [$field, $value];
     }
   }
 }

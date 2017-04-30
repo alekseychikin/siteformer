@@ -1,8 +1,9 @@
 <?php if (!defined('ROOT')) die('You can\'t just open this file, dude');
 
 require_once ENGINE . 'classes/validate.php';
+require_once __DIR__ . '/../../GUIType.php';
 
-class SFTypeFile extends SFType
+class SFTypeFile extends SFGUIType
 {
   public static function validateSettings($params, $fields, $currentAlias)
   {

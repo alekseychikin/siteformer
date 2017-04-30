@@ -1,6 +1,8 @@
 <?php if (!defined('ROOT')) die('You can\'t just open this file, dude');
 
-class SFTypeTable extends SFType
+require_once __DIR__ . '/../../GUIType.php';
+
+class SFTypeTable extends SFGUIType
 {
   public static function getSqlField($params) {
     $params = json_decode($params, true);

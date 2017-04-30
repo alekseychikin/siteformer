@@ -6,7 +6,7 @@ class SFResponse
   private static $template;
   private static $main;
   private static $isShowContent = false;
-  private static $code = [
+  private static $codes = [
     '200' => 'OK',
     '400' => 'Bad Request',
     '401' => 'Unauthorized',
@@ -15,7 +15,7 @@ class SFResponse
     '422' => 'Unprocessable Entity',
     '500' => 'Internal Server Error'
   ];
-  private static $error = 200;
+  private static $code = 200;
 
   public static function error($code, $message, $file = '', $line = '', $trace = false) {
     self::$code = $code;

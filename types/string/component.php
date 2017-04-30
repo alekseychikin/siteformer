@@ -1,5 +1,5 @@
 <?
 
-	class SFTypeString extends SFType
+	class SFTypeString extends SFGUIType
 	{
 	}

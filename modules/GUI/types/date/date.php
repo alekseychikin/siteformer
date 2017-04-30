@@ -1,6 +1,8 @@
 <?php if (!defined('ROOT')) die('You can\'t just open this file, dude');
 
-class SFTypeDate extends SFType
+require_once __DIR__ . '/../../GUIType.php';
+
+class SFTypeDate extends SFGUIType
 {
   public static function getSqlField($params) {
     return [

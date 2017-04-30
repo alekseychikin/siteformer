@@ -1,8 +1,9 @@
 <?php if (!defined('ROOT')) die('You can\'t just open this file, dude');
 
 require_once ENGINE . 'classes/validate.php';
+require_once __DIR__ . '/../../GUIType.php';
 
-class SFTypeTags extends SFType
+class SFTypeTags extends SFGUIType
 {
   public static function prepareDatabase() {
     $exists = SFORM::exists('type_tags');

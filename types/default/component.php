@@ -1,5 +1,5 @@
 <?
 
-	class SFTypeDefault extends SFType
+	class SFTypeDefault extends SFGUIType
 	{
 	}

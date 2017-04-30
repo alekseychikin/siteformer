@@ -1,6 +1,6 @@
 <?
 
-	class SFTypePrimaryIndex extends SFType
+	class SFTypePrimaryIndex extends SFGUIType
 	{
 		public static function getSqlType()
 		{

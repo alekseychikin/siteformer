@@ -36,7 +36,6 @@ if (isset($_SESSION['location'])) {
   die;
 }
 
-require_once CLASSES . 'type.php';
 require_once CLASSES . 'log.php';
 require_once CLASSES . 'json.php';
 // SFLog::init();

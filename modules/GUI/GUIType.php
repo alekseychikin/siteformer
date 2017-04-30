@@ -1,6 +1,6 @@
 <?php if (!defined('ROOT')) die('You can\'t just open this file, dude');
 
-class SFType
+class SFGUIType
 {
   /**
   * Prepare database for this type
@@ -121,6 +121,7 @@ class SFType
     return $data;
   }
 
-  public static function whereExpression($databaseQuery, $section, $field, $value, $params) {
+  public static function whereExpression($section, $field, $value, $params) {
+    return [$field, $value];
   }
 }

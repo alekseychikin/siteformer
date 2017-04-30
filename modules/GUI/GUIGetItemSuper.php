@@ -20,22 +20,11 @@ class SFGUIGetItemSuper
     }
 
     return $this;
-
   }
 
   public function where($field, $value, $params = []) {
-    foreach ($this->fields as $fieldItem) {
-      if ($fieldItem['alias'] === $field) {
-        $typeClass = SFGUI::getClassNameByType($fieldItem['type']);
-
-        $typeClass::whereExpression($this->databaseQuery, $this->section, $field, $value, $params);
-
-        return $this;
-      }
-    }
-
-    if (in_array($field, self::$systemFields)) {
-      $this->whereSystemField($field, $value);
+    if ($value = $this->getValueForORMQuery($field, $value, $params)) {
+      call_user_func_array([$this->databaseQuery, 'where'], $value);
     }
 
     return $this;
@@ -75,6 +64,22 @@ class SFGUIGetItemSuper
     }
 
     return $data;
+  }
+
+  private function getValueForORMQuery($field, $value, $params = []) {
+    foreach ($this->fields as $fieldItem) {
+      if ($fieldItem['alias'] === $field) {
+        $typeClass = SFGUI::getClassNameByType($fieldItem['type']);
+
+        return $typeClass::whereExpression($this->section, $field, $value, $params);
+      }
+    }
+
+    if (in_array($field, self::$systemFields)) {
+      return $this->whereSystemField($field, $value);
+    }
+
+    return false;
   }
 
   private function whereSystemField($field, $value) {

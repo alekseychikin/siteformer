@@ -1,6 +1,6 @@
 <?
 
-	class SFTypeDate extends SFType
+	class SFTypeDate extends SFGUIType
 	{
 		public static function getSqlType()
 		{
