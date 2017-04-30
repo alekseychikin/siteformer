@@ -135,16 +135,16 @@ class SFORMSelect extends SFORMDatabase
     return $this;
   }
 
-  public function andWhere () {
-    $params = func_get_args();
-    $this->where[] = ' AND ';
-    $this->where[] = $this->handleExpression($params);
+  public function closeWhere () {
+    $this->where[] = ')';
 
     return $this;
   }
 
-  public function closeWhere () {
-    $this->where[] = ')';
+  public function andWhere () {
+    $params = func_get_args();
+    $this->where[] = ' AND ';
+    $this->where[] = $this->handleExpression($params);
 
     return $this;
   }

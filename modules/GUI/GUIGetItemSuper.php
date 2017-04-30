@@ -30,6 +30,46 @@ class SFGUIGetItemSuper
     return $this;
   }
 
+  public function andWhere($field, $value, $params = []) {
+    if ($value = $this->getValueForORMQuery($field, $value, $params)) {
+      call_user_func_array([$this->databaseQuery, 'andWhere'], $value);
+    }
+
+    return $this;
+  }
+
+  public function orWhere($field, $value, $params = []) {
+    if ($value = $this->getValueForORMQuery($field, $value, $params)) {
+      call_user_func_array([$this->databaseQuery, 'orWhere'], $value);
+    }
+
+    return $this;
+  }
+
+  public function andOpenWhere() {
+    $this->databaseQuery->andOpenWhere();
+
+    return $this;
+  }
+
+  public function orOpenWhere() {
+    $this->databaseQuery->orOpenWhere();
+
+    return $this;
+  }
+
+  public function openWhere() {
+    $this->databaseQuery->openWhere();
+
+    return $this;
+  }
+
+  public function closeWhere() {
+    $this->databaseQuery->closeWhere();
+
+    return $this;
+  }
+
   public function order($order) {
     $this->databaseQuery->order($order);
 
