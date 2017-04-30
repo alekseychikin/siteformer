@@ -6,6 +6,8 @@
   <param name={$id} value={false} />
   <param name={$section} value="" />
   <param name={$sections} value={[]} />
+  <param name={$title} value="" />
+  <param name={$alias} value="" />
   <param name={$error-title} value="" />
   <param name={$error-alias} value="" />
   <param name={$error-fields-index} value={false} />

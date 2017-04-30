@@ -3,7 +3,7 @@
 class SFGUIType
 {
   /**
-  * Prepare database for this type
+  * Prepare database for this type. Maybe creating some tables would be needed.
   */
   public static function prepareDatabase() {
   }
@@ -15,13 +15,14 @@ class SFGUIType
   public static function getSqlField($settings) {
     return [
       'type' => 'VARCHAR(250)',
-      'null' => 'NULL',
-      'default' => ''
+      'null' => true,
+      'default' => NULL
     ];
   }
 
   /**
-  * @param array $settings Params sended for validation
+  * Method returns validated settings
+  * @param array $settings Params sent for validation
   * @param array $fields Array of fields at current SAMConnection
   * @param string $currentAlias Value of current alias
   * @return array Validated settings
@@ -34,7 +35,7 @@ class SFGUIType
   * Method for validating data before preparing data and putting to the database
   * @param array $section Section
   * @param array $field Field
-  * @param array $data Sended data
+  * @param array $data Sent data
   */
   public static function validateInsertData($section, $field, $data) {
     return true;
@@ -44,7 +45,7 @@ class SFGUIType
   * Method for validating data before preparing data and update it at the database
   * @param array $section Section
   * @param array $field Field
-  * @param array $data Sended data
+  * @param array $data Sent data
   */
   public static function validateUpdateData($section, $field, $data) {
     return true;
@@ -54,7 +55,7 @@ class SFGUIType
   * Method for preparing data for putting to database
   * @param array $section Section
   * @param array $field Field
-  * @param array $data Sended data
+  * @param array $data Sent data
   * @return string Prepared data
   */
   public static function prepareInsertData($section, $field, $data) {
@@ -66,7 +67,7 @@ class SFGUIType
   * @param array $section Section
   * @param array $field Field
   * @param array $currentData Current data
-  * @param array $data Sended data
+  * @param array $data Sent data
   * @return string Prepared data
   */
   public static function prepareUpdateData($section, $field, $currentData, $data) {
@@ -78,7 +79,7 @@ class SFGUIType
   * @param array $section Section
   * @param array $field Field
   * @param array $record Fresh inserted data to main table
-  * @param array $data Origin array of data, sended to `prepareInsertData` before
+  * @param array $data Origin array of data, sent to `prepareInsertData` before
   * @return void
   */
   public static function postPrepareInsertData($section, $field, $record, $data) {
@@ -89,7 +90,7 @@ class SFGUIType
   * @param array $section Section
   * @param array $field Field
   * @param array $newData Fresh updated data from main table
-  * @param array $data Origin array of data, sended to `prepareUpdateData` before
+  * @param array $data Origin array of data, sent to `prepareUpdateData` before
   * @return void
   */
   public static function postPrepareUpdateData($section, $field, $newData, $data) {

@@ -3,6 +3,8 @@
 
   <param name={$modules} value={[]} />
   <param name={$id} value={false} />
+  <param name={$title} value="" />
+  <param name={$alias} value="" />
   <param name={$section-title} value="Добавить" />
   <param name={$section-url} value="add" />
   <param name={$save-button-label} value="Создать" />
@@ -27,7 +29,7 @@
         <input
           type="text"
           class="form__inp"
-          value={$section-url}
+          value={$title}
           name="name"
           id="name"
           data-role="configs-add-title"
