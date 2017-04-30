@@ -8,9 +8,9 @@
       <div class="form__inp-contain">
         <label class="form__select">
           <select data-role="configs-url-field" id="configs-url-field">
-            <for item={$fieldItem} from={$fields}>
+            <for-each item={$fieldItem} from={$fields}>
               <option value={$fieldItem.alias} selected={$source == $fieldItem.alias}>{$fieldItem.title}</option>
-            </for>
+            </for-each>
           </select>
         </label>
       </div>
