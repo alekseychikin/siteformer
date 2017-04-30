@@ -36,7 +36,7 @@ if ($id === false) {
     ],
     'alias' => [
       'required' => true,
-      'valid' => '/^[a-zA-Z0-9\-_]+$/i',
+      'valid' => '/^[a-zA-Z\-_]+$/i',
       'unique' => function ($value) use ($id) {
         $res = SFORM::select()
           ->from('sections')

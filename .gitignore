@@ -22,3 +22,4 @@ CVS
 *.map
 *.log
 /modules/GUI/dist/
+/errorShots/

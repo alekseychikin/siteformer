@@ -30,8 +30,8 @@
           type="text"
           class="form__inp"
           value={$title}
-          name="name"
-          id="name"
+          name="title"
+          id="title"
           data-role="configs-add-title"
           focus={str_len($error-title)}
         />

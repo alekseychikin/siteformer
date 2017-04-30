@@ -42,12 +42,12 @@ module.exports = class AddConfigsModel extends Model
   updateTitle: (value) ->
     @set
       title: value
-      errorTitle: ""
+      "error-title": ""
 
   updateAlias: (value) ->
     @set
       alias: value
-      errorAlias: ""
+      "error-alias": ""
 
   updateModule: (value) -> @set module: value
 
@@ -56,18 +56,18 @@ module.exports = class AddConfigsModel extends Model
     fields[index].title = value
     @set
       fields: fields
-      errorFieldsField: ''
-      errorFieldsMessage: ''
-      errorFieldsIndex: false
+      "error-fields-index": false
+      "error-fields-field": ""
+      "error-fields-message": ""
 
   updateFieldAlias: (index, value) ->
     fields = @state.fields.slice()
     fields[index].alias = value
     @set
       fields: fields
-      errorFieldsField: ''
-      errorFieldsMessage: ''
-      errorFieldsIndex: false
+      "error-fields-index": false
+      "error-fields-field": ""
+      "error-fields-message": ""
 
   updateFieldType: (index, value) ->
     fields = @state.fields.slice()
@@ -101,12 +101,12 @@ module.exports = class AddConfigsModel extends Model
   saveFieldSettings: (state) ->
     fields = @state.fields.slice()
     fields[state.index].settings = cloneObject state.settings
-    if @state.errorFieldsField? && @state.errorFieldsField == "settings"
+    if @state["error-fields-field"]? && @state["error-fields-field"] == "settings"
       @set
         fields: fields
-        errorFieldsField: ''
-        errorFieldsMessage: ''
-        errorFieldsIndex: false
+      "error-fields-index": false
+      "error-fields-field": ""
+      "error-fields-message": ""
     else
       @set {fields}
 
@@ -164,28 +164,28 @@ module.exports = class AddConfigsModel extends Model
 
   showError: (error) ->
     switch error.index[0]
-      when "title" then @set errorTitle: @getTitleErrorMessage error.code
-      when "alias" then @set errorAlias: @getAliasErrorMessage error.code
+      when "title" then @set "error-title": @getTitleErrorMessage error.code
+      when "alias" then @set "error-alias": @getAliasErrorMessage error.code
       when "fields" then @showErrorFields error
 
-  getTitleErrorMessage: (code) ->
+  getTitleErrorMessage: (code, field = "Раздел ") ->
     switch code
       when "EEMPTYREQUIRED" then "Поле обязательно к заполнению"
-      when "ENOTUNIQUEVALUE" then "Раздел с таким именем уже есть, придумайте другое"
+      when "ENOTUNIQUEVALUE" then "#{field}с таким именем уже есть, придумайте другое"
       else "Неизвестная ошибка: #{code}"
 
-  getAliasErrorMessage: (code) ->
+  getAliasErrorMessage: (code, field = "Раздел ") ->
     switch code
       when "EEMPTYREQUIRED" then "Поле обязательно к заполнению"
-      when "ENOTUNIQUEVALUE" then "Раздел с таким веб-именем уже есть, придумайте другое"
+      when "ENOTUNIQUEVALUE" then "#{field}с таким веб-именем уже есть, придумайте другое"
       when "ENOTVALIDVALUE" then "Веб-имя может состоять только из символов латинского алфавита, дефис и подчеркивания"
       else "Неизвестная ошибка: #{code}"
 
   showErrorFields: (error) ->
     @set
-      errorFieldsIndex: error.index[1]
-      errorFieldsField: error.index[2]
-      errorFieldsMessage: @getFieldsErrorMessage error.index[2], error.code
+      "error-fields-index": error.index[1]
+      "error-fields-field": error.index[2]
+      "error-fields-message": @getFieldsErrorMessage error.index[2], error.code
 
     if error.index[2] == "settings"
       settingsErrorIndex = error.index.slice(0)
@@ -197,8 +197,8 @@ module.exports = class AddConfigsModel extends Model
 
   getFieldsErrorMessage: (field, code) ->
     switch field
-      when "title" then @getTitleErrorMessage code
-      when "alias" then @getAliasErrorMessage code
+      when "title" then @getTitleErrorMessage code, "Поле "
+      when "alias" then @getAliasErrorMessage code, "Поле "
       when "settings" then "Задайте настройки"
 
   getSections: -> @state.sections
