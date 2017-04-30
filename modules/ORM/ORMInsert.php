@@ -3,17 +3,21 @@
 require_once __DIR__ . '/ORM.php';
 require_once __DIR__ . '/ORMDatabase.php';
 
+if (!defined('N')) {
+  define('N', "\n");
+}
+
 class SFORMInsert extends SFORMDatabase
 {
   private $table;
-  private $params;
+  private $values;
 
   public function __construct($table) {
     $this->table = $table;
   }
 
-  public function values($params) {
-    $this->params = $params;
+  public function values($values) {
+    $this->values = $values;
     return $this;
   }
 
@@ -31,13 +35,13 @@ class SFORMInsert extends SFORMDatabase
     $fields = array();
     $values = array();
 
-    foreach ($this->params as $field => $value) {
+    foreach ($this->values as $field => $value) {
       $fields[] = $field;
 
       if (gettype($value) == 'object' && method_exists($value, 'get')) {
         $value = $value->get();
       } else {
-        $value = $this->quote(SFORM::prepareWriteValue($this->table, $field, $value));
+        $value = $this->quote($value);
       }
 
       $values[] = $value;
@@ -53,7 +57,6 @@ class SFORMInsert extends SFORMDatabase
     $sql = $this->getQuery($alias, $getObject);
 
     parent::query($sql, $alias, true);
-    parent::updateExistsTableList();
 
     if (!$getObject) {
       return $this->lastId($alias);

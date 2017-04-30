@@ -63,10 +63,8 @@ class SFORMWhere extends SFORMDatabase
 
         if (gettype($exprs[3]) == 'object') {
           $value = $exprs[3]->get();
-        } elseif (substr($exprs[3], 0, 1) === '`' && substr($exprs[3], strlen($exprs[3]) -1, 1) === '`') {
-          $value = $exprs[3];
         } else {
-          $value = SFORM::prepareWriteValue((strlen($table) ? $table : $defaultTable), $field, $exprs[3]);
+          $value = $exprs[3];
 
           if (is_null($value)) {
             $value = 'NULL';
@@ -75,10 +73,8 @@ class SFORMWhere extends SFORMDatabase
           }
         }
 
-        if ($exprs[2] == '->') {
+        if ($exprs[2] == 'FIND_IN_SET') {
           $result = ' FIND_IN_SET('.$value.', '._field_($exprs[1]).') > 0';
-        } elseif ($exprs[2] == '~~') {
-          $result = _field_($exprs[1]).' LIKE '.$value.'';
         } else {
           $result = ' '.$exprs[1].' '.$exprs[2].' '.$value.' ';
         }

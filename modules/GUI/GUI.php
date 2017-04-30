@@ -290,7 +290,6 @@ class SFGUI
 
   // Save section
   public static function saveSection($id, $data) {
-    SFORM::showError();
     $defaultField = [
       'name' => '',
       'type' => '',

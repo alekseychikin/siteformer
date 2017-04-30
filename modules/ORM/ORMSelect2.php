@@ -36,10 +36,6 @@ class SFORMSelect extends SFORMDatabase
     return $this;
   }
 
-  public function append () {
-    return $this;
-  }
-
   public function join ($table, $alias = false) {
     if ($alias === false) {
       $alias = $this->getJoinAliasName($table);
@@ -162,7 +158,7 @@ class SFORMSelect extends SFORMDatabase
   }
 
   public function id ($id, $alias = 'default') {
-    $primaryFields = $this->getPrimaryFields($this->fromTable, $alias);
+    $primaryFields = self::getPrimaryFields($this->fromTable, $alias);
 
     if (count($primaryFields) === 1) {
       $this->where($primaryFields[0], $id);
@@ -207,6 +203,7 @@ class SFORMSelect extends SFORMDatabase
       ->getQuery();
 
     $resultRaw = parent::query($query, $alias);
+
     if (isset($resultRaw[0]) && isset($resultRaw[0]['length'])) {
       return $resultRaw[0]['length'];
     }
@@ -338,7 +335,7 @@ class SFORMSelect extends SFORMDatabase
   }
 
   private function getIdByRow ($row, $table, $tableAlias, $alias) {
-    $idFields = $this->getPrimaryFields($table, $alias);
+    $idFields = self::getPrimaryFields($table, $alias);
     $id = [];
 
     foreach ($idFields as $field) {
@@ -361,11 +358,7 @@ class SFORMSelect extends SFORMDatabase
       $fromTable = '`' . $fromTable . '`';
     }
 
-    $sql = 'SELECT ';
-
-    $sql .= $this->getSelectFields($alias);
-
-    $sql .= N . 'FROM ' . $fromTable;
+    $sql = 'SELECT ' . $this->getSelectFields($alias) . N . 'FROM ' . $fromTable;
 
     if ($this->fromTable !== $this->fromTableAlias) {
       $sql .= ' AS `' . $this->fromTableAlias . '`';
@@ -408,12 +401,17 @@ class SFORMSelect extends SFORMDatabase
     $result = '';
 
     foreach ($this->where as $option) {
-      if (gettype($option) === 'object' && $option instanceof SFORMCustomValue) {
+      if (gettype($option) === 'object' && get_class($option) === 'SFORMCustomValue') {
         $option->set('field', $this->generateField($option->get('field'), $this->fromTableAlias, true));
         $result .= $option->value();
       } elseif (gettype($option) === 'array') {
-        $result .= $this->generateField($option[0], $this->fromTableAlias, true) .
-          ' ' . $option[1] . ' ' . $this->handleValue($option[2]);
+        if ($option[1] === 'FIND_IN_SET') {
+          $result .= 'FIND_IN_SET(' . $this->generateField($option[0], $this->fromTableAlias, true) . ', ' .
+            $this->handleValue($option[2]) . ')';
+        } else {
+          $result .= $this->generateField($option[0], $this->fromTableAlias, true) . ' ' .
+            $option[1] . ' ' . $this->handleValue($option[2]);
+        }
       } else {
         $result .= $option;
       }
@@ -461,10 +459,10 @@ class SFORMSelect extends SFORMDatabase
           $tableFields[$index] = $this->fromTableAlias . '.' . $field;
         }
       } else {
-        $tableFields = $this->getFields($this->fromTable, $alias);
+        $tableFields = self::getFields($this->fromTable, $alias);
 
         foreach ($this->joins as $joinAlias => $join) {
-          $joinFields = $this->getFields($join['table']);
+          $joinFields = self::getFields($join['table']);
 
           foreach ($joinFields as $field) {
             $tableFields[] = $joinAlias . '.' . $field;
@@ -505,7 +503,7 @@ class SFORMSelect extends SFORMDatabase
       }
 
       if (gettype($this->fromTable) !== 'object') {
-        $fromIdFields = $this->getPrimaryFields($this->fromTable, $alias);
+        $fromIdFields = self::getPrimaryFields($this->fromTable, $alias);
 
         foreach ($fromIdFields as $field) {
           if (!in_array(
@@ -518,7 +516,7 @@ class SFORMSelect extends SFORMDatabase
       }
 
       foreach ($this->joins as $joinAlias => $joinTable) {
-        $fromIdFields = $this->getPrimaryFields($joinTable['table'], $alias);
+        $fromIdFields = self::getPrimaryFields($joinTable['table'], $alias);
 
         foreach ($fromIdFields as $field) {
           if (!in_array(
@@ -586,6 +584,7 @@ class SFORMSelect extends SFORMDatabase
 
   private function registerFieldAlias ($field, $alias) {
     $field = explode('.', $field);
+
     $this->fieldsAliases[str_replace('`', '', $alias)] = [
       'table' => str_replace('`', '', $field[0]),
       'field' => str_replace('`', '', $field[1]),
@@ -593,7 +592,7 @@ class SFORMSelect extends SFORMDatabase
   }
 
   private function handleExpression ($params) {
-    if (gettype($params[0]) === 'object' && $params[0] instanceof SFORMCustomValue) {
+    if (gettype($params[0]) === 'object' && get_class($params[0]) === 'SFORMCustomValue') {
       return $params[0];
     }
 

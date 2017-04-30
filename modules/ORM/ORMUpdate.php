@@ -30,7 +30,7 @@ class SFORMUpdate extends SFORMWhere
       if (gettype($value) == 'object' && method_exists($value, 'get')) {
         $value = $value->get();
       } else {
-        $value = $this->quote(SFORM::prepareWriteValue($this->table, $field, $value));
+        $value = $this->quote($value);
       }
 
       $params[] = _field_($field).' = '. $value;
@@ -39,7 +39,7 @@ class SFORMUpdate extends SFORMWhere
     $sql .= implode(', ', $params).N;
 
     if ($this->getById !== false) {
-      $idField = $this->getPrimaryFields($this->table, $alias);
+      $idField = self::getPrimaryFields($this->table, $alias);
       $idField = $idField[0];
       $this->where = '`'. $this->table .'`.`'. $idField .'` = '.$this->getById;
     }

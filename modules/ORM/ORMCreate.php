@@ -1,6 +1,7 @@
 <?php if (!defined('ROOT')) die('You can\'t just open this file, dude');
 
 require_once __DIR__ . '/ORMDatabase.php';
+require_once __DIR__ . '/../../classes/validate.php';
 
 class SFORMCreate extends SFORMDatabase
 {
@@ -23,6 +24,10 @@ class SFORMCreate extends SFORMDatabase
   public function addKey($fields, $type = 'KEY') {
     $keyName = $fields;
 
+    $type = SFValidate::value([
+      'values' => ['KEY', 'PRIMARY KEY', 'UNIQUE']
+    ], strtoupper($type));
+
     if (gettype($fields) === 'array') {
       $keyName = implode('_', $keyName);
       $fields = implode('`, `', $fields);
@@ -37,6 +42,7 @@ class SFORMCreate extends SFORMDatabase
   public function exec($alias = 'default') {
     $sql = $this->getQuery();
     parent::query($sql, $alias);
+    parent::updateExistsTableList();
   }
 
   public function getQuery() {

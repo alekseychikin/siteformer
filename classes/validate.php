@@ -47,7 +47,7 @@ class SFValidate
       $data = [];
 
       foreach ($params as $field => $param) {
-        $value = '';
+        $value = false;
 
         if (isset($source[$field])) {
           $value = $source[$field];

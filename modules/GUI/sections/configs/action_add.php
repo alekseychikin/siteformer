@@ -9,7 +9,6 @@ arrMap(SFGUI::getTypes(), function ($type) use (& $types) {
 });
 
 SFResponse::showContent();
-SFORM::showError();
 
 $data = SFValidate::value([
   'title' => [

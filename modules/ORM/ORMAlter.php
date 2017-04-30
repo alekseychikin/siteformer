@@ -11,52 +11,99 @@ class SFORMAlter extends SFORMDatabase
     $this->tableName = $tableName;
   }
 
-  public function change($sourceField, $field) {
+  public function addField($field, $after = false) {
     $field = $this->validateField($field);
     $this->orderActions[] = array(
-      'action' => 'edit',
-      'sourceField' => $sourceField,
-      'field' => $field
-    );
-    return $this;
-  }
-
-  public function drop($field) {
-    $this->orderActions[] = array(
-      'action' => 'drop',
-      'field' => $field
-    );
-    return $this;
-  }
-
-  public function add($field, $after = false) {
-    $field = $this->validateField($field);
-    $this->orderActions[] = array(
-      'action' => 'add',
+      'action' => 'add-field',
       'field' => $field,
       'after' => $after
     );
+
+    return $this;
+  }
+
+  public function changeField($sourceField, $field) {
+    $field = $this->validateField($field);
+    $this->orderActions[] = array(
+      'action' => 'edit-field',
+      'sourceField' => $sourceField,
+      'field' => $field
+    );
+
+    return $this;
+  }
+
+  public function dropField($field) {
+    $this->orderActions[] = array(
+      'action' => 'drop-field',
+      'field' => $field
+    );
+
+    return $this;
+  }
+
+  public function addIndex($fields, $type = 'KEY') {
+    $keyName = $fields;
+
+    $type = SFValidate::value([
+      'values' => ['KEY', 'PRIMARY KEY', 'UNIQUE']
+    ], strtoupper($type));
+
+    if (gettype($fields) === 'array') {
+      $keyName = implode('_', $keyName);
+      $fields = implode('`, `', $fields);
+    }
+
+    $fields = mb_strtoupper($type) . ' `' . $keyName .'` (`' . $fields . '`)';
+    $this->orderActions[] = [
+      'action' => 'add-index',
+      'fields' => $fields
+    ];
+
+    return $this;
+  }
+
+  public function dropIndex($keyName) {
+    $this->orderActions[] = [
+      'action' => 'drop-index',
+      'keyName' => $keyName
+    ];
+
     return $this;
   }
 
   public function getQuery() {
+    $parts = [];
+
     foreach ($this->orderActions as $field) {
       switch ($field['action']) {
-        case 'edit':
-          return 'ALTER TABLE `' . $this->tableName . '` CHANGE `' . $field['sourceField'] . '` ' .
+        case 'edit-field':
+          $parts[] = 'ALTER TABLE `' . $this->tableName . '` CHANGE `' . $field['sourceField'] . '` ' .
             $this->makeStringOfField($field['field']);
-        case 'drop':
-          return 'ALTER TABLE `' . $this->tableName . '` DROP `' . $field['field'] . '`';
-        case 'add':
-          return 'ALTER TABLE `' . $this->tableName . '` ADD ' .
+          break;
+        case 'drop-field':
+          $parts[] = 'ALTER TABLE `' . $this->tableName . '` DROP `' . $field['field'] . '`';
+          break;
+        case 'add-field':
+          $parts[] = 'ALTER TABLE `' . $this->tableName . '` ADD ' .
             $this->makeStringOfField($field['field']) .
             ($field['after'] !== false ? ' AFTER `' . $field['after'] . '`' : '');
+          break;
+        case 'add-index':
+          $parts[] = 'ALTER TABLE `' . $this->tableName . '` ADD ' . $field['fields'];
+          break;
+        case 'drop-index':
+          $parts[] = 'ALTER TABLE `' . $this->tableName . '` DROP INDEX `' . $field['keyName'] . '`';
+          break;
       }
     }
+
+    return implode(';', $parts);
   }
 
   public function exec($alias = 'default') {
     $query = $this->getQuery();
     parent::query($query, $alias);
+    parent::dropCacheFields($this->tableName, $alias);
   }
 }

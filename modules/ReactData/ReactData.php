@@ -80,7 +80,6 @@
       // $limitSeconds = 24;
       // session_destroy();
       // while (true) {
-      SFORM::showError();
         $data = SFORM::select('id_event', 'type', 'event', 'params')
           ->from('__events')
           ->where(_and_(_expr_('id_event', '>', $lastEvent), _expr_('type', '=', $type)))

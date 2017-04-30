@@ -13,7 +13,6 @@ class SFORMDatabase
   private static $databases = [];
   private static $inits = [];
   private static $lastSQL;
-  private static $showError = false;
   private static $lastRes;
   private static $reports = false;
   private static $cachedPrimaryFields = [];
@@ -74,15 +73,18 @@ class SFORMDatabase
   protected function makeStringOfField($field) {
     $null = ($field['null'] !== false ? ' NULL' : ' NOT NULL');
     $autoincrement = ($field['autoincrement'] ? ' AUTO_INCREMENT' : '');
-    $default = ($field['default'] !== false && mb_strtolower($field['type']) !== 'text' ?
-      ' DEFAULT ' . ($field['default'] === NULL ? 'NULL' : $this->quote($field['default'])) : ''
-    );
+
+    $default = '';
+
+    if ($field['default'] !== false && mb_strtolower($field['type']) !== 'text') {
+      $default = ' DEFAULT ' . ($field['default'] === NULL ? 'NULL' : $this->quote($field['default']));
+    }
 
     return '`' . $field['name'] . '` ' . $field['type'] . $null . $autoincrement . $default;
   }
 
   protected function validateField($field) {
-    return SFValidate::value([
+    $res = SFValidate::value([
       'name' => [
         'required' => true
       ],
@@ -94,11 +96,16 @@ class SFORMDatabase
       ],
       'autoincrement' => [
         'default' => false
-      ],
-      'default' => [
-        'default' => false
       ]
     ], $field);
+
+    if (isset($field['default'])) {
+      $res['default'] = $field['default'];
+    } else {
+      $res['default'] = false;
+    }
+
+    return $res;
   }
 
   protected static function hasConnection($alias = 'default') {
@@ -151,17 +158,13 @@ class SFORMDatabase
         $err = $res->errorInfo();
       }
 
-      if (self::$showError && $err[1] !== 0 && $err[1] !== null) {
-        self::makeException($err[2]);
+      if ($err[1] !== 0 && $err[1] !== null) {
+        self::makeException($err[2] . "\n\n" . $sql);
       }
 
       self::$lastRes = $res;
     } else {
-      if (self::$showError) {
-        $res = mysql_query($sql, self::$connections[$alias]) or self::makeException(mysql_error());
-      } else {
-        $res = mysql_query($sql, self::$connections[$alias]);
-      }
+      $res = mysql_query($sql, self::$connections[$alias]) or self::makeException(mysql_error() . "\n\n" . $sql);
     }
 
     self::$countQueries++;
@@ -202,14 +205,8 @@ class SFORMDatabase
 
     self::$connections[$alias] = null;
 
-    unset(self::$inits[$alias]);
-    unset(self::$connections[$alias]);
-
-    self::$init = false;
-  }
-
-  protected static function showError() {
-    self::$showError = true;
+    self::$inits = [];
+    self::$connections = [];
   }
 
   protected static function error() {
@@ -243,7 +240,7 @@ class SFORMDatabase
     return self::$connections[$alias]->lastInsertId();
   }
 
-  protected function getPrimaryFields($table, $alias = 'default') {
+  protected static function getPrimaryFields($table, $alias = 'default') {
     if (!isset(self::$connections[$alias]) || !self::$connections[$alias]) self::makeException('There is no MySQL connection');
 
     if (!isset(self::$cachedPrimaryFields[$alias])) {
@@ -292,7 +289,7 @@ class SFORMDatabase
     return $primaryFields;
   }
 
-  protected function getFields($table, $alias = 'default') {
+  protected static function getFields($table, $alias = 'default') {
     if (!self::$connections[$alias]) die('There is no MySQL connection');
 
     if (!isset(self::$cachedFields[$alias])) {
@@ -335,6 +332,11 @@ class SFORMDatabase
     self::$cachedFields[$alias][$table] = $fields;
 
     return $fields;
+  }
+
+  protected function dropCacheFields($table, $alias = 'default') {
+    unset(self::$cachedPrimaryFields[$alias][$table]);
+    unset(self::$cachedFields[$alias][$table]);
   }
 
   private static function fetch($result, $firstRow = false) {

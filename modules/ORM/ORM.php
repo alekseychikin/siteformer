@@ -4,6 +4,7 @@ require_once __DIR__ . '/SFDB.php';
 require_once __DIR__ . '/ORMDatabase.php';
 require_once __DIR__ . '/ORMAlter.php';
 require_once __DIR__ . '/ORMCreate.php';
+require_once __DIR__ . '/ORMDrop.php';
 require_once __DIR__ . '/ORMWhere.php';
 require_once __DIR__ . '/ORMSelect2.php';
 require_once __DIR__ . '/ORMDelete.php';
@@ -16,9 +17,6 @@ require_once __DIR__ . '/ORMCustomValue.php';
 
 class SFORM extends SFORMDatabase
 {
-  public static $readModifiers = [];
-  public static $writeModifiers = [];
-
   public static function func ($field) {
     return new SFORMFunc($field);
   }
@@ -31,8 +29,12 @@ class SFORM extends SFORMDatabase
     return new SFORMAlter($table);
   }
 
-  public static function create($table, $fields = [], $keys = []) {
-    return new SFORMCreate($table, $fields, $keys);
+  public static function create($table) {
+    return new SFORMCreate($table);
+  }
+
+  public static function drop($table) {
+    return new SFORMDrop($table);
   }
 
   public static function insert($table) {
@@ -95,10 +97,6 @@ class SFORM extends SFORMDatabase
     return $result[0]['length'];
   }
 
-  public static function showError() {
-    parent::showError();
-  }
-
   public static function query(
     $sql,
     $alias = 'default',
@@ -114,44 +112,6 @@ class SFORM extends SFORMDatabase
 
   public static function exists($table) {
     return parent::exists($table);
-  }
-
-  public static function prepareWriteValue($table, $field, $value) {
-    if (isset(self::$writeModifiers[$table])) {
-      foreach (self::$writeModifiers[$table] as $modifier) {
-        if ($field != $modifier[0]) continue;
-
-        if (gettype($modifier[1]) == 'string') {
-          $value = call_user_func($modifier[1], $value);
-        } elseif (gettype($modifier[1]) == 'object') {
-          $value = $modifier[1]($value);
-        }
-      }
-    }
-
-    return $value;
-  }
-
-  public static function addWriteModifier($table, $field, $function) {
-    if (!isset(self::$writeModifiers[$table])) {
-      self::$writeModifiers[$table] = [];
-    }
-
-    self::$writeModifiers[$table][] = array($field, $function);
-  }
-
-  public static function addReadModifier($table, $fieldTo, $function) {
-    if (gettype($fieldTo) == 'array') {
-      list($fieldFrom, $fieldTo) = each($fieldTo);
-    } else {
-      $fieldFrom = $fieldTo;
-    }
-
-    if (!isset(self::$readModifiers[$table])) {
-      self::$readModifiers[$table] = [];
-    }
-
-    self::$readModifiers[$table][] = array($fieldFrom, $fieldTo, $function);
   }
 
   public static function error() {
@@ -178,5 +138,13 @@ class SFORM extends SFORMDatabase
 
   public static function generateValue($pattern, $params) {
     return new SFORMCustomValue($pattern, $params);
+  }
+
+  public static function getPrimaryFields($table, $alias = 'default') {
+    return parent::getPrimaryFields($table, $alias);
+  }
+
+  public static function getFields($table, $alias = 'default') {
+    return parent::getFields($table, $alias);
   }
 }

@@ -19,7 +19,7 @@ class SFORMDelete extends SFORMWhere
     $sql = 'DELETE FROM `' . $this->table . '`' . N;
 
     if ($this->getById !== false) {
-      $idField = $this->getPrimaryFields($this->table, $alias);
+      $idField = self::getPrimaryFields($this->table, $alias);
       $idField = $idField[0];
       $this->where = '`'. $this->table .'`.`'. $idField .'` = '.$this->getById;
     }
@@ -34,8 +34,6 @@ class SFORMDelete extends SFORMWhere
   public function execute($alias = 'default') {
     $sql = $this->getQuery($alias);
     $result = parent::query($sql, $alias, true);
-
-    parent::updateExistsTableList();
 
     return $result;
   }
