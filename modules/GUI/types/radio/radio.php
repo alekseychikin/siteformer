@@ -6,7 +6,6 @@ require_once __DIR__ . '/../../GUIType.php';
 class SFTypeRadio extends SFGUIType
 {
   public static function getSqlField($params) {
-    $params = parseJSON($params);
     $defaultValue = $params['defaultValue'];
 
     return [
@@ -16,8 +15,7 @@ class SFTypeRadio extends SFGUIType
   }
 
   public static function validateSettings($params, $fields, $currentAlias) {
-    $params = json_decode($params, true);
-    $params = SFValidate::value([
+    return SFValidate::value([
       'numOptions' => [
         'type' => 'uzint',
         'required' => true
@@ -35,7 +33,6 @@ class SFTypeRadio extends SFGUIType
         ]
       ]
     ], $params);
-    return json_encode($params);
   }
 
   public static function getDefaultData($settings) {

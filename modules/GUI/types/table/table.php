@@ -5,7 +5,6 @@ require_once __DIR__ . '/../../GUIType.php';
 class SFTypeTable extends SFGUIType
 {
   public static function getSqlField($params) {
-    $params = json_decode($params, true);
     $defaultData = json_encode($params['defaultData']);
 
     return array(

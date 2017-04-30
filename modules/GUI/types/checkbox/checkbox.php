@@ -7,7 +7,6 @@ require_once __DIR__ . '/../../GUIType.php';
 class SFTypeCheckbox extends SFGUIType
 {
   public static function getSqlField($params) {
-    $params = parseJSON($params);
     $values = [];
     $defaultValue = 0;
 
@@ -26,8 +25,7 @@ class SFTypeCheckbox extends SFGUIType
   }
 
   public static function validateSettings($params, $fields, $currentAlias) {
-    $params = json_decode($params, true);
-    $params = SFValidate::value([
+    return SFValidate::value([
       'numOptions' => [
         'type' => 'uzint',
         'required' => true
@@ -44,8 +42,6 @@ class SFTypeCheckbox extends SFGUIType
         ]
       ]
     ], $params);
-
-    return json_encode($params);
   }
 
   public static function prepareInsertData($section, $field, $data) {

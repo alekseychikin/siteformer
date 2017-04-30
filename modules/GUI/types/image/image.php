@@ -8,7 +8,6 @@
     public static function validateSettings($params, $fields, $currentAlias) {
       $sources = self::getSources($fields, $params, $currentAlias);
 
-      $params = parseJSON($params);
       $params = SFValidate::value([
         'storage' => [
           'values' => array('local', 's3'),
@@ -74,7 +73,7 @@
         } catch (Exception $e) {}
       }
 
-      return json_encode($params);
+      return $params;
     }
 
     public static function detectSource($field) {

@@ -6,17 +6,13 @@ require_once __DIR__ . '/../../GUIType.php';
 class SFTypeSelect extends SFGUIType
 {
   public static function getSqlField($params) {
-    $params = json_decode($params, true);
-    $defaultValue = $params['defaultValue'];
-
     return [
       'type' => 'INT(6)',
-      'default' => $defaultValue
+      'default' => $params['defaultValue']
     ];
   }
 
   public static function validateSettings($params, $fields, $currentAlias) {
-    $params = json_decode($params, true);
     $params = SFValidate::value([
       'numOptions' => [
         'type' => 'uzint',
@@ -39,7 +35,7 @@ class SFTypeSelect extends SFGUIType
       array_splice($params['defaultData'], 0, 0, "");
     }
 
-    return json_encode($params);
+    return $params;
   }
 
   public static function getDefaultData($settings) {

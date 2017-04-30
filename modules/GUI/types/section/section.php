@@ -28,8 +28,7 @@ class SFTypeSection extends SFGUIType
   }
 
   public static function validateSettings($settings, $fields, $currentAlias) {
-    $settings = json_decode($settings, true);
-    $settings = SFValidate::value([
+    return SFValidate::value([
       'section' => [
         'required' => true
       ],
@@ -37,7 +36,6 @@ class SFTypeSection extends SFGUIType
         'required' => true
       ]
     ], $settings);
-    return json_encode($settings);
   }
 
   public static function getDefaultData($settings) {

@@ -555,7 +555,7 @@ class SFGUI
     $className = self::getClassNameByType($field['type']);
 
     if (class_exists($className)) {
-      return $className::getSqlField($field['settings']);
+      return $className::getSqlField(parseJSON($field['settings']));
     }
 
     return false;
@@ -577,7 +577,8 @@ class SFGUI
 
       if (class_exists($className)) {
         try {
-          $data['fields'][$index]['settings'] = $className::validateSettings($field['settings'], $data['fields'], $field['alias']);
+          $settings = parseJSON($field['settings']);
+          $data['fields'][$index]['settings'] = json_encode($className::validateSettings($settings, $data['fields'], $field['alias']));
         } catch (ValidateException $e) {
           $message = $e->getOriginMessage();
 

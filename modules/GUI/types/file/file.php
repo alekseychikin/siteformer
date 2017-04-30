@@ -7,8 +7,7 @@ class SFTypeFile extends SFGUIType
 {
   public static function validateSettings($params, $fields, $currentAlias)
   {
-    $params = json_decode($params, true);
-    $params = SFValidate::value([
+    return SFValidate::value([
       'storage' => [
         'values' => ['local', 's3']
       ],
@@ -18,7 +17,5 @@ class SFTypeFile extends SFGUIType
       's3Bucket' => [],
       's3Path' => []
     ], $params);
-
-    return json_encode($params);
   }
 }

@@ -6,14 +6,11 @@ require_once __DIR__ . '/../../GUIType.php';
 class SFTypeUrl extends SFGUIType
 {
   public static function validateSettings($params, $fields, $currentAlias) {
-    $params = parseJSON($params);
-    $params = SFValidate::value([
+    return SFValidate::value([
       'source' => [
         'required' => true
       ]
     ], $params);
-
-    return json_encode($params);
   }
 
   public static function prepareInsertData($section, $field, $data) {
