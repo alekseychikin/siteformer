@@ -30,7 +30,7 @@ module.exports = class AddConfigsModel extends Model
       type: "string"
       position: @state.fields.length
       section: @state.id
-      required: 0
+      required: false
     ]
 
     for typeItem in @state.types
@@ -77,7 +77,7 @@ module.exports = class AddConfigsModel extends Model
 
   updateFieldRequired: (index, value) ->
     fields = @state.fields.slice()
-    fields[index].required = value ? 1 : 0
+    fields[index].required = value
     @set {fields}
 
   resetSettings: (index) ->
@@ -149,9 +149,7 @@ module.exports = class AddConfigsModel extends Model
 
     data.id = @state.id if @state.id?
 
-    console.log data
-
-    httpPost "/cms/configs/action_save/", data
+    httpPost "/?graph", {'gui-sections': JSON.stringify(data)}
       .then (response) =>
         console.log response.content if response.content?
         if @state.id?
@@ -204,5 +202,5 @@ module.exports = class AddConfigsModel extends Model
   getSections: -> @state.sections
 
   remove: ->
-    httpPost "/cms/configs/action_delete/", id: @state.id
+    httpPost "/cms/configs/action_delete/", {'gui-sections': JSON.stringify({delete: @state.id})}
       .then => @trigger "delete-section"

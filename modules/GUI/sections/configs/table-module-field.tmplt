@@ -56,7 +56,7 @@
         </label>
       </td>
 
-      <td class="form-table__cell form-table__cell--center">
+      <td class="form-table__cell form-table__cell--center" data-checked={$field.required}>
         <if test={$is-requiredable}>
           <input class="form__checkbox" type="checkbox" id={"required-field-" ++ $index} checked={$field.required} data-role="field-required" />
           <label class="form__checkbox-label" for={"required-field-" ++ $index}></label>

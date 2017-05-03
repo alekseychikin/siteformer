@@ -11,4 +11,21 @@ class SFGuiSections extends SFRouterModel
       return SFGUI::getSections();
     }
   }
+
+  public static function post ($params) {
+    $id = false;
+
+    if (isset($params['id'])) {
+      $id = (int) $params['id'];
+    }
+
+    if ($id === false) {
+      $id = SFGUI::addSection($params);
+    } elseif (isset($params['delete'])) {
+      SFGUI::removeSection($params['delete']);
+    } else {
+      unset($params['id']);
+      SFGUI::saveSection($id, $params);
+    }
+  }
 }

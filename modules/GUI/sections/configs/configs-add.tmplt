@@ -84,8 +84,8 @@
     <div class="form__table" data-role="module-fields">
       <table class="form-table">
         <colgroup>
-          <col width="26%" />
-          <col width="26%" />
+          <col width="*" />
+          <col width="*" />
           <col width="*" />
           <col width="75" />
           <col width="75" />

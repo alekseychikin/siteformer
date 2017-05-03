@@ -26,6 +26,7 @@ describe('Configs page', function () {
     browser.click('.form__btn--submit')
     browser.pause(TIMEOUT_FOR_SEND)
     browser.getTitle().should.be.equal('Редактировать раздел «Раздел строки»')
+    browser.isSelected('[data-role="row-module-fields"]:nth-child(1) [data-role="field-required"]').should.be.false
   })
 
   it ('show error messages', function () {
@@ -125,5 +126,16 @@ describe('Configs page', function () {
     browser.isExisting('[data-role="row-module-fields"]:nth-child(2) [data-role="field-alias"] ~ .form__error').should.be.true
     browser.getText('[data-role="row-module-fields"]:nth-child(2) [data-role="field-alias"] ~ .form__error')
       .should.be.equal('Поле с таким веб-именем уже есть, придумайте другое')
+  })
+
+  it ('updates section with string type', function () {
+    browser.url('http://localhost:3000/cms/configs/string-section/')
+    browser.getTitle().should.be.equal('Редактировать раздел «Раздел строки»')
+    browser.isEnabled('[data-role="configs-add-alias"]').should.be.equal.false
+    browser.isEnabled('[data-role="configs-add-title"]').should.be.equal.true
+
+    browser.setValue('[data-role="configs-add-title"]', 'Раздел для строки')
+    browser.elements('[data-role="row-module-fields"]').value.length.should.be.equal(1)
+    browser.setValue('[data-role="row-module-fields"]:nth-child(1) [data-role="field-title"]', 'Поле строки')
   })
 })

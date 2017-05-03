@@ -77,7 +77,7 @@ class SFORMDatabase
     $default = '';
 
     if ($field['default'] !== false && mb_strtolower($field['type']) !== 'text') {
-      $default = ' DEFAULT ' . ($field['default'] === NULL ? 'NULL' : $this->quote($field['default']));
+      $default = ' DEFAULT ' . ($field['default'] === NULL ? 'NULL' : self::quote($field['default']));
     }
 
     return '`' . $field['name'] . '` ' . $field['type'] . $null . $autoincrement . $default;
@@ -183,7 +183,7 @@ class SFORMDatabase
     $result = [];
 
     while ($row = self::fetch($res, $firstRow)) {
-      $result[] = $row;
+      $result[] = self::typify($row);
       $firstRow = false;
     }
 
@@ -219,7 +219,9 @@ class SFORMDatabase
     return self::$lastSQL;
   }
 
-  protected function quote($value) {
+  protected static function quote($value) {
+    if (gettype($value) === 'boolean') return $value ? '\'true\'' : '\'false\'';
+
     if (is_null($value)) return 'NULL';
 
     if (is_numeric($value)) return $value;
@@ -368,5 +370,15 @@ class SFORMDatabase
       fputs($file, $sql." ".$time."\n\n");
       fclose($file);
     }
+  }
+
+  private static function typify($row) {
+    foreach ($row as $field => $value) {
+      if (preg_match('/^\d+$/', $value)) $row[$field] = (int) $value;
+      if (preg_match('/^\d+\.\d+$/', $value)) $row[$field] = (float) $value;
+      if (preg_match('/^(false|true)$/', $value)) $row[$field] = $value === 'true' ? true : false;
+    }
+
+    return $row;
   }
 }

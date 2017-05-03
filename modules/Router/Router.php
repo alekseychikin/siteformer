@@ -20,6 +20,8 @@ class SFRouter
 
     if ($url === '/' && isset($_GET['graph'])) {
       self::returnModelData(parseJSON(urldecode($_GET['graph'])));
+
+      return true;
     }
 
     $result = self::parse($url);

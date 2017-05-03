@@ -251,11 +251,11 @@
     margin-right: 0;
   }
 
-  input:checked + &__checkbox-label:before {
+  & input:checked + &__checkbox-label::before {
     opacity: 1;
   }
 
-  input:focus + &__checkbox-label {
+  & input:focus + &__checkbox-label {
     box-shadow: 0 0 6px #699EF5;
   }
 
@@ -394,11 +394,11 @@
     display: block;
     position: relative;
     z-index: 2;
+  }
 
-    .form__file--previewed & {
-      color: #fff;
-      text-shadow: 1px 0 0 #616161;
-    }
+  &__file--previewed &__file-filename {
+    color: #fff;
+    text-shadow: 1px 0 0 #616161;
   }
 
   &__file-close {
@@ -574,11 +574,11 @@
     }
   }
 
-  input:checked + &__radio-label::before {
+  & input:checked + &__radio-label::before {
     opacity: 1;
   }
 
-  input:focus + &__radio-label {
+  & input:focus + &__radio-label {
     box-shadow: 0 0 6px #699EF5;
   }
 

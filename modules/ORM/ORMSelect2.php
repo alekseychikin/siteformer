@@ -624,13 +624,11 @@ class SFORMSelect extends SFORMDatabase
     return $table . $i;
   }
 
-  private function handleValue ($value) {
+  protected function handleValue ($value) {
     if (gettype($value) === 'object' && get_class($value) === 'SFORMField') {
       return $this->generateField($value->get(), $this->fromTableAlias, true);
-    } elseif (is_numeric($value)) {
-      return $value;
     }
 
-    return $this->quote($value);
+    return parent::quote($value);
   }
 }

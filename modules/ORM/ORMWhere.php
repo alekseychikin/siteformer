@@ -18,9 +18,9 @@ class SFORMWhere extends SFORMDatabase
 
   public function where($expr) {
     if (func_num_args() == 3) {
-      $expr = _expr_(func_get_arg(0), func_get_arg(1), func_get_arg(2));
+      $expr = _expr_(func_get_arg(0), func_get_arg(1), parent::quote(func_get_arg(2)));
     } elseif (func_num_args() == 2) {
-      $expr = _expr_(func_get_arg(0), '=', func_get_arg(1));
+      $expr = _expr_(func_get_arg(0), '=', parent::quote(func_get_arg(1)));
     }
 
     $this->where = $expr;
@@ -64,13 +64,7 @@ class SFORMWhere extends SFORMDatabase
         if (gettype($exprs[3]) == 'object') {
           $value = $exprs[3]->get();
         } else {
-          $value = $exprs[3];
-
-          if (is_null($value)) {
-            $value = 'NULL';
-          } elseif (!is_numeric($value)) {
-            $value = $this->quote($value);
-          }
+          $value = parent::quote($exprs[3]);
         }
 
         if ($exprs[2] == 'FIND_IN_SET') {

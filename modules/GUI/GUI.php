@@ -59,8 +59,6 @@ class SFGUI
       ],
       'template' => 'sections/configs/add.tmplt'
     ]);
-    SFRouter::addRule('/cms/configs/action_save/', MODULES . 'GUI/sections/configs/action_save');
-    SFRouter::addRule('/cms/configs/action_delete/', MODULES . 'GUI/sections/configs/action_delete');
     SFRouter::addRule('/cms/configs/{section}/', [
       'data' => [
         'title' => 'gui-sections?section={section}&field=title',
@@ -129,7 +127,7 @@ class SFGUI
       ->join('section_fields')
       ->on('section_fields.section', SFORM::field('sections.id'))
       ->order('sections.id desc')
-      ->where('sections.enable', 1)
+      ->where('sections.enable', true)
       ->exec();
 
     if (count($res)) {
@@ -155,7 +153,7 @@ class SFGUI
       ->join('section_fields')
       ->on('section_fields.section', SFORM::field('sections.id'))
       ->where('sections.alias', $alias)
-      ->andWhere('sections.enable', 1)
+      ->andWhere('sections.enable', true)
       ->exec();
 
     if (count($res)) {
@@ -179,7 +177,7 @@ class SFGUI
       ->join('section_fields')
       ->on('section_fields.section', SFORM::field('sections.id'))
       ->where('id', $id)
-      ->andWhere('sections.enable', 1)
+      ->andWhere('sections.enable', true)
       ->exec();
 
     if (count($res)) {
@@ -214,7 +212,7 @@ class SFGUI
         'type' => $firstType['type'],
         'settings' => $firstType['defaultSettings'],
         'position' => 0,
-        'required' => 0
+        'required' => false
       ]
     ];
 
@@ -223,7 +221,79 @@ class SFGUI
 
   // Add section
   public static function addSection($data) {
+    $modules = SFGUI::getModules();
+    $modules[] = 'default';
+
+    $types = arrMap(SFGUI::getTypes(), function ($type) use (& $types) {
+      return $type['type'];
+    });
+
+    SFResponse::showContent();
+
+    $data = SFValidate::value([
+      'title' => [
+        'required' => true,
+        'unique' => function ($value) {
+          $res = SFORM::select()
+            ->from('sections')
+            ->where('title', $value)
+            ->andWhere('enable', true);
+
+          return !$res->length();
+        }
+      ],
+      'alias' => [
+        'required' => true,
+        'valid' => '/^[a-zA-Z\-_]+$/i',
+        'unique' => function ($value) {
+          $res = SFORM::select()
+            ->from('sections')
+            ->where('alias', $value)
+            ->andWhere('enable', true);
+
+          return !$res->length();
+        }
+      ],
+      'module' => [
+        'required' => true,
+        'values' => $modules
+      ],
+      'fields' => [
+        'minlength' => 1,
+        'collection' => [
+          'id' => [
+            'required' => false,
+            'default' => 0,
+            'valid' => '/^\d+$/'
+          ],
+          'title' => [
+            'required' => true,
+            'unique' => true
+          ],
+          'alias' => [
+            'required' => true,
+            'unique' => true,
+            'valid' => '/^[a-zA-Z0-9\-_]+$/i'
+          ],
+          'type' => [
+            'values' => $types
+          ],
+          'required' => [],
+          'settings' => [
+            'type' => 'array',
+            'modify' => function ($settings) {
+              return json_encode($settings);
+            }
+          ],
+          'position' => [
+            'valid' => '/^\d+$/'
+          ]
+        ]
+      ]
+    ], $data);
+
     self::validateSettingsOfData($data);
+
     $defaultField = [
       'name' => '',
       'type' => '',
@@ -290,6 +360,83 @@ class SFGUI
 
   // Save section
   public static function saveSection($id, $data) {
+    $modules = SFGUI::getModules();
+    $modules[] = 'default';
+
+    $types = arrMap(SFGUI::getTypes(), function ($type) {
+      return $type['type'];
+    });
+
+    $data = SFValidate::value([
+      'title' => [
+        'required' => true,
+        'unique' => function ($value) use ($id) {
+          $res = SFORM::select()
+            ->from('sections')
+            ->where('title', $value)
+            ->andWhere('enable', true);
+
+          if ($id !== false) {
+            $res = $res->andWhere('id', '!=', $id);
+          }
+
+          return !$res->length();
+        }
+      ],
+      'alias' => [
+        'required' => true,
+        'valid' => '/^[a-zA-Z\-_]+$/i',
+        'unique' => function ($value) use ($id) {
+          $res = SFORM::select()
+            ->from('sections')
+            ->where('alias', $value)
+            ->andWhere('enable', true);
+
+          if ($id !== false) {
+            $res = $res->andWhere('id', '!=', $id);
+          }
+
+          return !$res->length();
+        }
+      ],
+      'module' => [
+        'required' => true,
+        'values' => $modules
+      ],
+      'fields' => [
+        'minlength' => 1,
+        'collection' => [
+          'id' => [
+            'valid' => '/^\d+$/',
+            'default' => 0
+          ],
+          'title' => [
+            'required' => true,
+            'unique' => true
+          ],
+          'alias' => [
+            'required' => true,
+            'unique' => true,
+            'valid' => '/^[a-zA-Z0-9\-_]+$/i'
+          ],
+          'type' => [
+            'values' => $types
+          ],
+          'required' => [],
+          'settings' => [
+            'type' => 'array',
+            'modify' => function ($settings) {
+              return json_encode($settings);
+            }
+          ],
+          'position' => [
+            'valid' => '/^\d+$/',
+            'unique' => true
+          ]
+        ]
+      ]
+    ], $data);
+
     $defaultField = [
       'name' => '',
       'type' => '',
@@ -297,6 +444,7 @@ class SFGUI
       'autoincrement' => false,
       'default' => NULL
     ];
+
     $source = self::getSectionById($id);
     self::validateSettingsOfData($data);
 
@@ -361,7 +509,7 @@ class SFGUI
           $fieldType = array_merge($defaultField, self::getSqlFieldType($field['element']));
           $fieldType['name'] = $field['element']['alias'];
           SFORM::alter($source['table'])
-            ->change($field['origin']['alias'], $fieldType)
+            ->changeField($field['origin']['alias'], $fieldType)
             ->exec();
 
           break;
@@ -493,7 +641,7 @@ class SFGUI
   public static function removeSection($id) {
     $request = SFORM::update('sections')
       ->values(array(
-        'enable' => NULL
+        'enable' => false
       ))
       ->where('id', $id)
       ->exec();
