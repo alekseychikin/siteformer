@@ -6,18 +6,18 @@ var TIMEOUT_FOR_SEND = 300
 
 describe('Configs page', function () {
   it ('should exists', function () {
-    browser.url('http://localhost:3000/cms/configs')
+    browser.url('http://localhost:3333/cms/configs')
     browser.getTitle().should.be.equal('Настройки')
   })
 
   it ('open add section page', function () {
-    browser.url('http://localhost:3000/cms/configs')
+    browser.url('http://localhost:3333/cms/configs')
     browser.click('a[href="/cms/configs/add/"]')
     browser.getTitle().should.be.equal('Добавить раздел')
   })
 
   it ('create section with string type', function () {
-    browser.url('http://localhost:3000/cms/configs/add/')
+    browser.url('http://localhost:3333/cms/configs/add/')
     browser.getTitle().should.be.equal('Добавить раздел')
     browser.setValue('#title', 'Раздел строки')
     browser.setValue('#alias', 'string-section')
@@ -30,7 +30,7 @@ describe('Configs page', function () {
   })
 
   it ('show error messages', function () {
-    browser.url('http://localhost:3000/cms/configs/add/')
+    browser.url('http://localhost:3333/cms/configs/add/')
 
     browser.click('.form__btn--submit')
     browser.pause(TIMEOUT_FOR_SEND)
@@ -129,7 +129,7 @@ describe('Configs page', function () {
   })
 
   it ('updates section with string type', function () {
-    browser.url('http://localhost:3000/cms/configs/string-section/')
+    browser.url('http://localhost:3333/cms/configs/string-section/')
     browser.getTitle().should.be.equal('Редактировать раздел «Раздел строки»')
     browser.isEnabled('[data-role="configs-add-alias"]').should.be.equal.false
     browser.isEnabled('[data-role="configs-add-title"]').should.be.equal.true
@@ -141,16 +141,18 @@ describe('Configs page', function () {
 
     browser.click('.form__btn--submit')
     browser.pause(TIMEOUT_FOR_SEND)
-    browser.getText('[data-role="sections-menu"] .menu__item:nth-child(1) .menu__link').should.be.equal('Раздел для строки')
 
     browser.refresh()
+    browser.pause(TIMEOUT_FOR_SEND)
+
+    browser.getValue('[data-role="configs-add-title"]').should.be.equal('Раздел для строки')
 
     browser.getValue('[data-role="row-module-fields"]:nth-child(1) [data-role="field-title"]').should.be.equal('Поле строки')
     browser.getValue('[data-role="row-module-fields"]:nth-child(1) [data-role="field-alias"]').should.be.equal('string-field')
   })
 
   it ('adds couple more item', function () {
-    browser.url('http://localhost:3000/cms/configs/string-section/')
+    browser.url('http://localhost:3333/cms/configs/string-section/')
 
     browser.click('[data-role="btn-add-field"]')
     browser.elements('[data-role="row-module-fields"]').value.length.should.be.equal(2)
@@ -173,7 +175,7 @@ describe('Configs page', function () {
   })
 
   it ('drags item', function () {
-    browser.url('http://localhost:3000/cms/configs/string-section/')
+    browser.url('http://localhost:3333/cms/configs/string-section/')
     browser.dragAndDrop(
       '[data-role="row-module-fields"]:nth-child(2) [data-role="btn-move-row"]',
       '[data-role="configs-add-alias"]'
@@ -220,10 +222,10 @@ describe('Configs page', function () {
   })
 
   it ('deletes section', function () {
-    browser.url('http://localhost:3000/cms/configs/string-section/')
+    browser.url('http://localhost:3333/cms/configs/string-section/')
     browser.click('[data-role="delete"]')
 
     browser.pause(TIMEOUT_FOR_SEND)
-    browser.elements('[data-role="section-row"]').value.length.should.be.equal(0)
+    browser.elements('[data-role="section-row"]').value.length.should.be.equal(1)
   })
 })
