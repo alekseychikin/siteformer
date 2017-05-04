@@ -148,4 +148,74 @@ describe('Configs page', function () {
     browser.getValue('[data-role="row-module-fields"]:nth-child(1) [data-role="field-title"]').should.be.equal('Поле строки')
     browser.getValue('[data-role="row-module-fields"]:nth-child(1) [data-role="field-alias"]').should.be.equal('string-field')
   })
+
+  it ('adds couple more item', function () {
+    browser.url('http://localhost:3000/cms/configs/string-section/')
+
+    browser.click('[data-role="btn-add-field"]')
+    browser.elements('[data-role="row-module-fields"]').value.length.should.be.equal(2)
+
+    browser.setValue('[data-role="row-module-fields"]:nth-child(2) [data-role="field-title"]', 'Поле текста')
+    browser.setValue('[data-role="row-module-fields"]:nth-child(2) [data-role="field-alias"]', 'text-field')
+    browser.selectByValue('[data-role="row-module-fields"]:nth-child(2) [data-role="field-type"]', 'text')
+
+    browser.click('[data-role="btn-add-field"]')
+    browser.elements('[data-role="row-module-fields"]').value.length.should.be.equal(3)
+
+    browser.setValue('[data-role="row-module-fields"]:nth-child(3) [data-role="field-title"]', 'Поле даты')
+    browser.setValue('[data-role="row-module-fields"]:nth-child(3) [data-role="field-alias"]', 'date-field')
+    browser.selectByValue('[data-role="row-module-fields"]:nth-child(3) [data-role="field-type"]', 'date')
+
+    browser.click('.form__btn--submit')
+    browser.pause(TIMEOUT_FOR_SEND)
+    browser.refresh()
+    browser.elements('[data-role="row-module-fields"]').value.length.should.be.equal(3)
+  })
+
+  it ('drags item', function () {
+    browser.url('http://localhost:3000/cms/configs/string-section/')
+    browser.dragAndDrop(
+      '[data-role="row-module-fields"]:nth-child(2) [data-role="btn-move-row"]',
+      '[data-role="configs-add-alias"]'
+    )
+    browser.getValue('[data-role="row-module-fields"]:nth-child(1) [data-role="field-title"]').should.be.equal('Поле текста')
+    browser.getValue('[data-role="row-module-fields"]:nth-child(1) [data-role="field-alias"]').should.be.equal('text-field')
+    browser.getValue('[data-role="row-module-fields"]:nth-child(2) [data-role="field-title"]').should.be.equal('Поле строки')
+    browser.getValue('[data-role="row-module-fields"]:nth-child(2) [data-role="field-alias"]').should.be.equal('string-field')
+    browser.getValue('[data-role="row-module-fields"]:nth-child(3) [data-role="field-title"]').should.be.equal('Поле даты')
+    browser.getValue('[data-role="row-module-fields"]:nth-child(3) [data-role="field-alias"]').should.be.equal('date-field')
+
+    browser.click('.form__btn--submit')
+    browser.pause(TIMEOUT_FOR_SEND)
+    browser.refresh()
+
+    browser.getValue('[data-role="row-module-fields"]:nth-child(1) [data-role="field-title"]').should.be.equal('Поле текста')
+    browser.getValue('[data-role="row-module-fields"]:nth-child(1) [data-role="field-alias"]').should.be.equal('text-field')
+    browser.getValue('[data-role="row-module-fields"]:nth-child(2) [data-role="field-title"]').should.be.equal('Поле строки')
+    browser.getValue('[data-role="row-module-fields"]:nth-child(2) [data-role="field-alias"]').should.be.equal('string-field')
+    browser.getValue('[data-role="row-module-fields"]:nth-child(3) [data-role="field-title"]').should.be.equal('Поле даты')
+    browser.getValue('[data-role="row-module-fields"]:nth-child(3) [data-role="field-alias"]').should.be.equal('date-field')
+
+    browser.dragAndDrop(
+      '[data-role="row-module-fields"]:nth-child(2) [data-role="btn-move-row"]',
+      '.form__submit'
+    )
+    browser.getValue('[data-role="row-module-fields"]:nth-child(1) [data-role="field-title"]').should.be.equal('Поле текста')
+    browser.getValue('[data-role="row-module-fields"]:nth-child(1) [data-role="field-alias"]').should.be.equal('text-field')
+    browser.getValue('[data-role="row-module-fields"]:nth-child(2) [data-role="field-title"]').should.be.equal('Поле даты')
+    browser.getValue('[data-role="row-module-fields"]:nth-child(2) [data-role="field-alias"]').should.be.equal('date-field')
+    browser.getValue('[data-role="row-module-fields"]:nth-child(3) [data-role="field-title"]').should.be.equal('Поле строки')
+    browser.getValue('[data-role="row-module-fields"]:nth-child(3) [data-role="field-alias"]').should.be.equal('string-field')
+
+    browser.click('.form__btn--submit')
+    browser.pause(TIMEOUT_FOR_SEND)
+    browser.refresh()
+
+    browser.getValue('[data-role="row-module-fields"]:nth-child(1) [data-role="field-title"]').should.be.equal('Поле текста')
+    browser.getValue('[data-role="row-module-fields"]:nth-child(1) [data-role="field-alias"]').should.be.equal('text-field')
+    browser.getValue('[data-role="row-module-fields"]:nth-child(2) [data-role="field-title"]').should.be.equal('Поле даты')
+    browser.getValue('[data-role="row-module-fields"]:nth-child(2) [data-role="field-alias"]').should.be.equal('date-field')
+    browser.getValue('[data-role="row-module-fields"]:nth-child(3) [data-role="field-title"]').should.be.equal('Поле строки')
+    browser.getValue('[data-role="row-module-fields"]:nth-child(3) [data-role="field-alias"]').should.be.equal('string-field')
+  })
 })

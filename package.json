@@ -9,7 +9,7 @@
   "scripts": {
     "start": "gulp watch",
     "unit-test": "phpunit unit-tests/",
-    "integration-test": "php integration-tests/clearTables.php &&  wdio wdio.conf.js",
+    "integration-test": "php integration-tests/clearTables.php && wdio wdio.conf.js",
     "test": "npm run unit-test && npm run integration-test"
   },
   "author": "",
