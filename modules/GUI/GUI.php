@@ -496,7 +496,7 @@ class SFGUI
       switch ($field['mark']) {
         case 'delete':
           SFORM::alter($source['table'])
-            ->drop($field['element']['alias'])
+            ->dropField($field['element']['alias'])
             ->exec();
 
           break;
@@ -522,7 +522,7 @@ class SFGUI
           $fieldType = array_merge($defaultField, self::getSqlFieldType($field['element']));
           $fieldType['name'] = $field['element']['alias'];
           SFORM::alter($source['table'])
-            ->add($fieldType)
+            ->addField($fieldType)
             ->exec();
 
           break;
