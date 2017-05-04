@@ -27,8 +27,7 @@ module.exports = class CheckboxConfigsView extends View
     "popup-close: contain": (e) -> @destroy()
 
   getIndexByEvent: (e) ->
-    $item = $ e.target
-    $item.data "index"
+    e.target.getAttribute "data-index"
 
   render: (state) ->
     @modalContain state
