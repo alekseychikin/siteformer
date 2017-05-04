@@ -137,5 +137,15 @@ describe('Configs page', function () {
     browser.setValue('[data-role="configs-add-title"]', 'Раздел для строки')
     browser.elements('[data-role="row-module-fields"]').value.length.should.be.equal(1)
     browser.setValue('[data-role="row-module-fields"]:nth-child(1) [data-role="field-title"]', 'Поле строки')
+    browser.setValue('[data-role="row-module-fields"]:nth-child(1) [data-role="field-alias"]', 'string-field')
+
+    browser.click('.form__btn--submit')
+    browser.pause(TIMEOUT_FOR_SEND)
+    browser.getText('[data-role="sections-menu"] .menu__item:nth-child(1) .menu__link').should.be.equal('Раздел для строки')
+
+    browser.refresh()
+
+    browser.getValue('[data-role="row-module-fields"]:nth-child(1) [data-role="field-title"]').should.be.equal('Поле строки')
+    browser.getValue('[data-role="row-module-fields"]:nth-child(1) [data-role="field-alias"]').should.be.equal('string-field')
   })
 })

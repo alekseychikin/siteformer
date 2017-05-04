@@ -1,10 +1,13 @@
 AddConfigsModel = require "./addModel.coffee"
 AddConfigsView = require "./addView.coffee"
+MenuItemsView = require "components/menu/menu-items-view.coffee"
 
 configsContainer = document.querySelector "[data-role='configs-add']"
 
 addModel = new AddConfigsModel()
 addView = new AddConfigsView configsContainer, addModel
+
+menuItemsView = new MenuItemsView (document.querySelector "[data-role='sections-menu']"), addModel
 
 models =
   checkbox: require "types/checkbox/configsModel.coffee"

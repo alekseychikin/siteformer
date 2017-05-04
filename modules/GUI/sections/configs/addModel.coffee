@@ -14,6 +14,9 @@ module.exports = class AddConfigsModel extends Model
       sections: []
     super Object.assign {}, defaultState, state
 
+    @fetchCurrentState()
+
+  fetchCurrentState: ->
     httpGet window.location.pathname
       .then (response) =>
         state = cloneObject response
@@ -153,8 +156,7 @@ module.exports = class AddConfigsModel extends Model
       .then (response) =>
         console.log response.content if response.content?
         if @state.id?
-          # @set fields: response.section.fields
-          @set id: response.section.id
+          @fetchCurrentState()
         else
           @trigger "save-section", @state.alias
       .catch (response) =>
