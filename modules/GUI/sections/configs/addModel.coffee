@@ -204,5 +204,5 @@ module.exports = class AddConfigsModel extends Model
   getSections: -> @state.sections
 
   remove: ->
-    httpPost "/cms/configs/action_delete/", {'gui-sections': JSON.stringify({delete: @state.id})}
+    httpPost "/?graph", {'gui-sections': JSON.stringify({delete: @state.id})}
       .then => @trigger "delete-section"

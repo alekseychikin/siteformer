@@ -19,10 +19,10 @@ class SFGuiSections extends SFRouterModel
       $id = (int) $params['id'];
     }
 
-    if ($id === false) {
-      $id = SFGUI::addSection($params);
-    } elseif (isset($params['delete'])) {
+    if (isset($params['delete'])) {
       SFGUI::removeSection($params['delete']);
+    } elseif ($id === false) {
+      $id = SFGUI::addSection($params);
     } else {
       unset($params['id']);
       SFGUI::saveSection($id, $params);

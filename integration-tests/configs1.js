@@ -5,7 +5,7 @@ chai.should()
 var TIMEOUT_FOR_SEND = 300
 
 describe('Configs page', function () {
-  it('should exists', function () {
+  it ('should exists', function () {
     browser.url('http://localhost:3000/cms/configs')
     browser.getTitle().should.be.equal('Настройки')
   })
@@ -217,5 +217,13 @@ describe('Configs page', function () {
     browser.getValue('[data-role="row-module-fields"]:nth-child(2) [data-role="field-alias"]').should.be.equal('date-field')
     browser.getValue('[data-role="row-module-fields"]:nth-child(3) [data-role="field-title"]').should.be.equal('Поле строки')
     browser.getValue('[data-role="row-module-fields"]:nth-child(3) [data-role="field-alias"]').should.be.equal('string-field')
+  })
+
+  it ('deletes section', function () {
+    browser.url('http://localhost:3000/cms/configs/string-section/')
+    browser.click('[data-role="delete"]')
+
+    browser.pause(TIMEOUT_FOR_SEND)
+    browser.elements('[data-role="section-row"]').value.length.should.be.equal(0)
   })
 })
