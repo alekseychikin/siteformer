@@ -11,7 +11,7 @@ var yargs = require('yargs')
 var plumber = require('gulp-plumber')
 var sourcemaps = require('gulp-sourcemaps')
 var cached = require('gulp-cached')
-var browserSync = require('browser-sync').create()
+var browserSync = require('./browser-sync-inst')
 
 function pass() {
   return through.obj()

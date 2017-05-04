@@ -8,7 +8,7 @@ var browserStringifier = require('gutt-browser-stringifier');
 var using = require('gulp-using');
 var cache = require('gulp-cached');
 var rename = require('gulp-rename');
-var browserSync = require('browser-sync').create()
+var browserSync = require('./browser-sync-inst')
 
 function generatePhpTemplates () {
 	return through.obj(function (file, enc, next) {

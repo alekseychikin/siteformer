@@ -7,7 +7,7 @@ var gutil = require('gulp-util')
 var path = require('path')
 var uglify = require('gulp-uglify')
 var cache = require('gulp-cached')
-var browserSync = require('browser-sync').create()
+var browserSync = require('./tasks/browser-sync-inst')
 var yargs = require('yargs')
 
 var watch = require('./tasks/watch')
@@ -131,6 +131,7 @@ gulp.task('scripts-lib', ['scripts-components'], function () {
       this.emit('end')
     })
     .pipe(gulp.dest('modules/GUI/dist'))
+    .pipe(browserSync.stream())
 })
 
 gulp.task('scripts-components', function () {
@@ -153,6 +154,7 @@ gulp.task('scripts-components', function () {
     }))
     .pipe(cache('js-components'))
     .pipe(gulp.dest('modules/GUI/dist/components'))
+    .pipe(browserSync.stream())
 })
 
 gulp.task('scripts', ['templates', 'scripts-components'], function () {
@@ -183,6 +185,7 @@ gulp.task('scripts', ['templates', 'scripts-components'], function () {
     }))
     .pipe(cache('scripts'))
     .pipe(gulp.dest('modules/GUI/dist'))
+    .pipe(browserSync.stream())
 })
 
 gulp.task('images', imagesTask([COMPONENTS_PATH + '/**/*.{png,svg,jpg,jpeg}'], COMPONENTS_PATH, DIST_PATH))
