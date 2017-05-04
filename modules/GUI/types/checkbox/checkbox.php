@@ -11,7 +11,7 @@ class SFTypeCheckbox extends SFGUIType
     $defaultValue = 0;
 
     foreach ($params['defaultData'] as $index => $param) {
-      if ($param['checked'] == "true") {
+      if ($param['checked'] === true) {
         $defaultValue |= 1 << $index;
       }
     }

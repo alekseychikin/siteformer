@@ -29,7 +29,7 @@
                 data-index={$i}
                 id={"configs-checkbox-option-" ++ $i}
                 name="configs-checkbox-option"
-                checked={$option.checked == true || $option.checked == "true"}
+                checked={$option.checked == true}
               />
               <label for={"configs-checkbox-option-" ++ $i} class="form__checkbox-label"></label>
               <label>

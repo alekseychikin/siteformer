@@ -9,10 +9,9 @@
           class="form__checkbox"
           type="checkbox"
           id={$field.alias ++ $i}
-          data-role="checkbox"
           data-index={$i}
-          data-shift={1 << $i}
-          checked={(1 << $i) & $data}
+          data-role="checkbox"
+          checked={((1 << $i) & $data) != 0}
         />
         <label class="form__checkbox-label" for={$field.alias ++ $i}></label>
         <label for={$field.alias ++ $i}>{$data-item.label}</label>

@@ -5,6 +5,4 @@ module.exports = class CheckboxDataView extends View
 
   events:
     "change: [data-role='checkbox']": (e) ->
-      $input = $ e.target
-      index = $input.data "index"
-      @model.update index, e.target.checked
+      @model.update (e.target.getAttribute "data-index"), e.target.checked
