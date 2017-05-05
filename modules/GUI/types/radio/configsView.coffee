@@ -24,7 +24,7 @@ module.exports = class RadioConfigsView extends View
     "popup-close: contain": (e) -> @destroy()
 
   getIndexByEvent: (e) ->
-    Number $item.getAttribute "data-index"
+    Number e.target.getAttribute "data-index"
 
   render: (state) ->
     @optionsContain state
