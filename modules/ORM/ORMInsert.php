@@ -31,7 +31,7 @@ class SFORMInsert extends SFORMDatabase
       $alias = 'default';
     }
 
-    $sql = 'INSERT INTO '.$this->table.N;
+    $sql = 'INSERT INTO `' . $this->table . '`' . N;
     $fields = array();
     $values = array();
 
