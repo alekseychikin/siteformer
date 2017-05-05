@@ -15,6 +15,7 @@ module.exports = class SectionConfigsModel extends Model
     @set
       settings:
         section: section
+        field: ""
         errorIndex: []
         errorCode: ""
 

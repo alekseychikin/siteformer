@@ -1,4 +1,6 @@
 <component>
+  <variable name={$has-string-field} value={false} />
+
   <div class="popup__head">Настройки секции</div>
   <form action="" class="form" data-role="configs-form">
     <div class="form__item">
@@ -8,8 +10,8 @@
           <select data-role="configs-section-section" id="configs-section-section">
             <option value=""></option>
             <if test={arr_len($sections)}>
-              <for-each item={$sectionItem} from={$sections}>
-                <option value={$sectionItem.alias} selected={$sectionItem.alias == $settings.section}>{$sectionItem.title}</option>
+              <for-each item={$section-item} from={$sections}>
+                <option value={$section-item.alias} selected={$section-item.alias == $settings.section}>{$section-item.title}</option>
               </for-each>
             </if>
           </select>
@@ -26,18 +28,27 @@
           <select data-role="configs-section-field" id="configs-section-field">
             <option value=""></option>
             <if test={arr_len($sections) && str_len($settings.section)}>
-              <for-each key={$sectionIndex} item={$sectionItem} from={$sections}>
-                <if test={$sectionItem.alias == $section || (!$section && $sectionIndex == 0)}>
-                  <for-each item={$fieldItem} from={$sectionItem.fields}>
-                    <option value={$fieldItem.alias} selected={$settings.field == $fieldItem.alias}>{$fieldItem.title}</option>
+              <for-each key={$section-index} item={$section-item} from={$sections}>
+                <if test={$section-item.alias == $settings.section}>
+                  <for-each item={$field-item} from={$section-item.fields}>
+                    <if test={$field-item.type == 'string'}>
+                      <option value={$field-item.alias} selected={$settings.field == $field-item.alias}>{$field-item.title}</option>
+                      <variable name={$has-string-field} value={true} />
+                    </if>
                   </for-each>
                 </if>
               </for-each>
             </if>
           </select>
         </label>
+        <div class="form__hint">
+          Поиск работает только по строковым полям
+        </div>
         <if test={$settings.errorCode && $settings.errorIndex? && $settings.errorIndex[0] == 'field' && $settings.errorCode == 'EEMPTYREQUIRED'}>
           <span class="form__error">Задайте поле</span>
+        </if>
+        <if test={!$has-string-field && str_len($settings.section)}>
+          <span class="form__error">У этой секции нет ни одного строкового поля. Выберите другую секцию.</span>
         </if>
       </div>
     </div>

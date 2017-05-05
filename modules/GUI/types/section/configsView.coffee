@@ -15,7 +15,6 @@ module.exports = class SectionConfigsView extends View
     "change: [data-role='configs-section-field']": (e) -> @model.updateField e.target.value
     "popup-close: contain": (e) -> @destroy()
 
-
   render: (state) -> @modalContain state
 
   submitConfigsForm: (e) ->
