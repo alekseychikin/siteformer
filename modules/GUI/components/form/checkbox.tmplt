@@ -3,14 +3,17 @@
   <param name={$name} value="" />
   <param name={$id} value="" />
   <param name={$value} value="" />
+  <param name={$checked} value={false} />
 
   <input
     class="form__checkbox"
     type="checkbox"
+    value={$value}
     data-role={$role}
     name={$name}
     id={$id}
-    checked={$value}
+    checked={$checked}
   />
   <label class="form__checkbox-label" for={$id}></label>
+  {$children}
 </component>

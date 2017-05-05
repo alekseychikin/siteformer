@@ -1,4 +1,6 @@
 <component>
+  <import name="x-checkbox" from="dist/components/form/checkbox.tmplt" />
+
   <param name={$settings} value={['s3AccessKey': '', 's3SecretKey': '', 'storage': 'local', 'source': '', 'saveRatio': false]} />
   <param name={$sources} value={[]} />
   <param name={$buckets} value={[]} />
@@ -104,11 +106,9 @@
 
         <input class="form__inp form__inp--very-short" type="text" value={$settings.height} data-role="configs-image-height" />
 
-        <div class="form__hint">
-          <input class="form__checkbox" type="checkbox" data-role="configs-image-save-ratio" id="configs-image-save-ratio" checked={$settings.saveRatio} />
-          <label class="form__checkbox-label" for="configs-image-save-ratio"></label>
+        <x-checkbox role="configs-image-save-ratio" id="configs-image-save-ratio" checked={$settings.saveRatio}>
           <label for="configs-image-save-ratio">Сохранить пропорции</label>
-        </div>
+        </x-checkbox>
       </div>
     </div>
     <div class="form__item">

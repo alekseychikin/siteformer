@@ -1,4 +1,6 @@
 <component>
+  <import name="x-checkbox" from="dist/components/form/checkbox.tmplt" />
+
   <param name={$settings} value={['numOptions': 0, 'defaultData': []]} />
 
   <div class="popup__head">Настройки флажков</div>
@@ -21,20 +23,17 @@
         <div data-role="configs-checkbox-options-contain">
           <for-each key={$i} item={$option} from={$settings.defaultData}>
             <div class="form__row-option">
-              <input
-                type="checkbox"
-                class="form__checkbox"
-                data-role="configs-checkbox-option"
+              <x-checkbox
+                role="configs-checkbox-option"
                 value={$i}
-                data-index={$i}
                 id={"configs-checkbox-option-" ++ $i}
                 name="configs-checkbox-option"
                 checked={$option.checked == true}
-              />
-              <label for={"configs-checkbox-option-" ++ $i} class="form__checkbox-label"></label>
-              <label>
-                <input type="text" class="form__inp form__inp--half-width" value={$option.label} data-role="configs-checkbox-option-label" data-index={$i} />
-              </label>
+              >
+                <label>
+                  <input type="text" class="form__inp form__inp--half-width" value={$option.label} data-role="configs-checkbox-option-label" data-index={$i} />
+                </label>
+              </x-checkbox>
 
               <if test={$settings.errorCode && $settings.errorIndex? && $settings.errorIndex[1]? && $settings.errorIndex[0] == 'defaultData' && $settings.errorCode == 'ENOTUNIQUEVALUE' && $settings.errorIndex[1] == $i}>
                 <span class="form__error">Варианты должны быть уникальными</span>

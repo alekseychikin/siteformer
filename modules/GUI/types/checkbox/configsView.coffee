@@ -19,15 +19,12 @@ module.exports = class CheckboxConfigsView extends View
         e.preventDefault()
 
     "change: [data-role='configs-checkbox-option']": (e) ->
-      @model.updateDefaultDataOptionChecked (@getIndexByEvent e), e.target.checked
+      @model.updateDefaultDataOptionChecked (Number e.target.value), e.target.checked
 
     "input keypress change: [data-role='configs-checkbox-option-label']": (e) ->
-      @model.updateDefaultDataOption (@getIndexByEvent e), e.target.value
+      @model.updateDefaultDataOption (Number e.target.getAttribute "data-index"), e.target.value
 
     "popup-close: contain": (e) -> @destroy()
-
-  getIndexByEvent: (e) ->
-    e.target.getAttribute "data-index"
 
   render: (state) ->
     @modalContain state
