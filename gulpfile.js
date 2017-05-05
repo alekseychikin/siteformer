@@ -38,7 +38,8 @@ gulp.task('watch', ['default'], function () {
   }
 
   browserSync.init({
-    proxy: yargs.argv.host
+    proxy: yargs.argv.host,
+    ghostMode: false
   })
 
   watch('modules/GUI/**/*.html', 'scripts')

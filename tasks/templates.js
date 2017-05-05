@@ -36,6 +36,7 @@ module.exports = function (src, pwd, dest) {
 
     gulp
       .src(src.files, {base: src.base})
+      .pipe(cache('php-templates'))
       .pipe(using({}))
       .pipe(generatePhpTemplates())
       .pipe(rename(function (path) {
@@ -46,6 +47,7 @@ module.exports = function (src, pwd, dest) {
 
     return gulp
       .src(src.files, {base: src.base})
+      .pipe(cache('js-templates'))
       .pipe(generateBrowserTemplates())
       .pipe(rename(function (path) {
         path.extname = '.tmplt.js'
