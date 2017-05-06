@@ -1,9 +1,9 @@
 <component>
   <div class="form-suggests">
     {$children}
-    <variable name={$issetResults} value={$rows? && arr_len($rows)} />
+    <param name={$rows} value={[]} />
 
-    <if test={$issetResults}>
+    <if test={arr_len($rows) > 0}>
       <div class="form-suggests__results">
         <for-each item={$row} from={$rows}>
           <div
