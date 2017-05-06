@@ -7,7 +7,8 @@ class SFTypeSection extends SFGUIType
   public static function getSqlField($params) {
     return [
       'type' => 'INT(11)',
-      'default' => false
+      'null' => true,
+      'default' => null
     ];
   }
 

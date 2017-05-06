@@ -7,7 +7,8 @@ class SFTypeDate extends SFGUIType
   public static function getSqlField($params) {
     return [
       'type' => 'DATETIME',
-      'default' => false
+      'null' => true,
+      'default' => null
     ];
   }
 
