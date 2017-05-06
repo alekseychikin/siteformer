@@ -49,23 +49,22 @@ module.exports = class ItemAddModel extends Model
       catch e
         console.error e
 
-    result.section = @state.section if @state.section?
-    result.id = @state.id if @state.id?
-    result.status = @state.status
-
     Promise.all promises
-      .then =>
-        console.log result
-        httpPost "/cms/#{@state.section}/action_save/", data: result
-      .then (response) ->
-        console.log response
-      .catch (response) =>
-        console.log response.error
-        if response.error.message && response.error.message.index
-          error = response.error.message
-          console.log error
+    .then =>
+      httpPost "/index.php?graph", 'gui-record': JSON.stringify
+        section: @state.section
+        id: @state.id
+        data: result
+        status: @state.status
+    .then (response) =>
+      @trigger "create-record", @state.section, response['gui-record'] if !@state.id
+    .catch (response) =>
+      console.log response.error
+      if response.error.message && response.error.message.index
+        error = response.error.message
+        console.log error
 
-          @showError error.index, error.code
+        @showError error.index, error.code
 
   showError: (index, code) ->
     for field in @state.fields
@@ -76,5 +75,7 @@ module.exports = class ItemAddModel extends Model
       id: @state.id
       section: @state.section
 
-    httpPost "/cms/#{@state.section}/action_delete/", data
-      .then => @trigger "delete-section", @state.section
+    httpPost "/index.php?graph", 'gui-record': JSON.stringify
+      section: @state.section
+      delete: @state.id
+    .then => @trigger "delete-record", @state.section

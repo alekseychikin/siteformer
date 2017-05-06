@@ -22,10 +22,11 @@ class SFGuiSections extends SFRouterModel
     if (isset($params['delete'])) {
       SFGUI::removeSection($params['delete']);
     } elseif ($id === false) {
-      $id = SFGUI::addSection($params);
+      return SFGUI::addSection($params);
     } else {
       unset($params['id']);
       SFGUI::saveSection($id, $params);
+      return $id;
     }
   }
 }

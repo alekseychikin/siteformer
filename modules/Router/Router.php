@@ -54,10 +54,8 @@ class SFRouter
       $params = [];
 
       foreach ($_POST as $key => $value) {
-        SFModels::post($key, parseJSON($value));
+        SFResponse::set($key, SFModels::post($key, parseJSON($value)));
       }
-
-      die();
     }
 
     SFResponse::render();

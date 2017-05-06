@@ -54,5 +54,8 @@ httpGet window.location.href
 
             index++
 
-    addModel.on "delete-section", (section) ->
+    addModel.on "delete-record", (section) ->
       window.location.href = "/cms/#{section}"
+
+    addModel.on "create-record", (section, id) ->
+      window.location.href = "/cms/#{section}/#{id}/"
