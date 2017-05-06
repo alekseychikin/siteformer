@@ -93,7 +93,7 @@ class SFGUI
         'fields' => 'gui-fields?section={section}',
         'section' => 'gui-sections?section={section}&field=alias',
         'section-name' => 'gui-sections?section={section}&field=title',
-        'page-title' => 'gui-scalar?value=Добавить запись в «{sectionName}»',
+        'page-title' => 'gui-scalar?value=Добавить запись в «{section-name}»',
         'data' => 'gui-section-data?section={section}'
       ],
       'template' => 'sections/item/add.tmplt'
@@ -106,7 +106,7 @@ class SFGUI
         'fields' => 'gui-fields?section={section}',
         'section' => 'gui-sections?section={section}&field=alias',
         'section-name' => 'gui-sections?section={section}&field=title',
-        'page-title' => 'gui-scalar?value=Добавить запись в «{sectionName}»',
+        'page-title' => 'gui-scalar?value=Добавить запись в «{section-name}»',
         'data' => 'gui-section-data?section={section}&id={id}'
       ],
       'template' => 'sections/item/add.tmplt'
