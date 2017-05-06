@@ -7,16 +7,14 @@ fetchData = (url, section, field) -> (query) -> httpGet url,
   section: section
   field: field
 
-setResults = (data) -> @set searchResult: data.result
+setResults = (data) ->
+  @set searchResult: data.result
 
 module.exports = class SectionDataModel extends Model
-  constructor: (target, model) ->
-    super target, model
+  constructor: (state = {}) ->
+    super state
 
     @set
-      data:
-        id: ""
-        searchResult: []
       searchSection: @state.field.settings.section
       searchField: @state.field.settings.field
 
