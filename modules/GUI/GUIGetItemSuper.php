@@ -24,7 +24,7 @@ class SFGUIGetItemSuper
 
   public function where($field, $value, $params = []) {
     if ($value = $this->getValueForORMQuery($field, $value, $params)) {
-      call_user_func_array([$this->databaseQuery, 'where'], $value);
+      call_user_func_array([$this->databaseQuery, 'where'], [$value]);
     }
 
     return $this;
