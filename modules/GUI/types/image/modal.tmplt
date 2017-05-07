@@ -52,6 +52,7 @@
         </div>
       </div>
     </div>
+
     <div data-role="configs-image-modal-storage-s3 configs-image-modal-storage-frame">
       <if test={$settings.storage != 's3'}>
         <attribute name="style" value="display: none" />

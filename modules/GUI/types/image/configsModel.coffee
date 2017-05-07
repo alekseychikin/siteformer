@@ -6,15 +6,6 @@ module.exports = class ImageConfigsModel extends Model
   constructor: (state = {}) ->
     super state
 
-  defaultState: ->
-    settings: configs.defaultSettings
-    s3checking: false
-    s3auth: false
-    buckets: []
-    pathError: false
-    sources: []
-
-  initial: ->
     sources = []
 
     for field, index in @state.fields
@@ -25,6 +16,14 @@ module.exports = class ImageConfigsModel extends Model
 
     @testConnectionS3()
     @checkPath()
+
+  defaultState: ->
+    settings: configs.defaultSettings
+    s3checking: false
+    s3auth: false
+    buckets: []
+    pathError: false
+    sources: []
 
   updateStorage: (storage) ->
     @set settings: {storage}
@@ -58,6 +57,8 @@ module.exports = class ImageConfigsModel extends Model
     isS3 = @state.settings.storage == "s3"
     isKeys = @state.settings.s3AccessKey && @state.settings.s3SecretKey
 
+    console.log "connect", isS3, isKeys
+
     if isS3 && isKeys && !@state.s3auth
       @set s3checking: true
 
@@ -65,19 +66,22 @@ module.exports = class ImageConfigsModel extends Model
         accessKey: @state.settings.s3AccessKey
         secretKey: @state.settings.s3SecretKey
       .then (response) =>
-        @set s3auth: response.auth
+        @set s3auth: true
 
-        if response.auth
-          if @state.settings.s3Bucket not in response.buckets
-            @set settings: s3Bucket: response.buckets[0]
+        if @state.settings.s3Bucket not in response.buckets
+          @set settings: s3Bucket: response.buckets[0]
 
-          @set buckets: response.buckets
+        @set
+          buckets: response.buckets
+          s3checking: false
+      .catch (response) =>
+        if response.error? && response.error.message?
+          @set
+            settings:
+              errorIndex: response.error.message.index
+              errorCode: response.error.message.code
 
-        @set s3checking: false
-      .catch (error) ->
-        @set s3checking: false
-
-        console.error error
+          @set s3checking: false
 
   updateS3AccessKey: (s3AccessKey) ->
     if s3AccessKey && @state.settings.s3AccessKey != s3AccessKey

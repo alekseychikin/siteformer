@@ -1,16 +1,8 @@
 <?php if (!defined('ROOT')) die('You can\'t just open this file, dude');
 
+require_once __DIR__ . '/helper.php';
+
 $accessKey = $_GET['accessKey'];
 $secretKey = urldecode($_GET['secretKey']);
-S3::setExceptions(true);
-S3::$useSSL = true;
-$s3 = new S3($accessKey, $secretKey);
-SFResponse::set('buckets', false);
-SFResponse::set('auth', true);
-try {
-  $listBuckets = $s3->listBuckets();
-  SFResponse::set('buckets', $listBuckets);
-}
-catch (Exception $e) {
-  SFResponse::set('auth', false);
-}
+
+checkAuthS3($accessKey, $secretKey);
