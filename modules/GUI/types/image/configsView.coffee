@@ -31,10 +31,7 @@ module.exports = class ImageConfigsView extends View
     "click: [data-role='test-connection-s3']": (e) -> @model.testConnectionS3()
     "popup-close: contain": (e) -> @destroy()
 
-  render: (state) ->
-    if (typeof state['settings']['errorIndex'] != 'undefined') && (typeof state['settings']['errorIndex'][0] != 'undefined')
-      console.log state['settings']['errorIndex'][0]
-    @modalContain state
+  render: (state) -> @modalContain state
 
   submitConfigsForm: (e) ->
     @trigger "save-configs-modal", @model.getState()

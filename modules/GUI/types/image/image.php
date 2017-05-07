@@ -21,6 +21,8 @@ class SFTypeImage extends SFGUIType
           if ($storage === 'local') {
             checkLocalPath($path);
           }
+
+          return true;
         }
       ],
       'width' => [],
@@ -153,9 +155,9 @@ class SFTypeImage extends SFGUIType
 
       return $bucketPath = SFPath::moveToBucket($path, $fieldTempPath);
     } elseif ($settings['storage'] === 'local') {
-      $path = ROOT . SFPath::prepareDir($settings['path'], PPD_OPEN_LEFT | PPD_CLOSE_RIGHT);
+      $path = SFPath::prepareDir($settings['path'], PPD_OPEN_LEFT | PPD_CLOSE_RIGHT);
 
-      return substr(SFPath::move($path . date('Y/m/'), $fieldTempPath), strlen($path));
+      return substr(SFPath::move(ROOT . $path . date('Y/m/'), $fieldTempPath), strlen(ROOT) - 1);
     }
 
     return $data[$field['alias']];

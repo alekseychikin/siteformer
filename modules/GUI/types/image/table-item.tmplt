@@ -2,12 +2,6 @@
   <param name={$value} value="" />
 
   <if test={$value}>
-    <variable name={$path} value={$field.settings.path} />
-
-    <if test={$field.settings.storage == 's3'}>
-      <variable name={$path} value={'https://s3-' ++ $field.settings.s3BucketLocation ++ '.amazonaws.com/' ++ $field.settings.s3Bucket ++ '/'} />
-    </if>
-
-    <img src={$path ++ $value} width="130" />
+    <img src={$value} width="130" />
   </if>
 </component>
