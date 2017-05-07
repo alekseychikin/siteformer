@@ -24,7 +24,7 @@
               <tr>
                 <for-each key={$columnIndex} item={$column} from={$row}>
                   <td>
-                    <input type="text" class="form__inp form__inp--very-short" value={$column} data-role="configs-table-cell" data-row="{ rowIndex }" data-column={$columnIndex} />
+                    <input type="text" class="form__inp form__inp--very-short" value={$column} data-role="configs-table-cell" data-row={$rowIndex} data-column={$columnIndex} />
                   </td>
                 </for-each>
               </tr>

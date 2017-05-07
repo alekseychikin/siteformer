@@ -22,6 +22,10 @@ class SFTypeTable extends SFGUIType
     return json_encode($data[$field['alias']], true);
   }
 
+  public static function prepareUpdateData($section, $field, $currentData, $data) {
+    return json_encode($data[$field['alias']], true);
+  }
+
   public static function postProcessData($section, $field, $data) {
     $data[$field['alias']] = parseJSON($data[$field['alias']]);
 
