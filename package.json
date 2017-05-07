@@ -33,7 +33,7 @@
     "gulp-using": "^0.1.1",
     "gulp-util": "^3.0.7",
     "gutt": "0.0.5",
-    "gutt-browser-stringifier": "0.0.4",
+    "gutt-browser-stringifier": "0.0.5",
     "gutt-php-stringifier": "0.0.3",
     "path": "^0.12.7",
     "postcss-assets": "^3.0.3",
