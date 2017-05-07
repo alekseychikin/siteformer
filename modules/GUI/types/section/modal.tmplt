@@ -48,7 +48,7 @@
           <span class="form__error">Задайте поле</span>
         </if>
         <if test={!$has-string-field && str_len($settings.section)}>
-          <span class="form__error">У этой секции нет ни одного строкового поля. Выберите другую секцию.</span>
+          <span class="form__error">У этого раздела нет ни одного строкового поля. Выберите другой.</span>
         </if>
       </div>
     </div>
