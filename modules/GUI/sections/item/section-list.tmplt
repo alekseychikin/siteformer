@@ -7,6 +7,7 @@
   <import name="x-select" from="../../types/select/table-item.tmplt" />
   <import name="x-string" from="../../types/string/table-item.tmplt" />
   <import name="x-tags" from="../../types/tags/table-item.tmplt" />
+  <import name="x-text" from="../../types/text/table-item.tmplt" />
   <import name="x-url" from="../../types/url/table-item.tmplt" />
 
   <param name={$user-fields} value={[]} />
@@ -63,6 +64,9 @@
                 </case>
                 <case test={$field.type == 'tags'}>
                   <x-tags field={$field} value={$data-row[$field.alias]} />
+                </case>
+                <case test={$field.type == 'text'}>
+                  <x-text field={$field} value={$data-row[$field.alias]} />
                 </case>
                 <case test={$field.type == 'url'}>
                   <x-url field={$field} value={$data-row[$field.alias]} />
