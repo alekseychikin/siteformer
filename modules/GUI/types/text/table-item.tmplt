@@ -1,0 +1,9 @@
+<component>
+  <param name={$value} value="" />
+
+  <if test={str_len($value) > 30}>
+    <variable name={$value} value={str_sub($value, 0, 30) ++ '...'} />
+  </if>
+
+  {$value}
+</component>

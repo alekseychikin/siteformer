@@ -16,6 +16,6 @@ module.exports = class TextConfigsView extends View
 
   render: (state) -> @modalContain state
 
-  submitConfigsForm: ->
+  submitConfigsForm: (e) ->
     @trigger "save-configs-modal", @model.getState()
     e.preventDefault()
