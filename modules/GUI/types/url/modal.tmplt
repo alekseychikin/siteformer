@@ -1,18 +1,27 @@
 <component>
   <param name={$fields} value={[]} />
 
+  <variable name={$has-string-field} value={false} />
+
   <div class="popup__head">Настройки урла</div>
   <form action="" class="form" data-role="configs-form">
     <div class="form__item">
       <label for="configs-url-field" class="form__label">Поиск по полю</label>
       <div class="form__inp-contain">
         <label class="form__select">
-          <select data-role="configs-url-field" id="configs-url-field">
+          <select data-role="configs-url-field" id="configs-url-field" data-source={$settings.source}>
+            <option value=""></option>
             <for-each item={$fieldItem} from={$fields}>
-              <option value={$fieldItem.alias} selected={$source == $fieldItem.alias}>{$fieldItem.title}</option>
+              <if test={$fieldItem.type == 'string'}>
+                <option value={$fieldItem.alias} selected={$settings.source == $fieldItem.alias}>{$fieldItem.title}</option>
+                <variable name={$has-string-field} value={true} />
+              </if>
             </for-each>
           </select>
         </label>
+        <if test={!$has-string-field}>
+          <span class="form__error">У этого раздела нет ни одного строкового поля. Добавьте строки.</span>
+        </if>
       </div>
     </div>
     <div class="form__submit">

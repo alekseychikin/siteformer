@@ -10,7 +10,7 @@ module.exports = class UrlConfigsView extends View
     @render @model.state
 
   events:
-    "click: [data-role='configs-url-field']": (e) -> @model.updateField e.target.value
+    "change: [data-role='configs-url-field']": (e) -> @model.updateField e.target.value
     "submit: [data-role='configs-form']": (e) ->
       @trigger "save-configs-modal", @model.getState()
       e.preventDefault()
