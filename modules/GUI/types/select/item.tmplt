@@ -2,6 +2,9 @@
   <div class="form__inp-contain" data-role="input-contain">
     <label class="form__select">
       <select name={$field.alias} id={$field.alias} data-role="select">
+        <if test={$field.settings.defaultValue == -1}>
+          <option value="-1"></option>
+        </if>
         <for-each key={$i} item={$data-item} from={$field.settings.defaultData}>
           <option value={$i} selected={$data == $i}>{$data-item}</option>
         </for-each>

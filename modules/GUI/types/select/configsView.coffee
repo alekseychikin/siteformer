@@ -23,7 +23,7 @@ module.exports = class SelectConfigsView extends View
       @model.updateDefaultDataOption (@getIndexByEvent e), e.target.value
     "popup-close: contain": (e) -> @destroy()
 
-  getIndexByEvent: (e) -> Number $item.getAttribute "data-index"
+  getIndexByEvent: (e) -> Number e.target.getAttribute "data-index"
 
   render: (state) -> @optionsContain state
 

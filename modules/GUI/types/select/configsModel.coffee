@@ -3,6 +3,8 @@ configs = require "types/select/configs.json"
 
 module.exports = class SelectConfigsModel extends Model
   constructor: (state = {}) ->
+    console.log state
+
     super state
 
   defaultState: -> settings: configs.defaultSettings
@@ -27,8 +29,6 @@ module.exports = class SelectConfigsModel extends Model
             defaultData.pop()
           if defaultValue >= value
             @set settings: {defaultValue}
-
-        defaultValue = -1 if defaultValue + 1 >= value
 
         @set
           settings:

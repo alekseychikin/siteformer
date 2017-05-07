@@ -31,10 +31,6 @@ class SFTypeSelect extends SFGUIType
       ]
     ], $params);
 
-    if ($params['defaultValue'] == -1) {
-      array_splice($params['defaultData'], 0, 0, "");
-    }
-
     return $params;
   }
 
