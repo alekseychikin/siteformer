@@ -12,7 +12,6 @@ module.exports = class ImageConfigsView extends View
   events:
     "submit: [data-role='configs-form']": "submitConfigsForm"
     "click: [data-role='configs-image-storage']": (e) -> @model.updateStorage e.target.getAttribute "data-value"
-    "keydown: [data-role='configs-image-path']": (e) -> @model.resetPath()
     "keyup input: [data-role='configs-image-path']": (e) ->  @throttling 500, => @model.updatePath e.target.value
     "change: [data-role='configs-image-path']": (e) ->  @model.updatePath e.target.value
     "change keyup input blur: [data-role='configs-image-s3-access-key']": (e) ->
@@ -32,7 +31,10 @@ module.exports = class ImageConfigsView extends View
     "click: [data-role='test-connection-s3']": (e) -> @model.testConnectionS3()
     "popup-close: contain": (e) -> @destroy()
 
-  render: (state) -> @modalContain state
+  render: (state) ->
+    if (typeof state['settings']['errorIndex'] != 'undefined') && (typeof state['settings']['errorIndex'][0] != 'undefined')
+      console.log state['settings']['errorIndex'][0]
+    @modalContain state
 
   submitConfigsForm: (e) ->
     @trigger "save-configs-modal", @model.getState()

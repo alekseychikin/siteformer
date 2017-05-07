@@ -1,11 +1,17 @@
 <component>
   <import name="x-checkbox" from="dist/components/form/checkbox.tmplt" />
 
-  <param name={$settings} value={['s3AccessKey': '', 's3SecretKey': '', 'storage': 'local', 'source': '', 'saveRatio': false]} />
+  <param name={$settings} value={[
+    's3AccessKey': '',
+    's3SecretKey': '',
+    'storage': 'local',
+    'source': '',
+    'saveRatio': false
+  ]} />
   <param name={$sources} value={[]} />
   <param name={$buckets} value={[]} />
+  <param name={$pathError} value={false} />
   <variable name={$isEmpty} value={!str_len($settings.s3AccessKey) || !str_len($settings.s3SecretKey)} />
-  <variable name={$pathError} value={false} />
 
   <div class="popup__head">Настройки изображения</div>
   <form action="" class="form" data-role="configs-form">
@@ -36,8 +42,12 @@
         <label for="configs-image-path" class="form__label">Путь</label>
         <div class="form__inp-contain">
           <input type="text" class="form__inp" value={$settings.path} data-role="configs-image-path" id="configs-image-path" autocomplete="off" />
-          <if test={$pathError}>
-            <span class="form__error">{$pathError}</span>
+
+          <if test={$settings.errorIndex? && $settings.errorIndex[0]? && $settings.errorIndex[0] == "path" && $settings.errorCode == "ENOWRITERIGHTS"}>
+            <span class="form__error">Папка закрыта на запись</span>
+          </if>
+          <if test={$settings.errorIndex? && $settings.errorIndex[0]? && $settings.errorIndex[0] == "path" && $settings.errorCode == "EPATHDOESNTEXISTS"}>
+            <span class="form__error">Путь не найден</span>
           </if>
         </div>
       </div>
@@ -130,7 +140,7 @@
       </div>
     </div>
     <div class="form__submit">
-      <button class="form__btn form__btn--submit" disabled={($settings.storage == "local" && $pathError) || ($settings.storage == "s3" && !$s3auth)}>Сохранить</button>
+      <button class="form__btn form__btn--submit" disabled={$settings.errorIndex? && arr_len($settings.errorIndex) > 0}>Сохранить</button>
       <button type="button" class="form__btn popup__cancel">Отменить</button>
     </div>
   </form>

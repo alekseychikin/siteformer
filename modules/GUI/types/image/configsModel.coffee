@@ -32,18 +32,25 @@ module.exports = class ImageConfigsModel extends Model
     @testConnectionS3() unless @state.s3auth
 
   updatePath: (path) ->
-    @set settings: {path}
-    @checkPath()
+    if @state.settings.path != path
+      @set settings: {path}
+      @checkPath()
 
   checkPath: ->
     httpGet "/cms/types/image/checkpath/",
       path: @state.settings.path
-    .then (response) =>
-      @set pathError: false
-      @set pathError: "Путь не найден" unless response.exists
-      @set pathError: "Папка закрыта на запись" unless response.writePermission
-    .catch (error) ->
-      console.error error
+    .then =>
+      @set
+        settings:
+          errorIndex: []
+          errorCode: ""
+
+    .catch (response) =>
+      if response.error? && response.error.message?
+        @set
+          settings:
+            errorIndex: response.error.message.index
+            errorCode: response.error.message.code
 
   resetPath: -> @set pathError: false
 
