@@ -6,6 +6,7 @@ require_once __DIR__ . '/ORMDatabase.php';
 
 class SFORMSelect extends SFORMDatabase
 {
+  private $useIdFields = true;
   private $selectFields;
   private $fromTable;
   private $fromTableAlias;
@@ -16,6 +17,7 @@ class SFORMSelect extends SFORMDatabase
   private $order = false;
   private $limit = false;
   private $offset = 0;
+  private $group = false;
 
   public function __construct ($args) {
     $this->selectFields = $args;
@@ -32,6 +34,12 @@ class SFORMSelect extends SFORMDatabase
     if (func_num_args() === 2) {
       $this->fromTableAlias = func_get_arg(1);
     }
+
+    return $this;
+  }
+
+  public function dropIdFields() {
+    $this->useIdFields = false;
 
     return $this;
   }
@@ -197,6 +205,12 @@ class SFORMSelect extends SFORMDatabase
     return $this;
   }
 
+  public function group ($field) {
+    $this->group = $field;
+
+    return $this;
+  }
+
   public function length ($alias = 'default') {
     $query = SFORM::select([SFORM::func('COUNT(*)'), 'length'])
       ->from($this)
@@ -216,7 +230,9 @@ class SFORMSelect extends SFORMDatabase
 
     $resultRaw = parent::query($sql, $alias);
 
-    $resultRaw = $this->prepareResult($resultRaw, $alias);
+    if ($this->useIdFields) {
+      $resultRaw = $this->prepareResult($resultRaw, $alias);
+    }
 
     $result = $this->dropIdKeys($resultRaw);
 
@@ -390,6 +406,10 @@ class SFORMSelect extends SFORMDatabase
       $sql .= implode(', ', $orders);
     }
 
+    if ($this->group !== false) {
+      $sql .= N . 'GROUP BY `' . $this->group . '`';
+    }
+
     if ($this->limit !== false) {
       $sql .= N . 'LIMIT ' . $this->offset . ', ' . $this->limit;
     }
@@ -505,12 +525,14 @@ class SFORMSelect extends SFORMDatabase
       if (gettype($this->fromTable) !== 'object') {
         $fromIdFields = self::getPrimaryFields($this->fromTable, $alias);
 
-        foreach ($fromIdFields as $field) {
-          if (!in_array(
-            $this->generateField($field, $this->fromTableAlias, true),
-            $idFields
-          )) {
-            $fields[] = $this->generateSelectField($field, $this->fromTableAlias);
+        if ($this->useIdFields) {
+          foreach ($fromIdFields as $field) {
+            if (!in_array(
+              $this->generateField($field, $this->fromTableAlias, true),
+              $idFields
+            )) {
+              $fields[] = $this->generateSelectField($field, $this->fromTableAlias);
+            }
           }
         }
       }
@@ -518,12 +540,14 @@ class SFORMSelect extends SFORMDatabase
       foreach ($this->joins as $joinAlias => $joinTable) {
         $fromIdFields = self::getPrimaryFields($joinTable['table'], $alias);
 
-        foreach ($fromIdFields as $field) {
-          if (!in_array(
-            $this->generateField($field, $joinAlias, true),
-            $idFields
-          )) {
-            $fields[] = $this->generateSelectField($field, $joinAlias);
+        if ($this->useIdFields) {
+          foreach ($fromIdFields as $field) {
+            if (!in_array(
+              $this->generateField($field, $joinAlias, true),
+              $idFields
+            )) {
+              $fields[] = $this->generateSelectField($field, $joinAlias);
+            }
           }
         }
       }
