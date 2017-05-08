@@ -478,11 +478,15 @@
 
 		tree.forEach(function (item) {
 			if (typeof item === 'string' && item.trim().length) {
-				result.push(item);
+				return result.push(item);
+			}
+
+			if (typeof item === 'number') {
+				return result.push(item.toString());
 			}
 
 			if (typeof item !== 'string') {
-				result.push({
+				return result.push({
 					tag: item.tag,
 					attrs: item.attrs,
 					children: prepareTemplate(item.children)
