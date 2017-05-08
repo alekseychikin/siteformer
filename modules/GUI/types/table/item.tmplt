@@ -1,5 +1,5 @@
 <component>
-  <div class="form__inp-contain" data-role="input-contain">
+  <div class="form__inp-contain form__inp-contain--full-width form__inp-contain--scroll-wrap" data-role="input-contain">
     <param name={$data} value={[]} />
 
     <table class="table">
