@@ -6,6 +6,8 @@
   <param name={$user-fields} value={[]} />
   <param name={$fields} value={[]} />
   <param name={$data} value={[]} />
+  <param name={$page} value={1} />
+  <param name={$pages} value={100} />
 
   <div class="section__row">
     <a href={"/cms/" ++ $section ++ "/add/"} class="form__btn">Добавить запись</a>
@@ -13,6 +15,13 @@
     <button class="form__btn form__btn--right" data-role="config-user-fields" type="button">Настроить поля</button>
   </div>
   <div class="section__row" data-role="section-list">
-    <section-list user-fields={$user-fields} fields={$fields} data={$data} section={$section} />
+    <section-list
+      user-fields={$user-fields}
+      fields={$fields}
+      data={$data}
+      section={$section}
+      page={$page}
+      pages={$pages}
+    />
   </div>
 </component>

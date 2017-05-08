@@ -83,7 +83,37 @@ class SFGUI
         'user-fields' => 'gui-fields?section={section}&usersonly',
         'section' => 'gui-scalar?value={section}',
         'sections' => 'gui-sections',
-        'data' => 'gui-item-list?section={section}&offset=0&limit=10&status=public,draft'
+        'data' => 'gui-item-list?section={section}&status=public,draft',
+        'pages' => 'gui-pages?section={section}&status=public,draft',
+        'page' => 'gui-scalar?value={page}'
+      ],
+      'template' => 'sections/item/index.tmplt'
+    ]);
+    SFRouter::addRule('/cms/{section}/page/{page}/', [
+      'data' => [
+        'title' => 'gui-sections?section={section}&field=title',
+        'page-title' => 'gui-scalar?value=Редактировать раздел «{title}»',
+        'fields' => 'gui-fields?section={section}',
+        'user-fields' => 'gui-fields?section={section}&usersonly',
+        'section' => 'gui-scalar?value={section}',
+        'sections' => 'gui-sections',
+        'data' => 'gui-item-list?section={section}&page={page}&status=public,draft',
+        'pages' => 'gui-pages?section={section}&status=public,draft',
+        'page' => 'gui-scalar?value={page}'
+      ],
+      'template' => 'sections/item/index.tmplt'
+    ]);
+    SFRouter::addRule('/cms/{section}/page/{page}/limit/{limit}/', [
+      'data' => [
+        'title' => 'gui-sections?section={section}&field=title',
+        'page-title' => 'gui-scalar?value=Редактировать раздел «{title}»',
+        'fields' => 'gui-fields?section={section}',
+        'user-fields' => 'gui-fields?section={section}&usersonly',
+        'section' => 'gui-scalar?value={section}',
+        'sections' => 'gui-sections',
+        'data' => 'gui-item-list?section={section}&page={page}&limit={limit}&status=public,draft',
+        'pages' => 'gui-pages?section={section}&limit={limit}&status=public,draft',
+        'page' => 'gui-scalar?value={page}'
       ],
       'template' => 'sections/item/index.tmplt'
     ]);

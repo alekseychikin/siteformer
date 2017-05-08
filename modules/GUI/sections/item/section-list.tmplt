@@ -9,8 +9,12 @@
   <import name="x-tags" from="../../types/tags/table-item.tmplt" />
   <import name="x-text" from="../../types/text/table-item.tmplt" />
   <import name="x-url" from="../../types/url/table-item.tmplt" />
+  <import name="x-paginator" from="../../components/paginator/paginator.tmplt" />
 
   <param name={$user-fields} value={[]} />
+  <param name={$page} value={1} />
+  <param name={$pages} value={100} />
+  <param name={$section} value="" />
   <variable name={$checked-items} value={0} />
   <variable name={$reduced-user-fields} value={$user-fields} />
 
@@ -78,4 +82,6 @@
       </for-each>
     </tbody>
   </table>
+
+  <x-paginator url={"/cms/" ++ $section ++ "/"} page={$page} pages={$pages} />
 </component>

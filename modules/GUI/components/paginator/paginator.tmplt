@@ -1,0 +1,18 @@
+<component>
+  <param name={$page} value={1} />
+  <param name={$pages} value={100} />
+  <param name={$url} value="" />
+
+  <div class="paginator">
+    <for-each item={$i} from={[1..$pages]}>
+      <switch>
+        <case test={$i == $page}>
+          <span class="paginator__current">{$i}</span>
+        </case>
+        <default>
+          <a class="paginator__page" href={$url ++ "page/" ++ $i ++ '/'}>{$i}</a>
+        </default>
+      </switch>
+    </for-each>
+  </div>
+</component>

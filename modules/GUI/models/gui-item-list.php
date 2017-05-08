@@ -13,10 +13,20 @@ class SFGuiItemList extends SFRouterModel
       });
     }
 
+    if (!isset($params['limit'])) {
+      $params['limit'] = 10;
+    }
+
+    if (!isset($params['page'])) {
+      $params['page'] = 1;
+    }
+
+    $offset = ($params['page'] - 1) * $params['limit'];
+
     $result = SFGUI::getItemList($params['section'])
       ->where('status', $statuses)
       ->order('id desc')
-      ->limit(0, 10);
+      ->limit($offset, $params['limit']);
 
     $query = $result->getQuery();
 
