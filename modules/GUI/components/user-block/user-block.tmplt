@@ -1,8 +1,15 @@
 <component>
   <div class="user-block">
-    <a href="" class="user-block__link">
-      <img src="/sf-engine/modules/GUI/dist/user-block/userpic.png" alt="" class="user-block__pic" />
-    </a>
+    <div class="user-block__back-to-site">
+      <a class="user-block__back-to-site-link" href="/">На сайт</a>
+    </div>
+
+    <div class="user-block__profile">
+      <a href="" class="user-block__link">
+        <img src="/sf-engine/modules/GUI/dist/user-block/userpic.png" alt="" class="user-block__pic" />
+      </a>
+    </div>
+
     <div class="user-block__name">
       <a href="" class="user-block__nick">Konstatinopolsky</a>
     </div>

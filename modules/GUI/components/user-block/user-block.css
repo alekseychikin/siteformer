@@ -1,4 +1,45 @@
 .user-block {
-  padding-top: 20px;
   text-align: center;
+
+  &__back-to-site-link {
+    display: block;
+    padding: 20px 40px;
+    font-size: 17px;
+    color: #fff;
+    text-decoration: none;
+    background-color: #3098b4;
+
+    &:hover {
+      background-color: #4eafc9;
+    }
+  }
+
+  &__profile {
+    margin-top: 20px;
+  }
+
+  &__link {
+    display: inline-block;
+    font-size: 0;
+    line-height: 0;
+  }
+
+  &__pic {
+    border-radius: 50%;
+    font-size: 0;
+    letter-spacing: 0;
+    width: 80px;
+    height: 80px;
+  }
+
+  &__nick {
+    color: #EDEDED;
+    text-decoration: none;
+    font-size: 12px;
+  }
+
+  &__name {
+    text-align: center;
+    margin-top: 5px;
+  }
 }
