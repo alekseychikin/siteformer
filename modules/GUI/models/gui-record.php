@@ -30,7 +30,7 @@ class SFGuiRecord extends SFRouterModel
     $status = $params['status'];
     $newData = ['status' => $params['status']];
     $section = SFGUI::getSection($params['section']);
-    $fields = self::sortFields($section['fields']);
+    $fields = self::sortFields($section['fields'], $data);
 
     foreach ($fields as $field) {
       $className = SFGUI::getClassNameByType($field['type']);
@@ -71,7 +71,7 @@ class SFGuiRecord extends SFRouterModel
     $status = $params['status'];
     $newData = ['status' => $status];
     $section = SFGUI::getSection($params['section']);
-    $fields = self::sortFields($section['fields']);
+    $fields = self::sortFields($section['fields'], $data);
 
     $currentData = SFGUI::getItem($params['section'])
       ->where('id', $id)
@@ -111,7 +111,7 @@ class SFGuiRecord extends SFRouterModel
     return $id;
   }
 
-  private static function sortFields ($fields) {
+  private static function sortFields ($fields, & $data) {
     while (true) {
       $find = false;
       $lookingFor = false;

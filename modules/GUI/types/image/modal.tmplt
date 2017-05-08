@@ -141,7 +141,7 @@
       </div>
     </div>
     <div class="form__submit">
-      <button class="form__btn form__btn--submit" disabled={$settings.errorIndex? && arr_len($settings.errorIndex) > 0}>Сохранить</button>
+      <button class="form__btn form__btn--submit" disabled={($settings.storage == "local" && $pathError) || ($settings.storage == "s3" && !$s3auth)}>Сохранить</button>
       <button type="button" class="form__btn popup__cancel">Отменить</button>
     </div>
   </form>

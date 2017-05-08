@@ -142,10 +142,6 @@ class SFTypeImage extends SFGUIType
 
     $settings = $field['settings'];
 
-    if (!empty($currentData[$field['alias']]) && file_exists(ROOT . $settings['path'] . $currentData[$field['alias']])) {
-      unlink(ROOT . $settings['path'] . $currentData[$field['alias']]);
-    }
-
     if ($settings['source'] === 'upload') {
       $value = $data[$field['alias']];
     } else {

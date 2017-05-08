@@ -36,22 +36,24 @@ module.exports = class ImageConfigsModel extends Model
       @checkPath()
 
   checkPath: ->
-    httpGet "/cms/types/image/checkpath/",
-      path: @state.settings.path
-    .then =>
-      @set
-        settings:
-          errorIndex: []
-          errorCode: ""
-
-    .catch (response) =>
-      if response.error? && response.error.message?
+    if @state.settings.storage == "local"
+      httpGet "/cms/types/image/checkpath/",
+        path: @state.settings.path
+      .then =>
         @set
+          pathError: false
           settings:
-            errorIndex: response.error.message.index
-            errorCode: response.error.message.code
+            errorIndex: []
+            errorCode: ""
 
-  resetPath: -> @set pathError: false
+      .catch (response) =>
+        @set pathError: true
+
+        if response.error? && response.error.message?
+          @set
+            settings:
+              errorIndex: response.error.message.index
+              errorCode: response.error.message.code
 
   testConnectionS3: ->
     isS3 = @state.settings.storage == "s3"
