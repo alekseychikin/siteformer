@@ -73,7 +73,8 @@ module.exports = class View
 
   liveEventsHandler: (e) ->
     for event in @lclLiveEvents[e.type]
-      if e.target.matches event.selector || e.target.closest event.selector
+      if (e.target.matches event.selector) || (e.target.closest event.selector)
+        e.selectorTarget = if e.target.matches event.selector then e.target else e.target.closest event.selector
         event.handler e
 
   on: (eventName, callback) ->
