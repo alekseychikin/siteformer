@@ -146,6 +146,8 @@ class SFGUI
 
     if (SFURI::getFirstUri() === 'cms') {
       SFTemplater::setCompilesPath(GUI_COMPILE_TEMPLATES);
+
+      self::login();
     }
   }
 
@@ -850,6 +852,94 @@ class SFGUI
         ->addKey(['user', 'section', 'field'], 'primary key')
         ->addKey(['user', 'section'])
         ->exec();
+    }
+
+    if (!SFORM::exists('users')) {
+      SFORM::create('users')
+      ->addField([
+        'name' => 'id',
+        'type' => 'INT(4) UNSIGNED',
+        'autoincrement' => true,
+        'null' => false
+      ])
+      ->addField([
+        'name' => 'login',
+        'type' => 'VARCHAR(100)',
+        'null' => false
+      ])
+      ->addField([
+        'name' => 'password',
+        'type' => 'VARCHAR(32)',
+        'null' => false
+      ])
+      ->addField([
+        'name' => 'role',
+        'type' => 'ENUM("admin","user")',
+        'default' => "user"
+      ])
+      ->addField([
+        'name' => 'userpic',
+        'type' => 'VARCHAR(200)',
+        'null' => true,
+        'default' => null
+      ])
+      ->addKey('id', 'primary key')
+      ->addKey(['login', 'password'], 'key')
+      ->exec();
+    }
+  }
+
+  private static function login() {
+    $auth = false;
+    $doLogin = false;
+
+    if (isset($_SESSION['cms_login']) && isset($_SESSION['cms_password'])) {
+      $login = $_SESSION['cms_login'];
+      $password = $_SESSION['cms_password'];
+      $doLogin = true;
+    }
+
+    if (isset($_POST['login']) && isset($_POST['password']) && isset($_POST['login_submit'])) {
+      $login = $_POST['login'];
+      $password = md5($_POST['password']);
+      $doLogin = true;
+    }
+
+    if ($doLogin) {
+      $user = SFORM::select()
+      ->from('users')
+      ->where('login', $login)
+      ->andWhere('password', $password)
+      ->exec();
+
+      if (!count($user)) {
+        throw new ValidateException([
+          'code' => 'EWRONGAUTH'
+        ]);
+      }
+
+      $_SESSION['cms_login'] = $login;
+      $_SESSION['cms_password'] = $password;
+
+      $auth = true;
+    }
+
+    if (!$auth) {
+      $users = SFORM::select()
+      ->from('users')
+      ->exec();
+
+      $users = arrMap($users, function ($user) {
+        $user['password'] = '';
+
+        return $user;
+      });
+
+      SFResponse::set('users', $users);
+
+      SFResponse::set('page-title', 'Авторизация');
+      echo SFTemplater::render('sections/main/login.tmplt', SFResponse::getState());
+      SFResponse::render();
     }
   }
 }

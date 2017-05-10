@@ -1,0 +1,41 @@
+<component>
+  <param name={$users} value={[]} />
+  <param name={$is-selected-user} value={false} />
+  <param name={$login} value="" />
+  <param name={$password} value="" />
+  <param name={$error-login} value={false} />
+
+  <form class="form" action="" data-role="login-form">
+    <for-each item={$user} from={$users}>
+      <variable name={$userpic} value={$user.userpic} />
+
+      <if test={!$user.userpic? || !$user.userpic}>
+        <variable name={$userpic} value="default.png" />
+      </if>
+
+      <if test={!$is-selected-user || ($is-selected-user && $login == $user.login)}>
+        <button class="login__item" type="button" data-login={$user.login} data-role="login-user">
+          <span class="login__pic">
+            <img class="login__userpic" src={$userpic} alt="" />
+          </span>
+
+          <span class="login__login">{$user.login}</span>
+        </button>
+      </if>
+    </for-each>
+
+    <if test={$is-selected-user}>
+      <div class="login__password" data-role="password-placeholder">
+        <if test={$error-login}>
+          <attribute name="class" value="login__password login__password--error" />
+        </if>
+
+        <input class="form__inp" type="password" name="password" value="" data-role="login-password" focus={$is-selected-user} />
+      </div>
+
+      <div class="login__submit">
+        <button class="form__btn form__btn--submit" type="submit" disabled={str_len($password) == 0}>Войти</button>
+      </div>
+    </if>
+  </form>
+</component>

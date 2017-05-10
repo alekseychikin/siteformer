@@ -7,11 +7,11 @@ require_once __DIR__ . '/RouterModel.php';
 
 class SFRouter
 {
+  public static $languages = [];
   private static $uri;
   private static $routingPath = false;
   private static $num_page = 1;
   private static $beforeParams = [];
-  public static $languages = [];
   private static $language = '';
   private static $modelsPath = false;
 

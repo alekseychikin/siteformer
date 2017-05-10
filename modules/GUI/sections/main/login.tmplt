@@ -1,0 +1,25 @@
+<component>
+  <import name="login-form" from="../../components/login/login.tmplt" />
+  <import name="x-scripts" from="./scripts.tmplt" />
+
+  <param name={$page-title} value="" />
+  <param name={$users} value={[]} />
+
+  <!DOCTYPE html>
+  <html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{$page-title}</title>
+    <link rel="stylesheet" href="/sf-engine/modules/GUI/dist/main.css" />
+  </head>
+  <body>
+    <section class="login" data-role="login-form">
+      <login-form users={$users} />
+    </section>
+
+    <x-scripts>
+      <script src="/sf-engine/modules/GUI/dist/main/login.js"></script>
+    </x-scripts>
+  </body>
+  </html>
+</component>
