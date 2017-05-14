@@ -16,7 +16,7 @@
     </div>
 
     <x-scripts>
-      <script src="/sf-engine/modules/GUI/dist/users/users.js"></script>
+      <script src="/sf-engine/modules/GUI/dist/users/profile.js"></script>
     </x-scripts>
   </x-main>
 </component>

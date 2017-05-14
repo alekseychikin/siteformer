@@ -1,7 +1,7 @@
 Model = require "libs/model.coffee"
 {httpPost} = require "libs/ajax.coffee"
 
-module.exports = class UsersModel extends Model
+module.exports = class ProfileModel extends Model
   constructor: (state = {}) ->
     super state
 
