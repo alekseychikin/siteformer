@@ -1,6 +1,8 @@
 <component>
   <param name={$previewData} value="" />
   <param name={$data} value="" />
+  <param name={$width} value="200" />
+  <param name={$height} value="220" />
 
   <div class="form__inp-contain" data-role="input-contain">
     <div class="form__file-wrap">
@@ -16,7 +18,7 @@
         {arr_push($form-label-class, 'form__file--previewed')}
       </if>
 
-      <label class={arr_join($form-label-class, ' ')}>
+      <label class={arr_join($form-label-class, ' ')} style={"width: " ++ $width ++ "px; height: " ++ $height ++ "px;"}>
         <if test={str_len($data)}>
           <if test={str_len($previewData) || str_len($data)}>
             <switch>

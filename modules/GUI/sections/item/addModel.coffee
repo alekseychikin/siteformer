@@ -51,7 +51,7 @@ module.exports = class ItemAddModel extends Model
 
     Promise.all promises
     .then =>
-      httpPost "/index.php?graph", 'gui-record': JSON.stringify
+      httpPost "/index.php?graph", "gui-record": JSON.stringify
         section: @state.section
         id: @state.id
         data: result

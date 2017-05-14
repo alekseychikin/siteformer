@@ -22,7 +22,7 @@
 
   <h1 class="head">{$section-title} раздел</h1>
 
-  <form action={"/cms/configs/" ++ $section-url ++ "/"} class="form" data-role="configs-add-form">
+  <form action={"/cms/configs/" ++ $section-url ++ "/"} class="form form--full-height" data-role="configs-add-form">
     <div class="form__item">
       <label for="name" class="form__label">Название</label>
       <div class="form__inp-contain">

@@ -5,6 +5,7 @@
   <param name={$page-title} value="" />
   <param name={$sections} value={[]} />
   <param name={$section} value="" />
+  <param name={$user} value={["userpic": "", "login": ""]} />
 
   <!DOCTYPE html>
   <html lang="ru">
@@ -17,7 +18,7 @@
     <div class="section">
       <div class="aside">
         <div class="header">
-          <user-block />
+          <user-block user={$user} />
         </div>
         <x-menu sections={$sections} section={$section} />
       </div>

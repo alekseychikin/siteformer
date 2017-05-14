@@ -4,7 +4,14 @@
 }
 
 .form {
+  position: relative;
   margin-top: 5px;
+
+  &--full-height {
+    min-height: calc(100vh - 63px);
+    padding-bottom: 90px;
+    box-sizing: border-box;
+  }
 
   &__area {
     border: 1px solid #BEBEBE;
@@ -695,6 +702,13 @@
     padding: 15px 40px;
     background-color: #F3F3F3;
     font-size: 0;
+  }
+
+  &--full-height &__submit {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
   }
 
   &__table {

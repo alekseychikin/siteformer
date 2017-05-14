@@ -1,0 +1,22 @@
+<component>
+  <import name="profile-form" from="./profile-form.tmplt" />
+  <import name="x-main" from="../main/main.tmplt" />
+  <import name="x-scripts" from="../main/scripts.tmplt" />
+
+  <param name={$page-title} value="Редактировать профиль" />
+  <param name={$sections} value={[]} />
+  <param name={$section} value="" />
+  <param name={$user} value={["login": "", "email": "", "userpic": ""]} />
+
+  <x-main page-title={$page-title} sections={$sections} section={$section} user={$user}>
+    <h1 class="head">Редактировать профиль</h1>
+
+    <div data-role="profile-placeholder">
+      <profile-form user={$user} />
+    </div>
+
+    <x-scripts>
+      <script src="/sf-engine/modules/GUI/dist/users/users.js"></script>
+    </x-scripts>
+  </x-main>
+</component>

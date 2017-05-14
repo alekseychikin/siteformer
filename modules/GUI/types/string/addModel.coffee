@@ -18,6 +18,8 @@ module.exports = class StringConfigsModel extends Model
 
   showError: (code) -> @set error: @getMessage code
 
+  hideError: -> @set error: ""
+
   getMessage: (code) -> @messages[code] or 'Непонятная ошибка'
 
   get: -> @state.data

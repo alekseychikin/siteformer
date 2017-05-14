@@ -3,15 +3,19 @@
     <param name={$field} value={['alias': '']} />
     <param name={$error} value="" />
     <param name={$data} value="" />
+    <param name={$type} value="text" />
+    <param name={$disabled} value={false} />
+    <param name={$role} value="string" />
 
     <input
       class="form__inp"
-      type="text"
+      type={$type}
       name={$field.alias}
       id={$field.alias}
       value={$data}
-      data-role="string"
+      data-role={$role}
       focus={str_len($error)}
+      disabled={$disabled}
     />
     <if test={str_len($error)}>
       <span class="form__error">{$error}</span>

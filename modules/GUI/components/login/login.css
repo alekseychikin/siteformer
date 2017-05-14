@@ -31,8 +31,10 @@
     position: relative;
     display: inline-block;
     overflow: hidden;
-    width: 60px;
-    height: 60px;
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    line-height: 0;
   }
 
   &__userpic {

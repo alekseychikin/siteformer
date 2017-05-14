@@ -141,6 +141,10 @@ class SFGUI
       ],
       'template' => 'sections/item/add.tmplt'
     ]);
+    SFRouter::addRule('/cms/profile/', [
+      'data' => [],
+      'template' => 'sections/users/profile.tmplt'
+    ]);
 
     define('GUI_COMPILE_TEMPLATES', ENGINE . 'modules/GUI/dist/');
 
@@ -889,7 +893,7 @@ class SFGUI
     }
   }
 
-  private static function login() {
+  public static function login() {
     $auth = false;
     $doLogin = false;
 
@@ -922,6 +926,9 @@ class SFGUI
       $_SESSION['cms_password'] = $password;
 
       $auth = true;
+
+      $user[0]['password'] = '';
+      SFResponse::set('user', $user[0]);
     }
 
     if (!$auth) {

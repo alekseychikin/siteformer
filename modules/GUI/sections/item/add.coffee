@@ -4,7 +4,7 @@ AddModel = require "./addModel.coffee"
 
 AddView = require "./addView.coffee"
 
-models =
+Models =
   checkbox: require "types/checkbox/addModel.coffee"
   date: require "types/date/addModel.coffee"
   image: require "types/image/addModel.coffee"
@@ -18,7 +18,7 @@ models =
   text: require "types/text/addModel.coffee"
   url: require "types/url/addModel.coffee"
 
-views =
+Views =
   checkbox: require "types/checkbox/addView.coffee"
   date: require "types/date/addView.coffee"
   image: require "types/image/addView.coffee"
@@ -45,12 +45,12 @@ httpGet window.location.href
 
     for field in response.fields
       do ->
-        if models[field.type]?
-          model = new models[field.type] {field, data: response.data[field.alias]}
+        if Models[field.type]?
+          model = new Models[field.type] {field, data: response.data[field.alias]}
           addModel.add field.alias, model
 
-          if views[field.type]? && (!field.settings.hide? || (field.settings.hide? && !field.settings.hide))
-            new views[field.type] rows[index], model
+          if Views[field.type]? && (!field.settings.hide? || (field.settings.hide? && !field.settings.hide))
+            new Views[field.type] rows[index], model
 
             index++
 
