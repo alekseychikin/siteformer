@@ -9,8 +9,9 @@
   <param name={$section} value="" />
   <param name={$fields} value={[]} />
   <param name={$data} value={[]} />
+  <param name={$user} value={["login": "", "email": "", "userpic": ""]} />
 
-  <x-main page-title={$page-title} sections={$sections} section={$section}>
+  <x-main page-title={$page-title} sections={$sections} section={$section} user={$user}>
     <h1 class="head">Добавить запись в «{$section-name}»</h1>
     <article class="content">
       <form class="form" action="" data-role="item-add-form">

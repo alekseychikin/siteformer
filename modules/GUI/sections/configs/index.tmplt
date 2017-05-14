@@ -5,8 +5,9 @@
   <param name={$page-title} value="" />
   <param name={$sections} value={[]} />
   <param name={$section} value="" />
+  <param name={$user} value={["login": "", "email": "", "userpic": ""]} />
 
-  <x-main page-title={$page-title} sections={$sections} section={$section}>
+  <x-main page-title={$page-title} sections={$sections} section={$section} user={$user}>
     <h1 class="head">Настройки</h1>
 
     <div class="section__wrap" data-role="sections">

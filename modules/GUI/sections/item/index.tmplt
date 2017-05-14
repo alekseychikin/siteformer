@@ -10,8 +10,9 @@
   <param name={$data} value={[]} />
   <param name={$page} value={1} />
   <param name={$pages} value={100} />
+  <param name={$user} value={["login": "", "email": "", "userpic": ""]} />
 
-  <x-main page-title={$page-title} sections={$sections} section={$section}>
+  <x-main page-title={$page-title} sections={$sections} section={$section} user={$user}>
     <article class="content">
       <h1 class="head">Настройки</h1>
 

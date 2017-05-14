@@ -142,7 +142,9 @@ class SFGUI
       'template' => 'sections/item/add.tmplt'
     ]);
     SFRouter::addRule('/cms/profile/', [
-      'data' => [],
+      'data' => [
+        'sections' => 'gui-sections'
+      ],
       'template' => 'sections/users/profile.tmplt'
     ]);
 

@@ -13,8 +13,9 @@
   <param name={$error-fields-index} value={false} />
   <param name={$error-fields-field} value="" />
   <param name={$error-fields-message} value="" />
+  <param name={$user} value={["login": "", "email": "", "userpic": ""]} />
 
-  <x-main page-title={$page-title} sections={$sections} section={$section}>
+  <x-main page-title={$page-title} sections={$sections} section={$section} user={$user}>
     <article class="content" data-role="configs-add">
       <configs-add
         id={$id}
