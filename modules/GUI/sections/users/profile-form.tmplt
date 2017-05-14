@@ -10,26 +10,26 @@
     <div class="form__item">
       <label for="userpic" class="form__label">Иконка</label>
       <div data-role="userpic-placeholder">
-        <x-image field={["alias": "userpic"]} data={$user.userpic} width="120" height="130" />
+        <x-image alias="userpic" data={$user.userpic} width="120" height="130" />
       </div>
     </div>
 
     <div class="form__item">
       <label for="login" class="form__label">Логин</label>
-      <x-string field={["alias": "login"]} data={$user.login} disabled={true} />
+      <x-string alias="login" data={$user.login} disabled={true} />
     </div>
 
     <div class="form__item">
       <label for="email" class="form__label">Эл. почта</label>
       <div data-role="email-placeholder">
-        <x-string field={["alias": "email"]} data={$user.email} type="email" />
+        <x-string alias="email" data={$user.email} type="email" />
       </div>
     </div>
 
     <div class="form__item">
       <label for="password" class="form__label">Пароль</label>
       <div data-role="password-placeholder">
-        <x-string field={["alias": "password"]} data={$user.password} type="password" />
+        <x-string alias="password" data={$user.password} type="password" />
       </div>
       <div class="form__hint">
         Задайте пароль, если нужно поменять.

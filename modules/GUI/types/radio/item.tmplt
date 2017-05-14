@@ -1,20 +1,21 @@
 <component>
-  <param name={$field} value={['settings': ['defaultData': []]]} />
+  <param name={$settings} value={["defaultData": []]} />
+  <param name={$alias} value="" />
 
   <div class="form__inp-contain" data-role="input-contain">
-    <for-each key={$i} item={$data-item} from={$field.settings.defaultData}>
+    <for-each key={$i} item={$data-item} from={$settings.defaultData}>
       <div class="form__row-option">
         <input
           class="form__radio"
           type="radio"
-          id={$field.alias ++ $i}
-          name={$field.alias}
+          id={$alias ++ $i}
+          name={$alias}
           data-role="radio"
           data-index={$i}
           checked={$data == $i}
         />
-        <label class="form__radio-label" for={$field.alias ++ $i}></label>
-        <label for={$field.alias ++ $i}>{$data-item}</label>
+        <label class="form__radio-label" for={$alias ++ $i}></label>
+        <label for={$alias ++ $i}>{$data-item}</label>
       </div>
     </for-each>
   </div>

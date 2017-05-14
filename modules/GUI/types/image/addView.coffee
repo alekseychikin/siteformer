@@ -10,7 +10,7 @@ module.exports = class ImageDataView extends View
     @model.setInput @contain.querySelector "[data-role='image']"
 
   render: (state) ->
-    if !state.field.settings.hide
+    if !state.settings.hide
       @template state
 
   events:

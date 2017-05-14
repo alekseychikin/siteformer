@@ -21,10 +21,10 @@ module.exports = class TagsDataModel extends Model
 
   update: (value) ->
     @getEditablePart value
-      .then skipLastQuery @state.field.id
+      .then skipLastQuery @state.alias
       .then skipEmptyQuery
       .then throttle 500
-      .then fetchData "/cms/types/tags/search/", @state.field.section, @state.field.id
+      .then fetchData "/cms/types/tags/search/", @state.section, @state.alias
       .then setResults.bind @
       .catch @emptySearch.bind @
 

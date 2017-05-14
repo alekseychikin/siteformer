@@ -24,7 +24,7 @@ class SFTypeTags extends SFGUIType
         ])
         ->addField([
           'name' => 'field',
-          'type' => 'INT(11) UNSIGNED',
+          'type' => 'VARCHAR(100)',
           'null' => 'NULL',
           'default' => NULL
         ])
@@ -64,7 +64,7 @@ class SFTypeTags extends SFGUIType
   public static function prepareInsertData($section, $field, $data) {
     $tags = self::getArrTagsFromString($data[$field['alias']]);
 
-    $existsTags = arrMap(self::getTagRecords($field['section'], $field['id'], $tags), function ($row) {
+    $existsTags = arrMap(self::getTagRecords($field['section'], $field['alias'], $tags), function ($row) {
       return $row['tag'];
     });
 
@@ -73,7 +73,7 @@ class SFTypeTags extends SFGUIType
         SFORM::insert('type_tags')
           ->values([
             'section' => $field['section'],
-            'field' => $field['id'],
+            'field' => $field['alias'],
             'tag' => $tag
           ])
           ->exec();
@@ -111,7 +111,7 @@ class SFTypeTags extends SFGUIType
   public static function postPrepareInsertData($section, $field, $record, $data) {
     $tags = self::getArrTagsFromString($data[$field['alias']]);
 
-    $ids = arrMap(self::getTagRecords($field['section'], $field['id'], $tags), function ($row) {
+    $ids = arrMap(self::getTagRecords($field['section'], $field['alias'], $tags), function ($row) {
       return $row['id'];
     });
 

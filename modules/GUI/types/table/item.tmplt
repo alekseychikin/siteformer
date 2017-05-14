@@ -1,7 +1,9 @@
 <component>
-  <div class="form__inp-contain form__inp-contain--full-width form__inp-contain--scroll-wrap" data-role="input-contain">
-    <param name={$data} value={[]} />
+  <param name={$data} value={[]} />
+  <param name={$alias} value="" />
+  <param name={$settings} value={["defaultData": []]} />
 
+  <div class="form__inp-contain form__inp-contain--full-width form__inp-contain--scroll-wrap" data-role="input-contain">
     <table class="table">
       <switch>
         <case test={arr_len($data)}>
@@ -12,7 +14,7 @@
                   <input
                     class="form__inp"
                     type="text"
-                    id={$field.alias ++ $rowIndex ++ "_" ++ $columnIndex }
+                    id={$alias ++ $rowIndex ++ "_" ++ $columnIndex }
                     data-role="cell"
                     value={$column}
                     data-row={$rowIndex}
@@ -24,14 +26,14 @@
           </for-each>
         </case>
         <default>
-          <for-each key={$rowIndex} item={$row} from={$field.settings.defaultData}>
+          <for-each key={$rowIndex} item={$row} from={$settings.defaultData}>
             <tr>
               <for-each key={$columnIndex} item={$column} from={$row}>
                 <td>
                   <input
                     class="form__inp"
                     type="text"
-                    id={$field.alias ++ $rowIndex ++ "_" ++ $columnIndex}
+                    id={$alias ++ $rowIndex ++ "_" ++ $columnIndex}
                     data-role="cell"
                     value=""
                     data-row={$rowIndex}

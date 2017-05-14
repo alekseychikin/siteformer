@@ -16,18 +16,16 @@ httpGet window.location.href
 
   usersModel.userpic = new ImageTypeModel
     data: response.user.userpic || ""
-    field:
-      alias: "userpic"
-      settings:
-        hide: false
+    alias: "userpic"
+    settings:
+      hide: false
     width: 120
     height: 130
   new ImageTypeView (document.querySelector "[data-role='userpic-placeholder']"), usersModel.userpic
 
   usersModel.email = new StringTypeModel
     data: response.user.email
-    field:
-      alias: "email"
+    alias: "email"
     type: "email"
 
   usersModel.email.messages =
@@ -38,8 +36,7 @@ httpGet window.location.href
 
   usersModel.password = new StringTypeModel
     data: ""
-    field:
-      alias: "password"
+    alias: "password"
     type: "password"
 
   new StringTypeView (document.querySelector "[data-role='password-placeholder']"), usersModel.password

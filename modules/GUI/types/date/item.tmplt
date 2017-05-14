@@ -1,24 +1,25 @@
 <component>
-  <param name={$field} value={['alias': '', 'settings': ['useTime': '']]} />
-  <param name={$date} value={['date': '', 'time': '']} />
+  <param name={$alias} value="" />
+  <param name={$settings} value={["useTime": ""]} />
+  <param name={$data} value={["date": "", "time": ""]} />
 
   <div class="form__inp-contain" data-role="input-contain">
     <label class="form__placeholder">
       <input
         class="form__inp form__inp--date"
         type="date"
-        id={$field.alias}
+        id={$alias}
         value={$data.date}
         data-role="date"
       />
       <span class="form__inp-empty" data-role="date-empty"></span>
     </label>
-    <if test={$field.settings.useTime}>
+    <if test={$settings.useTime}>
       <label class="form__placeholder">
         <input
           class="form__inp form__inp--time"
           type="time"
-          id={$field.alias ++ "-time"}
+          id={$alias ++ "-time"}
           value={$data.time}
           data-role="time"
         />

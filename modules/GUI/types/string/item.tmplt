@@ -1,6 +1,6 @@
 <component>
   <div class="form__inp-contain" data-role="input-contain">
-    <param name={$field} value={['alias': '']} />
+    <param name={$alias} value="" />
     <param name={$error} value="" />
     <param name={$data} value="" />
     <param name={$type} value="text" />
@@ -10,8 +10,8 @@
     <input
       class="form__inp"
       type={$type}
-      name={$field.alias}
-      id={$field.alias}
+      name={$alias}
+      id={$alias}
       value={$data}
       data-role={$role}
       focus={str_len($error)}

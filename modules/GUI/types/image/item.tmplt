@@ -3,6 +3,7 @@
   <param name={$data} value="" />
   <param name={$width} value="200" />
   <param name={$height} value="220" />
+  <param name={$alias} value="" />
 
   <div class="form__inp-contain" data-role="input-contain">
     <div class="form__file-wrap">
@@ -47,8 +48,8 @@
         </if>
         <input
           type="file"
-          name={$field.alias}
-          id={$field.alias}
+          name={$alias}
+          id={$alias}
           value=""
           data-role="image"
           onfocus="this.parentNode.parentNode.className = 'form__file-wrap form__file-wrap--active'"

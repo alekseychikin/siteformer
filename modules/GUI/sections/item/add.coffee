@@ -46,7 +46,12 @@ httpGet window.location.href
     for field in response.fields
       do ->
         if Models[field.type]?
-          model = new Models[field.type] {field, data: response.data[field.alias]}
+          model = new Models[field.type]
+            settings: field.settings
+            alias: field.alias
+            data: response.data[field.alias]
+            section: field.section
+
           addModel.add field.alias, model
 
           if Views[field.type]? && (!field.settings.hide? || (field.settings.hide? && !field.settings.hide))

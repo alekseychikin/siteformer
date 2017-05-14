@@ -15,8 +15,8 @@ module.exports = class SectionDataModel extends Model
     super state
 
     @set
-      searchSection: @state.field.settings.section
-      searchField: @state.field.settings.field
+      searchSection: @state.settings.section
+      searchField: @state.settings.field
 
   selectResult: (id, title) ->
     data =
@@ -24,7 +24,6 @@ module.exports = class SectionDataModel extends Model
       title: title
 
     @set {data}
-    console.log data
     @emptySearch()
 
   emptySearch: -> @set searchResult: []
@@ -39,7 +38,7 @@ module.exports = class SectionDataModel extends Model
 
   search: (value) ->
     Promise.resolve value
-      .then skipLastQuery "#{@state.field.section}_#{@state.field.id}"
+      .then skipLastQuery "#{@state.alias}"
       .then skipEmptyQuery
       .then throttle 500
       .then fetchData "/cms/types/section/search/", @state.searchSection, @state.searchField

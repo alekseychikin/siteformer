@@ -4,10 +4,10 @@
 
   <import name="form-suggests" from="../../components/form-suggests/form-suggests.tmplt" />
 
-  <div class="form__inp-contain" data-role="input-contain" data-alias={$field.alias}>
+  <div class="form__inp-contain" data-role="input-contain" data-alias={$alias}>
     <form-suggests rows={$searchResult}>
-      <if test={$data[$field.settings.field]?}>
-        <attribute name="title" value={$data[$field.settings.field]} />
+      <if test={$data[$settings.field]?}>
+        <attribute name="title" value={$data[$settings.field]} />
       </if>
       <if test={$data.id?}>
         <attribute name="id" value={$data.id} />
@@ -15,15 +15,15 @@
 
       <input
         type="text"
-        name={$field.alias}
-        id={$field.alias}
+        name={$alias}
+        id={$alias}
         class="form__inp"
-        value={$data[$field.settings.field]}
+        value={$data[$settings.field]}
         data-role="section"
         autocomplete="off"
       />
       <if test={$data.id?}>
-        <div class="form-suggests__value">{$data[$field.settings.field]}</div>
+        <div class="form-suggests__value">{$data[$settings.field]}</div>
         <button class="form-suggests__cancel" type="button" data-role="cancel">Отменить</button>
       </if>
     </form-suggests>

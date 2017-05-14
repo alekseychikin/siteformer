@@ -1,20 +1,21 @@
 <component>
-  <param name={$field} value={['alias': '', 'settings': ['defaultData': []]]} />
+  <param name={$alias} value="" />
+  <param name={$settings} value={["defaultData": []]} />
   <param name={$data} value={0} />
 
   <div class="form__inp-contain" data-role="input-contain">
-    <for-each key={$i} item={$data-item} from={$field.settings.defaultData}>
+    <for-each key={$i} item={$data-item} from={$settings.defaultData}>
       <div class="form__row-option">
         <input
           class="form__checkbox"
           type="checkbox"
-          id={$field.alias ++ $i}
+          id={$alias ++ $i}
           data-index={$i}
           data-role="checkbox"
           checked={((1 << $i) & $data) != 0}
         />
-        <label class="form__checkbox-label" for={$field.alias ++ $i}></label>
-        <label for={$field.alias ++ $i}>{$data-item.label}</label>
+        <label class="form__checkbox-label" for={$alias ++ $i}></label>
+        <label for={$alias ++ $i}>{$data-item.label}</label>
       </div>
     </for-each>
   </div>
