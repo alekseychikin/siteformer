@@ -9,6 +9,10 @@ class SFMail
   private $attaches = array();
   private $subject = '(Без темы)';
 
+  public static function factory() {
+    return new SFMail();
+  }
+
   public function destination($mail) // Добавить адресата
   {
     if (!in_array($mail, $this->destinations)) {
@@ -105,6 +109,5 @@ class SFMail
         return false;
       }
     }
-
   }
 }
