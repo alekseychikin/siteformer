@@ -18,9 +18,9 @@ class SFORMWhere extends SFORMDatabase
 
   public function where($expr) {
     if (func_num_args() == 3) {
-      $expr = _expr_(func_get_arg(0), func_get_arg(1), parent::quote(func_get_arg(2)));
+      $expr = _expr_(func_get_arg(0), func_get_arg(1), func_get_arg(2));
     } elseif (func_num_args() == 2) {
-      $expr = _expr_(func_get_arg(0), '=', parent::quote(func_get_arg(1)));
+      $expr = _expr_(func_get_arg(0), '=', func_get_arg(1));
     }
 
     $this->where = $expr;
