@@ -1,5 +1,5 @@
 Model = require 'libs/model.coffee'
-{httpGet, httpPost} = require 'libs/ajax.coffee'
+{httpGet, httpPost} = require 'libs/helpers.coffee'
 
 module.exports = class LoginModel extends Model
   constructor: (state = {}) ->

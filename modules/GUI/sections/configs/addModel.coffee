@@ -1,6 +1,5 @@
 Model = require "libs/model.coffee"
-{httpGet, httpPost} = require "libs/ajax.coffee"
-{cloneObject} = require "libs/helpers.coffee"
+{httpGet, httpPost, cloneObject} = require "libs/helpers.coffee"
 
 module.exports = class AddConfigsModel extends Model
   constructor: (state = {}) ->

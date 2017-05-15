@@ -87,7 +87,6 @@ var commonBundle = [
   'modules/GUI/libs/view.coffee',
   'modules/GUI/libs/model.coffee',
   'modules/GUI/libs/render.js',
-  'modules/GUI/libs/ajax.coffee',
   'modules/GUI/libs/popup.js',
   'modules/GUI/libs/components.coffee',
   'modules/GUI/libs/helpers.coffee'
@@ -96,7 +95,6 @@ var exposeCommonBundle = {
   'modules/GUI/libs/view.coffee': 'view.coffee',
   'modules/GUI/libs/model.coffee': 'model.coffee',
   'modules/GUI/libs/render.js': 'render',
-  'modules/GUI/libs/ajax.coffee': 'ajax.coffee',
   'modules/GUI/libs/popup.js': 'popup',
   'modules/GUI/libs/components.coffee': 'components.coffee',
   'modules/GUI/libs/helpers.coffee': 'helpers.coffee'

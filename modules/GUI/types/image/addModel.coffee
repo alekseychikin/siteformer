@@ -1,5 +1,5 @@
 Model = require "libs/model.coffee"
-{httpFile} = require "libs/ajax.coffee"
+{httpFile} = require "libs/helpers.coffee"
 
 module.exports = class ImageDataModel extends Model
   constructor: (state = {}) ->

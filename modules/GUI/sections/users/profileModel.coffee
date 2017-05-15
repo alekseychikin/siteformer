@@ -1,5 +1,5 @@
 Model = require "libs/model.coffee"
-{httpPost} = require "libs/ajax.coffee"
+{httpPost} = require "libs/helpers.coffee"
 
 module.exports = class ProfileModel extends Model
   constructor: (state = {}) ->

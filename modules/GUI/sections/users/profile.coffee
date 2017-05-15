@@ -1,4 +1,4 @@
-{httpGet} = require "libs/ajax.coffee"
+{httpGet} = require "libs/helpers.coffee"
 
 ProfileModel = require "./profileModel.coffee"
 ProfileView = require "./profileView.coffee"

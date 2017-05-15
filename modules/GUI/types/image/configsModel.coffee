@@ -1,5 +1,5 @@
 Model = require "libs/model.coffee"
-{httpGet, httpPost} = require "libs/ajax.coffee"
+{httpGet, httpPost} = require "libs/helpers.coffee"
 configs = require "types/image/configs.json"
 
 module.exports = class ImageConfigsModel extends Model
