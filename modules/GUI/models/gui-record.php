@@ -2,16 +2,22 @@
 
 class SFGuiRecord extends SFRouterModel
 {
+  public static function get ($params) {
+    if (isset($params['getLastId'])) {
+      $section = SFGUI::getSection($params['section']);
+
+      return SFORM::lastId($section['table']);
+    }
+  }
+
   public static function post ($params) {
     if (isset($params['delete'])) {
-      return self::deleteItem($params);
+      self::deleteItem($params);
     } elseif (isset($params['id'])) {
-      return self::saveItem($params);
+      self::saveItem($params);
     } else {
-      return self::createItem($params);
+      self::createItem($params);
     }
-
-    return true;
   }
 
   private static function deleteItem ($params) {
@@ -61,8 +67,6 @@ class SFGuiRecord extends SFRouterModel
       $className = SFGUI::getClassNameByType($field['type']);
       $className::postPrepareInsertData($section, $field, $record, $data);
     }
-
-    return $record['id'];
   }
 
   private static function saveItem ($params) {

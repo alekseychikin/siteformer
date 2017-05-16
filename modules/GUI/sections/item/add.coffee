@@ -1,4 +1,4 @@
-{httpGet} = require "libs/helpers.coffee"
+{httpGet, graph} = require "libs/helpers.coffee"
 
 AddModel = require "./addModel.coffee"
 
@@ -33,34 +33,68 @@ Views =
   url: require "types/url/addView.coffee"
 
 httpGet window.location.href
-  .then (response) ->
-    addModel = new AddModel
-      section: response.section
-      fields: []
-      id: response.data.id
-    addFormContainer = document.querySelector "[data-role='item-add-form']"
-    addView = new AddView addFormContainer, addModel
-    rows = addFormContainer.querySelectorAll "[data-placeholder]"
-    index = 0
+.then (response) ->
+  addModel = new AddModel
+    section: response.section
+    fields: []
+    id: response.data.id
+  addFormContainer = document.querySelector "[data-role='item-add-form']"
+  addView = new AddView addFormContainer, addModel
+  rows = addFormContainer.querySelectorAll "[data-placeholder]"
+  index = 0
 
-    for field in response.fields
-      do ->
-        if Models[field.type]?
-          model = new Models[field.type]
-            settings: field.settings
-            alias: field.alias
-            data: response.data[field.alias]
-            section: field.section
+  for field in response.fields
+    do ->
+      if Models[field.type]?
+        model = new Models[field.type]
+          settings: field.settings
+          alias: field.alias
+          data: response.data[field.alias]
+          section: field.section
 
-          addModel.add field.alias, model
+        addModel.addField field.alias, model
 
-          if Views[field.type]? && (!field.settings.hide? || (field.settings.hide? && !field.settings.hide))
-            new Views[field.type] rows[index], model
+        if Views[field.type]? && (!field.settings.hide? || (field.settings.hide? && !field.settings.hide))
+          new Views[field.type] rows[index], model
 
-            index++
+          index++
 
-    addModel.on "delete-record", (section) ->
+  addModel.on "delete-record", (section, id) ->
+    graph.post
+      "gui-record":
+        section: section
+        delete: id
+    .send()
+    .then =>
       window.location.href = "/cms/#{section}"
 
-    addModel.on "create-record", (section, id) ->
-      window.location.href = "/cms/#{section}/#{id}/"
+  addModel.on "create-record", (state, data) ->
+    graph.post
+      "gui-record":
+        section: state.section
+        status: state.status
+        data: data
+    .get
+      id: "gui-record?section=#{state.section}&getLastId"
+    .send()
+    .then (response) =>
+      window.location.href = "/cms/#{state.section}/#{response.id}/"
+    .catch (response) =>
+      if response.error?.message?.index?
+        error = response.error.message
+
+        addModel.showError error.index, error.code
+
+  addModel.on "save-record", (state, data) ->
+    graph.post
+      "gui-record":
+        section: state.section
+        id: state.id
+        status: state.status
+        data: data
+    .send()
+    .catch (response) =>
+      if response.error?.message?.index?
+        error = response.error.message
+
+        addModel.showError error.index, error.code

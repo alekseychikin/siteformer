@@ -48,15 +48,13 @@ class SFRouter
   }
 
   private static function returnModelData($params) {
-    if (strtoupper($_SERVER['REQUEST_METHOD']) === 'GET') {
-      self::prepareGetParams($params);
-    } elseif (strtoupper($_SERVER['REQUEST_METHOD']) === 'POST') {
-      $params = [];
-
+    if (strtoupper($_SERVER['REQUEST_METHOD']) === 'POST') {
       foreach ($_POST as $key => $value) {
-        SFResponse::set($key, SFModels::post($key, parseJSON($value)));
+        SFModels::post($key, parseJSON($value));
       }
     }
+
+    self::prepareGetParams($params);
 
     SFResponse::render();
   }
@@ -71,7 +69,11 @@ class SFRouter
     }
   }
 
-  private static function prepareGetParams ($srcParams, $params = []) {
+  private static function prepareGetParams ($srcParams = [], $params = []) {
+    if (!$srcParams) {
+      $srcParams = [];
+    }
+
     foreach ($srcParams as $key => $value) {
       list($model, $options) = self::parseSource($value, $params);
       $params[$key] = self::getDataFromModel($model, $options);

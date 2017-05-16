@@ -1,26 +1,8 @@
 Model = require "libs/model.coffee"
-{httpGet, httpPost, cloneObject} = require "libs/helpers.coffee"
+{graph, cloneObject} = require "libs/helpers.coffee"
 
 module.exports = class AddConfigsModel extends Model
-  constructor: (state = {}) ->
-    defaultState =
-      title: ""
-      alias: ""
-      module: ""
-      modules: []
-      fields: []
-      types: []
-      sections: []
-    super Object.assign {}, defaultState, state
-
-    @fetchCurrentState()
-
-  fetchCurrentState: ->
-    httpGet window.location.pathname
-      .then (response) =>
-        state = cloneObject response
-        console.log state
-        @replace state
+  constructor: (state = {}) -> super state
 
   addField: (field) ->
     @set fields: @state.fields.concat [field]
@@ -151,15 +133,10 @@ module.exports = class AddConfigsModel extends Model
 
     data.id = @state.id if @state.id?
 
-    httpPost "/?graph", {'gui-sections': JSON.stringify(data)}
-      .then (response) =>
-        console.log response.content if response.content?
-        if @state.id?
-          @fetchCurrentState()
-        else
-          @trigger "save-section", @state.alias
-      .catch (response) =>
-        @showError response.error.message if response.error? and response.error.message?
+    if @state.id?
+      @trigger "save-section", @state
+    else
+      @trigger "create-section", @state
 
   showError: (error) ->
     switch error.index[0]
@@ -203,5 +180,8 @@ module.exports = class AddConfigsModel extends Model
   getSections: -> @state.sections
 
   remove: ->
-    httpPost "/?graph", {'gui-sections': JSON.stringify({delete: @state.id})}
-      .then => @trigger "delete-section"
+    graph.post
+      "gui-sections":
+        delete: @state.id
+    .send()
+    .then => @trigger "delete-section"

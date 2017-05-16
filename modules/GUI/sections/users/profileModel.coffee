@@ -1,5 +1,5 @@
 Model = require "libs/model.coffee"
-{httpPost} = require "libs/helpers.coffee"
+{graph} = require "libs/helpers.coffee"
 
 module.exports = class ProfileModel extends Model
   constructor: (state = {}) ->
@@ -15,10 +15,12 @@ module.exports = class ProfileModel extends Model
     .then (userpicPath) =>
       result.userpic = userpicPath
     .then =>
-      httpPost "/index.php?graph", "gui-profile": JSON.stringify result
-      .then =>
-        @trigger "profile-update"
-        @email.hideError()
+      graph.post
+        "gui-profile": result
+      .send()
+    .then =>
+      @trigger "profile-update"
+      @email.hideError()
     .catch (response) =>
       if response.error.message?.code? && response.error.message.index[0] == "email"
         @email.showError response.error.message.code

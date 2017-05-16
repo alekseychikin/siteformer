@@ -1,29 +1,42 @@
+{httpGet, graph} = require "libs/helpers.coffee"
+
 IndexView = require "./indexView.coffee"
 IndexModel = require "./indexModel.coffee"
 
 UserFieldsPopupModel = require "./userFieldsPopupModel.coffee"
 UserFieldsPopupView = require "./userFieldsPopupView.coffee"
 
-indexModel = new IndexModel()
-
-Popup = require "libs/popup"
+popup = require "libs/popup"
 
 itemListContainer = document.querySelector "[data-role='item-list']"
-indexView = new IndexView itemListContainer, indexModel
-
 configsPopupContainer = document.querySelector "[data-role='configs-popup']"
 
-indexView.on "open-user-fields-popup", ->
-  Popup.open "[data-role='configs-popup']"
+httpGet window.location.href
+.then (state) ->
+  indexModel = new IndexModel state
+  indexView = new IndexView itemListContainer, indexModel
 
-  userFieldsPopupModel = new UserFieldsPopupModel
-    "user-fields": indexModel.getUserFields()
-    fields: indexModel.getFields()
+  indexView.on "open-user-fields-popup", ->
+    popup.open "[data-role='configs-popup']"
 
-  userFieldsPopupView = new UserFieldsPopupView configsPopupContainer, userFieldsPopupModel
+    userFieldsPopupModel = new UserFieldsPopupModel
+      "user-fields": indexModel.getUserFields()
+      fields: indexModel.getFields()
 
-  userFieldsPopupView.on "save-user-fields", (userFields) ->
-    indexModel.updateUserFields userFields
+    userFieldsPopupView = new UserFieldsPopupView configsPopupContainer, userFieldsPopupModel
 
-    Popup.close()
-    userFieldsPopupView.destroy()
+    userFieldsPopupView.on "save-user-fields", (userFields) ->
+      indexModel.updateUserFields userFields
+
+      popup.close()
+      userFieldsPopupView.destroy()
+
+  indexModel.on "save-user-fields", (section, userFields) ->
+    graph.post
+      "gui-fields":
+        usersonly: true
+        section: section
+        fields:  userFields
+    .send()
+    .then ->
+      indexModel.set "user-fields": userFields
