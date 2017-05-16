@@ -9,7 +9,8 @@ module.exports = class StringConfigsModel extends Model
     super Object.assign defaultData, state
 
   messages:
-    EEMPTYREQUIREDVALUE: 'Обязательное к заполнению поле'
+    EEMPTYREQUIRED: "Обязательное к заполнению поле"
+    ENOTUNIQUEVALUE: "Значение должно быть уникальным"
 
   update: (data) ->
     @set

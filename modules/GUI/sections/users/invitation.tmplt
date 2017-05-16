@@ -1,0 +1,61 @@
+<component>
+  <import name="x-string" from="../../types/string/item.tmplt" />
+  <import name="x-image" from="../../types/image/item.tmplt" />
+
+  <import name="x-scripts" from="../main/scripts.tmplt" />
+
+  <param name={$page-title} value="" />
+  <param name={$error-index} value={[]} />
+  <param name={$error-code} value="" />
+  <param name={$email} value="" />
+
+  <!DOCTYPE html>
+  <html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{$page-title}</title>
+    <link rel="stylesheet" href="/sf-engine/modules/GUI/dist/main.css" />
+  </head>
+  <body>
+    <section class="blank-page">
+      <h1 class="blank-page__head">Создать профиль</h1>
+
+      <form action="" class="form" data-role="invitation">
+        <div class="form__item">
+          <label for="email" class="form__label">Эл. почта</label>
+          <x-string alias="" data={$email} type="email" disabled={true} />
+        </div>
+
+        <div class="form__item">
+          <label for="userpic" class="form__label">Иконка</label>
+          <div data-role="userpic-placeholder">
+            <x-image alias="userpic" data="" width="120" height="130" />
+          </div>
+        </div>
+
+        <div class="form__item">
+          <label for="login" class="form__label">Логин</label>
+          <div data-role="login-placeholder">
+            <x-string alias="login" data="" />
+          </div>
+        </div>
+
+        <div class="form__item">
+          <label for="password" class="form__label">Пароль</label>
+          <div data-role="password-placeholder">
+            <x-string alias="password" data="" type="password" />
+          </div>
+        </div>
+
+        <div class="blank-page__buttons">
+          <button class="form__btn form__btn--submit" type="submit">Создать</button>
+        </div>
+      </form>
+    </section>
+
+    <x-scripts>
+      <script src="/sf-engine/modules/GUI/dist/users/invitation.js"></script>
+    </x-scripts>
+  </body>
+  </html>
+</component>

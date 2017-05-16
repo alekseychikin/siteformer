@@ -20,7 +20,7 @@
         <div class="header">
           <user-block user={$user} />
         </div>
-        <x-menu sections={$sections} section={$section} />
+        <x-menu sections={$sections} section={$section} user={$user} />
       </div>
       {$children}
     </div>

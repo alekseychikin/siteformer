@@ -3,6 +3,60 @@
 class SFGuiProfile extends SFRouterModel
 {
   public static function post ($params) {
+    if (isset($params['create-account'])) {
+      self::createAccount($params);
+    } else {
+      self::updateProfile($params);
+    }
+  }
+
+  private static function createAccount ($params) {
+    $invitationRecord = SFORM::select()
+    ->from('sys_user_invitations')
+    ->where('hash', $params['hash'])
+    ->execOne();
+
+    if (count($invitationRecord)) {
+      $userData = SFValidate::value(
+        [
+          'userpic' => [],
+          'login' => [
+            'unique' => function ($value) {
+              return !strlen($value) || !SFORM::select()
+                ->from('users')
+                ->where('login', $value)
+                ->length();
+            },
+            'required' => true
+          ],
+          'password' => [
+            'required' => true,
+            'modify' => function ($value) {
+              return md5($value);
+            }
+          ]
+        ],
+        $params
+      );
+
+      $userData['userpic'] = self::prepareUserpic($params);
+
+      $userData['email'] = $invitationRecord['email'];
+
+      SFORM::insert('users')
+      ->values($userData)
+      ->exec();
+
+      SFORM::delete('sys_user_invitations')
+      ->where('hash', $params['hash'])
+      ->exec();
+
+      $_SESSION['cms_login'] = $userData['login'];
+      $_SESSION['cms_password'] = $userData['password'];
+    }
+  }
+
+  private static function updateProfile ($params) {
     SFGUI::login();
 
     $user = SFResponse::get('user');
@@ -28,9 +82,18 @@ class SFGuiProfile extends SFRouterModel
       $_SESSION['cms_password'] = $userData['password'];
     }
 
-    if ($params['userpic'] === false) {
-      $userData['userpic'] = null;
-    } elseif (!empty($params['userpic']) && $params['userpic'] !== $user['userpic']) {
+    $userData['userpic'] = self::prepareUserpic($params);
+
+    SFORM::update('users')
+    ->values($userData)
+    ->where('id', $user['id'])
+    ->exec();
+  }
+
+  private static function prepareUserpic ($params) {
+    $userpic = null;
+
+    if (!empty($params['userpic'])) {
       $imageSize = getimagesize(ENGINE_TEMP . $params['userpic']);
       $resizeParams = [];
 
@@ -51,14 +114,9 @@ class SFGuiProfile extends SFRouterModel
 
       $path = SFPath::prepareDir('userpics', PPD_OPEN_LEFT | PPD_CLOSE_RIGHT);
 
-      $userData['userpic'] = '/sf-engine' . substr(SFPath::move(ENGINE . $path, $fieldTempPath), strlen(ENGINE) - 1);
+      $userpic = '/sf-engine' . substr(SFPath::move(ENGINE . $path, $fieldTempPath), strlen(ENGINE) - 1);
     }
 
-    SFORM::update('users')
-    ->values($userData)
-    ->where('id', $user['id'])
-    ->exec();
-
-    return '';
+    return $userpic;
   }
 }

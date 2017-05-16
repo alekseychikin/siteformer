@@ -2,18 +2,28 @@
   <import name="menu-items" from="./menu-items.tmplt" />
   <param name={$sections} value={[]} />
   <param name={$section} value="" />
+  <param name={$user} value={["role": "user"]} />
 
   <menu class="menu" data-role="sections-menu">
     <menu-items sections={$sections} section={$section} />
   </menu>
 
-  <menu class="menu">
-    <li class="menu__item menu__item--configs">
-      <if test={$section == "configs"}>
-        <attribute name="class" value="menu__item menu__item--configs menu__item--active" />
-      </if>
+  <if test={$user.role == "admin"}>
+    <menu class="menu">
+      <li class="menu__item menu__item--configs">
+        <if test={$section == "configs"}>
+          <attribute name="class" value="menu__item menu__item--configs menu__item--active" />
+        </if>
 
-      <a href="/cms/configs/" class="menu__link">Настройки</a>
-    </li>
-  </menu>
+        <a href="/cms/configs/" class="menu__link">Настройки</a>
+      </li>
+      <li class="menu__item">
+        <if test={$section == "users"}>
+          <attribute name="class" value="menu__item menu__item--active" />
+        </if>
+
+        <a href="/cms/users/" class="menu__link">Пользователи</a>
+      </li>
+    </menu>
+  </if>
 </component>

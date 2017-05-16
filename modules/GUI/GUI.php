@@ -147,13 +147,24 @@ class SFGUI
       ],
       'template' => 'sections/users/profile.tmplt'
     ]);
+    SFRouter::addRule('/cms/users/', [
+      'data' => [
+        'sections' => 'gui-sections',
+        'section' => 'gui-scalar?value=users',
+        'users' => 'gui-users',
+        'invitations' => 'gui-users?invitations'
+      ],
+      'template' => 'sections/users/users.tmplt'
+    ]);
 
     define('GUI_COMPILE_TEMPLATES', ENGINE . 'modules/GUI/dist/');
 
     if (SFURI::getFirstUri() === 'cms') {
       SFTemplater::setCompilesPath(GUI_COMPILE_TEMPLATES);
 
-      self::login();
+      if (SFURI::getUri(1) !== 'types') {
+        self::login();
+      }
     }
   }
 
@@ -265,8 +276,6 @@ class SFGUI
     $types = arrMap(SFGUI::getTypes(), function ($type) use (& $types) {
       return $type['type'];
     });
-
-    SFResponse::showContent();
 
     $data = SFValidate::value([
       'title' => [
@@ -893,6 +902,22 @@ class SFGUI
       ->addKey(['login', 'password'], 'key')
       ->exec();
     }
+
+    if (!SFORM::exists('sys_user_invitations')) {
+      SFORM::create('sys_user_invitations')
+      ->addField([
+        'name' => 'hash',
+        'type' => 'VARCHAR(32)',
+        'null' => false
+      ])
+      ->addField([
+        'name' => 'email',
+        'type' => 'VARCHAR(200)',
+        'null' => false
+      ])
+      ->addKey('hash', 'primary key')
+      ->exec();
+    }
   }
 
   public static function login() {
@@ -934,6 +959,22 @@ class SFGUI
     }
 
     if (!$auth) {
+      if (isset($_GET['invitation'])) {
+        $user = SFORM::select()
+        ->from('sys_user_invitations')
+        ->where('hash', $_GET['invitation'])
+        ->execOne();
+
+        if (count($user)) {
+          SFResponse::set('page-title', 'Создать профиль');
+          SFResponse::set('email', $user['email']);
+          SFResponse::set('hash', $_GET['invitation']);
+          echo SFTemplater::render('sections/users/invitation.tmplt', SFResponse::getState());
+          SFResponse::render();
+        } else {
+        }
+      }
+
       $users = SFORM::select()
       ->from('users')
       ->exec();
