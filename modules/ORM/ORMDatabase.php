@@ -19,6 +19,7 @@ class SFORMDatabase
   private static $cachedFields = [];
   private static $cachedTables = [];
   private static $existsTableList = [];
+  private static $lastInsertIds = [];
 
   public static function init($configs) {
     self::$supportPDO = defined('PDO::ATTR_DRIVER_NAME');
@@ -152,6 +153,10 @@ class SFORMDatabase
       if (strpos($sql, 'INSERT') === 0) {
         $res = self::$connections[$alias]->exec($sql);
         $err = self::$connections[$alias]->errorInfo();
+
+        preg_match('/^INSERT INTO \`?(.*?)\`?\s/i', $sql, $matches);
+        $tableName = $matches[1];
+        self::$lastInsertIds[$tableName] = self::$connections[$alias]->lastInsertId();
       } else {
         $res = self::$connections[$alias]->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_SCROLL));
         $res->execute();
@@ -165,6 +170,12 @@ class SFORMDatabase
       self::$lastRes = $res;
     } else {
       $res = mysql_query($sql, self::$connections[$alias]) or self::makeException(mysql_error() . "\n\n" . $sql);
+
+      if (strpos($sql, 'INSERT') !== false) {
+        preg_match('/^INSERT INTO \`?(.*?)\`?\s/i', $sql, $matches);
+        $tableName = $matches[1];
+        self::$lastInsertIds[$tableName] = mysql_insert_id(self::$connections[$alias]);
+      }
     }
 
     self::$countQueries++;
@@ -236,10 +247,14 @@ class SFORMDatabase
     }
   }
 
-  protected function lastId($alias = 'default') {
+  protected static function lastId($table, $alias = 'default') {
     if (!self::$connections[$alias]) die('There is no MySQL connection');
 
-    return self::$connections[$alias]->lastInsertId();
+    if (isset(self::$lastInsertIds[$table])) {
+      return self::$lastInsertIds[$table];
+    }
+
+    return 0;
   }
 
   protected static function getPrimaryFields($table, $alias = 'default') {

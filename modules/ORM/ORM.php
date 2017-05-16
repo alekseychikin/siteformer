@@ -91,6 +91,10 @@ class SFORM extends SFORMDatabase
     }
   }
 
+  public static function lastId($table, $alias = 'default') {
+    return parent::lastId($table, $alias);
+  }
+
   public static function foundRows() {
     $result = self::query('SELECT FOUND_ROWS() AS `length`');
 

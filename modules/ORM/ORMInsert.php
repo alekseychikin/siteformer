@@ -59,9 +59,9 @@ class SFORMInsert extends SFORMDatabase
     parent::query($sql, $alias, true);
 
     if (!$getObject) {
-      return $this->lastId($alias);
+      return $this->lastId($this->table, $alias);
     } else {
-      return SFORM::select()->from($this->table)->id($this->lastId($alias))->execOne($alias);
+      return SFORM::select()->from($this->table)->id($this->lastId($this->table, $alias))->execOne($alias);
     }
   }
 }
