@@ -11,7 +11,7 @@ class SFGuiUsers extends SFRouterModel
       ->exec();
     } else {
       $users = SFORM::select()
-      ->from('users')
+      ->from('sys_users')
       ->order('id desc')
       ->exec();
 

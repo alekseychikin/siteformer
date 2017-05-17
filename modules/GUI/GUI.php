@@ -56,17 +56,17 @@ class SFGUI
   // It could be news or events or galleries
   public static function getSections() {
     $res = SFORM::select()
-      ->from('sections')
-      ->join('section_fields')
-      ->on('section_fields.section', SFORM::field('sections.id'))
-      ->order('sections.id desc')
-      ->where('sections.enable', true)
+      ->from('sys_sections')
+      ->join('sys_section_fields')
+      ->on('sys_section_fields.section', SFORM::field('sys_sections.id'))
+      ->order('sys_sections.id desc')
+      ->where('sys_sections.enable', true)
       ->exec();
 
     if (count($res)) {
       $res = arrMap($res, function ($item) {
-        $item['fields'] = self::prepareSectionFields($item['section_fields']);
-        unset($item['section_fields']);
+        $item['fields'] = self::prepareSectionFields($item['sys_section_fields']);
+        unset($item['sys_section_fields']);
 
         return $item;
       });
@@ -82,17 +82,17 @@ class SFGUI
     }
 
     $res = SFORM::select()
-      ->from('sections')
-      ->join('section_fields')
-      ->on('section_fields.section', SFORM::field('sections.id'))
-      ->where('sections.alias', $alias)
-      ->andWhere('sections.enable', true)
+      ->from('sys_sections')
+      ->join('sys_section_fields')
+      ->on('sys_section_fields.section', SFORM::field('sys_sections.id'))
+      ->where('sys_sections.alias', $alias)
+      ->andWhere('sys_sections.enable', true)
       ->exec();
 
     if (count($res)) {
       $res = $res[0];
-      $res['fields'] = self::prepareSectionFields($res['section_fields']);
-      unset($res['section_fields']);
+      $res['fields'] = self::prepareSectionFields($res['sys_section_fields']);
+      unset($res['sys_section_fields']);
 
       self::$sections[$alias] = $res;
       self::$sections[$res['id']] = $res;
@@ -106,17 +106,17 @@ class SFGUI
   // Get section by id
   public static function getSectionById($id) {
     $res = SFORM::select()
-      ->from('sections')
-      ->join('section_fields')
-      ->on('section_fields.section', SFORM::field('sections.id'))
+      ->from('sys_sections')
+      ->join('sys_section_fields')
+      ->on('sys_section_fields.section', SFORM::field('sys_sections.id'))
       ->where('id', $id)
-      ->andWhere('sections.enable', true)
+      ->andWhere('sys_sections.enable', true)
       ->exec();
 
     if (count($res)) {
       $res = $res[0];
-      $res['fields'] = self::prepareSectionFields($res['section_fields']);
-      unset($res['section_fields']);
+      $res['fields'] = self::prepareSectionFields($res['sys_section_fields']);
+      unset($res['sys_section_fields']);
 
       self::$sections[$id] = $res;
       self::$sections[$res['alias']] = $res;
@@ -166,7 +166,7 @@ class SFGUI
         'required' => true,
         'unique' => function ($value) {
           $res = SFORM::select()
-            ->from('sections')
+            ->from('sys_sections')
             ->where('title', $value)
             ->andWhere('enable', true);
 
@@ -178,7 +178,7 @@ class SFGUI
         'valid' => '/^[a-zA-Z\-_]+$/i',
         'unique' => function ($value) {
           $res = SFORM::select()
-            ->from('sections')
+            ->from('sys_sections')
             ->where('alias', $value)
             ->andWhere('enable', true);
 
@@ -264,7 +264,7 @@ class SFGUI
     $table->addKey('id', 'primary key');
     $table->exec();
 
-    $idSection = SFORM::insert('sections')
+    $idSection = SFORM::insert('sys_sections')
       ->values([
         'title' => $data['title'],
         'alias' => $data['alias'],
@@ -274,7 +274,7 @@ class SFGUI
       ->exec();
 
     arrMap($data['fields'], function ($field) use ($idSection) {
-      SFORM::insert('section_fields')
+      SFORM::insert('sys_section_fields')
         ->values([
           'section' => $idSection,
           'title' => $field['title'],
@@ -303,7 +303,7 @@ class SFGUI
         'required' => true,
         'unique' => function ($value) use ($id) {
           $res = SFORM::select()
-            ->from('sections')
+            ->from('sys_sections')
             ->where('title', $value)
             ->andWhere('enable', true);
 
@@ -319,7 +319,7 @@ class SFGUI
         'valid' => '/^[a-zA-Z\-_]+$/i',
         'unique' => function ($value) use ($id) {
           $res = SFORM::select()
-            ->from('sections')
+            ->from('sys_sections')
             ->where('alias', $value)
             ->andWhere('enable', true);
 
@@ -460,7 +460,7 @@ class SFGUI
       }
     }
 
-    SFORM::update('sections')
+    SFORM::update('sys_sections')
       ->values([
         'title' => $data['title'],
         'module' => $data['module']
@@ -480,7 +480,7 @@ class SFGUI
     foreach ($fields as $field) {
       switch($field['mark']) {
         case 'add':
-          SFORM::insert('section_fields')
+          SFORM::insert('sys_section_fields')
             ->values([
               'section' => $id,
               'title' => $field['element']['title'],
@@ -494,13 +494,13 @@ class SFGUI
 
           break;
         case 'delete':
-          SFORM::delete('section_fields')
+          SFORM::delete('sys_section_fields')
             ->id($field['element']['id'])
             ->exec();
 
           break;
         case 'edit':
-          SFORM::update('section_fields')
+          SFORM::update('sys_section_fields')
             ->values([
               'title' => $field['element']['title'],
               'alias' => $field['element']['alias'],
@@ -570,7 +570,7 @@ class SFGUI
   }
 
   public static function removeSection($id) {
-    $request = SFORM::update('sections')
+    $request = SFORM::update('sys_sections')
       ->values(array(
         'enable' => false
       ))
@@ -684,8 +684,8 @@ class SFGUI
   }
 
   private static function checkTables() {
-    if (!SFORM::exists('section_fields')) {
-      SFORM::create('section_fields')
+    if (!SFORM::exists('sys_section_fields')) {
+      SFORM::create('sys_section_fields')
         ->addField([
           'name' => 'id',
           'type' => 'INT(11) UNSIGNED',
@@ -730,8 +730,8 @@ class SFGUI
         ->exec();
     }
 
-    if (!SFORM::exists('section_fields_users')) {
-      SFORM::create('section_fields_users')
+    if (!SFORM::exists('sys_section_fields_users')) {
+      SFORM::create('sys_section_fields_users')
         ->addField([
           'name' => 'user',
           'type' => 'INT(11) UNSIGNED',
@@ -753,8 +753,8 @@ class SFGUI
         ->exec();
     }
 
-    if (!SFORM::exists('users')) {
-      SFORM::create('users')
+    if (!SFORM::exists('sys_users')) {
+      SFORM::create('sys_users')
       ->addField([
         'name' => 'id',
         'type' => 'INT(4) UNSIGNED',
@@ -822,7 +822,7 @@ class SFGUI
 
     if ($doLogin) {
       $user = SFORM::select()
-      ->from('users')
+      ->from('sys_users')
       ->where('login', $login)
       ->andWhere('password', $password)
       ->exec();
@@ -860,7 +860,7 @@ class SFGUI
       }
 
       $users = SFORM::select()
-      ->from('users')
+      ->from('sys_users')
       ->exec();
 
       $users = arrMap($users, function ($user) {

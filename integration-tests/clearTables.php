@@ -9,7 +9,7 @@ $configs = include __DIR__ . '/../../config/database.php';
 
 SFORMDatabase::init($configs);
 
-SFORM::query('TRUNCATE TABLE `section_fields`');
-SFORM::query('TRUNCATE TABLE `section_fields_users`');
-SFORM::query('TRUNCATE TABLE `sections`');
+SFORM::query('TRUNCATE TABLE `sys_section_fields`');
+SFORM::query('TRUNCATE TABLE `sys_section_fields_users`');
+SFORM::query('TRUNCATE TABLE `sys_sections`');
 SFORM::drop('string1');

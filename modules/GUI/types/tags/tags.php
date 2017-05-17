@@ -6,10 +6,10 @@ require_once __DIR__ . '/../../GUIType.php';
 class SFTypeTags extends SFGUIType
 {
   public static function prepareDatabase() {
-    $exists = SFORM::exists('type_tags');
+    $exists = SFORM::exists('sys_type_tags');
 
     if (!$exists) {
-      SFORM::create('type_tags')
+      SFORM::create('sys_type_tags')
         ->addField([
           'name' => 'id',
           'type' => 'INT(11) UNSIGNED',
@@ -38,10 +38,10 @@ class SFTypeTags extends SFGUIType
         ->exec();
     }
 
-    $exists = SFORM::exists('type_tags_records');
+    $exists = SFORM::exists('sys_type_tags_records');
 
     if (!$exists) {
-      SFORM::create('type_tags_records')
+      SFORM::create('sys_type_tags_records')
         ->addField([
           'name' => 'record',
           'type' => 'INT(11) UNSIGNED',
@@ -70,7 +70,7 @@ class SFTypeTags extends SFGUIType
 
     foreach ($tags as $index => $tag) {
       if (!in_array($tag, $existsTags)) {
-        SFORM::insert('type_tags')
+        SFORM::insert('sys_type_tags')
           ->values([
             'section' => $field['section'],
             'field' => $field['alias'],
@@ -91,7 +91,7 @@ class SFTypeTags extends SFGUIType
 
   private static function getTagRecords($section, $field, $tags) {
     $result = SFORM::select()
-      ->from('type_tags')
+      ->from('sys_type_tags')
       ->where('section', $section)
       ->andWhere('field', $field)
       ->andOpenWhere();
@@ -115,10 +115,10 @@ class SFTypeTags extends SFGUIType
       return $row['id'];
     });
 
-    SFORM::delete('type_tags_records')->where('record', $record['id'])->exec();
+    SFORM::delete('sys_type_tags_records')->where('record', $record['id'])->exec();
 
     foreach ($ids as $id) {
-      SFORM::insert('type_tags_records')
+      SFORM::insert('sys_type_tags_records')
         ->values([
           'record' => $record['id'],
           'tag' => $id

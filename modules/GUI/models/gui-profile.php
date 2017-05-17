@@ -23,7 +23,7 @@ class SFGuiProfile extends SFRouterModel
           'login' => [
             'unique' => function ($value) {
               return !strlen($value) || !SFORM::select()
-                ->from('users')
+                ->from('sys_users')
                 ->where('login', $value)
                 ->length();
             },
@@ -43,7 +43,7 @@ class SFGuiProfile extends SFRouterModel
 
       $userData['email'] = $invitationRecord['email'];
 
-      SFORM::insert('users')
+      SFORM::insert('sys_users')
       ->values($userData)
       ->exec();
 
@@ -67,7 +67,7 @@ class SFGuiProfile extends SFRouterModel
         'email' => [
           'unique' => function ($value) use ($user) {
             return !strlen($value) || !SFORM::select()
-              ->from('users')
+              ->from('sys_users')
               ->where('email', $value)
               ->andWhere('id', '!=', $user['id'])
               ->length();
@@ -84,7 +84,7 @@ class SFGuiProfile extends SFRouterModel
 
     $userData['userpic'] = self::prepareUserpic($params);
 
-    SFORM::update('users')
+    SFORM::update('sys_users')
     ->values($userData)
     ->where('id', $user['id'])
     ->exec();

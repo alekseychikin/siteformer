@@ -20,8 +20,8 @@ class SFGuiFields extends SFRouterModel
         $user = 1;
 
         $fields = SFORM::select()
-          ->from('section_fields_users', 'user_fields')
-          ->join('section_fields', 'fields')
+          ->from('sys_section_fields_users', 'user_fields')
+          ->join('sys_section_fields', 'fields')
           ->on('fields.id', SFORM::field('user_fields.field'))
           ->where('user_fields.user', $user)
           ->andWhere('user_fields.section', $section['id'])
@@ -52,12 +52,12 @@ class SFGuiFields extends SFRouterModel
       $section = SFGUI::getSection($params['section']);
       $fields = $params['fields'];
 
-      SFORM::delete('section_fields_users')
+      SFORM::delete('sys_section_fields_users')
         ->where('section', $section['id'])
         ->exec();
 
       foreach ($fields as $field) {
-        SFORM::insert('section_fields_users')
+        SFORM::insert('sys_section_fields_users')
           ->values([
             'section' => $section['id'],
             'user' => 1,

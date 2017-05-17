@@ -5,7 +5,7 @@ $section = $_GET['section'];
 $field = $_GET['field'];
 
 $result = SFORM::select()
-  ->from('type_tags')
+  ->from('sys_type_tags')
   ->where('section', $section)
   ->andWhere('field', $field)
   ->andWhere('tag', 'LIKE', $src . '%')
