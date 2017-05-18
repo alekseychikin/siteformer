@@ -20,8 +20,8 @@ class SFGuiPages extends SFRouterModel
     $section = SFGUI::getSection($params['section']);
 
     $amountItems = SFORM::select([SFORM::func('COUNT(*)'), 'length'])
-      ->dropIdFields()
-      ->from($section['table']);
+    ->dropIdFields()
+    ->from($section['table']);
 
     foreach ($statuses as $index => $status) {
       if (!$index) {

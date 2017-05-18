@@ -74,7 +74,7 @@ return [
       'sections' => 'gui-sections',
       'data' => 'gui-item-list?section={section}&status=public,draft',
       'pages' => 'gui-pages?section={section}&status=public,draft',
-      'page' => 'gui-scalar?value={page}'
+      'page' => 'gui-scalar?value=1'
     ],
     'template' => 'sections/item/index.tmplt'
   ],
