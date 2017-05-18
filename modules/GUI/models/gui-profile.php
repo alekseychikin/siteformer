@@ -2,12 +2,59 @@
 
 class SFGuiProfile extends SFRouterModel
 {
+  public static function get ($params) {
+    $user = SFORM::select()
+    ->from('sys_users')
+    ->where('id', $params['id'])
+    ->execOne();
+
+    $user['password'] = '';
+
+    return $user;
+  }
+
   public static function post ($params) {
     if (isset($params['create-account'])) {
       self::createAccount($params);
+    } elseif (isset($params["delete-profile"])) {
+      self::deleteProfile($params["delete-profile"]);
+    } elseif (isset($params["save-profile"])) {
+      self::saveProfile($params);
     } else {
       self::updateProfile($params);
     }
+  }
+
+  private static function deleteProfile ($id) {
+    SFGUI::login();
+
+    $user = SFResponse::get('user');
+
+    if ($user['role'] == 'admin') {
+      SFORM::delete('sys_users')
+      ->where('id', $id)
+      ->exec();
+    }
+  }
+
+  private static function saveProfile ($params) {
+    $login = $params['login'];
+
+    $userData = SFValidate::value([
+      'email' => [
+        'required' => true,
+        'type' => 'email'
+      ],
+      'role' => [
+        'values' => ['user', 'admin'],
+        'required' => true
+      ]
+    ], $params);
+
+    SFORM::update('sys_users')
+    ->values($userData)
+    ->where('login', $login)
+    ->exec();
   }
 
   private static function createAccount ($params) {

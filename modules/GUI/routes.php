@@ -41,6 +41,29 @@ return [
     'template' => 'sections/configs/add.tmplt'
   ],
   '/cms/types/{type}/{handle}/' => MODULES . 'GUI/sections/main/type',
+  '/cms/profile/' => [
+    'data' => [
+      'sections' => 'gui-sections'
+    ],
+    'template' => 'sections/users/profile.tmplt'
+  ],
+  '/cms/users/' => [
+    'data' => [
+      'sections' => 'gui-sections',
+      'section' => 'gui-scalar?value=users',
+      'users' => 'gui-users',
+      'invitations' => 'gui-users?invitations'
+    ],
+    'template' => 'sections/users/users.tmplt'
+  ],
+  '/cms/users/{id}/' => [
+    'data' => [
+      'sections' => 'gui-sections',
+      'section' => 'gui-scalar?value=users',
+      'edit-user' => 'gui-profile?id={id}'
+    ],
+    'template' => 'sections/users/user.tmplt'
+  ],
   '/cms/{section}/' => [
     'data' => [
       'title' => 'gui-sections?section={section}&field=title',
@@ -106,20 +129,5 @@ return [
       'data' => 'gui-section-data?section={section}&id={id}'
     ],
     'template' => 'sections/item/add.tmplt'
-  ],
-  '/cms/profile/' => [
-    'data' => [
-      'sections' => 'gui-sections'
-    ],
-    'template' => 'sections/users/profile.tmplt'
-  ],
-  '/cms/users/' => [
-    'data' => [
-      'sections' => 'gui-sections',
-      'section' => 'gui-scalar?value=users',
-      'users' => 'gui-users',
-      'invitations' => 'gui-users?invitations'
-    ],
-    'template' => 'sections/users/users.tmplt'
   ]
 ];
