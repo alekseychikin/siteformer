@@ -1,5 +1,7 @@
 <?php if (!defined('ROOT')) die('You can\'t just open this file, dude');
 
+$user = SFResponse::get('user');
+
 // get sections
 $sections = SFGUI::getSections();
 
@@ -9,6 +11,8 @@ if (count($sections)) {
 }
 
 // else redir to configs
-else {
+elseif ($user['role'] === 'admin') {
   SFResponse::redir('/cms/configs/add/');
+} else {
+  SFResponse::redir('/cms/profile/');
 }
