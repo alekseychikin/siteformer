@@ -245,6 +245,30 @@ class SFGUI
         'type' => 'ENUM(\'public\', \'draft\', \'deleted\')',
         'null' => 'NOT NULL',
         'default' => 'draft'
+      ],
+      [
+        'name' => 'datecreate',
+        'type' => 'DATETIME',
+        'null' => true,
+        'default' => null
+      ],
+      [
+        'name' => 'datemodify',
+        'type' => 'DATETIME',
+        'null' => true,
+        'default' => null
+      ],
+      [
+        'name' => 'usercreate',
+        'type' => 'INT(4)',
+        'null' => true,
+        'default' => null
+      ],
+      [
+        'name' => 'usermodify',
+        'type' => 'INT(4)',
+        'null' => true,
+        'default' => null
       ]
     ];
 
