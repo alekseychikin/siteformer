@@ -32,9 +32,17 @@ class SFGuiRecord extends SFRouterModel
   }
 
   private static function createItem ($params) {
+    SFGUI::login();
+
+    $user = SFResponse::get('user');
+
     $data = $params['data'];
     $status = $params['status'];
-    $newData = ['status' => $params['status']];
+    $newData = [
+      'status' => $params['status'],
+      'usercreate' => $user['id'],
+      'datecreate' => gmdate('Y-m-d H:i:s')
+    ];
     $section = SFGUI::getSection($params['section']);
     $fields = self::sortFields($section['fields'], $data);
 
@@ -70,10 +78,18 @@ class SFGuiRecord extends SFRouterModel
   }
 
   private static function saveItem ($params) {
+    SFGUI::login();
+
+    $user = SFResponse::get('user');
+
     $id = $params['id'];
     $data = $params['data'];
     $status = $params['status'];
-    $newData = ['status' => $status];
+    $newData = [
+      'status' => $status,
+      'usermodify' => $user['id'],
+      'datemodify' => gmdate('Y-m-d H:i:s')
+    ];
     $section = SFGUI::getSection($params['section']);
     $fields = self::sortFields($section['fields'], $data);
 
