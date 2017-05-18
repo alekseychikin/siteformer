@@ -3,6 +3,10 @@
 class SFGuiFields extends SFRouterModel
 {
   public static function get ($params) {
+    SFGUI::login();
+
+    $user = SFResponse::get('user');
+
     if ($params['section'] === 'new') {
       return SFGUI::getNewFields();
     } else {
@@ -17,13 +21,11 @@ class SFGuiFields extends SFRouterModel
       }
 
       if (isset($params['usersonly'])) {
-        $user = 1;
-
         $fields = SFORM::select()
           ->from('sys_section_fields_users', 'user_fields')
           ->join('sys_section_fields', 'fields')
           ->on('fields.id', SFORM::field('user_fields.field'))
-          ->where('user_fields.user', $user)
+          ->where('user_fields.user', $user['id'])
           ->andWhere('user_fields.section', $section['id'])
           ->exec();
 
@@ -48,6 +50,10 @@ class SFGuiFields extends SFRouterModel
   }
 
   public static function post($params) {
+    SFGUI::login();
+
+    $user = SFResponse::get('user');
+
     if (isset($params['usersonly'])) {
       $section = SFGUI::getSection($params['section']);
       $fields = $params['fields'];
@@ -60,7 +66,7 @@ class SFGuiFields extends SFRouterModel
         SFORM::insert('sys_section_fields_users')
           ->values([
             'section' => $section['id'],
-            'user' => 1,
+            'user' => $user['id'],
             'field' => $field['id']
           ])
           ->exec();
