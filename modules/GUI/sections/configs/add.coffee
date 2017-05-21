@@ -72,7 +72,7 @@ httpGet window.location.href
     .then (response) =>
       addModel.set sections: response.sections
     .catch (response) =>
-      @showError response.error.message if response.error? and response.error.message?
+      addModel.showError response.error.message if response.error? and response.error.message?
 
   addModel.on "create-section", (state) ->
     graph.post
@@ -83,7 +83,7 @@ httpGet window.location.href
     .then (response) =>
       window.location.href = "/cms/configs/#{state.alias}/"
     .catch (response) =>
-      @showError response.error.message if response.error? and response.error.message?
+      addModel.showError response.error.message if response.error? and response.error.message?
 
   addModel.on "delete-section", ->
     window.location.href = "/cms/configs/"
