@@ -1,0 +1,38 @@
+<component>
+  <import name="setup-database-form" from="./setup-database-form.tmplt" />
+  <import name="x-scripts" from="./scripts.tmplt" />
+
+  <param name={$page-title} value="Настроить подключение к базе" />
+  <param name={$users} value={[]} />
+  <param name={$host} value="localhost" />
+  <param name={$user} value="" />
+  <param name={$password} value="" />
+  <param name={$database} value="" />
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>{$page-title}</title>
+  <link rel="stylesheet" href="/sf-engine/modules/GUI/dist/main.css" />
+</head>
+<body>
+  <section class="blank-page">
+    <h1 class="blank-page__head">{$page-title}</h1>
+
+    <div data-role="setup-database-container">
+      <setup-database-form
+        host={$host}
+        user={$user}
+        password={$password}
+        database={$database}
+      />
+    </div>
+  </section>
+
+  <x-scripts>
+    <script src="/sf-engine/modules/GUI/dist/main/setupDatabase.js"></script>
+  </x-scripts>
+</body>
+</html>
+</component>
