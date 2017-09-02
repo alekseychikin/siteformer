@@ -33,22 +33,46 @@ class SFORMDatabase
     }
 
     if (self::$supportPDO) {
-      self::$connections[$configs['alias']] = new PDO('mysql:dbname=' . $configs['database'] . ';' . $configs['host'], $configs['user'], $configs['password']);
+      try {
+        self::$connections[$configs['alias']] = new PDO('mysql:host=' . $configs['host'] . (isset($configs['database']) ? ';dbname=' . $configs['database'] : ''), $configs['user'], $configs['password']);
+      } catch (Exception $e) {
+        return false;
+      }
     } else  {
-      self::$connections[$configs['alias']] = mysql_connect($configs['host'], $configs['user'], $configs['password']);
+      try {
+        self::$connections[$configs['alias']] = mysql_connect($configs['host'], $configs['user'], $configs['password']);
+      } catch (Exception $e) {
+        return false;
+      }
 
-      if (self::$connections[$params['alias']]) {
+      if (!self::$connections[$configs['alias']]) {
+        return false;
+      }
+
+      if (self::$connections[$params['alias']] && isset($configs['database'])) {
         mysql_select_db($configs['database'], self::$connections[$params['alias']]);
       }
     }
-
-    self::$databases[$configs['alias']] = $configs['database'];
 
     if (isset($configs['reports'])) {
       self::$reports = $configs['reports'];
     }
 
-    self::updateExistsTableList();
+    if (isset($configs['database'])) {
+      self::$databases[$configs['alias']] = $configs['database'];
+
+      self::updateExistsTableList();
+    }
+
+    return true;
+  }
+
+  public static function getDatabases($alias = 'default') {
+    $databases = arrMap(self::query('show databases'), function ($item) {
+      return $item['Database'];
+    });
+
+    return $databases;
   }
 
   public static function getTables($alias = 'default', $force = false) {
@@ -134,7 +158,7 @@ class SFORMDatabase
       $alias = self::$defaultBase;
     }
 
-    if (!self::$connections[$alias]) die('There is no MySQL connection');
+    if (!isset(self::$connections[$alias]) || !self::$connections[$alias]) die('There is no MySQL connection');
 
     if (!isset(self::$inits[$alias]) || !self::$inits[$alias]) {
       self::$inits[$alias] = true;

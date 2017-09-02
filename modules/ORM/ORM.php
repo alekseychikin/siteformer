@@ -64,18 +64,8 @@ class SFORM extends SFORMDatabase
   }
 
   public static function init($params) {
-    parent::init($params);
-
-    if (isset($params['modifiers'])) {
-      if (!file_exists($params['modifiers'])) die('Not exists modifiers folder: ' . $params['modifiers']);
-
-      $dir = opendir($params['modifiers']);
-
-      while ($file = readdir($dir)) {
-        if (substr($file, strrpos($file, '.') + 1) == 'php') {
-          include $params['modifiers'] . $file;
-        }
-      }
+    if (!parent::init($params)) {
+      return false;
     }
 
     if (isset($params['fixtures'])) {
@@ -89,6 +79,8 @@ class SFORM extends SFORMDatabase
 
       SFORMMigrate::init($params);
     }
+
+    return true;
   }
 
   public static function lastId($table, $alias = 'default') {

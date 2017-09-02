@@ -3,9 +3,7 @@
 class SFTemplater
 {
   private static $jsTemplates = [];
-  private static $templatePath;
-  public static $templateCompilePath;
-  private static $lastTemplateCompilePath;
+  public static $templatesPath;
   private static $scripts = [];
   private static $styles = [];
   private static $compileTimes = [];
@@ -13,20 +11,17 @@ class SFTemplater
 
   public static function init($params) {
     SFLog::write('Init module SFTemplater');
-    self::$templatePath = $params['path'];
-    self::$templateCompilePath = $params['compile_path'];
+    self::$templatesPath = $params['path'];
   }
 
   public static function setCompilesPath($compilePath) {
-    self::$templateCompilePath = $compilePath;
+    self::$templatesPath = $compilePath;
   }
 
   public static function render($template, $data = [], $compilePath = null) {
     $content = '';
 
-    if (!$compilePath) $compilePath = self::$templateCompilePath;
-
-    self::$lastTemplateCompilePath = $compilePath;
+    if (!$compilePath) $compilePath = self::$templatesPath;
 
     if (!empty($template)) {
       ob_start();
@@ -43,6 +38,6 @@ class SFTemplater
       ob_end_clean();
     }
 
-    return $content;
+    return trim($content);
   }
 }

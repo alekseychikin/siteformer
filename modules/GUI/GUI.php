@@ -1,13 +1,13 @@
 <?php if (!defined('ROOT')) die('You can\'t just open this file, dude');
 
-require_once $modulePath . 'GUIGetItemList.php';
-require_once $modulePath . 'GUIGetItem.php';
+require_once __DIR__ . '/GUIGetItemList.php';
+require_once __DIR__ . '/GUIGetItem.php';
 
 class SFGUI
 {
   private static $sections = [];
 
-  public static function init($params) {
+  public static function init($params = []) {
     $dependencies = ['SFRouter', 'SFTemplater'];
     arrMap($dependencies, function ($dependence) {
       if (!class_exists($dependence)) die('Need module Router before '. $dependence);
@@ -41,10 +41,8 @@ class SFGUI
       SFRouter::addRule($path, $data);
     }
 
-    define('GUI_COMPILE_TEMPLATES', ENGINE . 'modules/GUI/dist/');
-
     if (SFURI::getFirstUri() === 'cms') {
-      SFTemplater::setCompilesPath(GUI_COMPILE_TEMPLATES);
+      SFTemplater::setCompilesPath(ENGINE . 'modules/GUI/dist/');
 
       if (SFURI::getUri(1) !== 'types') {
         self::login();

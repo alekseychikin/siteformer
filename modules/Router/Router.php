@@ -125,7 +125,7 @@ class SFRouter
   }
 
   public static function init($params) {
-    self::$routingPath = $params['rotes'];
+    self::$routingPath = $params['routes'];
 
     if (isset($params['models'])) {
       SFModels::registerPath(SFPath::prepareDir($params['models']));

@@ -5,11 +5,8 @@ error_reporting(E_ALL);
 
 ob_start();
 
-$e = new Exception();
-$trace = $e->getTrace();
-
-define('ROOT', realpath(dirname($trace[0]['file'])) . '/');
-define('ENGINE', realpath(dirname(__FILE__)) . '/');
+define('ROOT', realpath(__DIR__ . '/../') . '/');
+define('ENGINE', __DIR__ . '/');
 define('ENGINE_TEMP', ENGINE . 'temp/');
 
 require_once __DIR__ . '/classes/response.php';
