@@ -39,7 +39,8 @@ gulp.task('watch', ['default'], function () {
 
   browserSync.init({
     proxy: yargs.argv.host,
-    ghostMode: false
+    ghostMode: false,
+    open: false
   })
 
   watch('modules/GUI/**/*.html', 'scripts')
@@ -86,6 +87,8 @@ var polyfills = [
 var commonBundle = [
   'modules/GUI/libs/view.coffee',
   'modules/GUI/libs/model.coffee',
+  'modules/GUI/libs/component.coffee',
+  'modules/GUI/libs/dispatcher.coffee',
   'modules/GUI/libs/render.js',
   'modules/GUI/libs/popup.js',
   'modules/GUI/libs/components.coffee',
@@ -94,6 +97,8 @@ var commonBundle = [
 var exposeCommonBundle = {
   'modules/GUI/libs/view.coffee': 'view.coffee',
   'modules/GUI/libs/model.coffee': 'model.coffee',
+  'modules/GUI/libs/component.coffee': 'component.coffee',
+  'modules/GUI/libs/dispatcher.coffee': 'dispatcher.coffee',
   'modules/GUI/libs/render.js': 'render',
   'modules/GUI/libs/popup.js': 'popup',
   'modules/GUI/libs/components.coffee': 'components.coffee',
@@ -156,7 +161,7 @@ gulp.task('scripts-components', function () {
     .pipe(browserSync.stream())
 })
 
-gulp.task('scripts', ['templates', 'scripts-components'], function () {
+gulp.task('scripts', ['templates', 'scripts-lib'], function () {
   return gulp
     .src([
       '!modules/GUI/sections/**/*Model.coffee',
