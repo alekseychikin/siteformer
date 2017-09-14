@@ -63,10 +63,15 @@ class Diagnostics {
 
       SFResponse::render();
     } else {
-      if (!file_exists(__DIR__ . '/../configs/database.php')) {
+      $fileConfigPath = __DIR__ . '/../configs/database.php';
+
+      if (!file_exists($fileConfigPath)) {
         SFTemplater::setCompilesPath(ENGINE . 'modules/GUI/dist/');
         echo SFTemplater::render('sections/main/setup-database.tmplt', SFResponse::getState());
         SFResponse::render();
+      } else {
+        $configs = include $fileConfigPath;
+        $connection = SFORM::init($configs);
       }
     }
   }
