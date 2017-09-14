@@ -3,6 +3,6 @@
 class SFGuiModules extends SFRouterModel
 {
   public static function get ($params) {
-    return SFGUI::getModules();
+    return SFERM::getModules();
   }
 }

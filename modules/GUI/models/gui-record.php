@@ -47,12 +47,12 @@ class SFGuiRecord extends SFRouterModel
     $fields = self::sortFields($section['fields'], $data);
 
     foreach ($fields as $field) {
-      $className = SFGUI::getClassNameByType($field['type']);
+      $className = SFERM::getClassNameByType($field['type']);
       $className::validateInsertData($params['section'], $field, $data);
     }
 
     foreach ($fields as $field) {
-      $className = SFGUI::getClassNameByType($field['type']);
+      $className = SFERM::getClassNameByType($field['type']);
       $newData[$field['alias']] = $className::prepareInsertData($params['section'], $field, $data);
     }
 
@@ -72,7 +72,7 @@ class SFGuiRecord extends SFRouterModel
       ->exec('default', true);
 
     foreach ($fields as $field) {
-      $className = SFGUI::getClassNameByType($field['type']);
+      $className = SFERM::getClassNameByType($field['type']);
       $className::postPrepareInsertData($section, $field, $record, $data);
     }
   }
@@ -93,17 +93,17 @@ class SFGuiRecord extends SFRouterModel
     $section = SFGUI::getSection($params['section']);
     $fields = self::sortFields($section['fields'], $data);
 
-    $currentData = SFGUI::getItem($params['section'])
+    $currentData = SFERM::getItem($params['section'])
       ->where('id', $id)
       ->exec();
 
     foreach ($fields as $field) {
-      $className = SFGUI::getClassNameByType($field['type']);
+      $className = SFERM::getClassNameByType($field['type']);
       $className::validateUpdateData($params['section'], $field, $currentData, $data);
     }
 
     foreach ($fields as $field) {
-      $className = SFGUI::getClassNameByType($field['type']);
+      $className = SFERM::getClassNameByType($field['type']);
       $newData[$field['alias']] = $className::prepareUpdateData($params['section'], $field, $currentData, $data);
     }
 
@@ -124,47 +124,10 @@ class SFGuiRecord extends SFRouterModel
       ->exec();
 
     foreach ($fields as $field) {
-      $className = SFGUI::getClassNameByType($field['type']);
+      $className = SFERM::getClassNameByType($field['type']);
       $className::postPrepareUpdateData($params['section'], $field, $newData, $data);
     }
 
     return $id;
-  }
-
-  private static function sortFields ($fields, & $data) {
-    while (true) {
-      $find = false;
-      $lookingFor = false;
-      $needSource = false;
-      $mapIndexes = [];
-
-      foreach ($fields as $index => $field) {
-        $mapIndexes[$field['alias']] = $index;
-
-        if ($lookingFor && $field['alias'] === $lookingFor) {
-          array_splice($fields, $index, 1);
-          array_splice($fields, $needSource, 0, array($field));
-          $find = true;
-
-          break;
-        } else {
-          $className = SFGUI::getClassNameByType($field['type']);
-
-          if (method_exists($className, 'detectSource') && $className::detectSource($field)) {
-            $lookingFor = $className::detectSource($field);
-            $data[$field['alias']] = $data[$lookingFor];
-            $needSource = $index;
-
-            if (isset($mapIndexes[$lookingFor])) {
-              $lookingFor = false;
-            }
-          }
-        }
-      }
-
-      if (!$find) break;
-    }
-
-    return $fields;
   }
 }
