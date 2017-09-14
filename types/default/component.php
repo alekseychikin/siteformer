@@ -1,5 +1,0 @@
-<?
-
-	class SFTypeDefault extends SFGUIType
-	{
-	}

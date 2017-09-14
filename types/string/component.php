@@ -1,5 +1,0 @@
-<?
-
-	class SFTypeString extends SFGUIType
-	{
-	}

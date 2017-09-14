@@ -1,6 +1,0 @@
-<?
-
-	class SFTypeArray extends SFGUIType
-	{
-
-	}
