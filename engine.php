@@ -62,6 +62,9 @@ function doEngine($configs) {
 
     Diagnostics::checkDatabaseConnection();
 
+    require_once MODULES . 'ERM/ERM.php';
+
+    SFERM::init();
     SFResponse::initRedirData();
 
     require_once MODULES . 'Router/Router.php';
