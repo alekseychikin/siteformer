@@ -75,7 +75,7 @@ class SFTypeCheckbox extends SFERMType
     return $data;
   }
 
-  public static function whereExpression($section, $field, $value, $params) {
+  public static function whereExpression($section, $field, $value, $params = false) {
     $insertions = [];
     $options = [
       'section' => $section,
@@ -87,11 +87,11 @@ class SFTypeCheckbox extends SFERMType
       $options['value' . $index] = 1 << $item;
     }
 
-    $joinStr = ' OR ';
+    $joinStr = ' AND ';
 
-    if (isset($params['match'])) {
-      if ($params['match'] === 'all') {
-        $joinStr = ' AND ';
+    if ($params !== false) {
+      if ($params === 'any') {
+        $joinStr = ' OR ';
       }
     }
 
