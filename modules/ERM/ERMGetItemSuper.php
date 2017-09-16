@@ -25,7 +25,7 @@ class SFERMGetItemSuper
 
   public function where($field, $value, $params = []) {
     if ($value = $this->getValueForORMQuery($field, $value, $params)) {
-      call_user_func_array([$this->databaseQuery, 'where'], [$value]);
+      call_user_func_array([$this->databaseQuery, 'where'], $value);
     }
 
     return $this;
@@ -111,7 +111,9 @@ class SFERMGetItemSuper
       if ($fieldItem['alias'] === $field) {
         $typeClass = SFERM::getClassNameByType($fieldItem['type']);
 
-        return $typeClass::whereExpression($this->section, $field, $value, $params);
+        $whereExpression = $typeClass::whereExpression($this->section, $field, $value, $params);
+
+        return (gettype($whereExpression) === 'array' ? $whereExpression : [$whereExpression]);
       }
     }
 
