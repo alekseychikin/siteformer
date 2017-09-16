@@ -38,8 +38,6 @@ class SFTypeDate extends SFERMType
       'time' => ''
     ];
 
-    SFResponse::showContent();
-
     if ($settings['useCurrentDate']) {
       $date['date'] = date('Y-m-d');
       $date['time'] = date('H:i');
@@ -68,5 +66,13 @@ class SFTypeDate extends SFERMType
     ];
 
     return $data;
+  }
+
+  public static function whereExpression($section, $field, $value, $params = false) {
+    if ($params !== false) {
+      return [$field, $params, $value];
+    }
+
+    return [$field, $value];
   }
 }
