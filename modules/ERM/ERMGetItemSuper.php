@@ -23,7 +23,14 @@ class SFERMGetItemSuper
     return $this;
   }
 
-  public function where($field, $value, $params = []) {
+  public function where($field, $value) {
+    $params = false;
+
+    if (func_num_args() === 3) {
+      $params = func_get_arg(1);
+      $value = func_get_arg(2);
+    }
+
     if ($value = $this->getValueForORMQuery($field, $value, $params)) {
       call_user_func_array([$this->databaseQuery, 'where'], $value);
     }
