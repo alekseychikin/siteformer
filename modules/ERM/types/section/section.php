@@ -47,13 +47,13 @@ class SFTypeSection extends SFERMType
   }
 
   public static function joinData($databaseQuery, $section, $field) {
-    $joinSection = SFGUI::getSection($field['settings']['section']);
+    $joinSection = SFERM::getSection($field['settings']['section']);
     $databaseQuery->join($joinSection['table'])
       ->on($joinSection['table'] . '.id', SFORM::field($section['table'] . '.' . $field['alias']));
   }
 
   public static function postProcessData($section, $field, $data) {
-    $joinSection = SFGUI::getSection($field['settings']['section']);
+    $joinSection = SFERM::getSection($field['settings']['section']);
 
     if (isset($data[$joinSection['table']]) && isset($data[$joinSection['table']][0])) {
       $data[$field['alias']] = $data[$joinSection['table']][0];
