@@ -6,9 +6,7 @@ require_once __DIR__ . '/../../ERMType.php';
 class SFTypeTags extends SFERMType
 {
   public static function prepareDatabase() {
-    $exists = SFORM::exists('sys_type_tags');
-
-    if (!$exists) {
+    if (!SFORM::exists('sys_type_tags')) {
       SFORM::create('sys_type_tags')
         ->addField([
           'name' => 'id',
@@ -38,9 +36,7 @@ class SFTypeTags extends SFERMType
         ->exec();
     }
 
-    $exists = SFORM::exists('sys_type_tags_records');
-
-    if (!$exists) {
+    if (!SFORM::exists('sys_type_tags_records')) {
       SFORM::create('sys_type_tags_records')
         ->addField([
           'name' => 'record',
@@ -62,7 +58,11 @@ class SFTypeTags extends SFERMType
   }
 
   public static function prepareInsertData($section, $field, $data) {
-    $tags = self::getArrTagsFromString($data[$field['alias']]);
+    $tags = $data[$field['alias']];
+
+    if (gettype($tags) === 'string') {
+      $tags = self::getArrTagsFromString($data[$field['alias']]);
+    }
 
     $existsTags = arrMap(self::getTagRecords($field['section'], $field['alias'], $tags), function ($row) {
       return $row['tag'];
@@ -81,6 +81,67 @@ class SFTypeTags extends SFERMType
     }
 
     return implode(', ', $tags);
+  }
+
+  public static function postPrepareInsertData($section, $field, $record, $data) {
+    $tags = $data[$field['alias']];
+
+    if (gettype($tags) === 'string') {
+      $tags = self::getArrTagsFromString($data[$field['alias']]);
+    }
+
+    $ids = arrMap(self::getTagRecords($field['section'], $field['alias'], $tags), function ($row) {
+      return $row['id'];
+    });
+
+    SFORM::delete('sys_type_tags_records')->where('record', $record['id'])->exec();
+
+    foreach ($ids as $id) {
+      SFORM::insert('sys_type_tags_records')
+        ->values([
+          'record' => $record['id'],
+          'tag' => $id
+        ])
+        ->exec();
+    }
+  }
+
+  public static function postProcessData($section, $field, $data) {
+    $data[$field['alias']] = explode(', ', $data[$field['alias']]);
+
+    return $data;
+  }
+
+  public static function whereExpression($section, $field, $value, $params = false) {
+    if (gettype($value) === 'string') {
+      $value = [$value];
+    }
+
+    $insertions = [];
+    $options = [
+      'section' => $section['id'],
+      'field' => 'id',
+      'raw_field' => $field
+    ];
+
+    foreach ($value as $index => $tag) {
+      $insertions[] = '`sys_type_tags`.`tag` = ":value' . $index . '"';
+      $options['value' . $index] = $tag;
+    }
+
+    $joinStr = ' AND ';
+
+    if ($params !== false) {
+      if ($params === 'any') {
+        $joinStr = ' OR ';
+      }
+    }
+
+    return SFORM::generateValue(':field IN (
+      SELECT `sys_type_tags_records`.`record` FROM `sys_type_tags_records`
+      INNER JOIN `sys_type_tags` ON `sys_type_tags`.`id` = `sys_type_tags_records`.`tag`
+      WHERE `sys_type_tags`.`section` = :section AND `sys_type_tags`.`field` = ":raw_field" AND (' .
+      implode($joinStr, $insertions) . '))', $options);
   }
 
   private static function getArrTagsFromString($tags) {
@@ -106,24 +167,5 @@ class SFTypeTags extends SFERMType
 
     return $result->closeWhere()
       ->exec();
-  }
-
-  public static function postPrepareInsertData($section, $field, $record, $data) {
-    $tags = self::getArrTagsFromString($data[$field['alias']]);
-
-    $ids = arrMap(self::getTagRecords($field['section'], $field['alias'], $tags), function ($row) {
-      return $row['id'];
-    });
-
-    SFORM::delete('sys_type_tags_records')->where('record', $record['id'])->exec();
-
-    foreach ($ids as $id) {
-      SFORM::insert('sys_type_tags_records')
-        ->values([
-          'record' => $record['id'],
-          'tag' => $id
-        ])
-        ->exec();
-    }
   }
 }
