@@ -17,6 +17,26 @@ require_once __DIR__ . '/ORMCustomValue.php';
 
 class SFORM extends SFORMDatabase
 {
+  public static function init($params) {
+    if (!parent::init($params)) {
+      return false;
+    }
+
+    if (isset($params['fixtures'])) {
+      if (!file_exists($params['fixtures'])) die('Not exists fixtures file: ' . $params['fixtures']);
+
+      include $params['fixtures'];
+    }
+
+    if (isset($params['migrations'])) {
+      if (!file_exists($params['migrations'])) die('Not exists migrations folder: ' . $params['migrations']);
+
+      SFORMMigrate::init($params);
+    }
+
+    return true;
+  }
+
   public static function func ($field) {
     return new SFORMFunc($field);
   }
@@ -61,26 +81,6 @@ class SFORM extends SFORMDatabase
 
   public static function setBase($base) {
     parent::$defaultBase = $base;
-  }
-
-  public static function init($params) {
-    if (!parent::init($params)) {
-      return false;
-    }
-
-    if (isset($params['fixtures'])) {
-      if (!file_exists($params['fixtures'])) die('Not exists fixtures file: ' . $params['fixtures']);
-
-      include $params['fixtures'];
-    }
-
-    if (isset($params['migrations'])) {
-      if (!file_exists($params['migrations'])) die('Not exists migrations folder: ' . $params['migrations']);
-
-      SFORMMigrate::init($params);
-    }
-
-    return true;
   }
 
   public static function lastId($table, $alias = 'default') {
