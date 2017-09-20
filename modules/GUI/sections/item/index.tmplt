@@ -4,24 +4,24 @@
   <import name="x-scripts" from="../main/scripts.tmplt" />
 
   <param name={$page-title} value="" />
-  <param name={$sections} value={[]} />
-  <param name={$section} value="" />
+  <param name={$collections} value={[]} />
+  <param name={$collection} value="" />
   <param name={$user-fields} value={[]} />
   <param name={$data} value={[]} />
   <param name={$page} value={1} />
   <param name={$pages} value={100} />
   <param name={$user} value={["login": "", "email": "", "userpic": ""]} />
 
-  <x-main page-title={$page-title} sections={$sections} section={$section} user={$user}>
+  <x-main page-title={$page-title} collections={$collections} collection={$collection} user={$user}>
     <article class="content">
       <h1 class="head">Настройки</h1>
 
-      <div class="section__wrap" data-role="item-list">
+      <div class="collection__wrap" data-role="item-list">
         <list-items
           user-fields={$user-fields}
           fields={$fields}
           data={$data}
-          section={$section}
+          collection={$collection}
           page={$page}
           pages={$pages}
         />

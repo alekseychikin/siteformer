@@ -105,7 +105,7 @@ class SFTypeImage extends SFERMType
     return false;
   }
 
-  public static function prepareInsertData($section, $field, $data) {
+  public static function prepareInsertData($collection, $field, $data) {
     $settings = $field['settings'];
 
     if ($settings['source'] === 'upload') {
@@ -135,7 +135,7 @@ class SFTypeImage extends SFERMType
     return '';
   }
 
-  public static function prepareUpdateData($section, $field, $currentData, $data) {
+  public static function prepareUpdateData($collection, $field, $currentData, $data) {
     if ($currentData[$field['alias']] === $data[$field['alias']]) {
       return $data[$field['alias']];
     }

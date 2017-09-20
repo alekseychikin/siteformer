@@ -1,14 +1,14 @@
 <?php if (!defined('ROOT')) die('You can\'t just open this file, dude');
 
-class SFGuiSections extends SFRouterModel
+class SFGuiCollections extends SFRouterModel
 {
   public static function get ($params) {
     if (isset($params['field'])) {
-      $section = SFGUI::getSection($params['section']);
+      $collection = SFGUI::getCollection($params['collection']);
 
-      return $section[$params['field']];
+      return $collection[$params['field']];
     } else {
-      return SFGUI::getSections();
+      return SFGUI::getCollections();
     }
   }
 
@@ -20,12 +20,12 @@ class SFGuiSections extends SFRouterModel
     }
 
     if (isset($params['delete'])) {
-      SFGUI::removeSection($params['delete']);
+      SFGUI::removeCollection($params['delete']);
     } elseif ($id === false) {
-      return SFGUI::addSection($params);
+      return SFGUI::addCollection($params);
     } else {
       unset($params['id']);
-      SFGUI::saveSection($id, $params);
+      SFGUI::saveCollection($id, $params);
       return $id;
     }
   }

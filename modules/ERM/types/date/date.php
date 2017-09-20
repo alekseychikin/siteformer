@@ -12,7 +12,7 @@ class SFTypeDate extends SFERMType
     ];
   }
 
-  public static function prepareInsertData($section, $field, $data) {
+  public static function prepareInsertData($collection, $field, $data) {
     $value = $data[$field['alias']];
 
     if (empty($value)) {
@@ -22,7 +22,7 @@ class SFTypeDate extends SFERMType
     return $value;
   }
 
-  public static function prepareUpdateData($section, $field, $currentData, $data) {
+  public static function prepareUpdateData($collection, $field, $currentData, $data) {
     $value = $data[$field['alias']];
 
     if (empty($value)) {
@@ -46,7 +46,7 @@ class SFTypeDate extends SFERMType
     return $date;
   }
 
-  public static function postProcessData($section, $field, $data) {
+  public static function postProcessData($collection, $field, $data) {
     $date = $data[$field['alias']];
 
     if (preg_match('/^(\d{4}\-\d{2}\-\d{2})\s(\d{2}:\d{2}):\d{2}$/', $date, $out)) {
@@ -68,7 +68,7 @@ class SFTypeDate extends SFERMType
     return $data;
   }
 
-  public static function whereExpression($section, $field, $value, $params = false) {
+  public static function whereExpression($collection, $field, $value, $params = false) {
     if ($params !== false) {
       return [$field, $params, $value];
     }

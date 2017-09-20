@@ -1,17 +1,17 @@
 <?php if (!defined('ROOT')) die('You can\'t just open this file, dude');
 
-class SFGuiSectionData extends SFRouterModel
+class SFGuiCollectionData extends SFRouterModel
 {
   public static function get ($params) {
     if (isset($params['id'])) {
-      return SFERM::getItem($params['section'])
+      return SFERM::getItem($params['collection'])
         ->where('id', $params['id'])
         ->exec();
-    } elseif (isset($params['section'])) {
+    } elseif (isset($params['collection'])) {
       $data = [];
-      $section = SFGUI::getSection($params['section']);
+      $collection = SFGUI::getCollection($params['collection']);
 
-      foreach ($section['fields'] as $field) {
+      foreach ($collection['fields'] as $field) {
         $className = SFERM::getClassNameByType($field['type']);
 
         $data[$field['alias']] = '';

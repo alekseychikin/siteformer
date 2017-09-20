@@ -5,11 +5,11 @@ require_once __DIR__ . '/../../ERMType.php';
 
 class SFTypeString extends SFERMType
 {
-  public static function whereExpression($section, $field, $value, $params) {
+  public static function whereExpression($collection, $field, $value, $params) {
     if (isset($params['find'])) {
       if ($params['find'] === 'prefix') {
         return SFORM::generateValue(':field LIKE ":value%" ', [
-          'section' => $section,
+          'collection' => $collection,
           'field' => $field,
           'value' => $value
         ]);

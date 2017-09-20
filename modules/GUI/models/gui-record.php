@@ -4,9 +4,9 @@ class SFGuiRecord extends SFRouterModel
 {
   public static function get ($params) {
     if (isset($params['getLastId'])) {
-      $section = SFGUI::getSection($params['section']);
+      $collection = SFGUI::getCollection($params['collection']);
 
-      return SFORM::lastId($section['table']);
+      return SFORM::lastId($collection['table']);
     }
   }
 
@@ -21,9 +21,9 @@ class SFGuiRecord extends SFRouterModel
   }
 
   private static function deleteItem ($params) {
-    $section = SFGUI::getSection($params['section']);
+    $collection = SFGUI::getCollection($params['collection']);
 
-    SFORM::update($section['table'])
+    SFORM::update($collection['table'])
       ->values([
         'status' => 'deleted'
       ])
@@ -43,17 +43,17 @@ class SFGuiRecord extends SFRouterModel
       'usercreate' => $user['id'],
       'datecreate' => gmdate('Y-m-d H:i:s')
     ];
-    $section = SFGUI::getSection($params['section']);
-    $fields = self::sortFields($section['fields'], $data);
+    $collection = SFGUI::getCollection($params['collection']);
+    $fields = self::sortFields($collection['fields'], $data);
 
     foreach ($fields as $field) {
       $className = SFERM::getClassNameByType($field['type']);
-      $className::validateInsertData($params['section'], $field, $data);
+      $className::validateInsertData($params['collection'], $field, $data);
     }
 
     foreach ($fields as $field) {
       $className = SFERM::getClassNameByType($field['type']);
-      $newData[$field['alias']] = $className::prepareInsertData($params['section'], $field, $data);
+      $newData[$field['alias']] = $className::prepareInsertData($params['collection'], $field, $data);
     }
 
     if ($status === 'public') {
@@ -67,13 +67,13 @@ class SFGuiRecord extends SFRouterModel
       }
     }
 
-    $record = SFORM::insert($section['table'])
+    $record = SFORM::insert($collection['table'])
       ->values($newData)
       ->exec('default', true);
 
     foreach ($fields as $field) {
       $className = SFERM::getClassNameByType($field['type']);
-      $className::postPrepareInsertData($section, $field, $record, $data);
+      $className::postPrepareInsertData($collection, $field, $record, $data);
     }
   }
 
@@ -90,21 +90,21 @@ class SFGuiRecord extends SFRouterModel
       'usermodify' => $user['id'],
       'datemodify' => gmdate('Y-m-d H:i:s')
     ];
-    $section = SFGUI::getSection($params['section']);
-    $fields = self::sortFields($section['fields'], $data);
+    $collection = SFGUI::getCollection($params['collection']);
+    $fields = self::sortFields($collection['fields'], $data);
 
-    $currentData = SFERM::getItem($params['section'])
+    $currentData = SFERM::getItem($params['collection'])
       ->where('id', $id)
       ->exec();
 
     foreach ($fields as $field) {
       $className = SFERM::getClassNameByType($field['type']);
-      $className::validateUpdateData($params['section'], $field, $currentData, $data);
+      $className::validateUpdateData($params['collection'], $field, $currentData, $data);
     }
 
     foreach ($fields as $field) {
       $className = SFERM::getClassNameByType($field['type']);
-      $newData[$field['alias']] = $className::prepareUpdateData($params['section'], $field, $currentData, $data);
+      $newData[$field['alias']] = $className::prepareUpdateData($params['collection'], $field, $currentData, $data);
     }
 
     if ($status === 'public') {
@@ -118,14 +118,14 @@ class SFGuiRecord extends SFRouterModel
       }
     }
 
-    $record = SFORM::update($section['table'])
+    $record = SFORM::update($collection['table'])
       ->values($newData)
       ->where('id', $id)
       ->exec();
 
     foreach ($fields as $field) {
       $className = SFERM::getClassNameByType($field['type']);
-      $className::postPrepareUpdateData($params['section'], $field, $newData, $data);
+      $className::postPrepareUpdateData($params['collection'], $field, $newData, $data);
     }
 
     return $id;

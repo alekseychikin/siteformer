@@ -38,7 +38,7 @@ class SFTypeCheckbox extends SFERMType
     ], $params);
   }
 
-  public static function prepareInsertData($section, $field, $data) {
+  public static function prepareInsertData($collection, $field, $data) {
     if (gettype($data[$field['alias']]) === 'integer') return 1 << $data[$field['alias']];
 
     $value = 0;
@@ -75,10 +75,10 @@ class SFTypeCheckbox extends SFERMType
     return $data;
   }
 
-  public static function whereExpression($section, $field, $value, $params = false) {
+  public static function whereExpression($collection, $field, $value, $params = false) {
     $insertions = [];
     $options = [
-      'section' => $section,
+      'collection' => $collection,
       'field' => $field
     ];
 

@@ -6,7 +6,7 @@
   <import name="x-image" from="../../types/image/item.tmplt" />
   <import name="x-password" from="../../types/password/item.tmplt" />
   <import name="x-radio" from="../../types/radio/item.tmplt" />
-  <import name="x-section" from="../../types/section/item.tmplt" />
+  <import name="x-collection" from="../../types/collection/item.tmplt" />
   <import name="x-select" from="../../types/select/item.tmplt" />
   <import name="x-string" from="../../types/string/item.tmplt" />
   <import name="x-table" from="../../types/table/item.tmplt" />
@@ -23,46 +23,46 @@
         <div data-placeholder={$field.alias}>
           <switch>
             <case test={$field.type == 'checkbox'}>
-              <x-checkbox alias={$field.alias} settings={$field.settings} section={$field.section} data={$data[$field.alias]} />
+              <x-checkbox alias={$field.alias} settings={$field.settings} collection={$field.collection} data={$data[$field.alias]} />
             </case>
             <case test={$field.type == 'date'}>
-              <x-date alias={$field.alias} settings={$field.settings} section={$field.section} data={$data[$field.alias]} />
+              <x-date alias={$field.alias} settings={$field.settings} collection={$field.collection} data={$data[$field.alias]} />
             </case>
             <case test={$field.type == 'file'}>
-              <x-file alias={$field.alias} settings={$field.settings} section={$field.section} data={$data[$field.alias]} />
+              <x-file alias={$field.alias} settings={$field.settings} collection={$field.collection} data={$data[$field.alias]} />
             </case>
             <case test={$field.type == 'gallery'}>
-              <x-gallery alias={$field.alias} settings={$field.settings} section={$field.section} data={$data[$field.alias]} />
+              <x-gallery alias={$field.alias} settings={$field.settings} collection={$field.collection} data={$data[$field.alias]} />
             </case>
             <case test={$field.type == 'image'}>
-              <x-image alias={$field.alias} settings={$field.settings} section={$field.section} data={$data[$field.alias]} />
+              <x-image alias={$field.alias} settings={$field.settings} collection={$field.collection} data={$data[$field.alias]} />
             </case>
             <case test={$field.type == 'password'}>
-              <x-password alias={$field.alias} settings={$field.settings} section={$field.section} data={$data[$field.alias]} />
+              <x-password alias={$field.alias} settings={$field.settings} collection={$field.collection} data={$data[$field.alias]} />
             </case>
             <case test={$field.type == 'radio'}>
-              <x-radio alias={$field.alias} settings={$field.settings} section={$field.section} data={$data[$field.alias]} />
+              <x-radio alias={$field.alias} settings={$field.settings} collection={$field.collection} data={$data[$field.alias]} />
             </case>
-            <case test={$field.type == 'section'}>
-              <x-section alias={$field.alias} settings={$field.settings} section={$field.section} data={$data[$field.alias]} />
+            <case test={$field.type == 'collection'}>
+              <x-collection alias={$field.alias} settings={$field.settings} collection={$field.collection} data={$data[$field.alias]} />
             </case>
             <case test={$field.type == 'select'}>
-              <x-select alias={$field.alias} settings={$field.settings} section={$field.section} data={$data[$field.alias]} />
+              <x-select alias={$field.alias} settings={$field.settings} collection={$field.collection} data={$data[$field.alias]} />
             </case>
             <case test={$field.type == 'string'}>
-              <x-string alias={$field.alias} settings={$field.settings} section={$field.section} data={$data[$field.alias]} />
+              <x-string alias={$field.alias} settings={$field.settings} collection={$field.collection} data={$data[$field.alias]} />
             </case>
             <case test={$field.type == 'table'}>
-              <x-table alias={$field.alias} settings={$field.settings} section={$field.section} data={$data[$field.alias]} />
+              <x-table alias={$field.alias} settings={$field.settings} collection={$field.collection} data={$data[$field.alias]} />
             </case>
             <case test={$field.type == 'tags'}>
-              <x-tags alias={$field.alias} settings={$field.settings} section={$field.section} data={$data[$field.alias]} />
+              <x-tags alias={$field.alias} settings={$field.settings} collection={$field.collection} data={$data[$field.alias]} />
             </case>
             <case test={$field.type == 'text'}>
-              <x-text alias={$field.alias} settings={$field.settings} section={$field.section} data={$data[$field.alias]} />
+              <x-text alias={$field.alias} settings={$field.settings} collection={$field.collection} data={$data[$field.alias]} />
             </case>
             <case test={$field.type == 'url'}>
-              <x-url alias={$field.alias} settings={$field.settings} section={$field.section} data={$data[$field.alias]} />
+              <x-url alias={$field.alias} settings={$field.settings} collection={$field.collection} data={$data[$field.alias]} />
             </case>
           </switch>
         </div>
@@ -94,7 +94,7 @@
       </switch>
     </button>
 
-    <a href={"/cms/" ++ $section ++ "/"} class="form__btn">Отменить</a>
+    <a href={"/cms/" ++ $collection ++ "/"} class="form__btn">Отменить</a>
 
     <if test={$data.id?}>
       <button class="form__btn form__btn--delete" type="button" data-role="delete">Удалить</button>

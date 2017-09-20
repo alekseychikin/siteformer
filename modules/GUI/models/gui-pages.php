@@ -17,11 +17,11 @@ class SFGuiPages extends SFRouterModel
       $params['limit'] = 10;
     }
 
-    $section = SFGUI::getSection($params['section']);
+    $collection = SFGUI::getCollection($params['collection']);
 
     $amountItems = SFORM::select([SFORM::func('COUNT(*)'), 'length'])
     ->dropIdFields()
-    ->from($section['table']);
+    ->from($collection['table']);
 
     foreach ($statuses as $index => $status) {
       if (!$index) {

@@ -4,13 +4,13 @@
   <param name={$users} value={[]} />
   <param name={$is-valid-email} value={false} />
 
-  <div class="section__row">
+  <div class="collection__row">
     <input class="form__inp form__inp--half-width" type="email" name="invite-email" value={$email} data-role="email" />
     <button class="form__btn" type="button" data-role="send-invitation" disabled={!$is-valid-email}>Выслать приглашение</button>
   </div>
 
   <if test={arr_len($invitations) > 0}>
-    <div class="section__row">
+    <div class="collection__row">
       <h2 class="subhead">Высланные приглашения</h2>
 
       <table class="table">
@@ -35,7 +35,7 @@
     </div>
   </if>
 
-  <div class="section__row">
+  <div class="collection__row">
     <if test={arr_len($invitations) > 0}>
       <h2 class="subhead">Пользователи</h2>
     </if>

@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/../../ERMType.php';
 
-class SFTypeSection extends SFERMType
+class SFTypeCollection extends SFERMType
 {
   public static function getSqlField($params) {
     return [
@@ -12,7 +12,7 @@ class SFTypeSection extends SFERMType
     ];
   }
 
-  public static function prepareInsertData($section, $field, $data) {
+  public static function prepareInsertData($collection, $field, $data) {
     if (empty($data[$field['alias']])) {
       return null;
     }
@@ -20,7 +20,7 @@ class SFTypeSection extends SFERMType
     return $data[$field['alias']];
   }
 
-  public static function prepareUpdateData($section, $field, $currentData, $data) {
+  public static function prepareUpdateData($collection, $field, $currentData, $data) {
     if (empty($data[$field['alias']])) {
       return null;
     }
@@ -30,7 +30,7 @@ class SFTypeSection extends SFERMType
 
   public static function validateSettings($settings, $fields, $currentAlias) {
     return SFValidate::value([
-      'section' => [
+      'collection' => [
         'required' => true
       ],
       'field' => [
@@ -46,23 +46,23 @@ class SFTypeSection extends SFERMType
     ];
   }
 
-  public static function joinData($databaseQuery, $section, $field) {
-    $joinSection = SFERM::getSection($field['settings']['section']);
-    $databaseQuery->join($joinSection['table'])
-      ->on($joinSection['table'] . '.id', SFORM::field($section['table'] . '.' . $field['alias']));
+  public static function joinData($databaseQuery, $collection, $field) {
+    $joinCollection = SFERM::getCollection($field['settings']['collection']);
+    $databaseQuery->join($joinCollection['table'])
+      ->on($joinCollection['table'] . '.id', SFORM::field($collection['table'] . '.' . $field['alias']));
   }
 
-  public static function postProcessData($section, $field, $data) {
-    $joinSection = SFERM::getSection($field['settings']['section']);
+  public static function postProcessData($collection, $field, $data) {
+    $joinCollection = SFERM::getCollection($field['settings']['collection']);
 
-    if (isset($data[$joinSection['table']]) && isset($data[$joinSection['table']][0])) {
-      $data[$field['alias']] = $data[$joinSection['table']][0];
-      unset($data[$joinSection['table']]);
+    if (isset($data[$joinCollection['table']]) && isset($data[$joinCollection['table']][0])) {
+      $data[$field['alias']] = $data[$joinCollection['table']][0];
+      unset($data[$joinCollection['table']]);
 
       return $data;
     }
 
-    unset($data[$joinSection['table']]);
+    unset($data[$joinCollection['table']]);
 
     $data[$field['alias']] = [
       'title' => '',

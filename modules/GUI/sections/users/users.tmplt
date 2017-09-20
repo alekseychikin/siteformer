@@ -5,16 +5,16 @@
   <import name="users-list" from="./users-list.tmplt" />
 
   <param name={$page-title} value="Модерация пользователей" />
-  <param name={$sections} value={[]} />
-  <param name={$section} value="" />
+  <param name={$collections} value={[]} />
+  <param name={$collection} value="" />
   <param name={$user} value={["login": "", "email": "", "userpic": ""]} />
   <param name={$invitations} value={[]} />
   <param name={$users} value={[]} />
 
-  <x-main page-title={$page-title} sections={$sections} section={$section} user={$user}>
+  <x-main page-title={$page-title} collections={$collections} collection={$collection} user={$user}>
     <h1 class="head">Модерация пользователей</h1>
 
-    <div class="section__wrap" data-role="users">
+    <div class="collection__wrap" data-role="users">
       <users-list users={$users} invitations={$invitations} />
     </div>
 

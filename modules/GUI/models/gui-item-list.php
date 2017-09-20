@@ -23,7 +23,7 @@ class SFGuiItemList extends SFRouterModel
 
     $offset = ($params['page'] - 1) * $params['limit'];
 
-    $result = SFERM::getItemList($params['section'])
+    $result = SFERM::getItemList($params['collection'])
       ->where('status', $statuses)
       ->order('id desc')
       ->limit($offset, $params['limit']);

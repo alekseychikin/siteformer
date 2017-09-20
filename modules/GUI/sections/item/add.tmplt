@@ -4,18 +4,18 @@
   <import name="x-scripts" from="../main/scripts.tmplt" />
 
   <param name={$page-title} value="" />
-  <param name={$section-name} value="" />
-  <param name={$sections} value={[]} />
-  <param name={$section} value="" />
+  <param name={$collection-name} value="" />
+  <param name={$collections} value={[]} />
+  <param name={$collection} value="" />
   <param name={$fields} value={[]} />
   <param name={$data} value={[]} />
   <param name={$user} value={["login": "", "email": "", "userpic": ""]} />
 
-  <x-main page-title={$page-title} sections={$sections} section={$section} user={$user}>
-    <h1 class="head">Добавить запись в «{$section-name}»</h1>
+  <x-main page-title={$page-title} collections={$collections} collection={$collection} user={$user}>
+    <h1 class="head">Добавить запись в «{$collection-name}»</h1>
     <article class="content">
       <form class="form" action="" data-role="item-add-form">
-        <x-add-form fields={$fields} section={$section} data={$data} />
+        <x-add-form fields={$fields} collection={$collection} data={$data} />
       </form>
     </article>
 

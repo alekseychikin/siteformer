@@ -4,33 +4,33 @@
   <div class="popup__head">Настройки секции</div>
   <form action="" class="form" data-role="configs-form">
     <div class="form__item">
-      <label for="configs-section-section" class="form__label">Секция</label>
+      <label for="configs-collection-collection" class="form__label">Секция</label>
       <div class="form__inp-contain">
         <label class="form__select">
-          <select data-role="configs-section-section" id="configs-section-section">
+          <select data-role="configs-collection-collection" id="configs-collection-collection">
             <option value=""></option>
-            <if test={arr_len($sections)}>
-              <for-each item={$section-item} from={$sections}>
-                <option value={$section-item.alias} selected={$section-item.alias == $settings.section}>{$section-item.title}</option>
+            <if test={arr_len($collections)}>
+              <for-each item={$collection-item} from={$collections}>
+                <option value={$collection-item.alias} selected={$collection-item.alias == $settings.collection}>{$collection-item.title}</option>
               </for-each>
             </if>
           </select>
         </label>
-        <if test={$settings.errorCode && $settings.errorIndex? && $settings.errorIndex[0] == 'section' && $settings.errorCode == 'EEMPTYREQUIRED'}>
+        <if test={$settings.errorCode && $settings.errorIndex? && $settings.errorIndex[0] == 'collection' && $settings.errorCode == 'EEMPTYREQUIRED'}>
           <span class="form__error">Задайте секцию</span>
         </if>
       </div>
     </div>
     <div class="form__item">
-      <label for="configs-section-field" class="form__label">Поиск по полю</label>
+      <label for="configs-collection-field" class="form__label">Поиск по полю</label>
       <div class="form__inp-contain">
         <label class="form__select">
-          <select data-role="configs-section-field" id="configs-section-field">
+          <select data-role="configs-collection-field" id="configs-collection-field">
             <option value=""></option>
-            <if test={arr_len($sections) && str_len($settings.section)}>
-              <for-each key={$section-index} item={$section-item} from={$sections}>
-                <if test={$section-item.alias == $settings.section}>
-                  <for-each item={$field-item} from={$section-item.fields}>
+            <if test={arr_len($collections) && str_len($settings.collection)}>
+              <for-each key={$collection-index} item={$collection-item} from={$collections}>
+                <if test={$collection-item.alias == $settings.collection}>
+                  <for-each item={$field-item} from={$collection-item.fields}>
                     <if test={$field-item.type == 'string'}>
                       <option value={$field-item.alias} selected={$settings.field == $field-item.alias}>{$field-item.title}</option>
                       <variable name={$has-string-field} value={true} />
@@ -47,7 +47,7 @@
         <if test={$settings.errorCode && $settings.errorIndex? && $settings.errorIndex[0] == 'field' && $settings.errorCode == 'EEMPTYREQUIRED'}>
           <span class="form__error">Задайте поле</span>
         </if>
-        <if test={!$has-string-field && str_len($settings.section)}>
+        <if test={!$has-string-field && str_len($settings.collection)}>
           <span class="form__error">У этого раздела нет ни одного строкового поля. Выберите другой.</span>
         </if>
       </div>

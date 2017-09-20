@@ -1,13 +1,13 @@
 <component>
-  <param name={$sections} value={[]} />
+  <param name={$collections} value={[]} />
 
-  <for-each item={$sections-item} from={$sections}>
+  <for-each item={$collections-item} from={$collections}>
     <li class="menu__item">
-      <if test={$section == $sections-item.alias}>
+      <if test={$collection == $collections-item.alias}>
         <attribute name="class" value="menu__item menu__item--active" />
       </if>
 
-      <a href={"/cms/" ++ $sections-item.alias ++ "/"} class="menu__link">{ $sections-item.title }</a>
+      <a href={"/cms/" ++ $collections-item.alias ++ "/"} class="menu__link">{ $collections-item.title }</a>
     </li>
   </for-each>
 </component>

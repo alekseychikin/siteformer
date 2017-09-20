@@ -19,7 +19,7 @@
         id={$alias}
         class="form__inp"
         value={$data[$settings.field]}
-        data-role="section"
+        data-role="collection"
         autocomplete="off"
       />
       <if test={$data.id?}>

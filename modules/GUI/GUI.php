@@ -5,7 +5,7 @@ require_once __DIR__ . '/GUIGetItem.php';
 
 class SFGUI
 {
-  private static $sections = [];
+  private static $collections = [];
 
   public static function init($params = []) {
     $dependencies = ['SFRouter', 'SFERM', 'SFTemplater'];
@@ -61,8 +61,8 @@ class SFGUI
   }
 
   private static function checkTables() {
-    if (!SFORM::exists('sys_section_fields_users')) {
-      SFORM::create('sys_section_fields_users')
+    if (!SFORM::exists('sys_collection_fields_users')) {
+      SFORM::create('sys_collection_fields_users')
         ->addField([
           'name' => 'user',
           'type' => 'INT(11) UNSIGNED',
@@ -70,7 +70,7 @@ class SFGUI
           'null' => false
         ])
         ->addField([
-          'name' => 'section',
+          'name' => 'collection',
           'type' => 'INT(11) UNSIGNED',
           'null' => false
         ])
@@ -79,8 +79,8 @@ class SFGUI
           'type' => 'INT(11) UNSIGNED',
           'null' => false
         ])
-        ->addKey(['user', 'section', 'field'], 'primary key')
-        ->addKey(['user', 'section'])
+        ->addKey(['user', 'collection', 'field'], 'primary key')
+        ->addKey(['user', 'collection'])
         ->exec();
     }
 

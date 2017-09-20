@@ -18,15 +18,15 @@ class SFTypeTable extends SFERMType
     return $settings['defaultData'];
   }
 
-  public static function prepareInsertData($section, $field, $data) {
+  public static function prepareInsertData($collection, $field, $data) {
     return json_encode($data[$field['alias']], true);
   }
 
-  public static function prepareUpdateData($section, $field, $currentData, $data) {
+  public static function prepareUpdateData($collection, $field, $currentData, $data) {
     return json_encode($data[$field['alias']], true);
   }
 
-  public static function postProcessData($section, $field, $data) {
+  public static function postProcessData($collection, $field, $data) {
     $data[$field['alias']] = parseJSON($data[$field['alias']]);
 
     return $data;

@@ -3,8 +3,8 @@
   <import name="x-menu" from="../../components/menu/menu.tmplt" />
 
   <param name={$page-title} value="" />
-  <param name={$sections} value={[]} />
-  <param name={$section} value="" />
+  <param name={$collections} value={[]} />
+  <param name={$collection} value="" />
   <param name={$user} value={["userpic": "", "login": ""]} />
 
   <!DOCTYPE html>
@@ -15,12 +15,12 @@
     <link rel="stylesheet" href="/sf-engine/modules/GUI/dist/main.css" />
   </head>
   <body>
-    <div class="section">
+    <div class="collection">
       <div class="aside">
         <div class="header">
           <user-block user={$user} />
         </div>
-        <x-menu sections={$sections} section={$section} user={$user} />
+        <x-menu collections={$collections} collection={$collection} user={$user} />
       </div>
       {$children}
     </div>

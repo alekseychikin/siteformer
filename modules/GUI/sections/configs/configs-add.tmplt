@@ -5,8 +5,8 @@
   <param name={$id} value={false} />
   <param name={$title} value="" />
   <param name={$alias} value="" />
-  <param name={$section-title} value="Добавить" />
-  <param name={$section-url} value="add" />
+  <param name={$collection-title} value="Добавить" />
+  <param name={$collection-url} value="add" />
   <param name={$save-button-label} value="Создать" />
   <param name={$error-title} value="" />
   <param name={$error-alias} value="" />
@@ -15,14 +15,14 @@
   <param name={$error-fields-message} value="" />
 
   <if test={$id}>
-    <variable name={$section-title} value="Редактировать" />
-    <variable name={$section-url} value={$alias} />
+    <variable name={$collection-title} value="Редактировать" />
+    <variable name={$collection-url} value={$alias} />
     <variable name={$save-button-label} value="Сохранить" />
   </if>
 
-  <h1 class="head">{$section-title} раздел</h1>
+  <h1 class="head">{$collection-title} раздел</h1>
 
-  <form action={"/cms/configs/" ++ $section-url ++ "/"} class="form form--full-height" data-role="configs-add-form">
+  <form action={"/cms/configs/" ++ $collection-url ++ "/"} class="form form--full-height" data-role="configs-add-form">
     <div class="form__item">
       <label for="name" class="form__label">Название</label>
       <div class="form__inp-contain">

@@ -33,67 +33,67 @@ class SFERMType
 
   /**
   * Method for validating data before preparing data and putting to the database
-  * @param array $section Section
+  * @param array $collection Collection
   * @param array $field Field
   * @param array $data Sent data
   */
-  public static function validateInsertData($section, $field, $data) {
+  public static function validateInsertData($collection, $field, $data) {
     return true;
   }
 
   /**
   * Method for validating data before preparing data and update it at the database
-  * @param array $section Section
+  * @param array $collection Collection
   * @param array $field Field
   * @param array $data Sent data
   */
-  public static function validateUpdateData($section, $field, $data) {
+  public static function validateUpdateData($collection, $field, $data) {
     return true;
   }
 
   /**
   * Method for preparing data for putting to database
-  * @param array $section Section
+  * @param array $collection Collection
   * @param array $field Field
   * @param array $data Sent data
   * @return string Prepared data
   */
-  public static function prepareInsertData($section, $field, $data) {
+  public static function prepareInsertData($collection, $field, $data) {
     return $data[$field['alias']];
   }
 
   /**
   * Method for preparing data for update in database
-  * @param array $section Section
+  * @param array $collection Collection
   * @param array $field Field
   * @param array $currentData Current data
   * @param array $data Sent data
   * @return string Prepared data
   */
-  public static function prepareUpdateData($section, $field, $currentData, $data) {
+  public static function prepareUpdateData($collection, $field, $currentData, $data) {
     return $data[$field['alias']];
   }
 
   /**
   * Method for adding some more data to another tables after insert record to main table
-  * @param array $section Section
+  * @param array $collection Collection
   * @param array $field Field
   * @param array $record Fresh inserted data to main table
   * @param array $data Origin array of data, sent to `prepareInsertData` before
   * @return void
   */
-  public static function postPrepareInsertData($section, $field, $record, $data) {
+  public static function postPrepareInsertData($collection, $field, $record, $data) {
   }
 
   /**
   * Method for adding some more data or updating some data to another tables after update record to main table
-  * @param array $section Section
+  * @param array $collection Collection
   * @param array $field Field
   * @param array $newData Fresh updated data from main table
   * @param array $data Origin array of data, sent to `prepareUpdateData` before
   * @return void
   */
-  public static function postPrepareUpdateData($section, $field, $newData, $data) {
+  public static function postPrepareUpdateData($collection, $field, $newData, $data) {
   }
 
   /**
@@ -115,14 +115,14 @@ class SFERMType
     return $value;
   }
 
-  public static function joinData($databaseQuery, $section, $field) {
+  public static function joinData($databaseQuery, $collection, $field) {
   }
 
-  public static function postProcessData($section, $field, $data) {
+  public static function postProcessData($collection, $field, $data) {
     return $data;
   }
 
-  public static function whereExpression($section, $field, $value, $params) {
+  public static function whereExpression($collection, $field, $value, $params) {
     return [$field, $value];
   }
 }

@@ -13,8 +13,8 @@ class SFTypeUrl extends SFERMType
     ], $params);
   }
 
-  public static function prepareInsertData($section, $field, $data) {
-    $section = SFGUI::getSection($section);
+  public static function prepareInsertData($collection, $field, $data) {
+    $collection = SFGUI::getCollection($collection);
     $settings = $field['settings'];
 
     if (empty($data[$field['alias']]) && empty($data[$settings['source']])) {
@@ -31,7 +31,7 @@ class SFTypeUrl extends SFERMType
     $value = SFText::translite($value);
 
     $record = SFORM::select()
-      ->from($section['table'])
+      ->from($collection['table'])
       ->where($field['alias'], $value);
 
     $i = 1;
@@ -40,15 +40,15 @@ class SFTypeUrl extends SFERMType
     while ($record->length()) {
       $newValue = $value . '-' . ++$i;
       $record = SFORM::select()
-        ->from($section['table'])
+        ->from($collection['table'])
         ->where($field['alias'], $newValue);
     }
 
     return $newValue;
   }
 
-  public static function prepareUpdateData($section, $field, $currentData, $data) {
-    $section = SFGUI::getSection($section);
+  public static function prepareUpdateData($collection, $field, $currentData, $data) {
+    $collection = SFGUI::getCollection($collection);
     $settings = $field['settings'];
 
     if (empty($data[$field['alias']]) && empty($data[$settings['source']])) {
@@ -65,7 +65,7 @@ class SFTypeUrl extends SFERMType
     $value = SFText::translite($value);
 
     $record = SFORM::select()
-      ->from($section['table'])
+      ->from($collection['table'])
       ->where($field['alias'], $value)
       ->andWhere('id', '!=', $currentData['id']);
 
@@ -75,7 +75,7 @@ class SFTypeUrl extends SFERMType
     while ($record->length()) {
       $newValue = $value . '-' . ++$i;
       $record = SFORM::select()
-        ->from($section['table'])
+        ->from($collection['table'])
         ->where($field['alias'], $newValue)
         ->andWhere('id', '!=', $currentData['id']);
     }

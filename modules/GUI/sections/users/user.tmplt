@@ -4,12 +4,12 @@
   <import name="x-scripts" from="../main/scripts.tmplt" />
 
   <param name={$page-title} value="Редактировать пользователя" />
-  <param name={$sections} value={[]} />
-  <param name={$section} value="" />
+  <param name={$collections} value={[]} />
+  <param name={$collection} value="" />
   <param name={$user} value={["login": "", "email": "", "userpic": ""]} />
   <param name={$edit-user} value={["login": "", "email": "", "userpic": ""]} />
 
-  <x-main page-title={$page-title} sections={$sections} section={$section} user={$user}>
+  <x-main page-title={$page-title} collections={$collections} collection={$collection} user={$user}>
     <h1 class="head">Редактировать профиль</h1>
 
     <div data-role="profile-placeholder">

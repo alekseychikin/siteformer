@@ -1,10 +1,10 @@
 <?php if (!defined('ROOT')) die('You can\'t just open this file, dude');
 
 $src = urldecode($_GET['src']);
-$section = $_GET['section'];
+$collection = $_GET['collection'];
 $field = $_GET['field'];
 
-$result = SFERM::getItemList($section)
+$result = SFERM::getItemList($collection)
   ->where($field, $src, ['find' => 'prefix'])
   ->limit(10)
   ->exec();

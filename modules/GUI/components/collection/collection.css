@@ -1,4 +1,4 @@
-.section {
+.collection {
   margin-left: 200px;
   height: 100%;
 
@@ -8,6 +8,6 @@
 
 }
 
-* + .section__row {
+* + .collection__row {
   margin-top: 15px;
 }

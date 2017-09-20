@@ -3,7 +3,7 @@
   <import name="x-date" from="../../types/date/table-item.tmplt" />
   <import name="x-image" from="../../types/image/table-item.tmplt" />
   <import name="x-radio" from="../../types/radio/table-item.tmplt" />
-  <import name="x-section" from="../../types/section/table-item.tmplt" />
+  <import name="x-collection" from="../../types/collection/table-item.tmplt" />
   <import name="x-select" from="../../types/select/table-item.tmplt" />
   <import name="x-string" from="../../types/string/table-item.tmplt" />
   <import name="x-tags" from="../../types/tags/table-item.tmplt" />
@@ -14,7 +14,7 @@
   <param name={$user-fields} value={[]} />
   <param name={$page} value={1} />
   <param name={$pages} value={100} />
-  <param name={$section} value="" />
+  <param name={$collection} value="" />
   <variable name={$checked-items} value={0} />
   <variable name={$reduced-user-fields} value={$user-fields} />
 
@@ -39,7 +39,7 @@
       <for-each key={$i} item={$data-row} from={$data}>
         <tr class="table__link">
           <for-each key={$j} item={$field} from={$reduced-user-fields}>
-            <td><a href={"/cms/" ++ $section ++ "/" ++ $data-row.id ++ "/"}>
+            <td><a href={"/cms/" ++ $collection ++ "/" ++ $data-row.id ++ "/"}>
               <if test={$j != 0}>
                 <attribute name="tabindex" value="-1" />
               </if>
@@ -57,8 +57,8 @@
                 <case test={$field.type == 'radio'}>
                   <x-radio field={$field} value={$data-row[$field.alias]} />
                 </case>
-                <case test={$field.type == 'section'}>
-                  <x-section field={$field} value={$data-row[$field.alias]} />
+                <case test={$field.type == 'collection'}>
+                  <x-collection field={$field} value={$data-row[$field.alias]} />
                 </case>
                 <case test={$field.type == 'select'}>
                   <x-select field={$field} value={$data-row[$field.alias]} />
@@ -83,5 +83,5 @@
     </tbody>
   </table>
 
-  <x-paginator url={"/cms/" ++ $section ++ "/"} page={$page} pages={$pages} />
+  <x-paginator url={"/cms/" ++ $collection ++ "/"} page={$page} pages={$pages} />
 </component>

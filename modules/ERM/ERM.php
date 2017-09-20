@@ -5,7 +5,7 @@ require_once __DIR__ . '/ERMGetItemList.php';
 
 class SFERM
 {
-  private static $sections = [];
+  private static $collections = [];
 
   public static function init($params = []) {
     self::checkTables();
@@ -29,15 +29,15 @@ class SFERM
     }
   }
 
-  public static function getItemList($section) {
-    return new SFERMGetItemList($section);
+  public static function getItemList($collection) {
+    return new SFERMGetItemList($collection);
   }
 
-  public static function getItem($section) {
-    return new SFERMGetItem($section);
+  public static function getItem($collection) {
+    return new SFERMGetItem($collection);
   }
 
-  public static function createItem ($section, $params) {
+  public static function createItem ($collection, $params) {
     $data = $params['data'];
     $status = $params['status'];
     $newData = [
@@ -45,17 +45,17 @@ class SFERM
       'usercreate' => $params['user'],
       'datecreate' => gmdate('Y-m-d H:i:s')
     ];
-    $section = self::getSection($section);
-    $fields = self::sortFields($section['fields'], $data);
+    $collection = self::getCollection($collection);
+    $fields = self::sortFields($collection['fields'], $data);
 
     foreach ($fields as $field) {
       $className = SFERM::getClassNameByType($field['type']);
-      $className::validateInsertData($section['alias'], $field, $data);
+      $className::validateInsertData($collection['alias'], $field, $data);
     }
 
     foreach ($fields as $field) {
       $className = SFERM::getClassNameByType($field['type']);
-      $newData[$field['alias']] = $className::prepareInsertData($section['alias'], $field, $data);
+      $newData[$field['alias']] = $className::prepareInsertData($collection['alias'], $field, $data);
     }
 
     if ($status === 'public') {
@@ -69,31 +69,31 @@ class SFERM
       }
     }
 
-    $record = SFORM::insert($section['table'])
+    $record = SFORM::insert($collection['table'])
       ->values($newData)
       ->exec('default', true);
 
     foreach ($fields as $field) {
       $className = SFERM::getClassNameByType($field['type']);
-      $className::postPrepareInsertData($section, $field, $record, $data);
+      $className::postPrepareInsertData($collection, $field, $record, $data);
     }
   }
 
-  // Get array of sections
+  // Get array of collections
   // It could be news or events or galleries
-  public static function getSections() {
+  public static function getCollections() {
     $res = SFORM::select()
-      ->from('sys_sections')
-      ->join('sys_section_fields')
-      ->on('sys_section_fields.section', SFORM::field('sys_sections.id'))
-      ->order('sys_sections.id desc')
-      ->where('sys_sections.enable', true)
+      ->from('sys_collections')
+      ->join('sys_collection_fields')
+      ->on('sys_collection_fields.collection', SFORM::field('sys_collections.id'))
+      ->order('sys_collections.id desc')
+      ->where('sys_collections.enable', true)
       ->exec();
 
     if (count($res)) {
       $res = arrMap($res, function ($item) {
-        $item['fields'] = self::prepareSectionFields($item['sys_section_fields']);
-        unset($item['sys_section_fields']);
+        $item['fields'] = self::prepareCollectionFields($item['sys_collection_fields']);
+        unset($item['sys_collection_fields']);
 
         return $item;
       });
@@ -102,27 +102,27 @@ class SFERM
     return $res;
   }
 
-  // Get section by alias
-  public static function getSection($alias, $force = false) {
-    if (isset(self::$sections[$alias]) && !$force) {
-      return self::$sections[$alias];
+  // Get collection by alias
+  public static function getCollection($alias, $force = false) {
+    if (isset(self::$collections[$alias]) && !$force) {
+      return self::$collections[$alias];
     }
 
     $res = SFORM::select()
-      ->from('sys_sections')
-      ->join('sys_section_fields')
-      ->on('sys_section_fields.section', SFORM::field('sys_sections.id'))
-      ->where('sys_sections.alias', $alias)
-      ->andWhere('sys_sections.enable', true)
+      ->from('sys_collections')
+      ->join('sys_collection_fields')
+      ->on('sys_collection_fields.collection', SFORM::field('sys_collections.id'))
+      ->where('sys_collections.alias', $alias)
+      ->andWhere('sys_collections.enable', true)
       ->exec();
 
     if (count($res)) {
       $res = $res[0];
-      $res['fields'] = self::prepareSectionFields($res['sys_section_fields']);
-      unset($res['sys_section_fields']);
+      $res['fields'] = self::prepareCollectionFields($res['sys_collection_fields']);
+      unset($res['sys_collection_fields']);
 
-      self::$sections[$alias] = $res;
-      self::$sections[$res['id']] = $res;
+      self::$collections[$alias] = $res;
+      self::$collections[$res['id']] = $res;
 
       return $res;
     }
@@ -130,23 +130,23 @@ class SFERM
     return false;
   }
 
-  // Get section by id
-  public static function getSectionById($id) {
+  // Get collection by id
+  public static function getCollectionById($id) {
     $res = SFORM::select()
-      ->from('sys_sections')
-      ->join('sys_section_fields')
-      ->on('sys_section_fields.section', SFORM::field('sys_sections.id'))
+      ->from('sys_collections')
+      ->join('sys_collection_fields')
+      ->on('sys_collection_fields.collection', SFORM::field('sys_collections.id'))
       ->where('id', $id)
-      ->andWhere('sys_sections.enable', true)
+      ->andWhere('sys_collections.enable', true)
       ->exec();
 
     if (count($res)) {
       $res = $res[0];
-      $res['fields'] = self::prepareSectionFields($res['sys_section_fields']);
-      unset($res['sys_section_fields']);
+      $res['fields'] = self::prepareCollectionFields($res['sys_collection_fields']);
+      unset($res['sys_collection_fields']);
 
-      self::$sections[$id] = $res;
-      self::$sections[$res['alias']] = $res;
+      self::$collections[$id] = $res;
+      self::$collections[$res['alias']] = $res;
 
       return $res;
     }
@@ -154,8 +154,8 @@ class SFERM
     return false;
   }
 
-  // Add section
-  public static function addSection($data) {
+  // Add collection
+  public static function addCollection($data) {
     $modules = self::getModules();
     $modules[] = 'default';
 
@@ -168,7 +168,7 @@ class SFERM
         'required' => true,
         'unique' => function ($value) {
           $res = SFORM::select()
-            ->from('sys_sections')
+            ->from('sys_collections')
             ->where('title', $value)
             ->andWhere('enable', true);
 
@@ -180,7 +180,7 @@ class SFERM
         'valid' => '/^[a-zA-Z\-_]+$/i',
         'unique' => function ($value) {
           $res = SFORM::select()
-            ->from('sys_sections')
+            ->from('sys_collections')
             ->where('alias', $value)
             ->andWhere('enable', true);
 
@@ -299,7 +299,7 @@ class SFERM
     $table->addKey('id', 'primary key');
     $table->exec();
 
-    $idSection = SFORM::insert('sys_sections')
+    $idCollection = SFORM::insert('sys_collections')
       ->values([
         'title' => $data['title'],
         'alias' => $data['alias'],
@@ -308,10 +308,10 @@ class SFERM
       ])
       ->exec();
 
-    arrMap($data['fields'], function ($field) use ($idSection) {
-      SFORM::insert('sys_section_fields')
+    arrMap($data['fields'], function ($field) use ($idCollection) {
+      SFORM::insert('sys_collection_fields')
         ->values([
-          'section' => $idSection,
+          'collection' => $idCollection,
           'title' => $field['title'],
           'alias' => $field['alias'],
           'type' => $field['type'],
@@ -322,11 +322,11 @@ class SFERM
         ->exec();
     });
 
-    return $idSection;
+    return $idCollection;
   }
 
-  // Save section
-  public static function saveSection($id, $data) {
+  // Save collection
+  public static function saveCollection($id, $data) {
     $modules = self::getModules();
     $modules[] = 'default';
 
@@ -339,7 +339,7 @@ class SFERM
         'required' => true,
         'unique' => function ($value) use ($id) {
           $res = SFORM::select()
-            ->from('sys_sections')
+            ->from('sys_collections')
             ->where('title', $value)
             ->andWhere('enable', true);
 
@@ -355,7 +355,7 @@ class SFERM
         'valid' => '/^[a-zA-Z\-_]+$/i',
         'unique' => function ($value) use ($id) {
           $res = SFORM::select()
-            ->from('sys_sections')
+            ->from('sys_collections')
             ->where('alias', $value)
             ->andWhere('enable', true);
 
@@ -412,7 +412,7 @@ class SFERM
       'default' => NULL
     ];
 
-    $source = self::getSectionById($id);
+    $source = self::getCollectionById($id);
     self::validateSettingsOfData($data);
 
     // prepare source fields and new data fields for get diff
@@ -442,7 +442,7 @@ class SFERM
     $sourceFields = $source['fields'];
 
     $sourceFields = arrMap($sourceFields, function ($field) {
-      unset($field['section']);
+      unset($field['collection']);
       unset($field['title']);
       $field['settings'] = json_encode($field['settings']);
       $field['position'] = (int)$field['position'];
@@ -496,7 +496,7 @@ class SFERM
       }
     }
 
-    SFORM::update('sys_sections')
+    SFORM::update('sys_collections')
       ->values([
         'title' => $data['title'],
         'module' => $data['module']
@@ -506,7 +506,7 @@ class SFERM
 
     $sourceFields = arrMap($source['fields'], function ($item) {
       $item['settings'] = json_encode($item['settings']);
-      unset($item['section']);
+      unset($item['collection']);
 
       return $item;
     });
@@ -516,9 +516,9 @@ class SFERM
     foreach ($fields as $field) {
       switch($field['mark']) {
         case 'add':
-          SFORM::insert('sys_section_fields')
+          SFORM::insert('sys_collection_fields')
             ->values([
-              'section' => $id,
+              'collection' => $id,
               'title' => $field['element']['title'],
               'alias' => $field['element']['alias'],
               'type' => $field['element']['type'],
@@ -530,13 +530,13 @@ class SFERM
 
           break;
         case 'delete':
-          SFORM::delete('sys_section_fields')
+          SFORM::delete('sys_collection_fields')
             ->id($field['element']['id'])
             ->exec();
 
           break;
         case 'edit':
-          SFORM::update('sys_section_fields')
+          SFORM::update('sys_collection_fields')
             ->values([
               'title' => $field['element']['title'],
               'alias' => $field['element']['alias'],
@@ -556,11 +556,11 @@ class SFERM
       }
     }
 
-    $section = self::getSectionById($id);
-    SFResponse::set('fields', $section['fields']);
+    $collection = self::getCollectionById($id);
+    SFResponse::set('fields', $collection['fields']);
   }
 
-  // Get types for section structure
+  // Get types for collection structure
   public static function getTypes() {
     if (file_exists(MODULES . 'ERM/types')) {
       $dir = opendir(MODULES . 'ERM/types');
@@ -582,8 +582,8 @@ class SFERM
     return [];
   }
 
-  public static function removeSection($id) {
-    $request = SFORM::update('sys_sections')
+  public static function removeCollection($id) {
+    $request = SFORM::update('sys_collections')
       ->values([
         'enable' => false
       ])
@@ -620,7 +620,7 @@ class SFERM
     return false;
   }
 
-  private static function prepareSectionFields($fields) {
+  private static function prepareCollectionFields($fields) {
     return arrSort(arrMap($fields, function($field) {
       $field['settings'] = parseJSON($field['settings']);
 
@@ -664,8 +664,8 @@ class SFERM
   }
 
   private static function checkTables() {
-    if (!SFORM::exists('sys_sections')) {
-      SFORM::create('sys_sections')
+    if (!SFORM::exists('sys_collections')) {
+      SFORM::create('sys_collections')
         ->addField([
           'name' => 'id',
           'type' => 'INT(11) UNSIGNED',
@@ -697,8 +697,8 @@ class SFERM
         ->exec();
     }
 
-    if (!SFORM::exists('sys_section_fields')) {
-      SFORM::create('sys_section_fields')
+    if (!SFORM::exists('sys_collection_fields')) {
+      SFORM::create('sys_collection_fields')
         ->addField([
           'name' => 'id',
           'type' => 'INT(11) UNSIGNED',
@@ -706,7 +706,7 @@ class SFERM
           'null' => false
         ])
         ->addField([
-          'name' => 'section',
+          'name' => 'collection',
           'type' => 'INT(11) UNSIGNED',
           'null' => true,
           'default' => NULL
@@ -743,7 +743,7 @@ class SFERM
         ])
         ->addKey('id', 'primary key')
         ->addKey('position')
-        ->addKey('section')
+        ->addKey('collection')
         ->addKey('alias')
         ->exec();
     }

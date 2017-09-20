@@ -4,20 +4,20 @@ require_once __DIR__ . '/../ORM/ORM.php';
 
 class SFERMGetItemSuper
 {
-  protected $section;
+  protected $collection;
   protected $fields;
   protected $databaseQuery;
   private static $systemFields = ['id', 'status'];
 
-  public function __construct($section) {
-    $this->section = SFERM::getSection($section);
-    $this->fields = $this->section['fields'];
+  public function __construct($collection) {
+    $this->collection = SFERM::getCollection($collection);
+    $this->fields = $this->collection['fields'];
     $this->databaseQuery = SFORM::select()
-      ->from($this->section['table']);
+      ->from($this->collection['table']);
 
-    foreach ($this->section['fields'] as $field) {
+    foreach ($this->collection['fields'] as $field) {
       $typeClass = SFERM::getClassNameByType($field['type']);
-      $typeClass::joinData($this->databaseQuery, $this->section, $field);
+      $typeClass::joinData($this->databaseQuery, $this->collection, $field);
     }
 
     return $this;
@@ -104,7 +104,7 @@ class SFERMGetItemSuper
     foreach ($data as $index => $row) {
       foreach ($this->fields as $field) {
         $typeClass = SFERM::getClassNameByType($field['type']);
-        $row = $typeClass::postProcessData($this->section, $field, $row);
+        $row = $typeClass::postProcessData($this->collection, $field, $row);
       }
 
       $data[$index] = $row;
@@ -118,7 +118,7 @@ class SFERMGetItemSuper
       if ($fieldItem['alias'] === $field) {
         $typeClass = SFERM::getClassNameByType($fieldItem['type']);
 
-        $whereExpression = $typeClass::whereExpression($this->section, $field, $value, $params);
+        $whereExpression = $typeClass::whereExpression($this->collection, $field, $value, $params);
 
         return (gettype($whereExpression) === 'array' ? $whereExpression : [$whereExpression]);
       }

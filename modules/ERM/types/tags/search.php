@@ -1,12 +1,12 @@
 <?php if (!defined('ROOT')) die('You can\'t just open this file, dude');
 
 $src = urldecode($_GET['src']);
-$section = $_GET['section'];
+$collection = $_GET['collection'];
 $field = $_GET['field'];
 
 $result = SFORM::select()
   ->from('sys_type_tags')
-  ->where('section', $section)
+  ->where('collection', $collection)
   ->andWhere('field', $field)
   ->andWhere('tag', 'LIKE', $src . '%')
   ->exec();

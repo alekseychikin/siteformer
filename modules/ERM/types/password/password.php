@@ -5,7 +5,7 @@ require_once __DIR__ . '/../../ERMType.php';
 
 class SFTypePassword extends SFERMType
 {
-  public static function prepareInsertData($section, $field, $data) {
+  public static function prepareInsertData($collection, $field, $data) {
     return md5($data[$field['alias']]);
   }
 }

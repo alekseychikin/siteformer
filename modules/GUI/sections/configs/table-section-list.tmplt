@@ -1,10 +1,10 @@
 <component>
-  <param name={$sections} value={[]} />
+  <param name={$collections} value={[]} />
 
-  <div class="section__row">
+  <div class="collection__row">
     <a href="/cms/configs/add/" class="form__btn">Добавить раздел</a>
   </div>
-  <div class="section__row" data-role="section-list">
+  <div class="collection__row" data-role="collection-list">
     <table class="table">
       <colgroup>
         <col width="*" />
@@ -19,11 +19,11 @@
         </tr>
       </thead>
       <tbody>
-        <for-each key={$i} item={$sections-item} from={$sections}>
-          <tr class="table__link" data-role="section-row" data-id={$i}>
-            <td><a href={"/cms/configs/" ++ $sections-item.alias ++ "/"}>{$sections-item.title}</a></td>
-            <td><a href={"/cms/configs/" ++ $sections-item.alias ++ "/"} tabindex="-1">{$sections-item.alias}</a></td>
-            <td><a href={"/cms/configs/" ++ $sections-item.alias ++ "/"} tabindex="-1">{$sections-item.module}</a></td>
+        <for-each key={$i} item={$collections-item} from={$collections}>
+          <tr class="table__link" data-role="collection-row" data-id={$i}>
+            <td><a href={"/cms/configs/" ++ $collections-item.alias ++ "/"}>{$collections-item.title}</a></td>
+            <td><a href={"/cms/configs/" ++ $collections-item.alias ++ "/"} tabindex="-1">{$collections-item.alias}</a></td>
+            <td><a href={"/cms/configs/" ++ $collections-item.alias ++ "/"} tabindex="-1">{$collections-item.module}</a></td>
           </tr>
         </for-each>
       </tbody>

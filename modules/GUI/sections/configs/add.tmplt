@@ -4,8 +4,8 @@
   <import name="x-scripts" from="../main/scripts.tmplt" />
 
   <param name={$id} value={false} />
-  <param name={$section} value="" />
-  <param name={$sections} value={[]} />
+  <param name={$collection} value="" />
+  <param name={$collections} value={[]} />
   <param name={$title} value="" />
   <param name={$alias} value="" />
   <param name={$error-title} value="" />
@@ -15,7 +15,7 @@
   <param name={$error-fields-message} value="" />
   <param name={$user} value={["login": "", "email": "", "userpic": ""]} />
 
-  <x-main page-title={$page-title} sections={$sections} section={$section} user={$user}>
+  <x-main page-title={$page-title} collections={$collections} collection={$collection} user={$user}>
     <article class="content" data-role="configs-add">
       <configs-add
         id={$id}
