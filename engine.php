@@ -60,7 +60,7 @@ function doEngine($configs) {
 
     require_once MODULES . 'ORM/ORM.php';
 
-    Diagnostics::checkDatabaseConnection();
+    Diagnostics::checkDatabaseConnection($configs['database']);
 
     require_once MODULES . 'ERM/ERM.php';
 
@@ -110,16 +110,27 @@ function doEngine($configs) {
   } catch (ValidateException $e) {
     $message = $e->getOriginMessage();
 
-    if (in_array($message['index'][0], ['config_actions', 'config_routes', 'config_models', 'config_templates']))
-    switch ($message['code']) {
-      case 'EPATHISNOTEXISTS':
-        die('Путь не найден: ' . $message['source']);
-      case 'EPATHISNOTDIR':
-        die('Это должна быть директория, а не файл: ' . $message['source']);
-        break;
-      case 'EPATHISNOTFILE':
-        die('Это должен быть файл, а не директория: ' . $message['source']);
-        break;
+    if (in_array($message['index'][0], ['config_actions', 'config_routes', 'config_models', 'config_templates'])) {
+      switch ($message['code']) {
+        case 'EPATHISNOTEXISTS':
+          die('Путь не найден: ' . $message['source']);
+        case 'EPATHISNOTDIR':
+          die('Это должна быть директория, а не файл: ' . $message['source']);
+          break;
+        case 'EPATHISNOTFILE':
+          die('Это должен быть файл, а не директория: ' . $message['source']);
+          break;
+      }
+    } elseif ($message['index'][0] === 'database') {
+      switch ($message['code']) {
+        case 'EDATABASECONNECTION':
+          unset($message['source']['database']);
+          die('Данные для подключения к mysql не подходят: ' . "\n" . print_r($message['source'], true));
+        case 'EDATABASENAME':
+          die('Подключение к mysql произошло, но база не найдена: ' . $message['source']['database']);
+      }
+    } else {
+      print_r($message);
     }
   } catch (BaseException $e) {
     SFResponse::error(400, $e->message());

@@ -25,54 +25,38 @@ class Diagnostics {
     if (!is_writable(TEMP)) die('Временная директория ' . TEMP . ' должна быть доступна на запись');
   }
 
-  public static function checkDatabaseConnection() {
-    if (isset($_POST['checkConnection'])) {
-      $host = $_POST['host'];
-      $user = $_POST['user'];
-      $password = $_POST['password'];
+  public static function checkDatabaseConnection($configs) {
+    try {
+      $configs = SFValidate::value([
+        'host' => [
+          'required' => true
+        ],
+        'user' => [
+          'required' => true
+        ],
+        'password' => [],
+        'database' => [
+          'required' => true
+        ]
+      ], $configs);
+    } catch (ValidateException $e) {
+      $message = $e->getOriginMessage();
+      array_unshift($message['index'], 'database');
+      throw new ValidateException(['code' => $message['code'], 'index' => $message['index'], 'source' => $message['source']]);
+    }
 
-      $connection = SFORM::init([
-        'host' => $host,
-        'user' => $user,
-        'password' => $password
-      ]);
+    $connection = SFORM::init([
+      'host' => $configs['host'],
+      'user' => $configs['user'],
+      'password' => $configs['password']
+    ]);
 
-      SFResponse::set('connection', $connection);
-      SFResponse::set('databases', []);
+    if (!$connection) {
+      throw new ValidateException(['code' => 'EDATABASECONNECTION', 'index' => ['database'], 'source' => $configs]);
+    }
 
-      if ($connection) {
-        SFResponse::set('databases', SFORM::getDatabases());
-      }
-
-      SFResponse::render();
-    } elseif (isset($_POST['validateConfigs'])) {
-      $host = $_POST['host'];
-      $user = $_POST['user'];
-      $password = $_POST['password'];
-      $database = $_POST['database'];
-
-      $connection = SFORM::init([
-        'host' => $host,
-        'user' => $user,
-        'password' => $password
-      ]);
-
-      SFResponse::set('connection', $connection);
-
-      // дописать переключение на базу данных, если сам подключение получилось удачно
-
-      SFResponse::render();
-    } else {
-      $fileConfigPath = __DIR__ . '/../configs/database.php';
-
-      if (!file_exists($fileConfigPath)) {
-        SFTemplater::setCompilesPath(ENGINE . 'modules/GUI/dist/');
-        echo SFTemplater::render('sections/main/setup-database.tmplt', SFResponse::getState());
-        SFResponse::render();
-      } else {
-        $configs = include $fileConfigPath;
-        $connection = SFORM::init($configs);
-      }
+    if (SFORM::database($configs['database']) === false) {
+      throw new ValidateException(['code' => 'EDATABASENAME', 'index' => ['database', 'database'], 'source' => $configs]);
     }
   }
 
@@ -131,6 +115,10 @@ class Diagnostics {
       ],
       'domains' => [
         'default' => false
+      ],
+      'database' => [
+        'required' => true,
+        'type' => 'array'
       ]
     ], $configs);
   }
