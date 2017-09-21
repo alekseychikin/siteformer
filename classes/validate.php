@@ -18,13 +18,18 @@ class SFValidate
   public static function collection($params, $source, $index = []) {
     $data = [];
     $uniqueCache = [];
+    $numbersOnly = true;
 
-    foreach ($source as $ind => $value) {
+    foreach ($source as $i => $value) {
+      if (!is_numeric($numbersOnly)) {
+        $numbersOnly = false;
+      }
+
       try {
-        $row = self::value($params, $value, array_merge($index, [$ind]), $uniqueCache);
-        $data[$ind] = $row;
+        $row = self::value($params, $value, array_merge($index, [$i]), $uniqueCache);
+        $data[$i] = $row;
       } catch (SkipEmptyException $e) {
-        $data[$ind] = null;
+        $data[$i] = null;
       }
     }
 
@@ -33,8 +38,12 @@ class SFValidate
     });
 
     $result = [];
-    foreach ($data as $item) {
-      $result[] = $item;
+    foreach ($data as $i => $item) {
+      if ($numbersOnly) {
+        $result[] = $item;
+      } else {
+        $result[$i] = $item;
+      }
     }
 
     return $result;
@@ -56,7 +65,11 @@ class SFValidate
         $data[$field] = self::value($param, $value, array_merge($index, [$field]), $uniqueCache);
       }
     } elseif (isset($params['collection'])) {
-      $data = self::collection($params['collection'], $source, $index);
+      if (gettype($source) === 'array') {
+        $data = self::collection($params['collection'], $source, $index);
+      } elseif (isset($params['required'])) {
+        return self::returnError('EEMPTYREQUIRED', $index, $source);
+      }
 
       if (isset($params['minlength'])) {
         if (count($data) < $params['minlength']) {
