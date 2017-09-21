@@ -75,6 +75,14 @@ class SFORMDatabase
     return $databases;
   }
 
+  public static function database($database, $alias = 'default') {
+    if (!in_array($database, self::getDatabases($alias))) {
+      return false;
+    }
+
+    return self::query('use `' . $database . '`');
+  }
+
   public static function getTables($alias = 'default', $force = false) {
     if (isset(self::$databases[$alias])) {
       $database = self::$databases[$alias];
