@@ -128,6 +128,8 @@ function doEngine($configs) {
           die('Данные для подключения к mysql не подходят: ' . "\n" . print_r($message['source'], true));
         case 'EDATABASENAME':
           die('Подключение к mysql произошло, но база не найдена: ' . $message['source']['database']);
+        case 'EEMPTYREQUIRED':
+          die('Поле ' . $message['index'][1] . ' обязательно нужно заполнить');
       }
     } else {
       print_r($message);
