@@ -97,6 +97,10 @@ class SFStorages {
       ],
       'bucket' => [
         'required' => true
+      ],
+      'path' => [],
+      'location' => [
+        'required' => true
       ]
     ], $configs, [$storage]);
   }
@@ -124,5 +128,24 @@ class SFStorages {
   }
 
   private static function putS3($configs, $path, $additionalPath = '') {
+    S3::$useSSL = false;
+    $s3 = new S3($configs['accessKey'], $configs['secretKey']);
+
+    $ext = extname($path);
+    $basename = basename($path, $ext);
+    $dirname = dirname($path);
+
+    $filename = $basename . $ext;
+    $i = 1;
+    $outpath = substr(pathresolve($configs['path'], $additionalPath, date('Y/m'), $filename), strlen(__DIR__) + 1);
+
+    while ($s3->getObjectInfo($configs['bucket'], $outpath)) {
+      $filename = $basename . '-' . ++$i . $ext;
+      $outpath = substr(pathresolve($configs['path'], $additionalPath, date('Y/m'), $filename), strlen(__DIR__) + 1);
+    }
+
+    $s3->putObjectFile($path, $configs['bucket'], $outpath, S3::ACL_PUBLIC_READ);
+
+    return '//' . $configs['location'] . '.amazonaws.com/' . $configs['bucket'] . '/' . $outpath;
   }
 }
