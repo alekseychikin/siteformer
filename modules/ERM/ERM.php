@@ -163,6 +163,8 @@ class SFERM
       return $type['type'];
     });
 
+    $index = 1;
+
     $data = SFValidate::value([
       'title' => [
         'required' => true,
@@ -228,7 +230,9 @@ class SFERM
             }
           ],
           'position' => [
-            'valid' => '/^\d+$/'
+            'default' => function () use (& $index) {
+              return $index++;
+            }
           ]
         ]
       ]

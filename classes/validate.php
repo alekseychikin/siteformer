@@ -86,7 +86,11 @@ class SFValidate
       $data = $source;
 
       if (array_key_exists('default', $params) && empty($data)) {
-        $data = $params['default'];
+        if (gettype($params['default']) === 'object' && is_callable($params['default'])) {
+          $data = $params['default']();
+        } else {
+          $data = $params['default'];
+        }
       }
 
       if (isset($params['skipempty'])) {
