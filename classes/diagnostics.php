@@ -119,6 +119,10 @@ class Diagnostics {
       'database' => [
         'required' => true,
         'type' => 'array'
+      ],
+      'storages' => [
+        'default' => [],
+        'type' => 'array'
       ]
     ], $configs);
   }
