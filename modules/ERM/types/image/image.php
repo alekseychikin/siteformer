@@ -10,11 +10,10 @@ class SFTypeImage extends SFERMType
     $sources = self::getSources($fields, $params, $currentAlias);
 
     $storage = $params['storage'];
-    $accessKey = $params['s3AccessKey'];
 
     $params = SFValidate::value([
       'storage' => [
-        'values' => array('local', 's3'),
+        'values' => SFStorages::getStorageList(),
         'required' => true
       ],
       'path' => [
@@ -63,35 +62,12 @@ class SFTypeImage extends SFERMType
 
           return true;
         },
-        'required' => true
-      ],
-      's3AccessKey' => [],
-      's3SecretKey' => [
-        'valid' => function ($secretKey) use ($storage, $accessKey) {
-          if ($storage === 's3') {
-            checkAuthS3($accessKey, $secretKey);
-          }
-
-          return true;
-        }
-      ],
-      's3Bucket' => [],
-      's3Path' => []
+        'default' => 'upload'
+      ]
     ], $params);
 
     if ($params['source'] !== 'upload') {
       $params['hide'] = true;
-    }
-
-    if ($params['storage'] === 's3') {
-      S3::setExceptions(true);
-      S3::$useSSL = true;
-      $s3 = new S3($params['s3AccessKey'], $params['s3SecretKey']);
-      $params['s3BucketLocation'] = '';
-
-      try {
-        $params['s3BucketLocation'] = $s3->getBucketLocation($params['s3Bucket']);
-      } catch (Exception $e) {}
     }
 
     return $params;
@@ -116,23 +92,9 @@ class SFTypeImage extends SFERMType
 
     if (!$value || $value === 'false') return '';
 
-    $image = new SFImage(ENGINE_TEMP . $value);
+    SFImage::resize($value, $settings);
 
-    $fieldTempPath = $image->path('filepath') . $field['alias'] . '_' . $image->path('filename');
-    $image = $image->resize($settings, $fieldTempPath);
-
-    if ($settings['storage'] === 's3') {
-      SFPath::connectS3($settings['s3AccessKey'], $settings['s3SecretKey'], $settings['s3Bucket']);
-      $path = SFPath::prepareDir($settings['s3Path'], PPD_OPEN_LEFT | PPD_CLOSE_RIGHT) . date('Y/m/');
-
-      return $bucketPath = '//s3-' . $settings['s3BucketLocation'] . '.amazonaws.com/' . $settings['s3Bucket'] . '/' . SFPath::moveToBucket($path, $fieldTempPath);
-    } elseif ($settings['storage'] === 'local') {
-      $path = SFPath::prepareDir($settings['path'], PPD_OPEN_LEFT | PPD_CLOSE_RIGHT);
-
-      return substr(SFPath::move(ROOT . $path . date('Y/m/'), $fieldTempPath), strlen(ROOT) - 1);
-    }
-
-    return '';
+    return SFStorages::put($settings['storage'], $value, $settings['path']);
   }
 
   public static function prepareUpdateData($collection, $field, $currentData, $data) {

@@ -2,81 +2,17 @@
 
 class SFImage
 {
-  private static $exts = ['jpg', 'jpeg', 'png'];
-  private $filename;
+  public static function crop($filepath, $params) {
+    $imageSize = self::getSize($filepath);
+    $width = $imageSize['width'];
+    $height = $imageSize['height'];
 
-  public function path($pattern = '') {
-    if (!empty($pattern)) {
-      switch ($pattern) {
-        case 'filename':
-          return basename($this->filename);
-        case 'filepath':
-          return dirname($this->filename) . '/';
-      }
-    }
-
-    return $this->filename;
-  }
-
-  public function __construct($filename) {
-    $this->filename = $filename;
-  }
-
-  public static function upload($filename, $path, $index = false) {
-    if (isset($_FILES[$filename])) {
-      $files = $_FILES[$filename];
-
-      if ($index !== false) {
-        $tmpName = $files['tmp_name'][$index];
-        $filesName = $files['name'][$index];
-      } else {
-        $tmpName = $files['tmp_name'];
-        $filesName = $files['name'];
-      }
-
-      if (@is_uploaded_file($tmpName)) {
-        $path = SFPath::prepareDir($path, PPD_CLOSE_RIGHT);
-        $ext = strtolower(substr(strrchr($filesName, '.'), 1));
-
-        if (in_array($ext, self::$exts)) {
-          $filename = SFText::getTag($filesName);
-          $fn = $filename;
-          $filename = substr($filename, 0, strlen($filename) - strlen($ext));
-          $fn = $filename . '.' . $ext;
-          $outfilename = $path . $fn;
-          SFPath::mkdir(dirname($outfilename));
-          $i = 2;
-
-          while (file_exists($outfilename)) {
-            $fn = $filename . '-' . $i . '.' . $ext;
-            $outfilename = $path . $fn;
-            $i++;
-          }
-
-          if (@move_uploaded_file($tmpName, $outfilename)) {
-            return new SFImage($outfilename);
-          } else {
-            throw new BaseException('Ошибка перемещения файла из временного хранилища в папку-приёмник. Возможно недостаточно прав на запись в папке ' . $path);
-          }
-        } else {
-          throw new BaseException('Неправильный тип данных');
-        }
-      } else {
-        throw new BaseException('Ошибка загрузки файла');
-      }
-    } else {
-      throw new BaseException('Файл не передан для загрузки');
-    }
-  }
-
-  public function crop($params, $extFileName = '') {
-    $width = $this->getSize($this->filename, 'width');
-    $height = $this->getSize($this->filename, 'height');
-    $image  = $this->createImage($this->filename);
-    $canvas = $this->createCanvas($params['width'], $params['height']);
+    $image  = self::createImage($filepath);
+    $canvas = self::createCanvas($params['width'], $params['height']);
     $positionLeft = 'left';
     $positionTop = 'top';
-    $position = explode(' ', $params['position']);
+    $position = $params['position'];
+
     $top = 0;
     $left = 0;
 
@@ -113,22 +49,17 @@ class SFImage
         break;
     }
 
-    $this->cropImage($image, $canvas, $left, $top, $params['width'], $params['height']);
+    self::cropImage($image, $canvas, $left, $top, $params['width'], $params['height']);
 
-    if (!empty($extFileName)) {
-      $this->saveImage($canvas, $extFileName);
+    self::saveImage($canvas, $filepath);
 
-      return new SFImage($extFileName);
-    } else {
-      $this->saveImage($canvas, $this->filename);
-    }
-
-    return $this;
+    return true;
   }
 
-  public function resize($params, $extFileName = '') {
-    $width = $this->getSize($this->filename, 'width');
-    $height = $this->getSize($this->filename, 'height');
+  public static function resize($filepath, $params) {
+    $imageSize = self::getSize($filepath);
+    $width = $imageSize['width'];
+    $height = $imageSize['height'];
 
     if (!isset($params['width'])) {
       $params['width'] = 0;
@@ -159,107 +90,73 @@ class SFImage
       }
     }
 
-    $image  = $this->createImage($this->filename);
-    $canvas = $this->createCanvas($width, $height);
-    $this->resizeImage($image, $canvas, $this->getSize($this->filename, 'width'), $this->getSize($this->filename, 'height'), $width, $height);
+    $image  = self::createImage($filepath);
+    $canvas = self::createCanvas($width, $height);
+    self::resizeImage($image, $canvas, $imageSize['width'], $imageSize['height'], $width, $height);
 
-    if (!empty($extFileName)) {
-      $this->saveImage($canvas, $extFileName);
+    self::saveImage($canvas, $filepath);
 
-      return new SFImage($extFileName);
-    } else {
-      $this->saveImage($canvas, $this->filename);
-    }
-
-    return $this;
+    return true;
   }
 
-  private function resizeImage(& $image, & $canvas, $width_from, $height_from, $width_to, $height_to) {
+  private static function resizeImage(& $image, & $canvas, $width_from, $height_from, $width_to, $height_to) {
     imagecopyresampled($canvas, $image, 0, 0, 0, 0, $width_to, $height_to, $width_from, $height_from);
   }
 
-  private function cropImage(& $image, & $canvas, $left_to, $top_to, $width_to, $height_to) {
+  private static function cropImage(& $image, & $canvas, $left_to, $top_to, $width_to, $height_to) {
     imagecopyresampled($canvas, $image, 0, 0, $left_to, $top_to, $width_to, $height_to, $width_to, $height_to);
   }
 
-  private function getSize($filename, $item = '') {
+  private static function getSize($filename) {
     if (file_exists($filename)) {
       $size = getimagesize($filename);
 
-      if (empty($item)) {
-        return $size;
-      } elseif ($item == 'width') {
-        return $size[0];
-      } elseif ($item == 'height') {
-        return $size[1];
-      }
+      return [
+        'width' => $size[0],
+        'height' => $size[1]
+      ];
     }
 
     return false;
   }
 
-  private function createImage($filename) {
-    $ext = strtolower(substr(strrchr($filename, '.'), 1));
-    $image = false;
+  private static function createImage($filename) {
+    $imageinfo = @getimagesize($filename);
 
-    switch ($ext) {
-      case 'jpg':
-        $image = imagecreatefromjpeg($filename);
-
-        break;
-      case 'jpeg':
-        $image = imagecreatefromjpeg($filename);
-
-        break;
-      case 'png':
-        $image = imagecreatefrompng($filename);
-
-        break;
+    switch ($imageinfo['mime']) {
+      case 'image/jpeg':
+        return imagecreatefromjpeg($filename);
+      case 'image/png':
+        return imagecreatefrompng($filename);
+      default:
+        throw new Exception('This mime type does not supporting yet as image: ' . $imageinfo['mime']);
     }
 
-    return $image;
+    return false;
   }
 
-  private function createCanvas($width, $height) {
+  private static function createCanvas($width, $height) {
     $image = imagecreatetruecolor($width, $height);
     $background = imagecolorallocate($image, 0, 0, 0);
+
     imagecolortransparent($image, $background);
     imagealphablending($image, false);
     imagesavealpha($image, true);
+
     return $image;
   }
 
-  private function preparePath($path) {
-    $basename = basename($this->filename);
-    $path = str_replace(
-      ['%filename%', '%filepath%', '%ext%', '%nameonly%'],
-      [$basename, dirname($this->filename) . '/', substr($basename, strrpos($basename, '.') + 1), substr($basename, 0, strrpos($basename, '.'))],
-      $path
-    );
-
-    if (strpos($path, '.') === false) {
-      $path .= substr($this->filename, strrpos($this->filename, '.'));
-    }
-
-    return $path;
-  }
-
-  private function saveImage($image, & $path) {
-    $path = $this->preparePath($path);
-    SFPath::mkdir(dirname($path));
-    $ext = strtolower(substr(strrchr($path, '.'), 1));
+  private static function saveImage($image, $filepath) {
+    $ext = strtolower(substr(strrchr($filepath, '.'), 1));
 
     switch ($ext) {
       case 'jpg':
-        imagejpeg($image, $path, 85);
-
-        break;
       case 'jpeg':
-        imagejpeg($image, $path, 85);
+        imagejpeg($image, $filepath, 85);
 
         break;
       case 'png':
-        imagepng($image, $path, 5);
+        imagepng($image, $filepath, 5);
 
         break;
     }
