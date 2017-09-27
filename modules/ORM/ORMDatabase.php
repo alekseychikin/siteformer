@@ -101,6 +101,8 @@ class SFORMDatabase
 
       return $cachedTables[$database];
     }
+
+    return [];
   }
 
   protected function makeStringOfField($field) {
