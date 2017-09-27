@@ -32,10 +32,10 @@ function doEngine($configs) {
     die;
   }
 
+  require_once CLASSES . 'helpers.php';
   require_once CLASSES . 'log.php';
   require_once CLASSES . 'json.php';
   require_once CLASSES . 'S3.php';
-  require_once CLASSES . 'array.php';
   require_once CLASSES . 'models.php';
   require_once CLASSES . 'uri.php';
   require_once CLASSES . 'validate.php';
@@ -46,6 +46,7 @@ function doEngine($configs) {
   require_once CLASSES . 'image.php';
   require_once CLASSES . 'mail.php';
   require_once CLASSES . 'modules.php';
+  require_once CLASSES . 'storages.php';
 
   ClearCache::clear();
 
@@ -65,6 +66,8 @@ function doEngine($configs) {
     require_once MODULES . 'ERM/ERM.php';
 
     SFERM::init();
+
+    SFStorages::init($configs['storages']);
     SFResponse::initRedirData();
 
     require_once MODULES . 'Router/Router.php';
