@@ -55,7 +55,10 @@ class SFERM
 
     foreach ($fields as $field) {
       $className = SFERM::getClassNameByType($field['type']);
-      $newData[$field['alias']] = $className::prepareInsertData($collection['alias'], $field, $data);
+
+      if ($className::hasSqlField()) {
+        $newData[$field['alias']] = $className::prepareInsertData($collection['alias'], $field, $data);
+      }
     }
 
     if ($status === 'public') {
@@ -339,9 +342,13 @@ class SFERM
     ];
 
     foreach ($data['fields'] as $field) {
-      $fieldType = array_merge($defaultField, self::getSqlFieldType($field));
-      $fieldType['name'] = $field['alias'];
-      $tableFields[] = $fieldType;
+      $className = self::getClassNameByType($field['type']);
+
+      if ($className::hasSqlField()) {
+        $fieldType = array_merge($defaultField, self::getSqlFieldType($field));
+        $fieldType['name'] = $field['alias'];
+        $tableFields[] = $fieldType;
+      }
     }
 
     $data['table'] = self::generateTableNameByAlias($data['alias']);

@@ -8,6 +8,10 @@ class SFERMType
   public static function prepareDatabase() {
   }
 
+  public static function hasSqlField() {
+    return true;
+  }
+
   /**
   * @param array $settings Array of settings
   * @return array Data for sql field
