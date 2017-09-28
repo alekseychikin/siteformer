@@ -112,23 +112,9 @@ class SFTypeImage extends SFERMType
 
     if (!$value || $value === 'false') return '';
 
-    $image = new SFImage(ENGINE_TEMP . $value);
+    SFImage::resize($value, $settings);
 
-    $fieldTempPath = $image->path('filepath') . $field['alias'] . '_' . $image->path('filename');
-    $image = $image->resize($settings, $fieldTempPath);
-
-    if ($settings['storage'] === 's3') {
-      SFPath::connectS3($settings['s3AccessKey'], $settings['s3SecretKey'], $settings['s3Bucket']);
-      $path = SFPath::prepareDir($settings['s3Path'], PPD_OPEN_LEFT | PPD_CLOSE_RIGHT) . date('Y/m/');
-
-      return $bucketPath = '//s3-' . $settings['s3BucketLocation'] . '.amazonaws.com/' . $settings['s3Bucket'] . '/' . SFPath::moveToBucket($path, $fieldTempPath);
-    } elseif ($settings['storage'] === 'local') {
-      $path = SFPath::prepareDir($settings['path'], PPD_OPEN_LEFT | PPD_CLOSE_RIGHT);
-
-      return substr(SFPath::move(ROOT . $path . date('Y/m/'), $fieldTempPath), strlen(ROOT) - 1);
-    }
-
-    return $data[$field['alias']];
+    return SFStorages::put($settings['storage'], $value, $settings['path']);
   }
 
   private static function getSources($fields, $currentField, $currentAlias) {
