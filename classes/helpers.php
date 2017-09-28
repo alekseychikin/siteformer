@@ -225,18 +225,19 @@ function findSourceIndexInBuffer($indexes, $elements, $srcElement) {
 }
 
 function pathresolve() {
-  $elements = func_get_args();
+  $dirs = func_get_args();
   $path = '';
 
-  foreach ($elements as $index => $element) {
-    if (strlen($element) > 1 && $element[strlen($element) - 1] === DIRECTORY_SEPARATOR) {
-      $element = substr($element, 0, -1);
+  foreach ($dirs as $index => $dir) {
+    if (!strlen($dir)) continue;
+    if (strlen($dir) > 1 && $dir[strlen($dir) - 1] === DIRECTORY_SEPARATOR) {
+      $dir = substr($dir, 0, -1);
     }
 
-    if ($element[0] === DIRECTORY_SEPARATOR) {
-      $path = $element;
+    if ($dir[0] === DIRECTORY_SEPARATOR) {
+      $path = $dir;
     } else {
-      $path .= ($index ? DIRECTORY_SEPARATOR : '') . $element;
+      $path .= ($index ? DIRECTORY_SEPARATOR : '') . $dir;
     }
   }
 
