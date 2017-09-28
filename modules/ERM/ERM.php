@@ -79,6 +79,57 @@ class SFERM
     }
   }
 
+  public static function updateItem($collection, $params) {
+    $id = $params['id'];
+    $data = $params['data'];
+    $status = $params['status'];
+    $newData = [
+      'id' => $id,
+      'status' => $status,
+      'usermodify' => $params['user'],
+      'datemodify' => gmdate('Y-m-d H:i:s')
+    ];
+    $collection = SFERM::getCollection($collection);
+    $fields = self::sortFields($collection['fields'], $data);
+
+    $currentData = SFERM::getItem($collection['alias'])
+      ->where('id', $id)
+      ->exec();
+
+    foreach ($fields as $field) {
+      $className = SFERM::getClassNameByType($field['type']);
+      $className::validateUpdateData($collection['alias'], $field, $currentData, $data);
+    }
+
+    foreach ($fields as $field) {
+      $className = SFERM::getClassNameByType($field['type']);
+      $newData[$field['alias']] = $className::prepareUpdateData($collection['alias'], $field, $currentData, $data);
+    }
+
+    if ($status === 'public') {
+      foreach ($fields as $field) {
+        if ($field['required'] === true && (empty($newData[$field['alias']]))) {
+          throw new ValidateException([
+            'index' => [$field['alias']],
+            'code' => 'EEMPTYREQUIREDVALUE'
+          ]);
+        }
+      }
+    }
+
+    $record = SFORM::update($collection['table'])
+      ->values($newData)
+      ->where('id', $id)
+      ->exec();
+
+    foreach ($fields as $field) {
+      $className = SFERM::getClassNameByType($field['type']);
+      $className::postPrepareUpdateData($collection['alias'], $field, $newData, $data);
+    }
+
+    return $id;
+  }
+
   // Get array of collections
   // It could be news or events or galleries
   public static function getCollections() {
