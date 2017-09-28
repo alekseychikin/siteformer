@@ -125,7 +125,11 @@ class SFTypeTags extends SFERMType
     ];
 
     foreach ($value as $index => $tag) {
-      $insertions[] = '`sys_type_tags`.`tag` = ":value' . $index . '"';
+      $insertions[] = ':field IN (
+        SELECT `sys_type_tags_records`.`record` FROM `sys_type_tags_records`
+        INNER JOIN `sys_type_tags` ON `sys_type_tags`.`id` = `sys_type_tags_records`.`tag`
+        WHERE `sys_type_tags`.`collection` = :collection AND `sys_type_tags`.`field` = ":raw_field" AND (
+        `sys_type_tags`.`tag` = ":value' . $index . '"))';
       $options['value' . $index] = $tag;
     }
 
@@ -137,11 +141,7 @@ class SFTypeTags extends SFERMType
       }
     }
 
-    return SFORM::generateValue(':field IN (
-      SELECT `sys_type_tags_records`.`record` FROM `sys_type_tags_records`
-      INNER JOIN `sys_type_tags` ON `sys_type_tags`.`id` = `sys_type_tags_records`.`tag`
-      WHERE `sys_type_tags`.`collection` = :collection AND `sys_type_tags`.`field` = ":raw_field" AND (' .
-      implode($joinStr, $insertions) . '))', $options);
+    return SFORM::generateValue(join($joinStr, $insertions), $options);
   }
 
   private static function getArrTagsFromString($tags) {
