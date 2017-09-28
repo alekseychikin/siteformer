@@ -83,7 +83,56 @@ class SFTypeTags extends SFERMType
     return implode(', ', $tags);
   }
 
+  public static function prepareUpdateData($collection, $field, $currentData, $data) {
+    $tags = $data[$field['alias']];
+
+    if (gettype($tags) === 'string') {
+      $tags = self::getArrTagsFromString($data[$field['alias']]);
+    }
+
+    $existsTags = arrMap(self::getTagRecords($field['collection'], $field['alias'], $tags), function ($row) {
+      return $row['tag'];
+    });
+
+    foreach ($tags as $index => $tag) {
+      if (!in_array($tag, $existsTags)) {
+        SFORM::insert('sys_type_tags')
+          ->values([
+            'collection' => $field['collection'],
+            'field' => $field['alias'],
+            'tag' => $tag
+          ])
+          ->exec();
+      }
+    }
+
+    return implode(', ', $tags);
+  }
+
   public static function postPrepareInsertData($collection, $field, $record, $data) {
+    $tags = $data[$field['alias']];
+
+    if (gettype($tags) === 'string') {
+      $tags = self::getArrTagsFromString($data[$field['alias']]);
+    }
+
+    $ids = arrMap(self::getTagRecords($field['collection'], $field['alias'], $tags), function ($row) {
+      return $row['id'];
+    });
+
+    SFORM::delete('sys_type_tags_records')->where('record', $record['id'])->exec();
+
+    foreach ($ids as $id) {
+      SFORM::insert('sys_type_tags_records')
+        ->values([
+          'record' => $record['id'],
+          'tag' => $id
+        ])
+        ->exec();
+    }
+  }
+
+  public static function postPrepareUpdateData($collection, $field, $record, $data) {
     $tags = $data[$field['alias']];
 
     if (gettype($tags) === 'string') {
