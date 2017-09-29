@@ -5,6 +5,7 @@ require_once __DIR__ . '/validate.php';
 
 class SFStorages {
   private static $storages;
+  private static $s3Connections = [];
 
   public static function init($configs) {
     try {
@@ -77,6 +78,19 @@ class SFStorages {
     }
   }
 
+  public static function delete($storage, $path) {
+    if (!isset(self::$storages[$storage])) {
+      throw new BaseException('No such storage (' . $storage . ') in configs');
+    }
+
+    switch (self::$storages[$storage]['type']) {
+      case 'local':
+        return self::deleteLocal(self::$storages[$storage], $path);
+      case 's3':
+        return self::deleteS3(self::$storages[$storage], $path);
+    }
+  }
+
   private static function validateLocal($configs, $storage) {
     return SFValidate::value([
       'type' => [],
@@ -127,9 +141,18 @@ class SFStorages {
     return substr($outfilename, strlen(pathresolve($configs['path'])) + 1);
   }
 
-  private static function putS3($configs, $path, $additionalPath = '') {
+  private static function getS3Connection($configs) {
+    if (isset(self::$s3Connections[$configs['accessKey']])) {
+      return self::$s3Connections[$configs['accessKey']];
+    }
+
     S3::$useSSL = false;
-    $s3 = new S3($configs['accessKey'], $configs['secretKey']);
+    self::$s3Connections[$configs['accessKey']] = new S3($configs['accessKey'], $configs['secretKey']);
+    return self::$s3Connections[$configs['accessKey']];
+  }
+
+  private static function putS3($configs, $path, $additionalPath = '') {
+    $s3 = self::getS3Connection($configs);
 
     $ext = extname($path);
     $basename = basename($path, $ext);
@@ -137,6 +160,8 @@ class SFStorages {
 
     $filename = $basename . $ext;
     $i = 1;
+    $dirroot = pathresolve(__DIR__, $configs['path']);
+
     $outpath = substr(pathresolve($configs['path'], $additionalPath, date('Y/m'), $filename), strlen(__DIR__) + 1);
 
     while ($s3->getObjectInfo($configs['bucket'], $outpath)) {
@@ -146,6 +171,20 @@ class SFStorages {
 
     $s3->putObjectFile($path, $configs['bucket'], $outpath, S3::ACL_PUBLIC_READ);
 
-    return '//' . $configs['location'] . '.amazonaws.com/' . $configs['bucket'] . '/' . $outpath;
+    return substr(pathresolve($configs['path'], $additionalPath, date('Y/m'), $filename), strlen($dirroot) + 1);
+  }
+
+  private static function deleteLocal($configs, $path) {
+    $outpath = pathresolve($configs['path'], $path);
+
+    if (file_exists($outpath)) {
+      unlink($outpath);
+    }
+  }
+
+  private static function deleteS3($configs, $path) {
+    $s3 = self::getS3Connection($configs);
+
+    $s3->deleteObject($configs['bucket'], $configs['path'] . '/' . $path);
   }
 }

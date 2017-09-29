@@ -106,7 +106,10 @@ class SFERM
 
     foreach ($fields as $field) {
       $className = SFERM::getClassNameByType($field['type']);
-      $newData[$field['alias']] = $className::prepareUpdateData($collection['alias'], $field, $currentData, $data);
+
+      if ($className::hasSqlField()) {
+        $newData[$field['alias']] = $className::prepareUpdateData($collection['alias'], $field, $currentData, $data);
+      }
     }
 
     if ($status === 'public') {
@@ -127,7 +130,7 @@ class SFERM
 
     foreach ($fields as $field) {
       $className = SFERM::getClassNameByType($field['type']);
-      $className::postPrepareUpdateData($collection['alias'], $field, $newData, $data);
+      $className::postPrepareUpdateData($collection, $field, $newData, $data);
     }
 
     return $id;

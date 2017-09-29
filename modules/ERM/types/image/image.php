@@ -114,6 +114,8 @@ class SFTypeImage extends SFERMType
 
     SFImage::resize($value, $settings);
 
+    SFStorages::delete($settings['storage'], $currentData[$field['alias']]);
+
     return SFStorages::put($settings['storage'], $value, $settings['path']);
   }
 
