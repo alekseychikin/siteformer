@@ -99,6 +99,65 @@ class SFTypeGallery extends SFERMType
     }
   }
 
+  public static function postPrepareUpdateData($collection, $field, $record, $data) {
+    $actions = $data[$field['alias']];
+    $settings = $field['settings'];
+
+    if (isset($actions['delete'])) {
+      $photos = SFORM::select()
+        ->from('sys_type_gallery');
+
+      foreach ($actions['delete'] as $index => $id) {
+        if (!$index) {
+          $photos->where('id', $id);
+        } else {
+          $photos->orWhere('id', $id);
+        }
+      }
+
+      $photos = $photos->exec();
+
+      foreach ($photos as $photo) {
+        SFStorages::delete($settings['storage'], $photo['preview']);
+        SFStorages::delete($settings['storage'], $photo['photo']);
+
+        SFORM::delete('sys_type_gallery')
+          ->where('id', $photo['id'])
+          ->exec();
+      }
+    }
+
+    if (isset($actions['add'])) {
+      foreach ($actions['add'] as $photo) {
+        $basename = basename($photo);
+        $dirname = dirname($photo);
+        $preview = pathresolve($dirname, 'preview_' . $basename);
+
+        copy($photo, $preview);
+
+        SFImage::resize($preview, [
+          'width' => $settings['previewWidth'],
+          'height' => $settings['previewHeight']
+        ]);
+        SFImage::resize($photo, $settings);
+
+        $preview = SFStorages::put($settings['storage'], $preview, $settings['path']);
+        $photo = SFStorages::put($settings['storage'], $photo, $settings['path']);
+
+        SFORM::insert('sys_type_gallery')
+          ->values([
+            'collection' => $collection['id'],
+            'field' => $field['alias'],
+            'record' => $record['id'],
+            'preview' => $preview,
+            'photo' => $photo
+          ])
+          ->exec();
+      }
+    }
+  }
+
+
   public static function joinData($databaseQuery, $collection, $field) {
     $databaseQuery->join('sys_type_gallery')
       ->on('sys_type_gallery.record', SFORM::field($collection['table'] . '.id'))
