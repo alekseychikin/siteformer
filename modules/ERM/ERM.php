@@ -246,10 +246,6 @@ class SFERM
           return !$res->length();
         }
       ],
-      'module' => [
-        'required' => true,
-        'values' => $modules
-      ],
       'fields' => [
         'minlength' => 1,
         'collection' => [
@@ -430,10 +426,6 @@ class SFERM
 
           return !$res->length();
         }
-      ],
-      'module' => [
-        'required' => true,
-        'values' => $modules
       ],
       'fields' => [
         'minlength' => 1,
@@ -743,10 +735,6 @@ class SFERM
         ->addField([
           'name' => 'alias',
           'type' => 'VARCHAR(150)'
-        ])
-        ->addField([
-          'name' => 'module',
-          'type' => 'VARCHAR(20)'
         ])
         ->addField([
           'name' => 'table',
