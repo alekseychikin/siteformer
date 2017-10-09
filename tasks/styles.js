@@ -1,45 +1,76 @@
-var gulp = require('gulp')
-var postcss = require('gulp-postcss')
-var concat = require('gulp-concat')
-var cssnext = require('postcss-cssnext')
-var pimport = require('postcss-import')
-var assets = require('postcss-assets')
-var size = require('postcss-size')
-var through = require('through2')
-var csso = require('gulp-csso')
-var yargs = require('yargs')
-var plumber = require('gulp-plumber')
-var sourcemaps = require('gulp-sourcemaps')
-var cached = require('gulp-cached')
-var browserSync = require('./browser-sync-inst')
+import gulp from 'gulp'
+import postcss from 'gulp-postcss'
+import concat from 'gulp-concat'
+import cssnext from 'postcss-cssnext'
+import pimport from 'postcss-import'
+import assets from 'postcss-assets'
+import size from 'postcss-size'
+import shortFontSize from 'postcss-short-font-size'
+import through from 'through2'
+import csso from 'gulp-csso'
+import yargs from 'yargs'
+import rename from 'gulp-rename'
+import plumber from 'gulp-plumber'
+import sourcemaps from 'gulp-sourcemaps'
+import cached from 'gulp-cached'
+import browserSync from './browser-sync-inst'
 
 function pass() {
-  return through.obj()
+	return through.obj()
 }
 
-var argv = yargs.argv
-var PRODUCTION = argv.production
+const {argv} = yargs
+const PRODUCTION = argv.production
 
-module.exports = function (src, pwd, dest, bundleName) {
-  return function () {
-    gulp
-      .src(src, {base: pwd})
-      .pipe(plumber())
-      .pipe(PRODUCTION ? pass() : sourcemaps.init())
-      .pipe(postcss([
-        pimport(),
-        assets({
-          basePath: pwd,
-          baseUrl: './'
-        }),
-        cssnext(),
-        size()
-      ]))
-      .pipe(concat(bundleName))
-      .pipe(cached('styles'))
-      .pipe(PRODUCTION ? pass() : sourcemaps.write('.'))
-      .pipe(PRODUCTION ? csso() : pass())
-      .pipe(gulp.dest(dest))
-      .pipe(browserSync.stream())
-  }
+export default () => {
+	const postcssProcess = [
+		shortFontSize(),
+		pimport(),
+		assets({
+			basePath: 'modules/GUI/components',
+			baseUrl: '/sf-engin'
+		}),
+		size(),
+		cssnext()
+	]
+
+	gulp
+		.src([
+			'modules/GUI/components/common/reset.css',
+			'modules/GUI/components/common/common.css',
+			'modules/GUI/components/**/mobile-*.css'
+		])
+		.pipe(plumber())
+		.pipe(PRODUCTION ? pass() : sourcemaps.init())
+		.pipe(postcss(postcssProcess))
+		.pipe(concat('mobile-bundle.css'))
+		.pipe(cached('styles-mobile'))
+		.pipe(rename(file => {
+			file.dirname = ''
+			return file
+		}))
+		.pipe(PRODUCTION ? pass() : sourcemaps.write('.'))
+		.pipe(PRODUCTION ? csso() : pass())
+		.pipe(gulp.dest('modules/GUI/dist'))
+		.pipe(browserSync.stream())
+
+	return gulp
+		.src([
+			'!modules/GUI/components/common/*.css',
+			'!modules/GUI/components/**/mobile-*.css',
+			'modules/GUI/components/**/*.css'
+		])
+		.pipe(plumber())
+		.pipe(PRODUCTION ? pass() : sourcemaps.init())
+		.pipe(postcss(postcssProcess))
+		.pipe(concat('bundle.css'))
+		.pipe(cached('styles-desktop'))
+		.pipe(rename(file => {
+			file.dirname = ''
+			return file
+		}))
+		.pipe(PRODUCTION ? pass() : sourcemaps.write('.'))
+		.pipe(PRODUCTION ? csso() : pass())
+		.pipe(gulp.dest('modules/GUI/dist'))
+		.pipe(browserSync.stream())
 }

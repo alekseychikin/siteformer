@@ -1,9 +1,9 @@
-var gulp = require('gulp')
+import gulp from 'gulp'
+import cached from 'gulp-cached'
 
-module.exports = function (src, pwd, dest) {
-  return function () {
-    gulp
-      .src(src, {base: pwd})
-      .pipe(gulp.dest(dest))
-  }
+export default () => {
+	gulp
+		.src('modules/GUI/components/**/*.{png,svg,jpg}')
+		.pipe(cached('images'))
+		.pipe(gulp.dest('modules/GUI/dist'))
 }
