@@ -1,0 +1,6 @@
+<import name="main-wrap" from="./partials/main-wrap.gutt" />
+<import name="configs-page" from="../pages/configs.gutt" />
+
+<main-wrap>
+	<configs-page />
+</main-wrap>
