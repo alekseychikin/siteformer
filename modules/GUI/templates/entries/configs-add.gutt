@@ -1,0 +1,32 @@
+<import name="main-wrap" from="../../components/main-wrap/main-wrap.gutt" />
+<import name="configs-add-page" from="../pages/configs-add.gutt" />
+
+<param name={$id} value={false} />
+<param name={$collection} value="" />
+<param name={$collections} value={[]} />
+<param name={$title} value="" />
+<param name={$alias} value="" />
+<param name={$error-title} value="" />
+<param name={$error-alias} value="" />
+<param name={$error-fields-index} value={false} />
+<param name={$error-fields-field} value="" />
+<param name={$error-fields-message} value="" />
+<param name={$user} value={["login": "", "email": "", "userpic": "", "role": "user"]} />
+
+<main-wrap page-title={$page-title} collections={$collections} collection={$collection} user={$user}>
+	<configs-add-page
+		collections={$collections}
+		collection={$collection}
+		user={$user}
+		id={$id}
+		title={$title}
+		alias={$alias}
+		error-title={$error-title}
+		error-alias={$error-alias}
+		error-fields-index={$error-fields-index}
+		error-fields-field={$error-fields-field}
+		error-fields-message={$error-fields-message}
+		fields={$fields}
+		types={$types}
+	/>
+</main-wrap>

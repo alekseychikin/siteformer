@@ -1,0 +1,31 @@
+<import name="user-block" from="../user-block/user-block.gutt" />
+<import name="site-menu" from="../menu/menu.gutt" />
+
+<param name={$page-title} value="" />
+<param name={$collections} value={[]} />
+<param name={$collection} value="" />
+<param name={$user} value={["userpic": "", "login": "", "role": "user"]} />
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8" />
+	<title>{$page-title}</title>
+	<link rel="stylesheet" href="/sf-engine/modules/GUI/dist/mobile-bundle.css" />
+	<link rel="stylesheet" href="/sf-engine/modules/GUI/dist/bundle.css" />
+</head>
+<body>
+	<div class="collection">
+		<div class="aside">
+			<div class="header">
+				<user-block user={$user} />
+			</div>
+			<site-menu collections={$collections} collection={$collection} user={$user} />
+		</div>
+
+		<div id="app">
+			{$children}
+		</div>
+	</div>
+</body>
+</html>

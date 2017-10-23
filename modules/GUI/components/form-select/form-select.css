@@ -1,0 +1,61 @@
+.form-select {
+  border: 1px solid #BEBEBE;
+  border-radius: 3px;
+  font-size: 16px;
+  line-height: 18px;
+  display: inline-block;
+  vertical-align: middle;
+  box-sizing: border-box;
+  height: 38px;
+  position: relative;
+  overflow: hidden;
+  background-color: #fff;
+
+  &.focus {
+    box-shadow: 0 0 5px #3260CA;
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: 15px;
+    height: 8px;
+    right: 10px;
+    top: 13px;
+    z-index: 1;
+    background: resolve('form__selecter-drop-arrow.svg') no-repeat;
+  }
+
+  &__select {
+    position: relative;
+    z-index: 2;
+    font-size: 16px;
+    line-height: 20px;
+    padding: 8px 35px 8px 10px;
+    width: 100%;
+    min-width: 120px;
+    border: none;
+    box-shadow: none;
+    background-color: transparent;
+    cursor: pointer;
+    background-image: none;
+    -webkit-appearance: none;
+       -moz-appearance: none;
+            appearance: none;
+    text-indent: 0.01px;
+    text-overflow: '';
+  }
+
+  &__select:focus {
+    outline: none;
+  }
+
+  &__select:disabled {
+    color: #929292;
+    cursor: default;
+  }
+
+  &__select::-ms-expand {
+    display: none;
+  }
+}

@@ -1,1 +1,13 @@
-<h1>This is configs page</h1>
+<import name="table-collections-list" from="./partials/table-collection-list.gutt" />
+<import name="main-wrap" from="../../components/main-wrap/main-wrap.gutt" />
+
+<param name={$page-title} value="" />
+<param name={$collections} value={[]} />
+<param name={$collection} value="" />
+<param name={$user} value={["login": "", "email": "", "userpic": "", "role": "user"]} />
+
+<h1 class="head">Настройки</h1>
+
+<div class="collection__wrap" data-role="collections">
+	<table-collections-list collections={$collections} />
+</div>
