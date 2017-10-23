@@ -1,8 +1,5 @@
 <?php if (!defined('ROOT')) die('You can\'t just open this file, dude');
 
-require_once __DIR__ . '/GUIGetItemList.php';
-require_once __DIR__ . '/GUIGetItem.php';
-
 class SFGUI
 {
   private static $collections = [];
@@ -15,9 +12,6 @@ class SFGUI
 
     self::checkTables();
 
-    echo "lalala";
-    die();
-
     SFModels::registerPath(MODULES . 'GUI/models');
 
     $routes = include __DIR__ . '/routes.php';
@@ -27,7 +21,7 @@ class SFGUI
     }
 
     if (SFURI::getFirstUri() === 'cms') {
-      SFTemplater::setCompilesPath(ENGINE . 'modules/GUI/dist/');
+      SFTemplater::setCompilesPath(ENGINE . 'modules/GUI/dist/templates');
 
       if (SFURI::getUri(1) !== 'types') {
         self::login();
@@ -139,6 +133,14 @@ class SFGUI
     $auth = false;
     $doLogin = false;
 
+    SFResponse::set('users', [
+      'login' => 'makingoff',
+      'email' => 'mail@makingoff.name',
+      'userpic' => '',
+      'role' => 'admin'
+    ]);
+    return false;
+
     if (isset($_SESSION['cms_login']) && isset($_SESSION['cms_password'])) {
       $login = $_SESSION['cms_login'];
       $password = $_SESSION['cms_password'];
@@ -184,7 +186,7 @@ class SFGUI
           SFResponse::set('page-title', 'Создать профиль');
           SFResponse::set('email', $user['email']);
           SFResponse::set('hash', $_GET['invitation']);
-          echo SFTemplater::render('sections/users/invitation.tmplt', SFResponse::getState());
+          echo SFTemplater::render('sections/users/invitation.gutt', SFResponse::getState());
           SFResponse::render();
         } else {
         }
@@ -203,7 +205,7 @@ class SFGUI
       SFResponse::set('users', $users);
 
       SFResponse::set('page-title', 'Авторизация');
-      echo SFTemplater::render('sections/main/login.tmplt', SFResponse::getState());
+      echo SFTemplater::render('sections/main/login.gutt', SFResponse::getState());
       SFResponse::render();
     }
   }

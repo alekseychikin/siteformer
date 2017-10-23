@@ -10,7 +10,6 @@ class SFTemplater
   private static $controller = false;
 
   public static function init($params) {
-    SFLog::write('Init module SFTemplater');
     self::$templatesPath = $params['path'];
   }
 
@@ -26,18 +25,28 @@ class SFTemplater
     if (!empty($template)) {
       ob_start();
 
-      if (file_exists($compilePath . $template . '.php')) {
-        $templateRender = include ($compilePath . $template . '.php');
+      $path = pathresolve($compilePath, $template);
+
+      if (extname($path) !== '.php') {
+        $path .= '.php';
+      }
+
+      if (file_exists($path)) {
+        $templateRender = include ($path);
         echo $templateRender($data);
       } else {
         ob_end_clean();
-        die('template not found: ' . $compilePath . $template . '.php');
+        die('template not found: ' . $path);
       }
 
       $content = ob_get_contents();
       ob_end_clean();
     }
 
-    return trim($content);
+    if (strpos($content, '<!DOCTYPE') !== false) {
+      return substr($content, strpos($content, '<!DOCTYPE'));
+    }
+
+    return $content;
   }
 }

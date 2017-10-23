@@ -100,7 +100,3 @@ class SFURI
     return self::$port;
   }
 }
-
-if (isset($_GET['q'])) {
-  SFURI::init($_GET['q']);
-}

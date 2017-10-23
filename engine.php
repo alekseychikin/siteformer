@@ -33,7 +33,6 @@ function doEngine($configs) {
   }
 
   require_once CLASSES . 'helpers.php';
-  require_once CLASSES . 'log.php';
   require_once CLASSES . 'json.php';
   require_once CLASSES . 'S3.php';
   require_once CLASSES . 'models.php';
@@ -45,13 +44,14 @@ function doEngine($configs) {
   require_once CLASSES . 'error.php';
   require_once CLASSES . 'image.php';
   require_once CLASSES . 'mail.php';
-  require_once CLASSES . 'modules.php';
   require_once CLASSES . 'storages.php';
 
   ClearCache::clear();
 
   try {
     $configs = Diagnostics::checkConfigs($configs);
+
+    SFURI::init($_GET[$configs['modrewrite-get-url']]);
 
     require_once MODULES . 'Templater/Templater.php';
 
@@ -83,25 +83,7 @@ function doEngine($configs) {
 
     SFGUI::init();
 
-    if (SFModules::main()) {
-      SFResponse::render();
-    }
-
-    if (file_exists(ACTIONS . '__before.php')) {
-      SFResponse::run(ACTIONS . '__before');
-    }
-
-    $request = substr($_SERVER['REQUEST_URI'], 1, -1);
-
-    if (!SFResponse::actionExists(ACTIONS . $request)) {
-      throw new PageNotFoundException(ACTIONS . $request);
-    }
-
-    SFResponse::run(ACTIONS . $request);
-
-    if (file_exists(ACTIONS . '__after.php')) {
-      SFResponse::run(ACTIONS . '__after');
-    }
+    SFRouter::route();
 
     SFResponse::render();
   } catch (PageNotFoundException $e) {

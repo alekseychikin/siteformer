@@ -9,13 +9,81 @@ class SFRouter
 {
   public static $languages = [];
   private static $uri;
-  private static $routingPath = false;
   private static $num_page = 1;
-  private static $beforeParams = [];
+  private static $routes = [];
   private static $language = '';
   private static $modelsPath = false;
 
-  public static function main() {
+  public static function init($params) {
+    self::$routes = $params['routes'];
+
+    if (isset($params['models'])) {
+      SFModels::registerPath(SFPath::prepareDir($params['models']));
+    }
+
+    if (isset($params['languages'])) {
+      self::$languages = $params['languages'];
+    }
+
+    SFResponse::set('lang', '', true);
+    SFResponse::set('uri', SFURI::getUri());
+    $uri = SFURI::getUriRaw();
+
+    foreach ($uri as $index => $item) {
+      if (empty($item)) {
+        unset($uri[$index]);
+      }
+    }
+
+    SFResponse::set('uri_items', $uri);
+    self::$uri = $uri;
+    $uri = [];
+    $max = 10;
+    $i = 1;
+
+    foreach (self::$uri as $key => $val) {
+      if ($i <= $max) {
+        if (!empty($val)) {
+          $uri[] = self::$uri[$key];
+          $i++;
+        }
+      }
+    }
+
+    self::$uri = $uri;
+
+    if (isset(self::$uri[0]) && in_array(self::$uri[0], self::$languages)) {
+      self::$language = self::$uri[0];
+      self::$uri = array_splice(self::$uri, 1);
+      SFResponse::set('lang', '/' . self::$language, true);
+    } else if (count(self::$languages)) {
+      self::$language = self::$languages[0];
+    }
+
+    if (strpos($_SERVER['REQUEST_URI'], '?') !== false) {
+      $_SERVER['REQUEST_URI'];
+      $get = substr($_SERVER['REQUEST_URI'], strpos($_SERVER['REQUEST_URI'], '?') + 1);
+      $get = explode('&', $get);
+
+      foreach ($get as $val) {
+        $key = explode('=', $val);
+
+        if (isset($key[1])) {
+          $_GET[$key[0]] = $key[1];
+        } else {
+          $_GET[$key[0]] = '';
+        }
+      }
+    }
+
+    $_SERVER['REQUEST_URI'] = '/' . implode('/', self::$uri) . '/';
+
+    if ($_SERVER['REQUEST_URI'] == '//') {
+      $_SERVER['REQUEST_URI'] = '/';
+    }
+  }
+
+  public static function route() {
     $url = self::getUri();
 
     if ($url === '/' && isset($_GET['graph'])) {
@@ -27,10 +95,6 @@ class SFRouter
     $result = self::parse($url);
 
     if (!$result) return false;
-
-    if (SFResponse::actionExists(ACTIONS . '__before.php')) {
-      SFResponse::run(ACTIONS . '__before');
-    }
 
     if (gettype($result['path']) === 'string') {
       if (SFResponse::actionExists($result['path'])) {
@@ -45,6 +109,34 @@ class SFRouter
     }
 
     return false;
+  }
+
+  public static function addRule($url, $action) {
+    self::$routes[$url] = $action;
+  }
+
+  public static function language() {
+    return self::$language;
+  }
+
+  public static function defaultLanguage() {
+    return self::$languages[0];
+  }
+
+  public static function uri($item = false) {
+    if ($item !== false) {
+      if (isset(self::$uri[$item])) {
+        return self::$uri[$item];
+      } else {
+        return false;
+      }
+    } else {
+      return self::$uri;
+    }
+  }
+
+  public static function uriNum() {
+    return count(self::$uri);
   }
 
   private static function returnModelData($params) {
@@ -120,97 +212,13 @@ class SFRouter
     return [$model, $data];
   }
 
-  public static function addRule($url, $action) {
-    self::$beforeParams[$url] = $action;
-  }
-
-  public static function init($params) {
-    self::$routingPath = $params['routes'];
-
-    if (isset($params['models'])) {
-      SFModels::registerPath(SFPath::prepareDir($params['models']));
-    }
-
-    if (isset($params['languages'])) {
-      self::$languages = $params['languages'];
-    }
-
-    SFResponse::set('lang', '', true);
-    SFResponse::set('uri', SFURI::getUri());
-    $uri = SFURI::getUriRaw();
-
-    foreach ($uri as $index => $item) {
-      if (empty($item)) {
-        unset($uri[$index]);
-      }
-    }
-
-    SFResponse::set('uri_items', $uri);
-    self::$uri = $uri;
-    $uri = [];
-    $max = 10;
-    $i = 1;
-
-    foreach (self::$uri as $key => $val) {
-      if ($i <= $max) {
-        if (!empty($val)) {
-          $uri[] = self::$uri[$key];
-          $i++;
-        }
-      }
-    }
-
-    self::$uri = $uri;
-
-    if (isset(self::$uri[0]) && in_array(self::$uri[0], self::$languages)) {
-      self::$language = self::$uri[0];
-      self::$uri = array_splice(self::$uri, 1);
-      SFResponse::set('lang', '/' . self::$language, true);
-    } else if (count(self::$languages)) {
-      self::$language = self::$languages[0];
-    }
-
-    if (strpos($_SERVER['REQUEST_URI'], '?') !== false) {
-      $_SERVER['REQUEST_URI'];
-      $get = substr($_SERVER['REQUEST_URI'], strpos($_SERVER['REQUEST_URI'], '?') + 1);
-      $get = explode('&', $get);
-
-      foreach ($get as $val) {
-        $key = explode('=', $val);
-
-        if (isset($key[1])) {
-          $_GET[$key[0]] = $key[1];
-        } else {
-          $_GET[$key[0]] = '';
-        }
-      }
-    }
-
-    $_SERVER['REQUEST_URI'] = '/' . implode('/', self::$uri) . '/';
-
-    if ($_SERVER['REQUEST_URI'] == '//') {
-      $_SERVER['REQUEST_URI'] = '/';
-    }
-  }
-
-  public static function language() {
-    return self::$language;
-  }
-
-  public static function defaultLanguage() {
-    return self::$languages[0];
-  }
-
-  public static function parse($url) {
+  private static function parse($url) {
     if (substr($url, -1, 1) == '/') $url = substr($url, 0, -1);
 
-    $params = include self::$routingPath;
-    $params = array_merge($params, self::$beforeParams);
-
-    if (isset($params[self::getUri()])) {
+    if (isset(self::$routes[self::getUri()])) {
       return [
         'pattern' => self::getUri(),
-        'path' => $params[self::getUri()], 'params' => []
+        'path' => self::$routes[self::getUri()], 'params' => []
       ];
     } else {
       $t = true;
@@ -220,9 +228,8 @@ class SFRouter
 
       // find out all pairs of stars-keys => path-to-controller
       // relations contains connection of starts-key to origin key with variables
-      list($pairs, $relations) = self::parseUriReplace($params);
+      list($pairs, $relations) = self::parseUriReplace(self::$routes);
 
-      // print_r($pairs);
       // getting array of uri
       $uri = self::getUriByArray($n);
 
@@ -261,11 +268,11 @@ class SFRouter
         return strlen($value);
       });
 
-      if(count($pattern) && count($pattern) == count($uri)) {
+      if(count($pattern) && count($pattern) === count($uri)) {
         $t = true;
 
         for ($i = 0; $i < count($pattern); $i++) {
-          if ($pattern[$i] != '*' && $pattern[$i] != $uri[$i]) {
+          if ($pattern[$i] !== '*' && $pattern[$i] !== $uri[$i]) {
             $t = false;
           }
         }
@@ -297,7 +304,7 @@ class SFRouter
     return [$replace_uri, $relations];
   }
 
-  public static function getUriByArray($num = 0) {
+  private static function getUriByArray($num = 0) {
     if ($num != 0) {
       $uri = [];
 
@@ -366,21 +373,5 @@ class SFRouter
         return '/';
       }
     }
-  }
-
-  public static function uri($item = false) {
-    if ($item !== false) {
-      if (isset(self::$uri[$item])) {
-        return self::$uri[$item];
-      } else {
-        return false;
-      }
-    } else {
-      return self::$uri;
-    }
-  }
-
-  public static function uriNum() {
-    return count(self::$uri);
   }
 }

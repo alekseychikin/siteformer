@@ -92,9 +92,7 @@ class Diagnostics {
         }
       ],
       'routes' => [
-        'valid' => function ($path) use ($validateFilePath) {
-          return $validateFilePath('config_routes', $path);
-        }
+        'type' => 'array'
       ],
       'models' => [
         'valid' => function ($path) use ($validateDirPath) {
@@ -123,6 +121,9 @@ class Diagnostics {
       'storages' => [
         'default' => [],
         'type' => 'array'
+      ],
+      'modrewrite-get-url' => [
+        'required' => true
       ]
     ], $configs);
   }

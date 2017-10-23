@@ -4,130 +4,128 @@ return [
   '/cms/' => MODULES . 'GUI/sections/main/index',
   '/cms/configs/' => [
     'data' => [
-      'page-title' => 'gui-scalar?value=Настройки',
-      'section' => 'gui-scalar?value=configs',
-      'sections' => 'gui-sections',
+      'page-title' => 'gui-scalar?value=помойки',
+      'collection' => 'gui-scalar?value=configs',
+      'collections' => 'gui-collections',
       'modules' => 'gui-modules'
     ],
-    'template' => 'sections/configs/index.tmplt'
+    'template' => 'entries/configs.gutt'
   ],
   '/cms/configs/add/' => [
     'data' => [
       'types' => 'gui-types',
-      'sections' => 'gui-sections',
-      'modules' => 'gui-modules',
-      'fields' => 'gui-fields?section=new',
-      'section' => 'gui-scalar?value=section',
-      'title' => 'gui-scalar?value=',
+      'collections' => 'gui-collections',
+      'fields' => 'gui-fields?collection=new',
+      'collection' => 'gui-scalar?value=section',
       'page-title' => 'gui-scalar?value=Добавить раздел',
-      'alias' => 'gui-scalar?value=',
-      'module' => 'gui-scalar?value=default'
+      'title' => 'gui-scalar?value=',
+      'alias' => 'gui-scalar?value='
     ],
-    'template' => 'sections/configs/add.tmplt'
+    'template' => 'entries/configs-add.gutt'
   ],
-  '/cms/configs/{section}/' => [
+  '/cms/configs/{collection}/' => [
     'data' => [
-      'title' => 'gui-sections?section={section}&field=title',
+      'title' => 'gui-collections?section={collection}&field=title',
       'page-title' => 'gui-scalar?value=Редактировать раздел «{title}»',
-      'id' => 'gui-sections?section={section}&field=id',
-      'alias' => 'gui-sections?section={section}&field=alias',
-      'module' => 'gui-sections?section={section}&field=module',
-      'fields' => 'gui-fields?section={section}',
+      'id' => 'gui-collections?section={collection}&field=id',
+      'alias' => 'gui-collections?section={collection}&field=alias',
+      'module' => 'gui-collections?section={collection}&field=module',
+      'fields' => 'gui-fields?section={collection}',
       'section' => 'gui-scalar?value=configs',
       'types' => 'gui-types',
-      'sections' => 'gui-sections',
+      'sections' => 'gui-collections',
       'modules' => 'gui-modules'
     ],
-    'template' => 'sections/configs/add.tmplt'
+    'template' => 'sections/configs/add.gutt'
   ],
   '/cms/types/{type}/{handle}/' => MODULES . 'GUI/sections/main/type',
   '/cms/profile/' => [
     'data' => [
-      'sections' => 'gui-sections'
+      'sections' => 'gui-collections'
     ],
-    'template' => 'sections/users/profile.tmplt'
+    'template' => 'sections/users/profile.gutt'
   ],
   '/cms/users/' => [
     'data' => [
-      'sections' => 'gui-sections',
+      'sections' => 'gui-collections',
       'section' => 'gui-scalar?value=users',
       'users' => 'gui-users',
       'invitations' => 'gui-users?invitations'
     ],
-    'template' => 'sections/users/users.tmplt'
+    'template' => 'sections/users/users.gutt'
   ],
   '/cms/users/{id}/' => [
     'data' => [
-      'sections' => 'gui-sections',
+      'sections' => 'gui-collections',
       'section' => 'gui-scalar?value=users',
       'edit-user' => 'gui-profile?id={id}'
     ],
-    'template' => 'sections/users/user.tmplt'
+    'template' => 'sections/users/user.gutt'
   ],
-  '/cms/{section}/' => [
+  '/cms/{collection}/' => [
     'data' => [
-      'title' => 'gui-sections?section={section}&field=title',
+      'title' => 'gui-collections?collection={collection}&field=title',
       'page-title' => 'gui-scalar?value=Редактировать раздел «{title}»',
-      'fields' => 'gui-fields?section={section}',
-      'user-fields' => 'gui-fields?section={section}&usersonly',
-      'section' => 'gui-scalar?value={section}',
-      'sections' => 'gui-sections',
-      'data' => 'gui-item-list?section={section}&status=public,draft',
-      'pages' => 'gui-pages?section={section}&status=public,draft',
+      'fields' => 'gui-fields?collection={collection}',
+      'user-fields' => 'gui-fields?collection={collection}&usersonly',
+      'collection' => 'gui-scalar?value={collection}',
+      'collections' => 'gui-collections',
+      'data' => 'gui-item-list?collection={collection}&status=public,draft',
+      'pages' => 'gui-pages?collection={collection}&status=public,draft',
       'page' => 'gui-scalar?value=1'
     ],
-    'template' => 'sections/item/index.tmplt'
+    'template' => 'sections/item/index.gutt'
   ],
-  '/cms/{section}/page/{page}/' => [
+  '/cms/{collection}/page/{page}/' => [
     'data' => [
-      'title' => 'gui-sections?section={section}&field=title',
+      'title' => 'gui-collections?section={collection}&field=title',
       'page-title' => 'gui-scalar?value=Редактировать раздел «{title}»',
-      'fields' => 'gui-fields?section={section}',
-      'user-fields' => 'gui-fields?section={section}&usersonly',
-      'section' => 'gui-scalar?value={section}',
-      'sections' => 'gui-sections',
-      'data' => 'gui-item-list?section={section}&page={page}&status=public,draft',
-      'pages' => 'gui-pages?section={section}&status=public,draft',
+      'fields' => 'gui-fields?section={collection}',
+      'user-fields' => 'gui-fields?section={collection}&usersonly',
+      'section' => 'gui-scalar?value={collection}',
+      'sections' => 'gui-collections',
+      'data' => 'gui-item-list?section={collection}&page={page}&status=public,draft',
+      'pages' => 'gui-pages?section={collection}&status=public,draft',
       'page' => 'gui-scalar?value={page}'
     ],
-    'template' => 'sections/item/index.tmplt'
+    'template' => 'sections/item/index.gutt'
   ],
-  '/cms/{section}/page/{page}/limit/{limit}/' => [
+  '/cms/{collection}/page/{page}/limit/{limit}/' => [
     'data' => [
-      'title' => 'gui-sections?section={section}&field=title',
+      'title' => 'gui-collections?section={collection}&field=title',
       'page-title' => 'gui-scalar?value=Редактировать раздел «{title}»',
-      'fields' => 'gui-fields?section={section}',
-      'user-fields' => 'gui-fields?section={section}&usersonly',
-      'section' => 'gui-scalar?value={section}',
-      'sections' => 'gui-sections',
-      'data' => 'gui-item-list?section={section}&page={page}&limit={limit}&status=public,draft',
-      'pages' => 'gui-pages?section={section}&limit={limit}&status=public,draft',
+      'fields' => 'gui-fields?section={collection}',
+      'user-fields' => 'gui-fields?section={collection}&usersonly',
+      'section' => 'gui-scalar?value={collection}',
+      'sections' => 'gui-collections',
+      'data' => 'gui-item-list?section={collection}&page={page}&limit={limit}&status=public,draft',
+      'pages' => 'gui-pages?section={collection}&limit={limit}&status=public,draft',
       'page' => 'gui-scalar?value={page}'
     ],
-    'template' => 'sections/item/index.tmplt'
+    'template' => 'sections/item/index.gutt'
   ],
-  '/cms/{section}/add/' => [
+  '/cms/{collection}/add/' => [
     'data' => [
-      'sections' => 'gui-sections',
-      'fields' => 'gui-fields?section={section}',
-      'section' => 'gui-sections?section={section}&field=alias',
-      'section-name' => 'gui-sections?section={section}&field=title',
+      'sections' => 'gui-collections',
+      'fields' => 'gui-fields?section={collection}',
+      'section' => 'gui-collections?section={collection}&field=alias',
+      'section-name' => 'gui-collections?section={collection}&field=title',
       'page-title' => 'gui-scalar?value=Добавить запись в «{section-name}»',
-      'data' => 'gui-section-data?section={section}'
+      'data' => 'gui-collection-data?section={collection}'
     ],
-    'template' => 'sections/item/add.tmplt'
+    'template' => 'sections/item/add.gutt'
   ],
-  '/cms/{section}/action_save/' => MODULES . 'GUI/sections/item/action_save',
-  '/cms/{section}/action_delete/' => MODULES . 'GUI/sections/item/action_delete',
-  '/cms/{section}/{id}/' => [
+  '/cms/{collection}/action_save/' => MODULES . 'GUI/sections/item/action_save',
+  '/cms/{collection}/action_delete/' => MODULES . 'GUI/sections/item/action_delete',
+  '/cms/{collection}/{id}/' => [
     'data' => [
-      'sections' => 'gui-sections',
-      'fields' => 'gui-fields?section={section}',
-      'section' => 'gui-sections?section={section}&field=alias',
-      'section-name' => 'gui-sections?section={section}&field=title',
+      'sections' => 'gui-collections',
+      'fields' => 'gui-fields?section={collection}',
+      'section' => 'gui-collections?section={collection}&field=alias',
+      'section-name' => 'gui-collections?section={collection}&field=title',
       'page-title' => 'gui-scalar?value=Добавить запись в «{section-name}»',
-      'data' => 'gui-section-data?section={section}&id={id}'
+      'data' => 'gui-collection-data?section={collection}&id={id}'
     ],
-    'template' => 'sections/item/add.tmplt'
+    'template' => 'sections/item/add.gutt'
   ]
 ];

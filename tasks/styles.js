@@ -28,7 +28,7 @@ export default () => {
 		pimport(),
 		assets({
 			basePath: 'modules/GUI/components',
-			baseUrl: '/sf-engin'
+			baseUrl: '/sf-engine/modules/GUI/dist'
 		}),
 		size(),
 		cssnext()

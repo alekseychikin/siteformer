@@ -38,18 +38,18 @@
     "gulp-csso": "^1.0.1",
     "gulp-gutt": "^0.1.1",
     "gulp-plumber": "^1.0.1",
-    "gulp-postcss": "^7.0.0",
+    "gulp-postcss": "6.3.0",
     "gulp-rename": "^1.2.2",
     "gulp-sourcemaps": "^1.6.0",
     "gulp-uglify": "^1.5.1",
     "gulp-util": "^3.0.7",
-    "gutt-browser-stringifier": "^0.1.0",
-    "gutt-php-stringifier": "^0.1.0",
-    "postcss-assets": "^5.0.0",
-    "postcss-cssnext": "^3.0.2",
-    "postcss-import": "^11.0.0",
-    "postcss-short-font-size": "^4.0.0",
-    "postcss-size": "^2.0.0",
+    "gutt-browser-stringifier": "0.1.0",
+    "gutt-php-stringifier": "0.1.0",
+    "postcss-assets": "5.0.0",
+    "postcss-cssnext": "2.9.0",
+    "postcss-import": "11.0.0",
+    "postcss-short-font-size": "4.0.0",
+    "postcss-size": "2.0.0",
     "selenium-standalone": "^6.4.1",
     "stream": "0.0.2",
     "through2": "^2.0.1",
@@ -60,5 +60,12 @@
   },
   "dependencies": {
     "promise-polyfill": "^6.0.2"
-  }
+  },
+  "browserslist": [
+    "> 0.5%",
+    "last 2 versions",
+    "IE 9",
+    "IE 10",
+    "IE 11"
+  ]
 }
