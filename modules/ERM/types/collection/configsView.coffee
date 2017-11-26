@@ -1,6 +1,6 @@
 View = require "libs/view.coffee"
 Render = require "libs/render"
-modalWindowTemplate = require "dist/types/section/modal.tmplt"
+modalWindowTemplate = require "dist/types/section/modal.gutt"
 
 module.exports = class SectionConfigsView extends View
   constructor: (target, model) ->

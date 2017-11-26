@@ -1,8 +1,8 @@
 <component>
-  <import name="profile-form" from="./profile-form.tmplt" />
-  <import name="x-main" from="../main/main.tmplt" />
-  <import name="x-scripts" from="../main/scripts.tmplt" />
-  <import name="users-list" from="./users-list.tmplt" />
+  <import name="profile-form" from="./profile-form.gutt" />
+  <import name="x-main" from="../main/main.gutt" />
+  <import name="x-scripts" from="../main/scripts.gutt" />
+  <import name="users-list" from="./users-list.gutt" />
 
   <param name={$page-title} value="Модерация пользователей" />
   <param name={$collections} value={[]} />

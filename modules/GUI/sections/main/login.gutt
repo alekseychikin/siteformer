@@ -1,6 +1,6 @@
 <component>
-  <import name="login-form" from="../../components/login/login.tmplt" />
-  <import name="x-scripts" from="./scripts.tmplt" />
+  <import name="login-form" from="../../components/login/login.gutt" />
+  <import name="x-scripts" from="./scripts.gutt" />
 
   <param name={$page-title} value="" />
   <param name={$users} value={[]} />

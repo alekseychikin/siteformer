@@ -1,5 +1,5 @@
 <component>
-  <import name="x-suggest" from="../../components/form-suggests/form-suggests.tmplt" />
+  <import name="x-suggest" from="../../components/form-suggests/form-suggests.gutt" />
 
   <param name={$alias} value="" />
   <param name={$searchResult} value={false} />

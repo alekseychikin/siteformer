@@ -1,6 +1,6 @@
 View = require "libs/view.coffee"
 Render = require "libs/render"
-modalWindowTemplate = require "dist/types/select/modal.tmplt"
+modalWindowTemplate = require "dist/types/select/modal.gutt"
 
 module.exports = class SelectConfigsView extends View
   constructor: (target, model) ->

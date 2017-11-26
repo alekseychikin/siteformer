@@ -1,6 +1,6 @@
 View = require "libs/view.coffee"
 Render = require "libs/render"
-modalWindowTemplate = require "dist/types/image/modal.tmplt"
+modalWindowTemplate = require "dist/types/image/modal.gutt"
 
 module.exports = class ImageConfigsView extends View
   constructor: (target, model) ->

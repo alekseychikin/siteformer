@@ -1,6 +1,6 @@
 <component>
-  <import name="setup-database-form" from="./setup-database-form.tmplt" />
-  <import name="x-scripts" from="./scripts.tmplt" />
+  <import name="setup-database-form" from="./setup-database-form.gutt" />
+  <import name="x-scripts" from="./scripts.gutt" />
 
   <param name={$page-title} value="Настроить подключение к базе" />
   <param name={$users} value={[]} />

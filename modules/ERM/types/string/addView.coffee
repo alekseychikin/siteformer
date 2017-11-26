@@ -1,5 +1,5 @@
 View = require "libs/view.coffee"
-itemTemplate = require "dist/types/string/item.tmplt"
+itemTemplate = require "dist/types/string/item.gutt"
 Render = require "libs/render"
 
 module.exports = class StringDataView extends View

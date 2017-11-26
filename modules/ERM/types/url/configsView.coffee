@@ -1,5 +1,5 @@
 View = require "libs/view.coffee"
-modalWindowTemplate = require "dist/types/url/modal.tmplt"
+modalWindowTemplate = require "dist/types/url/modal.gutt"
 Render = require "libs/render"
 
 module.exports = class UrlConfigsView extends View

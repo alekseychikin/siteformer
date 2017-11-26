@@ -1,5 +1,5 @@
 View = require "libs/view.coffee"
-itemTemplate = require "dist/types/url/item.tmplt"
+itemTemplate = require "dist/types/url/item.gutt"
 Render = require "libs/render"
 
 module.exports = class UrlDataView extends View

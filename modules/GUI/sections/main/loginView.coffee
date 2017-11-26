@@ -1,4 +1,4 @@
-loginTemplate = require 'dist/components/login/login.tmplt'
+loginTemplate = require 'dist/components/login/login.gutt'
 render = require 'libs/render'
 View = require 'libs/view.coffee'
 

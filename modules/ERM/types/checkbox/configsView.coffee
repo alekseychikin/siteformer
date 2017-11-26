@@ -1,6 +1,6 @@
 View = require "libs/view.coffee"
 Render = require "libs/render"
-modalWindowTemplate = require "dist/types/checkbox/modal.tmplt"
+modalWindowTemplate = require "dist/types/checkbox/modal.gutt"
 
 module.exports = class CheckboxConfigsView extends View
   constructor: (target, model) ->

@@ -1,5 +1,5 @@
 <component>
-  <import name="x-checkbox" from="dist/components/form/checkbox.tmplt" />
+  <import name="x-checkbox" from="dist/components/form/checkbox.gutt" />
 
   <param name={$settings} value={[
     's3AccessKey': '',

@@ -1,6 +1,6 @@
 View = require "libs/view.coffee"
 Render = require "libs/render"
-modalWindowTemplate = require "dist/types/radio/modal.tmplt"
+modalWindowTemplate = require "dist/types/radio/modal.gutt"
 
 module.exports = class RadioConfigsView extends View
   constructor: (target, model) ->

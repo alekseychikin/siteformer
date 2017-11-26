@@ -1,7 +1,7 @@
 <component>
-  <import name="user-form" from="./user-form.tmplt" />
-  <import name="x-main" from="../main/main.tmplt" />
-  <import name="x-scripts" from="../main/scripts.tmplt" />
+  <import name="user-form" from="./user-form.gutt" />
+  <import name="x-main" from="../main/main.gutt" />
+  <import name="x-scripts" from="../main/scripts.gutt" />
 
   <param name={$page-title} value="Редактировать пользователя" />
   <param name={$collections} value={[]} />

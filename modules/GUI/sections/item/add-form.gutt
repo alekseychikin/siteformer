@@ -1,18 +1,18 @@
 <component>
-  <import name="x-checkbox" from="../../types/checkbox/item.tmplt" />
-  <import name="x-date" from="../../types/date/item.tmplt" />
-  <import name="x-file" from="../../types/file/item.tmplt" />
-  <import name="x-gallery" from="../../types/gallery/item.tmplt" />
-  <import name="x-image" from="../../types/image/item.tmplt" />
-  <import name="x-password" from="../../types/password/item.tmplt" />
-  <import name="x-radio" from="../../types/radio/item.tmplt" />
-  <import name="x-collection" from="../../types/collection/item.tmplt" />
-  <import name="x-select" from="../../types/select/item.tmplt" />
-  <import name="x-string" from="../../types/string/item.tmplt" />
-  <import name="x-table" from="../../types/table/item.tmplt" />
-  <import name="x-tags" from="../../types/tags/item.tmplt" />
-  <import name="x-text" from="../../types/text/item.tmplt" />
-  <import name="x-url" from="../../types/url/item.tmplt" />
+  <import name="x-checkbox" from="../../types/checkbox/item.gutt" />
+  <import name="x-date" from="../../types/date/item.gutt" />
+  <import name="x-file" from="../../types/file/item.gutt" />
+  <import name="x-gallery" from="../../types/gallery/item.gutt" />
+  <import name="x-image" from="../../types/image/item.gutt" />
+  <import name="x-password" from="../../types/password/item.gutt" />
+  <import name="x-radio" from="../../types/radio/item.gutt" />
+  <import name="x-collection" from="../../types/collection/item.gutt" />
+  <import name="x-select" from="../../types/select/item.gutt" />
+  <import name="x-string" from="../../types/string/item.gutt" />
+  <import name="x-table" from="../../types/table/item.gutt" />
+  <import name="x-tags" from="../../types/tags/item.gutt" />
+  <import name="x-text" from="../../types/text/item.gutt" />
+  <import name="x-url" from="../../types/url/item.gutt" />
 
   <param name={$fields} value={[]} />
 

@@ -1,15 +1,15 @@
 <component>
-  <import name="x-checkbox" from="../../types/checkbox/table-item.tmplt" />
-  <import name="x-date" from="../../types/date/table-item.tmplt" />
-  <import name="x-image" from="../../types/image/table-item.tmplt" />
-  <import name="x-radio" from="../../types/radio/table-item.tmplt" />
-  <import name="x-collection" from="../../types/collection/table-item.tmplt" />
-  <import name="x-select" from="../../types/select/table-item.tmplt" />
-  <import name="x-string" from="../../types/string/table-item.tmplt" />
-  <import name="x-tags" from="../../types/tags/table-item.tmplt" />
-  <import name="x-text" from="../../types/text/table-item.tmplt" />
-  <import name="x-url" from="../../types/url/table-item.tmplt" />
-  <import name="x-paginator" from="../../components/paginator/paginator.tmplt" />
+  <import name="x-checkbox" from="../../types/checkbox/table-item.gutt" />
+  <import name="x-date" from="../../types/date/table-item.gutt" />
+  <import name="x-image" from="../../types/image/table-item.gutt" />
+  <import name="x-radio" from="../../types/radio/table-item.gutt" />
+  <import name="x-collection" from="../../types/collection/table-item.gutt" />
+  <import name="x-select" from="../../types/select/table-item.gutt" />
+  <import name="x-string" from="../../types/string/table-item.gutt" />
+  <import name="x-tags" from="../../types/tags/table-item.gutt" />
+  <import name="x-text" from="../../types/text/table-item.gutt" />
+  <import name="x-url" from="../../types/url/table-item.gutt" />
+  <import name="x-paginator" from="../../components/paginator/paginator.gutt" />
 
   <param name={$user-fields} value={[]} />
   <param name={$page} value={1} />

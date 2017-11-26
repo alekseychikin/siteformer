@@ -1,6 +1,6 @@
 View = require "libs/view.coffee"
 render = require "libs/render"
-usersListTemplate = require "dist/sections/users/users-list.tmplt"
+usersListTemplate = require "dist/sections/users/users-list.gutt"
 
 module.exports = class UsersView extends View
   constructor: (target, model) ->

@@ -1,6 +1,6 @@
 <component>
-  <import name="user-block" from="../../components/user-block/user-block.tmplt" />
-  <import name="x-menu" from="../../components/menu/menu.tmplt" />
+  <import name="user-block" from="../../components/user-block/user-block.gutt" />
+  <import name="x-menu" from="../../components/menu/menu.gutt" />
 
   <param name={$page-title} value="" />
   <param name={$collections} value={[]} />

@@ -1,5 +1,5 @@
 <component>
-  <import name="edit-area" from="../../components/editarea/editarea.tmplt" />
+  <import name="edit-area" from="../../components/editarea/editarea.gutt" />
 
   <param name={$alias} value="" />
   <param name={$data} value="" />

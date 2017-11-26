@@ -1,6 +1,6 @@
 View = require "libs/view.coffee"
 Render = require "libs/render"
-modalWindowTemplate = require "dist/types/text/modal.tmplt"
+modalWindowTemplate = require "dist/types/text/modal.gutt"
 
 module.exports = class TextConfigsView extends View
   constructor: (target, model) ->

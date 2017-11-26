@@ -1,8 +1,8 @@
 <component>
-  <import name="x-string" from="../../types/string/item.tmplt" />
-  <import name="x-image" from="../../types/image/item.tmplt" />
+  <import name="x-string" from="../../types/string/item.gutt" />
+  <import name="x-image" from="../../types/image/item.gutt" />
 
-  <import name="x-scripts" from="../main/scripts.tmplt" />
+  <import name="x-scripts" from="../main/scripts.gutt" />
 
   <param name={$page-title} value="" />
   <param name={$error-index} value={[]} />

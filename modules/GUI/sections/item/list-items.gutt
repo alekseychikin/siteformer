@@ -1,5 +1,5 @@
 <component>
-  <import name="collection-list" from="./collection-list.tmplt" />
+  <import name="collection-list" from="./collection-list.gutt" />
 
   <param name={$collections} value={[]} />
   <param name={$collection} value="" />

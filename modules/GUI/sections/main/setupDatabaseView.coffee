@@ -1,6 +1,6 @@
 View = require "libs/view.coffee"
 render = require "libs/render"
-formTemplate = require "dist/sections/main/setup-database-form.tmplt"
+formTemplate = require "dist/sections/main/setup-database-form.gutt"
 
 module.exports = class SetupDatabaseView extends View
   constructor: (target, model) ->

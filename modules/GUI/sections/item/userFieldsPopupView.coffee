@@ -1,5 +1,5 @@
 View = require "libs/view.coffee"
-popupTemplate = require "dist/sections/item/user-fields-popup-template.tmplt"
+popupTemplate = require "dist/sections/item/user-fields-popup-template.gutt"
 Render = require "libs/render"
 
 module.exports = class UserFieldsView extends View

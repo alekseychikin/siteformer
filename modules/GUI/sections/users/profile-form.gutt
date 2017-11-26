@@ -1,6 +1,6 @@
 <component>
-  <import name="x-string" from="../../types/string/item.tmplt" />
-  <import name="x-image" from="../../types/image/item.tmplt" />
+  <import name="x-string" from="../../types/string/item.gutt" />
+  <import name="x-image" from="../../types/image/item.gutt" />
 
   <param name={$error-index} value={[]} />
   <param name={$error-code} value="" />

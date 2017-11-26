@@ -1,5 +1,5 @@
 View = require "libs/view.coffee"
-template = require "dist/types/image/item.tmplt"
+template = require "dist/types/image/item.gutt"
 Render = require "libs/render"
 
 module.exports = class ImageDataView extends View

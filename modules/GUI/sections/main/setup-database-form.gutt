@@ -1,6 +1,6 @@
 <component>
-  <import name="x-string" from="../../types/string/add.tmplt" />
-  <import name="x-select" from="../../types/select/add.tmplt" />
+  <import name="x-string" from="../../types/string/add.gutt" />
+  <import name="x-select" from="../../types/select/add.gutt" />
 
   <param name={$host} value="localhost" />
   <param name={$user} value="" />

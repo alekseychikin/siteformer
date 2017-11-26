@@ -1,7 +1,7 @@
 <component>
-  <import name="configs-add" from="./configs-add.tmplt" />
-  <import name="x-main" from="../main/main.tmplt" />
-  <import name="x-scripts" from="../main/scripts.tmplt" />
+  <import name="configs-add" from="./configs-add.gutt" />
+  <import name="x-main" from="../main/main.gutt" />
+  <import name="x-scripts" from="../main/scripts.gutt" />
 
   <param name={$id} value={false} />
   <param name={$collection} value="" />

@@ -1,5 +1,5 @@
 <component>
-  <import name="menu-items" from="./menu-items.tmplt" />
+  <import name="menu-items" from="./menu-items.gutt" />
   <param name={$collections} value={[]} />
   <param name={$collection} value="" />
   <param name={$user} value={["role": "user"]} />

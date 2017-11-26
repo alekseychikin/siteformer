@@ -2,7 +2,7 @@
   <param name={$data} value={[]} />
   <param name={$searchResult} value={[]} />
 
-  <import name="form-suggests" from="../../components/form-suggests/form-suggests.tmplt" />
+  <import name="form-suggests" from="../../components/form-suggests/form-suggests.gutt" />
 
   <div class="form__inp-contain" data-role="input-contain" data-alias={$alias}>
     <form-suggests rows={$searchResult}>
