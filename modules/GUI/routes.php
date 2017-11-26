@@ -25,15 +25,14 @@ return [
   ],
   '/cms/configs/{collection}/' => [
     'data' => [
-      'title' => 'gui-collections?section={collection}&field=title',
+      'title' => 'gui-collections?collection={collection}&field=title',
       'page-title' => 'gui-scalar?value=Редактировать раздел «{title}»',
-      'id' => 'gui-collections?section={collection}&field=id',
-      'alias' => 'gui-collections?section={collection}&field=alias',
-      'module' => 'gui-collections?section={collection}&field=module',
-      'fields' => 'gui-fields?section={collection}',
-      'section' => 'gui-scalar?value=configs',
+      'id' => 'gui-collections?collection={collection}&field=id',
+      'alias' => 'gui-collections?collection={collection}&field=alias',
+      'fields' => 'gui-fields?collection={collection}',
+      'collection' => 'gui-scalar?value=configs',
       'types' => 'gui-types',
-      'sections' => 'gui-collections',
+      'collections' => 'gui-collections',
       'modules' => 'gui-modules'
     ],
     'template' => 'sections/configs/add.gutt'

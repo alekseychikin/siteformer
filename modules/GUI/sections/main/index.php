@@ -3,7 +3,7 @@
 $user = SFResponse::get('user');
 
 // get sections
-$sections = SFGUI::getSections();
+$sections = SFERM::getCollections();
 
 // if length then redir to first section
 if (count($sections)) {

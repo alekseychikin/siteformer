@@ -10,7 +10,7 @@ class SFGuiFields extends SFRouterModel
     if ($params['collection'] === 'new') {
       return SFGUI::getNewFields();
     } else {
-      $collection = SFGUI::getCollection($params['collection']);
+      $collection = SFERM::getCollection($params['collection']);
 
       if (isset($params['limit'])) {
         $fields = arrSort($collection['fields'], function ($item1, $item2) {
