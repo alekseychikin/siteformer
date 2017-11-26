@@ -1,6 +1,6 @@
 import {emitEvent} from './helpers'
 
-export default class {
+export default class Component {
 	static get selector() {
 		return ''
 	}
