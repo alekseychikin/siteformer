@@ -1,22 +1,23 @@
-import gulp from 'gulp'
-import rename from 'gulp-rename'
-import gutt from 'gulp-gutt'
-import phpStringifier from 'gutt-php-stringifier'
-import plumber from 'gulp-plumber'
-import cached from 'gulp-cached'
-import browserSync from './browser-sync-inst'
+const gulp = require('gulp')
+const rename = require('gulp-rename')
+const gutt = require('gulp-gutt')
+const phpStringifier = require('gutt-php-stringifier')
+const plumber = require('gulp-plumber')
+const cached = require('gulp-cached')
+const browserSync = require('./browser-sync-inst')
 
-export default () => {
+module.exports = () => {
 	return gulp
 		.src([
-			'modules/GUI/components/**/*.gutt',
-			'modules/GUI/templates/**/*.gutt'
-		], {read: false, base: 'modules/GUI'})
+			'modules/GUI/src/components/**/*.gutt',
+			'modules/GUI/src/templates/**/*.gutt',
+			'modules/GUI/src/layouts/**/*.gutt'
+		], {read: false, base: 'modules/GUI/src'})
 		.pipe(plumber())
 		.pipe(gutt({
 			stringifier: phpStringifier,
 			params: {
-				keepImportCustomTag: true
+				// keepImportCustomTag: true
 			}
 		}))
 		.pipe(rename(file => {

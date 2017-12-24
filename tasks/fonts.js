@@ -1,12 +1,12 @@
-import gulp from 'gulp'
-import rename from 'gulp-rename'
+const gulp = require('gulp')
+const rename = require('gulp-rename')
 
-export default () => {
+module.exports = () => {
 	gulp
-		.src('./components/**/*.{woff,eot,ttf}')
+		.src('modules/GUI/src/fonts/*.{woff,eot,ttf}')
 		.pipe(rename(path => {
 			path.dirname = ''
 			return path
 		}))
-		.pipe(gulp.dest('./out/dist'))
+		.pipe(gulp.dest('modules/GUI/dist'))
 }

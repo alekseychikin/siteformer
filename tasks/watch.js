@@ -1,6 +1,6 @@
-import gulp from 'gulp'
-import chokidar from 'chokidar'
+const gulp = require('gulp')
+const chokidar = require('chokidar')
 
-export default (src, tasks) => {
+module.exports = (src, tasks) => {
 	chokidar.watch(src, {ignoreInitial: true}).on('all', () => gulp.start(tasks))
 }

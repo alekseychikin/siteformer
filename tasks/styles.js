@@ -1,19 +1,19 @@
-import gulp from 'gulp'
-import postcss from 'gulp-postcss'
-import concat from 'gulp-concat'
-import cssnext from 'postcss-cssnext'
-import pimport from 'postcss-import'
-import assets from 'postcss-assets'
-import size from 'postcss-size'
-import shortFontSize from 'postcss-short-font-size'
-import through from 'through2'
-import csso from 'gulp-csso'
-import yargs from 'yargs'
-import rename from 'gulp-rename'
-import plumber from 'gulp-plumber'
-import sourcemaps from 'gulp-sourcemaps'
-import cached from 'gulp-cached'
-import browserSync from './browser-sync-inst'
+const gulp = require('gulp')
+const postcss = require('gulp-postcss')
+const concat = require('gulp-concat')
+const cssnext = require('postcss-cssnext')
+const pimport = require('postcss-import')
+const assets = require('postcss-assets')
+const size = require('postcss-size')
+const shortFontSize = require('postcss-short-font-size')
+const through = require('through2')
+const csso = require('gulp-csso')
+const yargs = require('yargs')
+const rename = require('gulp-rename')
+const plumber = require('gulp-plumber')
+const sourcemaps = require('gulp-sourcemaps')
+const cached = require('gulp-cached')
+const browserSync = require('./browser-sync-inst')
 
 function pass() {
 	return through.obj()
@@ -22,12 +22,12 @@ function pass() {
 const {argv} = yargs
 const PRODUCTION = argv.production
 
-export default () => {
+module.exports = () => {
 	const postcssProcess = [
 		shortFontSize(),
 		pimport(),
 		assets({
-			basePath: 'modules/GUI/components',
+			basePath: 'modules/GUI/src',
 			baseUrl: '/sf-engine/modules/GUI/dist'
 		}),
 		size(),
@@ -36,10 +36,10 @@ export default () => {
 
 	gulp
 		.src([
-			'modules/GUI/components/common/reset.css',
-			'modules/GUI/components/common/common.css',
-			'modules/GUI/components/**/mobile-*.css'
-		])
+			'modules/GUI/src/components/common/reset.css',
+			'modules/GUI/src/components/common/common.css',
+			'modules/GUI/src/components/**/mobile-*.css'
+		], { base: 'modules/GUI/src' })
 		.pipe(plumber())
 		.pipe(PRODUCTION ? pass() : sourcemaps.init())
 		.pipe(postcss(postcssProcess))
@@ -56,10 +56,10 @@ export default () => {
 
 	return gulp
 		.src([
-			'!modules/GUI/components/common/*.css',
-			'!modules/GUI/components/**/mobile-*.css',
-			'modules/GUI/components/**/*.css'
-		])
+			'!modules/GUI/src/components/common/*.css',
+			'!modules/GUI/src/components/**/mobile-*.css',
+			'modules/GUI/src/components/**/*.css'
+		], { base: 'modules/GUI/src' })
 		.pipe(plumber())
 		.pipe(PRODUCTION ? pass() : sourcemaps.init())
 		.pipe(postcss(postcssProcess))
