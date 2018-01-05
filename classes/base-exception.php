@@ -17,10 +17,12 @@ class BaseException extends Exception
     $trace = $this->getTrace();
     $newTrace = array();
 
-    foreach ($trace as $index => $entry) {
-      if (!isset($entry['file']) || !isset($entry['line'])) continue;
+    if (gettype($trace) === 'array') {
+      foreach ($trace as $index => $entry) {
+        if (!isset($entry['file']) || !isset($entry['line'])) continue;
 
-      $newTrace[] = $entry['file'] . ':' . $entry['line'];
+        $newTrace[] = $entry['file'] . ':' . $entry['line'];
+      }
     }
 
     ob_start();

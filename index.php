@@ -1,7 +1,13 @@
 <?php
 
-ini_set('display_errors', 'off');
+ini_set('display_errors', false);
 error_reporting(E_ALL);
+
+if (getenv('APPLICATION_ENV') !== false) {
+  define('APPLICATION_ENV', getenv('APPLICATION_ENV'));
+} else {
+  define('APPLICATION_ENV', 'production');
+}
 
 ob_start();
 
@@ -11,8 +17,9 @@ define('ENGINE_TEMP', ENGINE . 'temp/');
 
 require_once __DIR__ . '/classes/response.php';
 require_once __DIR__ . '/classes/base-exception.php';
-require_once __DIR__ . '/classes/error_handler.php';
-register_shutdown_function('fatalErrorHandler');
+require_once __DIR__ . '/classes/error-handler.php';
+
+register_shutdown_function('shutdownHandler');
 set_error_handler('errorHandler');
 set_exception_handler('exceptionHandler');
 

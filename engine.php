@@ -9,12 +9,6 @@ function doEngine($configs) {
   Diagnostics::checkRequiredDirs();
   Diagnostics::checkTempConstExists();
 
-  if (getenv('APPLICATION_ENV') !== false) {
-    define('APPLICATION_ENV', getenv('APPLICATION_ENV'));
-  } else {
-    define('APPLICATION_ENV', 'production');
-  }
-
   session_start();
   header('Content-type: text/html; charset=utf8');
   define('CLASSES', ENGINE . 'classes/');

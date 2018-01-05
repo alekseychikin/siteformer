@@ -17,20 +17,11 @@ class SFResponse
   ];
   private static $code = 200;
 
-  public static function error($code, $message, $file = '', $line = '', $trace = false) {
+  public static function error($code, $message) {
     self::$code = $code;
     header('HTTP/1.1 ' . $code . ' ' . self::$codes[$code]);
 
-    if ($trace === false) {
-      $error = new Exception();
-      $trace = $error->getTrace();
-    }
-
-    self::set('error', [
-      'message' => $message,
-      'file' => $file . ':' . $line,
-      'trace' => $trace
-    ]);
+    self::set('error', $message);
 
     $content = ob_get_contents();
     ob_end_clean();
@@ -172,10 +163,13 @@ class SFResponse
 
             echo '<!-- ' . ($endTime - $startTime) . 's; ' . SFORMDatabase::$countQueries . ' queries -->';
           } else {
-            $trace = print_r(self::$state['error']['trace'], true);
-            echo '<pre>' . self::$state['error']['message'];
-            echo ' at ' . self::$state['error']['file'] . "\n";
-            echo $trace . '</pre>';
+            if (gettype(self::$state['error']) === 'array' && isset(self::$state['error']['message'])) {
+              echo self::$state['error']['message'] . "\n<br/><br/>\n";
+
+              if (isset(self::$state['error']['trace'])) {
+                echo '<pre>' . print_r(self::$state['error']['trace'], true) . '</pre>';
+              }
+            }
           }
         }
     }
