@@ -1,0 +1,108 @@
+<import name="form-item" from="../../components/form-item/form-item.gutt" />
+<import name="form-input" from="../../components/form-input/form-input.gutt" />
+<import name="form-separate" from="../../components/form-separate/form-separate.gutt" />
+<import name="table-module-field" from="./partials/table-module-field.gutt" />
+
+<param name={$id} value={false} />
+<param name={$collection} value="" />
+<param name={$collections} value={[]} />
+<param name={$title} value="" />
+<param name={$alias} value="" />
+<param name={$collection-title} value="Добавить" />
+<param name={$collection-url} value="add" />
+<param name={$save-button-label} value="Создать" />
+<param name={$error-title} value="" />
+<param name={$error-alias} value="" />
+<param name={$error-fields-index} value={false} />
+<param name={$error-fields-field} value="" />
+<param name={$error-fields-message} value="" />
+<param name={$user} value={["login": "", "email": "", "userpic": ""]} />
+
+<if test={$id}>
+	<variable name={$collection-title} value="Редактировать" />
+	<variable name={$collection-url} value={$alias} />
+	<variable name={$save-button-label} value="Сохранить" />
+</if>
+
+<article class="content" data-role="configs-add">
+	<h1 class="head">{$collection-title} раздел</h1>
+
+	<form action={"/cms/configs/" ++ $collection-url ++ "/"} class="form form--full-height" data-role="configs-add-form">
+		<form-item
+			label="Название"
+			id="title"
+		>
+			<form-input
+				type="text"
+				value={$title}
+				class="form-input"
+				name="title"
+				id="title"
+				role="configs-add-title"
+				focus={str_len($error-title) > 0}
+			/>
+		</form-item>
+
+		<form-item
+			label="Веб-имя"
+			id="alias"
+		>
+			<form-input
+				value={$title}
+				name="alias"
+				id="alias"
+				role="configs-add-alias"
+				focus={str_len($error-alias) > 0}
+			/>
+		</form-item>
+
+		<form-separate label="Поля" />
+
+		<div class="form__table" data-role="module-fields">
+			<table class="form-table">
+				<colgroup>
+					<col width="*" />
+					<col width="*" />
+					<col width="*" />
+					<col width="75" />
+					<col width="75" />
+					<col width="75" />
+					<col width="40" />
+				</colgroup>
+				<thead>
+					<tr class="form-table__row form-table__row--head">
+						<th class="form-table__cell">Заголовок</th>
+						<th class="form-table__cell">Веб-имя</th>
+						<th class="form-table__cell">Тип</th>
+						<th title="Обязательное к заполнению">Обяз.</th>
+						<th></th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody data-role="tbody-module-fields">
+					<table-module-field
+						fields={$fields}
+						types={$types}
+						error-fields-index={$error-fields-index}
+						error-fields-field={$error-fields-field}
+						error-fields-message={$error-fields-message}
+					/>
+				</tbody>
+			</table>
+			<div class="form__row">
+				<button data-role="btn-add-field" class="form__btn" type="button">Добавить поле</button>
+			</div>
+		</div>
+
+		<div class="form__submit">
+			<button class="form__btn form__btn--submit">{$save-button-label}</button>
+			<a href="/cms/configs/" class="form__btn">Отменить</a>
+
+			<if test={$id}>
+				<button class="form__btn form__btn--delete" type="button" data-role="delete">Удалить</button>
+			</if>
+		</div>
+	</form>
+</article>
+
+<div class="popup" data-role="configs-popup"></div>

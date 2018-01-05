@@ -1,0 +1,37 @@
+<import name="main-wrap" from="../../components/main-wrap/main-wrap.gutt" />
+
+<param name={$page-title} value="" />
+<param name={$collections} value={[]} />
+<param name={$collection} value="" />
+<param name={$user} value={["login": "", "email": "", "userpic": "", "role": "user"]} />
+
+<h1 class="head">Настройки</h1>
+
+<div class="collection__wrap" data-role="collections">
+	<div class="collection__row">
+		<a href="/cms/configs/add/" class="form__btn">Добавить раздел</a>
+	</div>
+
+	<div class="collection__row" data-role="collection-list">
+		<table class="table">
+			<colgroup>
+				<col width="*" />
+				<col width="*" />
+			</colgroup>
+			<thead>
+				<tr>
+					<th>Название</th>
+					<th>Веб-имя</th>
+				</tr>
+			</thead>
+			<tbody>
+				<for-each key={$i} item={$collections-item} from={$collections}>
+					<tr class="table__link" data-role="collection-row" data-id={$i}>
+						<td><a href={"/cms/configs/" ++ $collections-item.alias ++ "/"}>{$collections-item.title}</a></td>
+						<td><a href={"/cms/configs/" ++ $collections-item.alias ++ "/"} tabindex="-1">{$collections-item.alias}</a></td>
+					</tr>
+				</for-each>
+			</tbody>
+		</table>
+	</div>
+</div>

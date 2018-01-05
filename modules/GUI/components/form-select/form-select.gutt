@@ -1,9 +1,0 @@
-<param name={$param-name} value="" />
-<param name={$param-id} value="" />
-<param name={$param-role} value="" />
-
-<label class="form-select">
-	<select class="form-select__select" name={$param-name} id={$param-id} data-role={$param-role}>
-		{$children}
-	</select>
-</label>

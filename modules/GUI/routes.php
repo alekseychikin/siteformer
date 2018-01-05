@@ -19,7 +19,8 @@ return [
       'collection' => 'gui-scalar?value=section',
       'page-title' => 'gui-scalar?value=Добавить раздел',
       'title' => 'gui-scalar?value=',
-      'alias' => 'gui-scalar?value='
+      'alias' => 'gui-scalar?value=',
+      'storages' => 'gui-storages'
     ],
     'template' => 'entries/configs-add.gutt'
   ],

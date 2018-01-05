@@ -1,0 +1,94 @@
+.form-button {
+  background-image: linear-gradient(-180deg, #FFFFFF 0%, #E8E8E8 96%);
+  border: 1px solid #BEBEBE;
+  color: #000;
+  font-size: 15px;
+  height: 38px;
+  line-height: 18px;
+  padding: 9px 20px;
+  display: inline-block;
+  vertical-align: middle;
+  border-radius: 2px;
+  outline: none;
+  text-decoration: none;
+  box-sizing: border-box;
+  white-space: nowrap;
+
+  &--small {
+    font-size: 12px;
+    height: 28px;
+    line-height: 14px;
+    padding: 0px 10px;
+  }
+
+  &:focus {
+    box-shadow: 0 0 5px #3260CA;
+  }
+
+  &:hover {
+    cursor: pointer;
+    box-shadow: 0px 1px 0px 0px rgba(199,199,199,0.50);
+    background-image: linear-gradient(-180deg, #FFFFFF 0%, #f0efef 96%);
+  }
+
+  &:active {
+    box-shadow: 0 1px 0 #CACACA inset;
+    background-image: linear-gradient(-180deg, #FFFFFF 0%, #f0efef 96%);
+  }
+
+  &:disabled {
+    cursor: default;
+    background-image: linear-gradient(-180deg, #FFFFFF 0%, #E8E8E8 96%);
+    color: #9f9f9f;
+  }
+
+  & + & {
+    margin-left: 25px;
+  }
+
+  &--delete {
+    float: right;
+    background-color: #5B4970;
+    background-image: linear-gradient(to top, #ab5151 0%, #c76363 96%);
+    box-shadow: 0px 1px 0px 0px rgba(199,199,199,0.50);
+    color: #FFFFFF;
+
+    &:hover {
+      background-image: linear-gradient(to top, #ab6565 0%, #cd7d7d 96%);
+    }
+
+    &:active {
+      background-image: linear-gradient(to top, #ab6565 0%, #cd7d7d 96%);
+      box-shadow: 0 1px 2px #676767 inset;
+    }
+
+    &:disabled {
+      color: #e6e6e6;
+      background-image: linear-gradient(to top, #d09494 0%, #de9595 96%);
+    }
+  }
+
+  &--right {
+    float: right;
+  }
+
+  &--submit {
+    background-color: #5B4970;
+    background-image: linear-gradient(-180deg, #79688e 0%, #5B4970 96%);
+    box-shadow: 0px 1px 0px 0px rgba(199,199,199,0.50);
+    color: #FFFFFF;
+
+    &:hover {
+      background-image: linear-gradient(-180deg, #89799d 0%, #6f5d85 96%);
+    }
+
+    &:active {
+      background-image: linear-gradient(-180deg, #89799d 0%, #6f5d85 96%);
+      box-shadow: 0 1px 2px #676767 inset;
+    }
+
+    &:disabled {
+      background-image: linear-gradient(-180deg, #FFFFFF 0%, #E8E8E8 96%);
+    }
+  }
+}

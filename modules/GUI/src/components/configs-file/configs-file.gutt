@@ -1,0 +1,46 @@
+<import name="form-checkbox" from="../form-checkbox/form-checkbox.gutt" />
+<import name="form-select" from="../form-select/form-select.gutt" />
+<import name="form-input" from="../form-input/form-input.gutt" />
+<import name="form-button" from="../form-button/form-button.gutt" />
+
+<param name={$storages} value={[]} />
+<param name={$storage} value="" />
+<param name={$source} value="upload" />
+<param name={$path} value="" />
+<param name={$ext} value="" />
+
+<div class="popup__head">Настройки изображения</div>
+
+<form action="" class="form" data-role="configs-form">
+	<div class="form-item">
+		<label class="form-item__label">Хранилище</label>
+		<div class="form-item__container">
+			<form-select role="configs-file-storage">
+				<for-each item={$storage-item} from={$storages}>
+					<option value={$storage-item}>{$storage-item}</option>
+				</for-each>
+			</form-select>
+		</div>
+	</div>
+
+	<div class="form-item">
+		<label for="configs-file-path" class="form-item__label">Путь</label>
+		<div class="form-item__container">
+			<form-input value={$path} role="configs-file-path" id="configs-file-path" autocomplete="off" />
+		</div>
+	</div>
+
+	<div class="form-item">
+		<label for="configs-file-ext" class="form-item__label">Допустимые расширения</label>
+		<div class="form-item__container">
+			<form-input value={$ext} role="configs-file-ext" id="configs-file-ext" autocomplete="off" />
+
+			<div class="form__hint">Например: mp3, doc, exl</div>
+		</div>
+	</div>
+
+	<div class="form__submit">
+		<form-button type="submit">Сохранить</form-button>
+		<form-button role="cancel">Отменить</form-button>
+	</div>
+</form>

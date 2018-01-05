@@ -1,0 +1,13 @@
+.configs-checkbox {
+  &__remove&__remove {
+    &::before {
+      content: '×';
+      margin-left: -5px;
+      font-size: 20px;
+    }
+
+    margin-left: 10px;
+    font-size: 0;
+    width: 10px;
+  }
+}

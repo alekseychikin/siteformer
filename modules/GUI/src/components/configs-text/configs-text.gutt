@@ -1,0 +1,25 @@
+<import name="edit-area" from="../editarea/editarea.gutt" />
+<import name="form-button" from="../form-button/form-button.gutt" />
+
+<param name={$text} value={""} />
+
+<div class="popup__head">Настройки текста</div>
+
+<form action="" class="form" data-role="configs-form">
+	<div class="form-item">
+		<label for="configs-text-default-text" class="form-item__label">Текст по умолчанию</label>
+
+		<div class="form-item__container form-item__container--full-width">
+			<edit-area
+				value={$text}
+				name="configs-text-default-text"
+				role="configs-text-default-text"
+				id="configs-text-default-text"
+			/>
+		</div>
+	</div>
+	<div class="form__submit">
+		<form-button type="submit">Сохранить</form-button>
+		<form-button role="cancel">Отменить</form-button>
+	</div>
+</form>

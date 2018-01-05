@@ -1,0 +1,33 @@
+<param name={$type} value="text" />
+<param name={$value} value="" />
+<param name={$name} value="" />
+<param name={$id} value="" />
+<param name={$role} value="" />
+<param name={$focus} value={false} />
+<param name={$error} value="" />
+<param name={$mods} value={[]} />
+<param name={$index} value={-1} />
+
+<variable name={$classes} value={["form-input"]} />
+
+<for-each item={$mod} from={$mods}>
+	{arr_push($classes, "form-input--" ++ $mod)}
+</for-each>
+
+<input
+	class={arr_join($classes, " ")}
+	type={$type}
+	value={$value}
+	name={$name}
+	id={$id}
+	data-role={$role}
+	focus={$focus}
+>
+	<if test={$index != -1}>
+		<attribute name="data-index" value={$index} />
+	</if>
+</input>
+
+<if test={str_len($error)}>
+	<span class="form__error">{$error}</span>
+</if>

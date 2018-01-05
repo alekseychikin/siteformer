@@ -1,0 +1,29 @@
+<param name={$class} value="" />
+<param name={$id} value="" />
+<param name={$name} value="" />
+<param name={$role} value="" />
+<param name={$type} value="button" />
+<param name={$index} value={-1} />
+<param name={$size} value="normal" />
+
+<variable name={$submit-class} value="" />
+<if test={$type == "submit"}>
+	<variable name={$submit-class} value="form-button--submit" />
+</if>
+
+<variable name={$size-class} value="" />
+<if test={$size != "normal"}>
+	<variable name={$size-class} value={"form-button--" ++ $size} />
+</if>
+
+<button type={$type} class={arr_join([
+	"form-button",
+	$class,
+	$submit-class,
+	$size-class
+], " ")} data-role={$role} id={$id} name={$name}>
+	<if test={$index != -1}>
+		<attribute name="data-index" value={$index} />
+	</if>
+	{$children}
+</button>

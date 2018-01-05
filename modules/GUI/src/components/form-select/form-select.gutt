@@ -1,0 +1,9 @@
+<param name={$name} value="" />
+<param name={$id} value="" />
+<param name={$role} value="" />
+
+<label class="form-select">
+	<select class="form-select__select" name={$name} id={$id} data-role={$role}>
+		{$children}
+	</select>
+</label>

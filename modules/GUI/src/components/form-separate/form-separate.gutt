@@ -1,0 +1,5 @@
+<param name={$label} value="" />
+
+<div class="form-separate">
+	<span class="form-separate__text">{$label}</span>
+</div>

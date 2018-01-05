@@ -1,0 +1,17 @@
+<param name={$user} value={["userpic": "", "login": ""]} />
+
+<div class="user-block">
+  <div class="user-block__back-to-site">
+    <a class="user-block__back-to-site-link" href="/">На сайт</a>
+  </div>
+
+  <div class="user-block__profile">
+    <a href="/cms/profile/" class="user-block__link">
+      <img src={$user.userpic} alt="" class="user-block__pic" />
+    </a>
+  </div>
+
+  <div class="user-block__name">
+    <a href="" class="user-block__nick">{$user.login}</a>
+  </div>
+</div>

@@ -1,0 +1,32 @@
+.form-item {
+  padding: 10px 40px;
+
+  &__label {
+    color: #353535;
+    font-size: 12px;
+    font-weight: bold;
+  }
+
+  &__container {
+    padding-bottom: 5px;
+    margin-top: 10px;
+    width: 50%;
+    position: relative;
+
+    &--flex {
+      display: flex;
+      align-items: center;
+    }
+
+    &--full-width {
+      width: 100%;
+    }
+
+    &--scroll-wrap {
+      overflow: scroll;
+      max-height: 200px;
+      padding: 0 5px;
+      margin: 0 -5px;
+    }
+  }
+}

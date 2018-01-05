@@ -1,0 +1,33 @@
+<import name="input-row" from="./input-row.gutt" />
+
+<param name={$values} value={[]} />
+
+<div class="modal__head">Настройка флажков</div>
+
+<form class="form" data-role="configs-form">
+	<div class="form-item">
+		<label class="form-item__label">Варианты ответов:</label>
+
+		<div class="form-item__container form-item__container--full-width">
+			<div data-role="options-contain">
+				<for-each key={$index} item={$option} from={$values}>
+					<input-row
+						index={$index}
+						value={$option.label}
+						checked={$option.checked == true}
+						deletable={arr_len($values) > 1}
+					/>
+				</for-each>
+			</div>
+		</div>
+	</div>
+
+	<div class="form-item">
+		<button type="button" class="form__btn" data-role="add-value">Добавить ещё вариант</button>
+	</div>
+
+	<div class="form__submit">
+		<button class="form__btn form__btn--submit">Сохранить</button>
+		<button type="button" class="form__btn popup__cancel" data-role="cancel">Отменить</button>
+	</div>
+</form>

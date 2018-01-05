@@ -1,0 +1,21 @@
+<param name={$role} value="" />
+<param name={$value} value="" />
+<param name={$name} value="" />
+<param name={$id} value="" />
+<param name={$checked} value={false} />
+<param name={$index} value={-1} />
+
+<input
+	type="radio"
+	class="form__radio"
+	data-role={$role}
+	value={$value}
+	name={$name}
+	id={$id}
+	checked={$checked}
+>
+	<if test={$index != -1}>
+		<attribute name="data-index" value={$index} />
+	</if>
+</input>
+<label class="form__radio-label" for={$id}></label>

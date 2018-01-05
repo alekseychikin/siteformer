@@ -1,0 +1,72 @@
+<import name="form-checkbox" from="../form-checkbox/form-checkbox.gutt" />
+<import name="form-select" from="../form-select/form-select.gutt" />
+<import name="form-input" from="../form-input/form-input.gutt" />
+<import name="form-button" from="../form-button/form-button.gutt" />
+
+<param name={$storages} value={[]} />
+<param name={$storage} value="" />
+<param name={$sources} value={[]} />
+<param name={$source} value="upload" />
+<param name={$saveRatio} value={true} />
+<param name={$width} value="1000" />
+<param name={$height} value="560" />
+<param name={$path} value="" />
+
+<div class="popup__head">Настройки изображения</div>
+
+<form action="" class="form" data-role="configs-form">
+	<div class="form-item">
+		<label class="form-item__label">Хранилище</label>
+		<div class="form-item__container">
+			<form-select role="configs-image-storage">
+				<for-each item={$storage-item} from={$storages}>
+					<option value={$storage-item}>{$storage-item}</option>
+				</for-each>
+			</form-select>
+		</div>
+	</div>
+
+	<div class="form-item">
+		<label for="configs-image-path" class="form-item__label">Путь</label>
+		<div class="form-item__container">
+			<form-input value={$path} role="configs-image-path" id="configs-image-path" autocomplete="off" />
+		</div>
+	</div>
+
+	<div class="form-item">
+		<label for="configs-image-width" class="form-item__label">Уменьшить до заданных размеров</label>
+		<div class="form-item__container form-item__container--full-width">
+			<form-input mods={["very-short"]} value={$width} role="configs-image-width" id="configs-image-width" />
+
+			<span class="form__between-inp">×</span>
+
+			<form-input mods={["very-short"]} value={$height} role="configs-image-height" />
+
+			<form-checkbox role="configs-image-save-ratio" id="configs-image-save-ratio" checked={$saveRatio} />
+			<label for="configs-image-save-ratio">Сохранить пропорции</label>
+		</div>
+	</div>
+
+	<div class="form-item">
+		<if test={arr_len($sources) == 0}>
+			<attribute name="style" value="display: none" />
+		</if>
+		<label for="configs-image-source" class="form-item__label">Источник</label>
+
+		<div class="form-item__container">
+			<form-select data-role="configs-image-source" id="configs-image-source">
+				<option value="upload" selected={$source == "upload"}>Загрузить изображение</option>
+				<if test={arr_len($sources) > 0}>
+					<for-each item={$source-item} from={$sources}>
+						<option value={$source-item.alias} selected={$source == $source-item.alias}>{$source-item.label}</option>
+					</for-each>
+				</if>
+			</form-select>
+		</div>
+	</div>
+
+	<div class="form__submit">
+		<form-button type="submit">Сохранить</form-button>
+		<form-button role="cancel">Отменить</form-button>
+	</div>
+</form>
