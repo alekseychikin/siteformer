@@ -4,19 +4,13 @@
   "hasSettings": true,
   "requiredable": false,
   "defaultSettings": {
-    "storage": "local",
-    "s3auth": false,
-    "isS3checking": false,
-    "buckets": [],
+    "storage": "",
     "path": "/",
-    "width": "",
-    "height": "",
-    "previewWidth": "",
-    "previewHeight": "",
-    "pathError": false,
-    "s3AccessKey": "",
-    "s3SecretKey": "",
-    "s3auth": false,
-    "s3Bucket": ""
+    "width": "1000",
+    "height": "560",
+    "previewWidth": "500",
+    "previewHeight": "280",
+    "saveRatio": true,
+    "source": "upload"
   }
 }

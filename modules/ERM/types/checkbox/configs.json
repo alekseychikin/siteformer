@@ -4,12 +4,9 @@
   "hasSettings": true,
   "requiredable": false,
   "defaultSettings": {
-    "numOptions": 1,
-    "defaultData": [
-      {
-        "label": "",
-        "checked": false
-      }
-    ]
+    "values": [{
+      "label": "",
+      "checked": false
+    }]
   }
 }

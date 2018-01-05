@@ -4,9 +4,7 @@
   "hasSettings": true,
   "requiredable": false,
   "defaultSettings": {
-    "columns": 4,
-    "rows": 3,
-    "defaultData": [
+    "data": [
       ["", "", "", ""],
       ["", "", "", ""],
       ["", "", "", ""]

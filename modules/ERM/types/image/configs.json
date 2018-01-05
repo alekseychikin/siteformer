@@ -4,15 +4,11 @@
   "hasSettings": true,
   "requiredable": true,
   "defaultSettings": {
-    "storage": "local",
+    "storage": "",
     "path": "/",
-    "width": "0",
-    "height": "0",
+    "width": "1000",
+    "height": "560",
     "saveRatio": true,
-    "s3AccessKey": "",
-    "s3SecretKey": "",
-    "s3Bucket": "",
-    "s3Path": "/",
     "source": "upload"
   }
 }

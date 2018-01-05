@@ -4,9 +4,8 @@
   "hasSettings": true,
   "requiredable": false,
   "defaultSettings": {
-    "defaultValue": -1,
-    "numOptions": 1,
-    "defaultData": [
+    "checked": -1,
+    "values": [
       ""
     ]
   }

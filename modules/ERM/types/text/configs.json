@@ -4,6 +4,6 @@
   "hasSettings": true,
   "requiredable": true,
   "defaultSettings": {
-    "defaultText": ""
+    "text": ""
   }
 }
