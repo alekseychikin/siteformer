@@ -4,13 +4,8 @@
 <param name={$id} value={false} />
 <param name={$collection} value="" />
 <param name={$collections} value={[]} />
-<param name={$title} value="" />
-<param name={$alias} value="" />
-<param name={$error-title} value="" />
-<param name={$error-alias} value="" />
-<param name={$error-fields-index} value={false} />
-<param name={$error-fields-field} value="" />
-<param name={$error-fields-message} value="" />
+<param name={$page} value={[]} />
+<param name={$error} value={false} />
 <param name={$user} value={[
 	"login": "makingoff",
 	"email": "mail@makingoff.name",
@@ -29,13 +24,8 @@
 		collection={$collection}
 		user={$user}
 		id={$id}
-		title={$title}
-		alias={$alias}
-		error-title={$error-title}
-		error-alias={$error-alias}
-		error-fields-index={$error-fields-index}
-		error-fields-field={$error-fields-field}
-		error-fields-message={$error-fields-message}
+		page={$page}
+		error={$error}
 		fields={$fields}
 		types={$types}
 	/>

@@ -6,17 +6,23 @@
 <param name={$id} value={false} />
 <param name={$collection} value="" />
 <param name={$collections} value={[]} />
-<param name={$title} value="" />
-<param name={$alias} value="" />
+<param name={$page} value={["title": "", "alias": ""]} />
 <param name={$collection-title} value="Добавить" />
 <param name={$collection-url} value="add" />
 <param name={$save-button-label} value="Создать" />
-<param name={$error-title} value="" />
-<param name={$error-alias} value="" />
-<param name={$error-fields-index} value={false} />
-<param name={$error-fields-field} value="" />
-<param name={$error-fields-message} value="" />
+<param name={$error} value={false} />
 <param name={$user} value={["login": "", "email": "", "userpic": ""]} />
+
+<variable name={$title-error-messages} value={[
+	"EEMPTYREQUIRED": "Обязательное для заполнения",
+	"ENOTUNIQUEVALUE": "Название должно быть уникальным"
+]} />
+
+<variable name={$alias-error-messages} value={[
+	"EEMPTYREQUIRED": "Обязательное для заполнения",
+	"ENOTUNIQUEVALUE": "Веб-имя должно быть уникальным",
+	"ENOTVALIDVALUE": "Веб-имя может содержать только латинские символы"
+]} />
 
 <if test={$id}>
 	<variable name={$collection-title} value="Редактировать" />
@@ -32,28 +38,36 @@
 			label="Название"
 			id="title"
 		>
+			<variable name={$title-error} value={$error && $error.index[0] == "title"} />
 			<form-input
-				type="text"
-				value={$title}
-				class="form-input"
+				value={$page.title}
 				name="title"
 				id="title"
 				role="configs-add-title"
-				focus={str_len($error-title) > 0}
-			/>
+				focus={$title-error}
+			>
+				<if test={$title-error}>
+					<attribute name="error" value={$title-error-messages[$error.code]} />
+				</if>
+			</form-input>
 		</form-item>
 
 		<form-item
 			label="Веб-имя"
 			id="alias"
 		>
+			<variable name={$alias-error} value={$error && $error.index[0] == "alias"} />
 			<form-input
-				value={$title}
+				value={$page.alias}
 				name="alias"
 				id="alias"
 				role="configs-add-alias"
-				focus={str_len($error-alias) > 0}
-			/>
+				focus={$alias-error}
+			>
+				<if test={$alias-error}>
+					<attribute name="error" value={$alias-error-messages[$error.code]} />
+				</if>
+			</form-input>
 		</form-item>
 
 		<form-separate label="Поля" />
@@ -83,9 +97,7 @@
 					<table-module-field
 						fields={$fields}
 						types={$types}
-						error-fields-index={$error-fields-index}
-						error-fields-field={$error-fields-field}
-						error-fields-message={$error-fields-message}
+						error={$error}
 					/>
 				</tbody>
 			</table>

@@ -1,5 +1,7 @@
 import Component from '../../libs/component'
-import {createAction} from '../../libs/dispatch'
+import { createAction } from '../../libs/dispatch'
+
+import { emitEvent } from '../../libs/helpers'
 
 const ConfigsComponents = {
 	checkbox: import('../../components/configs-checkbox/configs-checkbox.js'),
@@ -24,12 +26,15 @@ export default class ConfigsAdd extends Component {
 
 	get events() {
 		return {
+			'input change: [data-role="configs-add-title"]': this.changeTitleHandler,
+			'input change: [data-role="configs-add-alias"]': this.changeAliasHandler,
 			'input change: [data-role="field-title"]': this.changeFieldTitleHandler,
 			'input change: [data-role="field-alias"]': this.changeFieldAliasHandler,
+			'change: [data-role="configs-change-type"]': this.changeTypeHandler,
 			'click: [data-role="btn-add-field"]': this.clickAddFieldHandler,
 			'click: [data-role="btn-remove-field"]': this.clickRemoveFieldHandler,
-			'change: [data-role="configs-change-type"]': this.changeTypeHandler,
-			'click: [data-role="btn-config-field"]': this.clickOpenSettingsHandler
+			'click: [data-role="btn-config-field"]': this.clickOpenSettingsHandler,
+			'submit: [data-role="configs-add-form"]': this.submitConfigsForm
 		}
 	}
 
@@ -42,28 +47,43 @@ export default class ConfigsAdd extends Component {
 
 		this.openedConfigs = null
 		this.indexFieldConfigsModalOpen = false
+
+		setTimeout(() => {
+			node.querySelector('[data-role="configs-add-title"]').value = 'Новости'
+			emitEvent(node.querySelector('[data-role="configs-add-title"]'), 'change')
+			node.querySelector('[data-role="configs-add-alias"]').value = 'news'
+			emitEvent(node.querySelector('[data-role="configs-add-alias"]'), 'change')
+			node.querySelector('[data-role="row-module-fields"]:nth-child(1) [data-role="field-title"]').value = 'Заголовок'
+			emitEvent(node.querySelector('[data-role="row-module-fields"]:nth-child(1) [data-role="field-title"]'), 'change')
+			node.querySelector('[data-role="row-module-fields"]:nth-child(1) [data-role="field-alias"]').value = 'title'
+			emitEvent(node.querySelector('[data-role="row-module-fields"]:nth-child(1) [data-role="field-alias"]'), 'change')
+			node.querySelector('[data-role="row-module-fields"]:nth-child(1) [data-role="configs-change-type"]').value = 'radio'
+			emitEvent(node.querySelector('[data-role="row-module-fields"]:nth-child(1) [data-role="configs-change-type"]'), 'change')
+		}, 10);
+	}
+
+	changeTitleHandler(event) {
+		createAction('CONFIGS_UPDATE_TITLE', { title: event.target.value })
+	}
+
+	changeAliasHandler(event) {
+		createAction('CONFIGS_UPDATE_ALIAS', { alias: event.target.value })
 	}
 
 	changeFieldTitleHandler(event) {
 		const container = event.target.closest('[data-role="row-module-fields"]')
 		const index = Number(container.dataset.index)
-		const state = this.store.getState()
-		const fields = state.fields.slice(0)
+		const title = event.target.value
 
-		fields[index].title = event.target.value
-
-		this.store.setState({ fields })
+		createAction('FIELDS_CHANGE_TITLE', { index, title })
 	}
 
 	changeFieldAliasHandler(event) {
 		const container = event.target.closest('[data-role="row-module-fields"]')
 		const index = Number(container.dataset.index)
-		const state = this.store.getState()
-		const fields = state.fields.slice(0)
+		const alias = event.target.value
 
-		fields[index].alias = event.target.value
-
-		this.store.setState({ fields })
+		createAction('FIELDS_CHANGE_ALIAS', { index, alias })
 	}
 
 	async clickOpenSettingsHandler(event) {
@@ -82,9 +102,16 @@ export default class ConfigsAdd extends Component {
 			cacheModules[field.type] = module
 		}
 
+		const error = state.error && {
+			code: state.error.code,
+			index: state.error.index.slice(3),
+			source: state.error.source
+		}
+
 		const ConfigComponent = module.default
 
 		this.openedConfigs = new ConfigComponent({
+			error,
 			...field.settings
 		}, {
 			onSubmit: this.submitSettingsFormHandler.bind(this),
@@ -96,17 +123,16 @@ export default class ConfigsAdd extends Component {
 			collections: state.collections
 		})
 
+		createAction('CONFIGS_CLEAR_ERROR')
 		this.openedConfigs.open()
 	}
 
 	submitSettingsFormHandler(configsModalState) {
-		const state = this.store.getState()
-		const fields = [ ...state.fields ]
+		createAction('FIELDS_CHANGE_SETTINGS', {
+			index: this.indexFieldConfigsModalOpen,
+			settings: configsModalState
+		})
 
-		fields[this.indexFieldConfigsModalOpen].settings = configsModalState
-		console.log('submited field configs')
-		console.log(fields[this.indexFieldConfigsModalOpen])
-		this.store.setState({ fields })
 		this.openedConfigs.close()
 	}
 
@@ -114,22 +140,29 @@ export default class ConfigsAdd extends Component {
 		this.openedConfigs.destroy()
 	}
 
-	clickAddFieldHandler(e) {
-		createAction('ADD_EMPTY_FIELD')
+	clickAddFieldHandler() {
+		createAction('FIELDS_ADD_EMPTY')
 	}
 
-	clickRemoveFieldHandler(e) {
-		const row = e.target.closest(this.rowSelector)
+	clickRemoveFieldHandler(event) {
+		const row = event.target.closest(this.rowSelector)
 		const index = Number(row.dataset.index)
 
-		createAction('REMOVE_FIELD', { index })
+		createAction('REMOVE_FIELD_BY_INDEX', { index })
 	}
 
-	changeTypeHandler(e) {
-		const row = e.target.closest(this.rowSelector)
-		const type = e.target.value
+	changeTypeHandler(event) {
+		const row = event.target.closest(this.rowSelector)
+		const type = event.target.value
 		const index = row.dataset.index
 
-		createAction('FIELD_CHANGE_TYPE', { type, index })
+		createAction('FIELDS_CHANGE_TYPE', { type, index })
+	}
+
+	submitConfigsForm(event) {
+		createAction('CONFIGS_SAVE_FORM')
+
+		event.preventDefault()
+		return false
 	}
 }

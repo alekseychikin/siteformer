@@ -4,6 +4,11 @@
 
 <param name={$values} value={[""]} />
 <param name={$checked} value={-1} />
+<param name={$error} value={false} />
+
+<variable name={$options-error-messages} value={[
+	"EMINLENGTH": "Нужно задать хотя бы один вариант"
+]} />
 
 <div class="popup__head">Настройки переключателей</div>
 
@@ -38,6 +43,10 @@
 						</label>
 						</input-row>
 				</for-each>
+
+				<if test={$error && $error.index[0] == "values"}>
+					<div class="form-item__error">{$options-error-messages[$error.code]}</div>
+				</if>
 			</div>
 		</div>
 	</div>

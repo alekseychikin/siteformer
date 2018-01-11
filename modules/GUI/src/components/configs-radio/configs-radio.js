@@ -64,6 +64,9 @@ export default class ConfigsRadio extends Modal {
 		values[index] = value
 
 		this.state.values = values
+		this.state.error = false
+
+		this.render()
 	}
 
 	subitFormHandler(e) {

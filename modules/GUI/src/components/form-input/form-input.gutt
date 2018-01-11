@@ -4,7 +4,7 @@
 <param name={$id} value="" />
 <param name={$role} value="" />
 <param name={$focus} value={false} />
-<param name={$error} value="" />
+<param name={$error} value={false} />
 <param name={$mods} value={[]} />
 <param name={$index} value={-1} />
 
@@ -28,6 +28,6 @@
 	</if>
 </input>
 
-<if test={str_len($error)}>
-	<span class="form__error">{$error}</span>
+<if test={$error}>
+	<span class="form-item__error">{$error}</span>
 </if>

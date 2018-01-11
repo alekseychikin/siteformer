@@ -29,4 +29,22 @@
       margin: 0 -5px;
     }
   }
+
+  &__error {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    z-index: 3;
+    margin-top: 3px;
+    transform: translateX(-50%);
+    padding: 5px 10px;
+    border-radius: 3px;
+    border: 1px solid #e65f5f;
+    font-size: 14px;
+    line-height: 16px;
+    color: #ca4848;
+    background-color: #fff;
+    text-align: center;
+    white-space: nowrap;
+  }
 }

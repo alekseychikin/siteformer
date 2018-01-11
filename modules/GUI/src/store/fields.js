@@ -1,5 +1,5 @@
 const fields = {
-	'ADD_EMPTY_FIELD': (store, payload) => {
+	'FIELDS_ADD_EMPTY': (store, payload) => {
 		const state = store.getState()
 		const emptyField = {
 			alias: '',
@@ -12,12 +12,28 @@ const fields = {
 
 		store.setState({fields: [...state.fields, emptyField]})
 	},
-	'REMOVE_FIELD': (store, payload) => {
+	'REMOVE_FIELD_BY_INDEX': (store, { index }) => {
 		const state = store.getState()
 
-		store.setState({ fields: state.fields.filter((field, index) => index !== payload.index) })
+		store.setState({ fields: state.fields.filter((field, indx) => indx !== index) })
 	},
-	'FIELD_CHANGE_TYPE': (store, { type: fieldType, index }) => {
+	'FIELDS_CHANGE_TITLE': (store, { index, title }) => {
+		const state = store.getState()
+		const fields = [ ...state.fields ]
+
+		fields[index].title = title
+
+		store.setState({ fields })
+	},
+	'FIELDS_CHANGE_ALIAS': (store, { index, alias }) => {
+		const state = store.getState()
+		const fields = [ ...state.fields ]
+
+		fields[index].alias = alias
+
+		store.setState({ fields })
+	},
+	'FIELDS_CHANGE_TYPE': (store, { type: fieldType, index }) => {
 		const state = store.getState()
 		const fields = [ ...state.fields ]
 		const types = [ ...state.types ]
@@ -26,19 +42,15 @@ const fields = {
 		fields[index].type = fieldType
 		fields[index].settings = type.defaultSettings
 
-		store.setState(store, { fields })
+		store.setState({ fields })
 	},
-	'CONFIGS_ADD_OPEN_SETTINGS': (store, { index }) => {
+	'FIELDS_CHANGE_SETTINGS': (store, { index, settings }) => {
 		const state = store.getState()
-		const field = state.fields[index]
-		const [ type ] = state.types.filter(item => item.type === field.type)
+		const fields = [ ...state.fields ]
 
-		store.setState({ openConfigs: {
-			index,
-			component: new ConfigsComponents[field.type]({
-				...type.defaultSettings
-			})
-		}})
+		fields[index].settings = settings
+
+		store.setState({ fields })
 	}
 }
 

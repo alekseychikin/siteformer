@@ -6,25 +6,19 @@ require_once __DIR__ . '/../../ERMType.php';
 class SFTypeRadio extends SFERMType
 {
   public static function getSqlField($params) {
-    $defaultValue = $params['defaultValue'];
-
     return [
       'type' => 'INT(6)',
-      'default' => $defaultValue
+      'default' => $params['checked']
     ];
   }
 
   public static function validateSettings($settings, $fields, $currentAlias, $indexes = []) {
     return SFValidate::value([
-      'numOptions' => [
-        'type' => 'uzint',
-        'required' => true
-      ],
-      'defaultValue' => [
+      'checked' => [
         'type' => 'int',
         'required' => true
       ],
-      'defaultData' => [
+      'values' => [
         'minlength' => 1,
         'collection' => [
           'required' => true,
@@ -36,6 +30,6 @@ class SFTypeRadio extends SFERMType
   }
 
   public static function getDefaultData($settings) {
-    return $settings['defaultValue'];
+    return $settings['checked'];
   }
 }

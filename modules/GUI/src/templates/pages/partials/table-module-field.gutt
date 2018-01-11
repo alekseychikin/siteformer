@@ -3,34 +3,50 @@
 <import name="form-checkbox" from="../../../components/form-checkbox/form-checkbox.gutt" />
 
 <param name={$fields} value={[]} />
-<param name={$error-fields-index} value={false} />
-<param name={$error-fields-field} value="" />
-<param name={$error-fields-message} value="" />
+<param name={$error} value={false} />
+<param name={$fields-error} value={$error && $error.index[0] == "fields"} />
+
+<variable name={$title-error-messages} value={[
+	"EEMPTYREQUIRED": "Обязательное для заполнения",
+	"ENOTUNIQUEVALUE": "Название должно быть уникальным"
+]} />
+
+<variable name={$alias-error-messages} value={[
+	"EEMPTYREQUIRED": "Обязательное для заполнения",
+	"ENOTUNIQUEVALUE": "Веб-имя должно быть уникальным"
+]} />
+
+<variable name={$settings-error-messages} value={[
+	"EMINLENGTH": "Настройте поле"
+]} />
 
 <for-each key={$index} item={$field} from={$fields}>
+	<variable name={$row-error} value={$fields-error && $error.index[1] == $index} />
 	<tr class="form-table__row" data-role="row-module-fields" data-index={$index}>
 		<td class="form-table__cell">
+			<variable name={$error-title} value={$row-error && $error.index[2] == "title"} />
 			<form-input
 				value={$field.title}
 				role="field-title"
-				focus={str_len($error-fields-field) && $error-fields-field == 'title' && $error-fields-index == $index}
-			/>
-
-			<if test={str_len($error-fields-field) && $error-fields-field == 'title' && $error-fields-index == $index}>
-				<span class="form__error">{$error-fields-message}</span>
-			</if>
+				focus={$error-title}
+			>
+				<if test={$error-title}>
+					<attribute name="error" value={$title-error-messages[$error.code]} />
+				</if>
+			</form-input>
 		</td>
 
 		<td class="form-table__cell">
+			<variable name={$error-alias} value={$row-error && $error.index[2] == "alias"} />
 			<form-input
 				value={$field.alias}
 				role="field-alias"
-				focus={str_len($error-fields-field) && $error-fields-field == 'alias' && $error-fields-index == $index}
-			/>
-
-			<if test={str_len($error-fields-field) && $error-fields-field == 'alias' && $error-fields-index == $index}>
-				<span class="form__error">{$error-fields-message}</span>
-			</if>
+				focus={$error-alias}
+			>
+				<if test={$error-alias}>
+					<attribute name="error" value={$alias-error-messages[$error.code]} />
+				</if>
+			</form-input>
 		</td>
 
 		<td class="form-table__cell">
@@ -70,12 +86,11 @@
 					class="form__btn"
 					type="button"
 					data-role="btn-config-field"
-					focus={str_len($error-fields-field) && $error-fields-field == 'settings' && $error-fields-index == $index}
 				>Н</button>
-			</if>
 
-			<if test={str_len($error-fields-field) && $error-fields-field == 'settings' && $error-fields-index == $index}>
-				<span class="form__error">{$error-fields-message}</span>
+				<if test={$row-error && $error.index[2] == "settings"}>
+					<span class="form-item__error">{$settings-error-messages[$error.code]}</span>
+				</if>
 			</if>
 		</td>
 
