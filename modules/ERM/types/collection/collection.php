@@ -28,7 +28,7 @@ class SFTypeCollection extends SFERMType
     return $data[$field['alias']];
   }
 
-  public static function validateSettings($settings, $fields, $currentAlias) {
+  public static function validateSettings($settings, $fields, $currentAlias, $indexes = []) {
     return SFValidate::value([
       'collection' => [
         'required' => true
@@ -36,7 +36,7 @@ class SFTypeCollection extends SFERMType
       'field' => [
         'required' => true
       ]
-    ], $settings);
+    ], $settings, $indexes);
   }
 
   public static function getDefaultData($settings) {

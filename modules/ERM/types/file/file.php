@@ -5,7 +5,7 @@ require_once __DIR__ . '/../../ERMType.php';
 
 class SFTypeFile extends SFERMType
 {
-  public static function validateSettings($params, $fields, $currentAlias)
+  public static function validateSettings($settings, $fields, $currentAlias, $indexes = [])
   {
     return SFValidate::value([
       'storage' => [
@@ -16,6 +16,6 @@ class SFTypeFile extends SFERMType
       's3SecretKey' => [],
       's3Bucket' => [],
       's3Path' => []
-    ], $params);
+    ], $settings, $indexes);
   }
 }

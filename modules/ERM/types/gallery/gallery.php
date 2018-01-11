@@ -9,7 +9,7 @@ class SFTypeGallery extends SFERMType
     return false;
   }
 
-  public static function validateSettings($params, $fields, $currentAlias) {
+  public static function validateSettings($settings, $fields, $currentAlias, $indexes = []) {
     return SFValidate::value([
       'storage' => [
         'values' => SFStorages::getStorageList(),
@@ -20,7 +20,7 @@ class SFTypeGallery extends SFERMType
       'height' => [],
       'previewWidth' => [],
       'previewHeight' => []
-    ], $params);
+    ], $settings, $indexes);
   }
 
   public static function prepareDatabase() {

@@ -22,7 +22,7 @@ class SFTypeCheckbox extends SFERMType
     ];
   }
 
-  public static function validateSettings($params, $fields, $currentAlias) {
+  public static function validateSettings($settings, $fields, $currentAlias, $indexes = []) {
     return SFValidate::value([
       'values' => [
         'minlength' => 1,
@@ -35,7 +35,7 @@ class SFTypeCheckbox extends SFERMType
           'checked' => []
         ]
       ]
-    ], $params);
+    ], $settings, $indexes);
   }
 
   public static function prepareInsertData($collection, $field, $data) {

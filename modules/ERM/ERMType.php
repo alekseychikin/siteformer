@@ -29,9 +29,10 @@ class SFERMType
   * @param array $settings Params sent for validation
   * @param array $fields Array of fields at current SAMConnection
   * @param string $currentAlias Value of current alias
+  * @param array $indexes Array of indexes for proper ValidateException
   * @return array Validated settings
   */
-  public static function validateSettings($settings, $fields, $currentAlias) {
+  public static function validateSettings($settings, $fields, $currentAlias, $indexes = []) {
     return $settings;
   }
 

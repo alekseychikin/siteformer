@@ -14,7 +14,7 @@ class SFTypeRadio extends SFERMType
     ];
   }
 
-  public static function validateSettings($params, $fields, $currentAlias) {
+  public static function validateSettings($settings, $fields, $currentAlias, $indexes = []) {
     return SFValidate::value([
       'numOptions' => [
         'type' => 'uzint',
@@ -32,7 +32,7 @@ class SFTypeRadio extends SFERMType
           'skipempty' => true
         ]
       ]
-    ], $params);
+    ], $settings, $indexes);
   }
 
   public static function getDefaultData($settings) {

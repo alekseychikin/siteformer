@@ -6,12 +6,12 @@ require_once __DIR__ . '/helper.php';
 
 class SFTypeImage extends SFERMType
 {
-  public static function validateSettings($params, $fields, $currentAlias) {
-    $sources = self::getSources($fields, $params, $currentAlias);
+  public static function validateSettings($settings, $fields, $currentAlias, $indexes = []) {
+    $sources = self::getSources($fields, $settings, $currentAlias);
 
-    $storage = $params['storage'];
+    $storage = $settings['storage'];
 
-    $params = SFValidate::value([
+    $settings = SFValidate::value([
       'storage' => [
         'values' => SFStorages::getStorageList(),
         'required' => true
@@ -64,13 +64,13 @@ class SFTypeImage extends SFERMType
         },
         'default' => 'upload'
       ]
-    ], $params);
+    ], $settings, $indexes);
 
-    if ($params['source'] !== 'upload') {
-      $params['hide'] = true;
+    if ($settings['source'] !== 'upload') {
+      $settings['hide'] = true;
     }
 
-    return $params;
+    return $settings;
   }
 
   public static function detectSource($field) {
