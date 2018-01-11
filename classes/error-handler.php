@@ -26,13 +26,13 @@ function shutdownHandler() {
 
 function errorHandler($severity, $msg, $file, $line) {
   if (error_reporting() & $severity) {
-    throw new ErrorException($msg, 0, $severity, $file, $line);
+    echoError($msg . ' at ' . $file . ':' . $line);
   }
 }
 
 function exceptionHandler($exception) {
   echoError([
-    'message' => $exception->getMessage(),
+    'message' => $exception->getMessage() . ' at ' . $exception->getFile() . ':' . $exception->getLine(),
     'trace' => $exception->getTrace()
   ]);
 }

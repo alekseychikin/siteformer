@@ -111,7 +111,7 @@ function doEngine($configs) {
           die('Поле ' . $message['index'][1] . ' обязательно нужно заполнить');
       }
     } else {
-      print_r($message);
+      SFResponse::error(422, $message);
     }
   } catch (BaseException $e) {
     SFResponse::error(400, $e->message());
