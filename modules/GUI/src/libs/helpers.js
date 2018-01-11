@@ -120,11 +120,21 @@ export function sendFile (url, data) {
 	})
 }
 
-export function fetch (url) {
+const defaultFetchHeaders = {
+	'X-Requested-With': 'XMLHttpRequest'
+}
+
+export function fetch (url, srcHeaders = {}) {
 	return new Promise(function (resolve, reject) {
 		const req = new XMLHttpRequest()
+		const headers = Object.assign({}, defaultFetchHeaders, srcHeaders)
+
 		req.open('GET', url, true)
-		req.setRequestHeader('X-Requested-With', 'XMLHttpRequest')
+
+		for (let header in headers) {
+			req.setRequestHeader(header, headers[header])
+		}
+
 		req.setRequestHeader('Accept', 'application/json')
 		req.onreadystatechange = readyStateChange(req, resolve, reject)
 		req.send()
@@ -155,13 +165,23 @@ function parsePostData (postData, name = '') {
 	}
 }
 
-export function sendPost (url, data) {
+const defaultPostHeaders = {
+	'X-Requested-With': 'XMLHttpRequest',
+	'Accept': 'application/json',
+	'Content-type': 'application/x-www-form-urlencoded; charset=UTF-8'
+}
+
+export function sendPost (url, data, srcHeaders = {}) {
 	return new Promise(function (resolve, reject) {
 		const req = new XMLHttpRequest()
+		const headers = Object.assign({}, defaultPostHeaders, srcHeaders)
+
 		req.open('POST', url, true)
-		req.setRequestHeader('X-Requested-With', 'XMLHttpRequest')
-		req.setRequestHeader('Accept', 'application/json')
-		req.setRequestHeader('Content-type', 'application/x-www-form-urlencoded; charset=UTF-8')
+
+		for (let header in headers) {
+			req.setRequestHeader(header, headers[header])
+		}
+
 		req.onreadystatechange = readyStateChange(req, resolve, reject)
 		req.send(parsePostData(data))
 	})
