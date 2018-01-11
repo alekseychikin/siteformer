@@ -364,7 +364,6 @@ class SFERM
       ->values([
         'title' => $data['title'],
         'alias' => $data['alias'],
-        'module' => $data['module'],
         'table' => $data['table']
       ])
       ->exec();
@@ -692,18 +691,9 @@ class SFERM
       $className = self::getClassNameByType($field['type']);
 
       if (class_exists($className)) {
-        try {
-          $settings = parseJSON($field['settings']);
-          $data['fields'][$index]['settings'] = json_encode($className::validateSettings($settings, $data['fields'], $field['alias']));
-        } catch (ValidateException $e) {
-          $message = $e->getOriginMessage();
-
-          throw new ValidateException([
-            'code' => $message['code'],
-            'index' => array_merge(['fields', $index, 'settings'], $message['index']),
-            'source' => $message['source']
-          ]);
-        }
+        $settings = parseJSON($field['settings']);
+        $validatedSettings = $className::validateSettings($settings, $data['fields'], $field['alias'], ['fields', $index, 'settings']);
+        $data['fields'][$index]['settings'] = json_encode($validatedSettings);
       }
     }
   }

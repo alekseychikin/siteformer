@@ -87,7 +87,7 @@ function doEngine($configs) {
       SFResponse::error(404, 'Page not found');
     }
   } catch (ValidateException $e) {
-    $message = $e->getOriginMessage();
+    $message = $e->getDetails();
 
     if (in_array($message['index'][0], ['config_actions', 'config_routes', 'config_models', 'config_templates'])) {
       switch ($message['code']) {

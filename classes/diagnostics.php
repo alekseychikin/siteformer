@@ -40,7 +40,7 @@ class Diagnostics {
         ]
       ], $configs);
     } catch (ValidateException $e) {
-      $message = $e->getOriginMessage();
+      $message = $e->getDetails();
       array_unshift($message['index'], 'database');
       throw new ValidateException(['code' => $message['code'], 'index' => $message['index'], 'source' => $message['source']]);
     }

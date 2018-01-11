@@ -17,7 +17,7 @@ class ValidateSimpleTest extends PHPUnit_Framework_TestCase
 
       $this->assertEquals(false, $newValue);
     } catch (ValidateException $e) {
-      $message = $e->getOriginMessage();
+      $message = $e->getDetails();
 
       $this->assertEquals('ENOTVALIDTYPE', $message['code']);
       $this->assertEquals([], $message['index']);
@@ -76,7 +76,7 @@ class ValidateSimpleTest extends PHPUnit_Framework_TestCase
 
       $this->assertEquals(true, 'Never happend');
     } catch (ValidateException $e) {
-      $message = $e->getOriginMessage();
+      $message = $e->getDetails();
 
       $this->assertEquals('EEMPTYREQUIRED', $message['code']);
       $this->assertEquals([], $message['index']);
@@ -91,7 +91,7 @@ class ValidateSimpleTest extends PHPUnit_Framework_TestCase
 
       $this->assertEquals(true, 'Never happend');
     } catch (ValidateException $e) {
-      $message = $e->getOriginMessage();
+      $message = $e->getDetails();
 
       $this->assertEquals('EEMPTYREQUIRED', $message['code']);
       $this->assertEquals([], $message['index']);
@@ -106,7 +106,7 @@ class ValidateSimpleTest extends PHPUnit_Framework_TestCase
 
       $this->assertEquals(true, 'Never happend');
     } catch (ValidateException $e) {
-      $message = $e->getOriginMessage();
+      $message = $e->getDetails();
 
       $this->assertEquals('EEMPTYREQUIRED', $message['code']);
       $this->assertEquals([], $message['index']);
@@ -121,7 +121,7 @@ class ValidateSimpleTest extends PHPUnit_Framework_TestCase
 
       $this->assertEquals(true, 'Never happend');
     } catch (ValidateException $e) {
-      $message = $e->getOriginMessage();
+      $message = $e->getDetails();
 
       $this->assertEquals('EEMPTYREQUIRED', $message['code']);
       $this->assertEquals([], $message['index']);
@@ -144,7 +144,7 @@ class ValidateSimpleTest extends PHPUnit_Framework_TestCase
 
       $this->assertEquals(true, 'Never happend');
     } catch (ValidateException $e) {
-      $message = $e->getOriginMessage();
+      $message = $e->getDetails();
 
       $this->assertEquals([], $message['index']);
       $this->assertEquals('ENOTVALIDVALUE', $message['code']);
@@ -161,7 +161,7 @@ class ValidateSimpleTest extends PHPUnit_Framework_TestCase
 
       $this->assertEquals(true, 'Never happend');
     } catch (ValidateException $e) {
-      $message = $e->getOriginMessage();
+      $message = $e->getDetails();
 
       $this->assertEquals([], $message['index']);
       $this->assertEquals('ENOTVALIDVALUE', $message['code']);
@@ -194,7 +194,7 @@ class ValidateSimpleTest extends PHPUnit_Framework_TestCase
 
       $this->assertEquals(true, 'Never happend');
     } catch (ValidateException $e) {
-      $message = $e->getOriginMessage();
+      $message = $e->getDetails();
 
       $this->assertEquals([], $message['index']);
       $this->assertEquals('EVALUESNOTMATCHED', $message['code']);
@@ -219,7 +219,7 @@ class ValidateSimpleTest extends PHPUnit_Framework_TestCase
 
       $this->assertEquals(true, 'Never happend');
     } catch (ValidateException $e) {
-      $message = $e->getOriginMessage();
+      $message = $e->getDetails();
 
       $this->assertEquals([], $message['index']);
       $this->assertEquals('ENOTUNIQUEVALUE', $message['code']);

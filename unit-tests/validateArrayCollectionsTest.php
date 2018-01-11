@@ -238,7 +238,7 @@ class ValidateArrayCollectionsTest extends PHPUnit_Framework_TestCase
 
       $this->assertEquals(true, 'Never happend');
     } catch (ValidateException $e) {
-      $message = $e->getOriginMessage();
+      $message = $e->getDetails();
 
       $this->assertEquals('ENOTVALIDTYPE', $message['code']);
       $this->assertEquals([1, 'children', 1, 'age'], $message['index']);

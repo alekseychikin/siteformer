@@ -30,8 +30,6 @@ class SFGuiUsers extends SFRouterModel
     ], $params['email']);
 
     if (isset($params['send-invitation'])) {
-      SFResponse::showContent();
-
       $hash = md5(time() . rand(0, 100000));
       $link = $_SERVER['HTTP_ORIGIN'] . '/cms/?invitation=' . $hash;
 

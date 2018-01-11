@@ -1,5 +1,13 @@
 <?php if (!defined('ROOT')) die('You can\'t just open this file, dude');
 
+// EEMPTYREQUIRED
+// EMINLENGTH
+// EMAXLENGTH
+// ENOTVALIDTYPE
+// ENOTVALIDVALUE
+// EVALUESNOTMATCHED
+// ENOTUNIQUEVALUE
+
 require_once __DIR__ . '/validate-exception.php';
 
 class SkipEmptyException extends Exception {}

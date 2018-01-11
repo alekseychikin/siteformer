@@ -12,7 +12,6 @@ $s3 = new S3($accessKey, $secretKey);
 try {
   var_dump($path);
   $obj = S3::getObjectInfo($bucket, $path, true);
-  SFResponse::showContent();
   var_dump($obj);
   SFResponse::set('exists', $obj !== false);
 } catch (Exception $e) {

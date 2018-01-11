@@ -81,7 +81,7 @@ class ValidateSimpleCollectionTest extends PHPUnit_Framework_TestCase
 
       $this->assertEquals(true, 'Never happend');
     } catch (ValidateException $e) {
-      $message = $e->getOriginMessage();
+      $message = $e->getDetails();
 
       $this->assertEquals('ENOTVALIDTYPE', $message['code']);
       $this->assertEquals(['age'], $message['index']);
@@ -116,7 +116,7 @@ class ValidateSimpleCollectionTest extends PHPUnit_Framework_TestCase
 
       $this->assertEquals(true, 'Never happend');
     } catch (ValidateException $e) {
-      $message = $e->getOriginMessage();
+      $message = $e->getDetails();
 
       $this->assertEquals('EEMPTYREQUIRED', $message['code']);
       $this->assertEquals(['name'], $message['index']);
@@ -153,7 +153,7 @@ class ValidateSimpleCollectionTest extends PHPUnit_Framework_TestCase
 
       $this->assertEquals(true, 'Never happend');
     } catch (ValidateException $e) {
-      $message = $e->getOriginMessage();
+      $message = $e->getDetails();
 
       $this->assertEquals('ENOTVALIDVALUE', $message['code']);
       $this->assertEquals(['name'], $message['index']);
@@ -174,7 +174,7 @@ class ValidateSimpleCollectionTest extends PHPUnit_Framework_TestCase
 
       $this->assertEquals(true, 'Never happend');
     } catch (ValidateException $e) {
-      $message = $e->getOriginMessage();
+      $message = $e->getDetails();
 
       $this->assertEquals('ENOTVALIDVALUE', $message['code']);
       $this->assertEquals(['name'], $message['index']);
@@ -223,7 +223,7 @@ class ValidateSimpleCollectionTest extends PHPUnit_Framework_TestCase
 
       $this->assertEquals(true, 'Never happend');
     } catch (ValidateException $e) {
-      $message = $e->getOriginMessage();
+      $message = $e->getDetails();
 
       $this->assertEquals('EVALUESNOTMATCHED', $message['code']);
       $this->assertEquals(['name'], $message['index']);
@@ -258,7 +258,7 @@ class ValidateSimpleCollectionTest extends PHPUnit_Framework_TestCase
 
       $this->assertEquals(true, 'Never happend');
     } catch (ValidateException $e) {
-      $message = $e->getOriginMessage();
+      $message = $e->getDetails();
 
       $this->assertEquals('ENOTUNIQUEVALUE', $message['code']);
       $this->assertEquals(['name'], $message['index']);

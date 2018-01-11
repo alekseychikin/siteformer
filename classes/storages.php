@@ -24,7 +24,7 @@ class SFStorages {
         }
       });
     } catch (ValidateException $e) {
-      $message = $e->getOriginMessage();
+      $message = $e->getDetails();
       array_unshift($message['index'], 'storages');
       throw new ValidateException($message);
     }

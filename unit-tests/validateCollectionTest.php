@@ -52,7 +52,7 @@ class ValidateCollectionTest extends PHPUnit_Framework_TestCase
 
       $this->assertEquals(true, 'Never happend');
     } catch (ValidateException $e) {
-      $message = $e->getOriginMessage();
+      $message = $e->getDetails();
 
       $this->assertEquals('ENOTVALIDTYPE', $message['code']);
       $this->assertEquals([2], $message['index']);
@@ -97,7 +97,7 @@ class ValidateCollectionTest extends PHPUnit_Framework_TestCase
 
       $this->assertEquals(true, 'Never happend');
     } catch (ValidateException $e) {
-      $message = $e->getOriginMessage();
+      $message = $e->getDetails();
 
       $this->assertEquals('ENOTVALIDVALUE', $message['code']);
       $this->assertEquals([3], $message['index']);
@@ -130,7 +130,7 @@ class ValidateCollectionTest extends PHPUnit_Framework_TestCase
 
       $this->assertEquals(true, 'Never happend');
     } catch (ValidateException $e) {
-      $message = $e->getOriginMessage();
+      $message = $e->getDetails();
 
       $this->assertEquals('ENOTVALIDVALUE', $message['code']);
       $this->assertEquals([4], $message['index']);
@@ -161,7 +161,7 @@ class ValidateCollectionTest extends PHPUnit_Framework_TestCase
 
       $this->assertEquals(true, 'Never happend');
     } catch (ValidateException $e) {
-      $message = $e->getOriginMessage();
+      $message = $e->getDetails();
 
       $this->assertEquals('EVALUESNOTMATCHED', $message['code']);
       $this->assertEquals([4], $message['index']);
@@ -192,7 +192,7 @@ class ValidateCollectionTest extends PHPUnit_Framework_TestCase
 
       $this->assertEquals(true, 'Never happend');
     } catch (ValidateException $e) {
-      $message = $e->getOriginMessage();
+      $message = $e->getDetails();
 
       $this->assertEquals('ENOTUNIQUEVALUE', $message['code']);
       $this->assertEquals([2], $message['index']);
@@ -229,7 +229,7 @@ class ValidateCollectionTest extends PHPUnit_Framework_TestCase
 
       $this->assertEquals(true, 'Never happend');
     } catch (ValidateException $e) {
-      $message = $e->getOriginMessage();
+      $message = $e->getDetails();
 
       $this->assertEquals('ENOTUNIQUEVALUE', $message['code']);
       $this->assertEquals([3], $message['index']);
@@ -305,7 +305,7 @@ class ValidateCollectionTest extends PHPUnit_Framework_TestCase
 
       $this->assertEquals(true, 'Never happend');
     } catch (ValidateException $e) {
-      $message = $e->getOriginMessage();
+      $message = $e->getDetails();
 
       $this->assertEquals('ENOTVALIDTYPE', $message['code']);
       $this->assertEquals([2], $message['index']);
@@ -344,7 +344,7 @@ class ValidateCollectionTest extends PHPUnit_Framework_TestCase
 
       $this->assertEquals(true, 'Never happend');
     } catch (ValidateException $e) {
-      $message = $e->getOriginMessage();
+      $message = $e->getDetails();
 
       $this->assertEquals('ENOTVALIDVALUE', $message['code']);
       $this->assertEquals([3], $message['index']);
@@ -373,7 +373,7 @@ class ValidateCollectionTest extends PHPUnit_Framework_TestCase
 
       $this->assertEquals(true, 'Never happend');
     } catch (ValidateException $e) {
-      $message = $e->getOriginMessage();
+      $message = $e->getDetails();
 
       $this->assertEquals('ENOTVALIDVALUE', $message['code']);
       $this->assertEquals([4], $message['index']);
@@ -400,7 +400,7 @@ class ValidateCollectionTest extends PHPUnit_Framework_TestCase
 
       $this->assertEquals(true, 'Never happend');
     } catch (ValidateException $e) {
-      $message = $e->getOriginMessage();
+      $message = $e->getDetails();
 
       $this->assertEquals('EVALUESNOTMATCHED', $message['code']);
       $this->assertEquals([4], $message['index']);
@@ -427,7 +427,7 @@ class ValidateCollectionTest extends PHPUnit_Framework_TestCase
 
       $this->assertEquals(true, 'Never happend');
     } catch (ValidateException $e) {
-      $message = $e->getOriginMessage();
+      $message = $e->getDetails();
 
       $this->assertEquals('ENOTUNIQUEVALUE', $message['code']);
       $this->assertEquals([2], $message['index']);
@@ -460,7 +460,7 @@ class ValidateCollectionTest extends PHPUnit_Framework_TestCase
 
       $this->assertEquals(true, 'Never happend');
     } catch (ValidateException $e) {
-      $message = $e->getOriginMessage();
+      $message = $e->getDetails();
 
       $this->assertEquals('ENOTUNIQUEVALUE', $message['code']);
       $this->assertEquals([3], $message['index']);
@@ -506,7 +506,7 @@ class ValidateCollectionTest extends PHPUnit_Framework_TestCase
 
       $this->assertEquals(true, 'Never happend');
     } catch (ValidateException $e) {
-      $message = $e->getOriginMessage();
+      $message = $e->getDetails();
 
       $this->assertEquals('EMINLENGTH', $message['code']);
       $this->assertEquals([], $message['index']);
@@ -535,7 +535,7 @@ class ValidateCollectionTest extends PHPUnit_Framework_TestCase
 
       $this->assertEquals(true, 'Never happend');
     } catch (ValidateException $e) {
-      $message = $e->getOriginMessage();
+      $message = $e->getDetails();
 
       $this->assertEquals('EMAXLENGTH', $message['code']);
       $this->assertEquals([], $message['index']);
