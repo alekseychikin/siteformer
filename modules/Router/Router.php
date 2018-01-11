@@ -146,33 +146,51 @@ class SFRouter
       }
     }
 
-    self::prepareGetParams($params);
+    $params = self::prepareGetParams($params);
+
+    foreach ($params as $key => $value) {
+      SFResponse::set($key, $value);
+    }
 
     SFResponse::render();
   }
 
-  private static function runAction ($data, $params) {
+  private static function runAction($data, $params) {
     if (isset($data['data'])) {
-      self::prepareGetParams($data['data'], $params);
+      $params = self::prepareGetParams($data['data'], $params);
+
+      foreach ($params as $key => $value) {
+        SFResponse::set($key, $value);
+      }
     }
 
-    if (isset($data['template'])) {
+    $headers = SFResponse::getRequestHeaders();
+    $accept = 'text/html';
+
+    if (isset($headers['Accept'])) {
+      $accept = strtolower($headers['Accept']);
+    }
+
+    if (isset($data['template']) && strpos($accept, 'text/html') !== false) {
       echo SFTemplater::render($data['template'], SFResponse::getState());
     }
   }
 
-  private static function prepareGetParams ($srcParams = [], $params = []) {
-    if (!$srcParams) {
-      $srcParams = [];
+  private static function prepareGetParams($rules = [], $inputData = []) {
+    $outputData = [];
+
+    foreach ($rules as $key => $value) {
+      if (gettype($value) === 'array') {
+        $subData = self::prepareGetParams($value, $inputData);
+        $outputData[$key] = $subData;
+      } else {
+        list($model, $options) = self::parseSource($value, $inputData);
+        $inputData[$key] = self::getDataFromModel($model, $options);
+        $outputData[$key] = $inputData[$key];
+      }
     }
 
-    foreach ($srcParams as $key => $value) {
-      list($model, $options) = self::parseSource($value, $params);
-      $params[$key] = self::getDataFromModel($model, $options);
-      SFResponse::set($key, $params[$key]);
-    }
-
-    return $params;
+    return $outputData;
   }
 
   private static function getDataFromModel($model, $params) {
@@ -367,7 +385,7 @@ class SFRouter
 
       return $uri;
     } else {
-      if (self::uriNum() > 0) {
+      if (self::uriNum() > 1) {
         return '/' . implode('/', self::$uri) . '/';
       } else {
         return '/';

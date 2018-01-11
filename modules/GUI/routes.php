@@ -18,8 +18,10 @@ return [
       'fields' => 'gui-fields?collection=new',
       'collection' => 'gui-scalar?value=section',
       'page-title' => 'gui-scalar?value=Добавить раздел',
-      'title' => 'gui-scalar?value=',
-      'alias' => 'gui-scalar?value=',
+      'page' => [
+        'title' => 'gui-scalar?value=',
+        'alias' => 'gui-scalar?value='
+      ],
       'storages' => 'gui-storages'
     ],
     'template' => 'entries/configs-add.gutt'
@@ -36,7 +38,7 @@ return [
       'collections' => 'gui-collections',
       'modules' => 'gui-modules'
     ],
-    'template' => 'sections/configs/add.gutt'
+    'template' => 'entries/configs-add.gutt'
   ],
   '/cms/types/{type}/{handle}/' => MODULES . 'GUI/sections/main/type',
   '/cms/profile/' => [
