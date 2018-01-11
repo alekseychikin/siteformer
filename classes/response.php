@@ -5,7 +5,6 @@ class SFResponse
   private static $state = [];
   private static $template;
   private static $main;
-  private static $isShowContent = false;
   private static $codes = [
     '200' => 'OK',
     '400' => 'Bad Request',
@@ -122,8 +121,8 @@ class SFResponse
     if (ob_get_length()) {
       $content = ob_get_contents();
 
-      if (self::$isShowContent) {
-        self::set('content', $content);
+      if (strlen($content)) {
+        self::set('debug', $content);
       }
 
       ob_end_clean();
@@ -140,7 +139,19 @@ class SFResponse
       case 'application/json':
         header('Content-Type: application/json; charset=utf-8');
 
-        echo json_encode(self::$state);
+        $state = self::$state;
+
+        if (self::$code !== 200) {
+          $state = [
+            'error' => self::$state['error']
+          ];
+
+          if (strlen(self::$state['content'])) {
+            $state['debug'] = self::$state['content'];
+          }
+        }
+
+        echo json_encode($state);
 
         break;
       case 'text/xml':
@@ -163,12 +174,19 @@ class SFResponse
 
             echo '<!-- ' . ($endTime - $startTime) . 's; ' . SFORMDatabase::$countQueries . ' queries -->';
           } else {
-            if (gettype(self::$state['error']) === 'array' && isset(self::$state['error']['message'])) {
-              echo self::$state['error']['message'] . "\n<br/><br/>\n";
+            $state = [
+              'error' => self::$state['error'],
+              'debug' => self::$state['content']
+            ];
 
-              if (isset(self::$state['error']['trace'])) {
-                echo '<pre>' . print_r(self::$state['error']['trace'], true) . '</pre>';
+            if (gettype($state['error']) === 'array' && isset($state['error']['message'])) {
+              echo $state['error']['message'] . "\n<br/><br/>\n";
+
+              if (isset($state['error']['trace'])) {
+                echo '<pre>' . print_r($state['error']['trace'], true) . '</pre>';
               }
+            } else {
+              echo $state['error'];
             }
           }
         }
@@ -188,10 +206,6 @@ class SFResponse
     self::redir($_SERVER['REQUEST_URI']);
   }
 
-  public static function showContent() {
-    self::$isShowContent = true;
-  }
-
   private static function prepareActionPath($action, & $isFile, & $isDir) {
     if (substr($action, -1) === '/') {
       $action = substr($action, 0, -1);
@@ -206,7 +220,7 @@ class SFResponse
     return $action;
   }
 
-  private static function getRequestHeaders() {
+  public static function getRequestHeaders() {
     $headers = array();
 
     foreach($_SERVER as $key => $value) {

@@ -123,7 +123,3 @@ String with url
 ## `refresh`
 
 Sends header for refresh page
-
-## `showContent`
-
-Adds special field `content` to JSON output with all content output. It works with debugging cases.
