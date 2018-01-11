@@ -1,5 +1,21 @@
 <?php if (!defined('ROOT')) die('You can\'t just open this file, dude');
 
+function println() {
+  $variables = func_get_args();
+
+  foreach ($variables as $variable) {
+    if (gettype($variable) === 'array') {
+      print_r($variable);
+    } else {
+      echo $variable;
+    }
+
+    echo '   ';
+  }
+
+  echo "\n";
+}
+
 function arrMap($arr, $cb) {
   foreach ($arr as $index => $value) {
     $arr[$index] = $cb($value, $index);
