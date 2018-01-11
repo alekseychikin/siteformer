@@ -45,7 +45,10 @@ function doEngine($configs) {
   try {
     $configs = Diagnostics::checkConfigs($configs);
 
-    SFURI::init($_GET[$configs['modrewrite-get-url']]);
+    $url = isset($_GET[$configs['modrewrite-get-url']]) ?
+      $_GET[$configs['modrewrite-get-url']] :
+      '';
+    SFURI::init($url);
 
     require_once MODULES . 'Templater/Templater.php';
 
