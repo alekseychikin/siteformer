@@ -4,8 +4,16 @@
 <param name={$collections} value={[]} />
 <param name={$collection} value="" />
 <param name={$field} value="" />
+<param name={$error} value={false} />
 
 <variable name={$has-string-field} value={false} />
+<variable name={$collection-error-message} value={[
+	"EEMPTYREQUIRED": "Выберите коллекцию"
+]} />
+
+<variable name={$field-error-message} value={[
+	"EEMPTYREQUIRED": "Выберите поле"
+]} />
 
 <div class="popup__head">Настройки секции</div>
 
@@ -22,6 +30,10 @@
 					</for-each>
 				</if>
 			</form-select>
+
+			<if test={$error && $error.index[0] == "collection"}>
+				<span class="form-item__error">{$collection-error-message[$error.code]}</span>
+			</if>
 		</div>
 	</div>
 
@@ -47,6 +59,10 @@
 			<div class="form__hint">
 				Поиск работает только по полям типа Строка
 			</div>
+
+			<if test={$error && $error.index[0] == "field"}>
+				<span class="form-item__error">{$field-error-message[$error.code]}</span>
+			</if>
 		</div>
 	</div>
 

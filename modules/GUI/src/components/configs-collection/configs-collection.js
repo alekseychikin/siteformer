@@ -27,12 +27,14 @@ export default class ConfigsCollection extends Modal {
 
 	changeCollectionHandler(event) {
 		this.state.collection = event.target.value
+		this.state.error = false
 
 		this.render()
 	}
 
 	changeFieldHandler(event) {
 		this.state.field = event.target.value
+		this.state.error = false
 
 		this.render()
 	}
