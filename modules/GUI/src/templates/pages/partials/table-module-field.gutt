@@ -16,9 +16,7 @@
 	"ENOTUNIQUEVALUE": "Веб-имя должно быть уникальным"
 ]} />
 
-<variable name={$settings-error-messages} value={[
-	"EMINLENGTH": "Настройте поле"
-]} />
+<variable name={$settings-error-messages} value="Настройте поле" />
 
 <for-each key={$index} item={$field} from={$fields}>
 	<variable name={$row-error} value={$fields-error && $error.index[1] == $index} />
@@ -89,7 +87,7 @@
 				>Н</button>
 
 				<if test={$row-error && $error.index[2] == "settings"}>
-					<span class="form-item__error">{$settings-error-messages[$error.code]}</span>
+					<span class="form-item__error">{$settings-error-messages}</span>
 				</if>
 			</if>
 		</td>
