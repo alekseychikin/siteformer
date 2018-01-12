@@ -20,7 +20,12 @@
 	var cacheObj = generateObjectByNode(node.childNodes);
 
 	return function (obj) {
-		var genObj = prepareTemplate(template(obj));
-		handleChildren(cacheObj, genObj, node);
+		try {
+			var genObj = template(obj);
+			genObj = prepareTemplate(genObj);
+			handleChildren(cacheObj, genObj, node);
+		} catch (e) {
+			console.error(e)
+		}
 	};
 });

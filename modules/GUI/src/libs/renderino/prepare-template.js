@@ -2,6 +2,10 @@ module.exports = function prepareTemplate(tree) {
 	var result = []
 
 	tree.forEach(function (item) {
+		if (!item) {
+			return result;
+		}
+
 		if (typeof item === 'string' && item.trim().length) {
 			return result.push(item);
 		}
