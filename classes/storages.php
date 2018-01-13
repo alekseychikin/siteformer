@@ -30,6 +30,50 @@ class SFStorages {
     }
   }
 
+  public static function checkWritablePath($storage, $path, $indexes = []) {
+    if (!isset(self::$storages[$storage])) {
+      throw new BaseException('No such storage (' . $storage . ') in configs');
+    }
+
+    switch (self::$storages[$storage]['type']) {
+      case 'local':
+        $filepath = pathresolve(self::$storages[$storage]['path'], $path, md5(time()));
+        $dirname = dirname($filepath);
+        if (!file_exists($dirname)) {
+          throw new ValidateException([
+            'code' => 'EDIRNOTEXISTS',
+            'index' => $indexes,
+            'source' => $dirname
+          ]);
+        } elseif (!is_dir($dirname)) {
+          throw new ValidateException([
+            'code' => 'EDIRISFILE',
+            'index' => $indexes,
+            'source' => $dirname
+          ]);
+        }
+
+        $fileDesc = @fopen($filepath, 'w');
+
+        if ($fileDesc) {
+          fclose($fileDesc);
+          unlink($filepath);
+
+          return true;
+        }
+
+        throw new ValidateException([
+          'code' => 'EPERMISSIONDENIED',
+          'index' => $indexes,
+          'source' => $dirname
+        ]);
+      case 's3':
+        return true;
+    }
+
+    return false;
+  }
+
   public static function getStorageList() {
     return array_keys(self::$storages);
   }
