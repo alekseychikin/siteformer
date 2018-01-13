@@ -15,7 +15,11 @@ class SFTypeGallery extends SFERMType
         'values' => SFStorages::getStorageList(),
         'required' => true
       ],
-      'path' => [],
+      'path' => [
+        'valid' => function ($value) use ($settings, $indexes) {
+          return SFStorages::checkWritablePath($settings['storage'], $value, array_merge($indexes, ['path']));
+        }
+      ],
       'width' => [],
       'height' => [],
       'previewWidth' => [],

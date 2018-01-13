@@ -5,12 +5,11 @@
   "requiredable": false,
   "defaultSettings": {
     "storage": "",
-    "path": "/",
+    "path": ".",
     "width": "1000",
     "height": "560",
     "previewWidth": "500",
     "previewHeight": "280",
-    "saveRatio": true,
-    "source": "upload"
+    "saveRatio": true
   }
 }

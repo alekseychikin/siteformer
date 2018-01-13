@@ -1,10 +1,12 @@
 import Modal from '../modal/modal'
 import renderino from '../../libs/renderino'
 import configsTemplate from './configs-gallery.gutt'
+import SFAPI from '../../libs/sf-api'
 
 export default class ConfigsGallery extends Modal {
 	get events() {
 		return {
+			'click: [data-role="configs-gallery-check-path"]': this.clickCheckPathHandler,
 			'change: [data-role="configs-gallery-storage"]': this.changeStorageHandler,
 			'input change: [data-role="configs-gallery-path"]': this.changePathHandler,
 			'input change: [data-role="configs-gallery-width"]': this.changeWidthHandler,
@@ -25,8 +27,7 @@ export default class ConfigsGallery extends Modal {
 
 		this.state = state
 		this.state.storages = [ ...storages ]
-
-		this.setDefaultState()
+		this.state.isWritablePath = 'NOTCHECKED'
 
 		this.render()
 		this.open()
@@ -34,12 +35,54 @@ export default class ConfigsGallery extends Modal {
 		this.node.querySelector('input[type="text"]:first-child').focus()
 	}
 
+	async clickCheckPathHandler() {
+		const { storage, path } = this.state
+
+		if (storage.length && path.length) {
+			try {
+				this.state.isWritablePath = 'CHECKING'
+
+				this.render()
+
+				await SFAPI.get({
+					writable: `gui-storages?action=checkWritablePath&storage=${storage}&path=${path}&index=path`
+				})
+
+				this.state.error = false
+				this.state.isWritablePath = 'OKAY'
+
+				this.render()
+			} catch ({ error }) {
+				this.state.error = error
+				this.state.isWritablePath = 'NOTCHECKED'
+
+				this.render()
+			}
+		} else {
+			this.state.error = {
+				code: 'EVALUESNOTMATCHED',
+				index: ['storage'],
+				source: this.state.storage
+			}
+			this.state.isWritablePath = 'NOTCHECKED'
+
+			this.render()
+		}
+	}
+
 	changeStorageHandler(event) {
 		this.state.storage = event.target.value
+		this.state.error = false
+
+		this.render()
 	}
 
 	changePathHandler(event) {
 		this.state.path = event.target.value
+		this.state.isWritablePath = 'NOTCHECKED'
+		this.state.error = false
+
+		this.render()
 	}
 
 	changeWidthHandler(event) {
@@ -62,14 +105,6 @@ export default class ConfigsGallery extends Modal {
 		this.state.saveRatio = event.target.checked
 	}
 
-	setDefaultState() {
-		const [ storage ] = this.state.storages
-
-		if (!this.state.storage) {
-			this.state.storage = storage
-		}
-	}
-
 	subitFormHandler(e) {
 		e.preventDefault()
 
@@ -81,7 +116,6 @@ export default class ConfigsGallery extends Modal {
 				height: this.state.height,
 				previewWidth: this.state.previewWidth,
 				previewHeight: this.state.previewHeight,
-				source: this.state.source,
 				saveRatio: this.state.saveRatio
 			})
 		}

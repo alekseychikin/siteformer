@@ -14,6 +14,24 @@
 <param name={$previewHeight} value="560" />
 <param name={$path} value="" />
 
+<param name={$isWritablePath} value="NOTCHECKED" />
+
+<variable name={$path-check-labels} value={[
+	"NOTCHECKED": "Проверить путь",
+	"CHECKING": "Проверяем...",
+	"OKAY": "Всё хорошо"
+]} />
+
+<variable name={$storage-error-messages} value={[
+	"EVALUESNOTMATCHED": "Нужно задать хранилище"
+]} />
+
+<variable name={$path-error-messages} value={[
+	"EDIRNOTEXISTS": "Создайте директорию: :path",
+	"EDIRISFILE": "По такому пути был найден файл. Задайте путь до директории",
+	"EPERMISSIONDENIED": "Директория закрыта на запись"
+]} />
+
 <div class="popup__head">Настройки изображения</div>
 
 <form action="" class="form" data-role="configs-form">
@@ -21,17 +39,32 @@
 		<label class="form-item__label">Хранилище</label>
 		<div class="form-item__container">
 			<form-select role="configs-gallery-storage">
+				<option value=""></option>
 				<for-each item={$storage-item} from={$storages}>
-					<option value={$storage-item}>{$storage-item}</option>
+					<option value={$storage-item} selected={$storage-item == $storage}>{$storage-item}</option>
 				</for-each>
 			</form-select>
+
+			<if test={$error && $error.index[0] == "storage"}>
+				<span class="form-item__error">{$storage-error-messages[$error.code]}</span>
+			</if>
 		</div>
 	</div>
 
 	<div class="form-item">
 		<label for="configs-gallery-path" class="form-item__label">Путь</label>
-		<div class="form-item__container">
-			<form-input value={$path} role="configs-gallery-path" id="configs-gallery-path" autocomplete="off" />
+		<div class="form-item__container form-item__container--full-width">
+			<form-input value={$path} mods={["half-width"]} role="configs-gallery-path" id="configs-gallery-path" autocomplete="off" />
+
+			<form-button role="configs-gallery-check-path" disabled={$isWritablePath == "OKAY"}>
+				{$path-check-labels[$isWritablePath]}
+			</form-button>
+
+			<if test={$error && $error.index[0] == "path"}>
+				<span class="form-item__error">
+					{str_replace($path-error-messages[$error.code], ':path', $error.source)}
+				</span>
+			</if>
 		</div>
 	</div>
 
@@ -62,24 +95,6 @@
 			<span class="form__between-inp">×</span>
 
 			<form-input mods={["very-short"]} value={$previewHeight} role="configs-gallery-preview-height" />
-		</div>
-	</div>
-
-	<div class="form-item">
-		<if test={arr_len($sources) == 0}>
-			<attribute name="style" value="display: none" />
-		</if>
-		<label for="configs-gallery-source" class="form-item__label">Источник</label>
-
-		<div class="form-item__container">
-			<form-select data-role="configs-gallery-source" id="configs-gallery-source">
-				<option value="upload" selected={$source == "upload"}>Загрузить изображение</option>
-				<if test={arr_len($sources) > 0}>
-					<for-each item={$source-item} from={$sources}>
-						<option value={$source-item.alias} selected={$source == $source-item.alias}>{$source-item.label}</option>
-					</for-each>
-				</if>
-			</form-select>
 		</div>
 	</div>
 
