@@ -44,8 +44,6 @@ export default class SFAPI
 
 		return sendPost(url, data, headers)
 			.then(data => {
-				console.log('return', data)
-
 				if (data && data.debug) {
 					console.groupCollapsed('Served debug info')
 					console.log(data.debug)

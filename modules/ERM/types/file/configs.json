@@ -4,11 +4,8 @@
   "hasSettings": true,
   "requiredable": true,
   "defaultSettings": {
-    "storage": "local",
-    "path": "/",
-    "s3AccessKey": "",
-    "s3SecretKey": "",
-    "s3Bucket": "",
-    "s3Path": "/"
+    "storage": "",
+    "path": ".",
+    "ext": ""
   }
 }

@@ -5,6 +5,7 @@
 <param name={$type} value="button" />
 <param name={$index} value={-1} />
 <param name={$size} value="normal" />
+<param name={$disabled} value={false} />
 
 <variable name={$submit-class} value="" />
 <if test={$type == "submit"}>
@@ -21,7 +22,7 @@
 	$class,
 	$submit-class,
 	$size-class
-], " ")} data-role={$role} id={$id} name={$name}>
+], " ")} data-role={$role} id={$id} name={$name} disabled={$disabled}>
 	<if test={$index != -1}>
 		<attribute name="data-index" value={$index} />
 	</if>
