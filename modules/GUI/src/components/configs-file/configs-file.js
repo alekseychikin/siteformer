@@ -75,6 +75,7 @@ export default class ConfigsFile extends Modal {
 
 	changePathHandler(event) {
 		this.state.isWritablePath = 'NOTCHECKED'
+		this.state.error = false
 		this.state.path = event.target.value
 
 		this.render()

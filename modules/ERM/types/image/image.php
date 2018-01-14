@@ -2,7 +2,6 @@
 
 require_once ENGINE . 'classes/validate.php';
 require_once __DIR__ . '/../../ERMType.php';
-require_once __DIR__ . '/helper.php';
 
 class SFTypeImage extends SFERMType
 {
@@ -13,16 +12,11 @@ class SFTypeImage extends SFERMType
 
     $settings = SFValidate::value([
       'storage' => [
-        'values' => SFStorages::getStorageList(),
-        'required' => true
+        'values' => SFStorages::getStorageList()
       ],
       'path' => [
-        'valid' => function ($path) use ($storage) {
-          if ($storage === 'local') {
-            checkLocalPath($path);
-          }
-
-          return true;
+        'valid' => function ($value) use ($settings, $indexes) {
+          return SFStorages::checkWritablePath($settings['storage'], $value, array_merge($indexes, ['path']));
         }
       ],
       'width' => [],
@@ -30,7 +24,8 @@ class SFTypeImage extends SFERMType
       'saveRatio' => [],
       'source' => [
         'valid' => function ($value) use ($fields, $sources) {
-          $usedSource = array($value);
+          $usedSource = [$value];
+
           while (true) {
             if ($value === 'upload') return true;
             if (!in_array($value, $sources)) return false;

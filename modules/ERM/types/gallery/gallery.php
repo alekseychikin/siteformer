@@ -12,8 +12,7 @@ class SFTypeGallery extends SFERMType
   public static function validateSettings($settings, $fields, $currentAlias, $indexes = []) {
     return SFValidate::value([
       'storage' => [
-        'values' => SFStorages::getStorageList(),
-        'required' => true
+        'values' => SFStorages::getStorageList()
       ],
       'path' => [
         'valid' => function ($value) use ($settings, $indexes) {

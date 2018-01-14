@@ -5,7 +5,7 @@
   "requiredable": true,
   "defaultSettings": {
     "storage": "",
-    "path": "/",
+    "path": ".",
     "width": "1000",
     "height": "560",
     "saveRatio": true,

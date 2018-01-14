@@ -11,6 +11,24 @@
 <param name={$width} value="1000" />
 <param name={$height} value="560" />
 <param name={$path} value="" />
+<param name={$error} value={false} />
+<param name={$isWritablePath} value="NOTCHECKED" />
+
+<variable name={$path-check-labels} value={[
+	"NOTCHECKED": "Проверить путь",
+	"CHECKING": "Проверяем...",
+	"OKAY": "Всё хорошо"
+]} />
+
+<variable name={$storage-error-messages} value={[
+	"EVALUESNOTMATCHED": "Нужно задать хранилище"
+]} />
+
+<variable name={$path-error-messages} value={[
+	"EDIRNOTEXISTS": "Создайте директорию: :path",
+	"EDIRISFILE": "По такому пути был найден файл. Задайте путь до директории",
+	"EPERMISSIONDENIED": "Директория закрыта на запись"
+]} />
 
 <div class="popup__head">Настройки изображения</div>
 
@@ -19,17 +37,33 @@
 		<label class="form-item__label">Хранилище</label>
 		<div class="form-item__container">
 			<form-select role="configs-image-storage">
+				<option value=""></option>
+
 				<for-each item={$storage-item} from={$storages}>
-					<option value={$storage-item}>{$storage-item}</option>
+					<option value={$storage-item} selected={$storage-item == $storage}>{$storage-item}</option>
 				</for-each>
 			</form-select>
+
+			<if test={$error && $error.index[0] == "storage"}>
+				<span class="form-item__error">{$storage-error-messages[$error.code]}</span>
+			</if>
 		</div>
 	</div>
 
 	<div class="form-item">
 		<label for="configs-image-path" class="form-item__label">Путь</label>
-		<div class="form-item__container">
-			<form-input value={$path} role="configs-image-path" id="configs-image-path" autocomplete="off" />
+		<div class="form-item__container form-item__container--full-width">
+			<form-input value={$path} mods={["half-width"]} role="configs-image-path" id="configs-image-path" autocomplete="off" />
+
+			<form-button role="configs-image-check-path" disabled={$isWritablePath == "OKAY"}>
+				{$path-check-labels[$isWritablePath]}
+			</form-button>
+
+			<if test={$error && $error.index[0] == "path"}>
+				<span class="form-item__error">
+					{str_replace($path-error-messages[$error.code], ':path', $error.source)}
+				</span>
+			</if>
 		</div>
 	</div>
 
@@ -54,11 +88,11 @@
 		<label for="configs-image-source" class="form-item__label">Источник</label>
 
 		<div class="form-item__container">
-			<form-select data-role="configs-image-source" id="configs-image-source">
+			<form-select role="configs-image-source" id="configs-image-source">
 				<option value="upload" selected={$source == "upload"}>Загрузить изображение</option>
 				<if test={arr_len($sources) > 0}>
 					<for-each item={$source-item} from={$sources}>
-						<option value={$source-item.alias} selected={$source == $source-item.alias}>{$source-item.label}</option>
+						<option value={$source-item.alias} selected={$source == $source-item.alias}>{$source-item.title}</option>
 					</for-each>
 				</if>
 			</form-select>
