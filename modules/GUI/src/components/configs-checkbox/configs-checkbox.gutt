@@ -1,6 +1,11 @@
 <import name="input-row" from="./input-row.gutt" />
 
 <param name={$values} value={[]} />
+<param name={$error} value={false} />
+
+<variable name={$options-error-messages} value={[
+	"EMINLENGTH": "Нужно задать хотя бы один вариант"
+]} />
 
 <div class="modal__head">Настройка флажков</div>
 
@@ -16,8 +21,13 @@
 						value={$option.label}
 						checked={$option.checked == true}
 						deletable={arr_len($values) > 1}
+						error={$error}
 					/>
 				</for-each>
+
+				<if test={$error && $error.index[0] == "values" && str_len($error.index) == 1}>
+					<div class="form-item__error">{$options-error-messages[$error.code]}</div>
+				</if>
 			</div>
 		</div>
 	</div>

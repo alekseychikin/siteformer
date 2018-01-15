@@ -40,6 +40,7 @@ export default class ConfigsCheckbox extends Modal {
 		const values = this.state.values.filter((item, indx) => indx !== index)
 
 		this.state.values = values
+		this.state.error = false
 
 		this.render()
 	}
@@ -51,6 +52,7 @@ export default class ConfigsCheckbox extends Modal {
 		const values = [ ...this.state.values ]
 
 		values[index].label = value
+		this.state.error = false
 
 		this.state.values = values
 	}
@@ -73,6 +75,7 @@ export default class ConfigsCheckbox extends Modal {
 		})
 
 		this.state.values = values
+		this.state.error = false
 
 		this.render()
 	}
