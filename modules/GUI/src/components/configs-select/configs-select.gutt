@@ -4,6 +4,14 @@
 
 <param name={$values} value={[""]} />
 <param name={$checked} value={-1} />
+<param name={$error} value={false} />
+
+<variable name={$options-error-messages} value={[
+	"EMINLENGTH": "Нужно задать хотя бы один вариант"
+]} />
+<variable name={$option-error-messages} value={[
+	"ENOTUNIQUEVALUE": "Варианты должны быть уникальные"
+]} />
 
 <div class="popup__head">Настройки переключателей</div>
 
@@ -12,14 +20,14 @@
 		<label class="form-item__label">Варианты ответов:</label>
 
 		<div class="form-item__container form-item__container--full-width">
-			<input-row
-				value={-1}
-				checked={$checked == -1}
-			>
-				<label for="configs-select-option--1"><i>Ничего не выбрано по умолчанию</i></label>
-			</input-row>
-
 			<div>
+				<input-row
+					value={-1}
+					checked={$checked == -1}
+				>
+					<label for="configs-select-option--1"><i>Ничего не выбрано по умолчанию</i></label>
+				</input-row>
+
 				<for-each key={$index} item={$option} from={$values}>
 					<input-row
 						index={$index}
@@ -36,8 +44,16 @@
 								mods={["half-width"]}
 							/>
 						</label>
-						</input-row>
+
+						<if test={$error && $error.index[0] == "values" && str_len($error.index) > 1 && $error.index[1] == $index}>
+							<span class="form-item__error">{$option-error-messages[$error.code]}</span>
+						</if>
+					</input-row>
 				</for-each>
+
+				<if test={$error && $error.index[0] == "values" && str_len($error.index) == 1}>
+					<div class="form-item__error">{$options-error-messages[$error.code]}</div>
+				</if>
 			</div>
 		</div>
 	</div>

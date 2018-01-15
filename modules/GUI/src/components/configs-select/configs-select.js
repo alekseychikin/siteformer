@@ -42,6 +42,7 @@ export default class ConfigsSelect extends Modal {
 		const values = this.state.values.filter((value, indx) => index !== indx)
 
 		this.state.values = values
+		this.state.error = false
 
 		this.render()
 	}
@@ -50,6 +51,7 @@ export default class ConfigsSelect extends Modal {
 		const values = this.state.values.concat([''])
 
 		this.state.values = values
+		this.state.error = false
 
 		this.render()
 	}
@@ -64,6 +66,9 @@ export default class ConfigsSelect extends Modal {
 		values[index] = value
 
 		this.state.values = values
+		this.state.error = false
+
+		this.render()
 	}
 
 	subitFormHandler(e) {

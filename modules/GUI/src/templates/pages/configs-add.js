@@ -47,19 +47,6 @@ export default class ConfigsAdd extends Component {
 
 		this.openedConfigs = null
 		this.indexFieldConfigsModalOpen = false
-
-		setTimeout(() => {
-			node.querySelector('[data-role="configs-add-title"]').value = 'Новости'
-			emitEvent(node.querySelector('[data-role="configs-add-title"]'), 'change')
-			node.querySelector('[data-role="configs-add-alias"]').value = 'news'
-			emitEvent(node.querySelector('[data-role="configs-add-alias"]'), 'change')
-			node.querySelector('[data-role="row-module-fields"]:nth-child(1) [data-role="field-title"]').value = 'Заголовок'
-			emitEvent(node.querySelector('[data-role="row-module-fields"]:nth-child(1) [data-role="field-title"]'), 'change')
-			node.querySelector('[data-role="row-module-fields"]:nth-child(1) [data-role="field-alias"]').value = 'title'
-			emitEvent(node.querySelector('[data-role="row-module-fields"]:nth-child(1) [data-role="field-alias"]'), 'change')
-			node.querySelector('[data-role="row-module-fields"]:nth-child(1) [data-role="configs-change-type"]').value = 'radio'
-			emitEvent(node.querySelector('[data-role="row-module-fields"]:nth-child(1) [data-role="configs-change-type"]'), 'change')
-		}, 10);
 	}
 
 	changeTitleHandler(event) {
@@ -120,7 +107,8 @@ export default class ConfigsAdd extends Component {
 			fields: state.fields,
 			types: state.types,
 			storages: state.storages,
-			collections: state.collections
+			collections: state.collections,
+			currentField: field
 		})
 
 		createAction('CONFIGS_CLEAR_ERROR')

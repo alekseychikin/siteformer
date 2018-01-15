@@ -8,20 +8,16 @@ class SFTypeSelect extends SFERMType
   public static function getSqlField($params) {
     return [
       'type' => 'INT(6)',
-      'default' => $params['defaultValue']
+      'default' => $params['checked']
     ];
   }
 
   public static function validateSettings($settings, $fields, $currentAlias, $indexes = []) {
     return SFValidate::value([
-      'numOptions' => [
-        'type' => 'uzint',
+      'checked' => [
         'required' => true
       ],
-      'defaultValue' => [
-        'required' => true
-      ],
-      'defaultData' => [
+      'values' => [
         'minlength' => 1,
         'collection' => [
           'required' => true,
