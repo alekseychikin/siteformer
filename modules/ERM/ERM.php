@@ -432,22 +432,6 @@ class SFERM
           return !$res->length();
         }
       ],
-      'alias' => [
-        'required' => true,
-        'valid' => '/^[a-zA-Z\-_]+$/i',
-        'unique' => function ($value) use ($id) {
-          $res = SFORM::select()
-            ->from('sys_collections')
-            ->where('alias', $value)
-            ->andWhere('enable', true);
-
-          if ($id !== false) {
-            $res = $res->andWhere('id', '!=', $id);
-          }
-
-          return !$res->length();
-        }
-      ],
       'fields' => [
         'minlength' => 1,
         'collection' => [
@@ -502,9 +486,17 @@ class SFERM
       return $field;
     });
 
-    $index = 0;
+    $sourceFields = arrMap($source['fields'], function ($field) {
+      unset($field['collection']);
+      $field['settings'] = json_encode($field['settings']);
+      $field['position'] = (int)$field['position'];
 
-    $data['fields'] = arrMap(arrSort($data['fields'], function ($a, $b) {
+      return $field;
+    });
+
+    $index = 1;
+
+    $dataFields = arrMap(arrSort($data['fields'], function ($a, $b) {
       return $a['position'] < $b['position'];
     }), function ($field) use (& $index) {
       $field['position'] = $index++;
@@ -512,30 +504,8 @@ class SFERM
       return $field;
     });
 
-    $data['fields'] = arrSort($data['fields'], function ($a, $b) {
-      return $a['id'] < $b['id'] && strlen($a['id']) && strlen($b['id']);
-    });
-
-    $dataFields = $data['fields'];
-    $sourceFields = $source['fields'];
-
-    $sourceFields = arrMap($sourceFields, function ($field) {
-      unset($field['collection']);
-      unset($field['title']);
-      $field['settings'] = json_encode($field['settings']);
-      $field['position'] = (int)$field['position'];
-
-      return $field;
-    });
-
-    $dataFields = arrMap($dataFields, function ($field) {
-      unset($field['title']);
-
-      return $field;
-    });
-
     // get diff
-    $arrDiff = arrDifference($sourceFields, $dataFields);
+    $arrDiff = self::getFieldsDiff($sourceFields, $dataFields);
 
     foreach ($arrDiff as $field) {
       switch ($field['mark']) {
@@ -550,7 +520,7 @@ class SFERM
 
     foreach ($arrDiff as $field) {
       switch ($field['mark']) {
-        case 'edit':
+        case 'alias':
           $fieldType = array_merge($defaultField, self::getSqlFieldType($field['element']));
           $fieldType['name'] = $field['element']['alias'];
           SFORM::alter($source['table'])
@@ -576,22 +546,12 @@ class SFERM
 
     SFORM::update('sys_collections')
       ->values([
-        'title' => $data['title'],
-        'module' => $data['module']
+        'title' => $data['title']
       ])
       ->id($id)
       ->exec();
 
-    $sourceFields = arrMap($source['fields'], function ($item) {
-      $item['settings'] = json_encode($item['settings']);
-      unset($item['collection']);
-
-      return $item;
-    });
-
-    $fields = arrDifference($sourceFields, $data['fields']);
-
-    foreach ($fields as $field) {
+    foreach ($arrDiff as $field) {
       switch($field['mark']) {
         case 'add':
           SFORM::insert('sys_collection_fields')
@@ -613,6 +573,7 @@ class SFERM
             ->exec();
 
           break;
+        case 'alias':
         case 'edit':
           SFORM::update('sys_collection_fields')
             ->values([
@@ -625,10 +586,6 @@ class SFERM
             ])
             ->id($field['origin']['id'])
             ->exec();
-
-          break;
-        case 'skip':
-          $fieldType = self::getSqlFieldType($field['element']);
 
           break;
       }
@@ -686,6 +643,60 @@ class SFERM
     }
 
     return [];
+  }
+
+  private static function getFieldsDiff($src, $dest) {
+    $srcIndexed = [];
+    $destIndexed = [];
+    $result = [];
+
+    foreach ($src as $field) {
+      $srcIndexed[$field['id']] = $field;
+    }
+
+    foreach ($dest as $field) {
+      $destIndexed[$field['id']] = $field;
+    }
+
+    foreach ($srcIndexed as $id => $field) {
+      if (!isset($destIndexed[$id])) {
+        $result[] = [
+          'mark' => 'delete',
+          'element' => $field
+        ];
+      } elseif (
+        $field['alias'] !== $destIndexed[$id]['alias'] ||
+        $field['type'] !== $destIndexed[$id]['type']
+      ) {
+        $result[] = [
+          'mark' => 'alias',
+          'origin' => $field,
+          'element' => $destIndexed[$id]
+        ];
+      } elseif (
+        $field['title'] !== $destIndexed[$id]['title'] ||
+        $field['required'] !== $destIndexed[$id]['required'] ||
+        $field['settings'] !== $destIndexed[$id]['settings'] ||
+        $field['position'] !== $destIndexed[$id]['position']
+      ) {
+        $result[] = [
+          'mark' => 'edit',
+          'origin' => $field,
+          'element' => $destIndexed[$id]
+        ];
+      }
+    }
+
+    foreach ($dest as $field) {
+      if (!isset($srcIndexed[$field['id']])) {
+        $result[] = [
+          'mark' => 'add',
+          'element' => $field
+        ];
+      }
+    }
+
+    return $result;
   }
 
   private static function getSqlFieldType($field) {

@@ -25,6 +25,7 @@ class SFGuiCollections extends SFRouterModel
       return SFERM::addCollection($params);
     } else {
       unset($params['id']);
+      unset($params['alias']);
       SFERM::saveCollection($id, $params);
       return $id;
     }

@@ -26,17 +26,19 @@ return [
     ],
     'template' => 'entries/configs-add.gutt'
   ],
-  '/cms/configs/{collection}/' => [
+  '/cms/configs/{configsCollection}/' => [
     'data' => [
-      'title' => 'gui-collections?collection={collection}&field=title',
-      'page-title' => 'gui-scalar?value=Редактировать раздел «{title}»',
-      'id' => 'gui-collections?collection={collection}&field=id',
-      'alias' => 'gui-collections?collection={collection}&field=alias',
-      'fields' => 'gui-fields?collection={collection}',
-      'collection' => 'gui-scalar?value=configs',
       'types' => 'gui-types',
       'collections' => 'gui-collections',
-      'modules' => 'gui-modules'
+      'fields' => 'gui-fields?collection={configsCollection}',
+      'collection' => 'gui-scalar?value=configs',
+      'page' => [
+        'title' => 'gui-collections?collection={configsCollection}&field=title',
+        'id' => 'gui-collections?collection={configsCollection}&field=id',
+        'alias' => 'gui-collections?collection={configsCollection}&field=alias'
+      ],
+      'page-title' => 'gui-scalar?value=Редактировать раздел «{page.title}»',
+      'storages' => 'gui-storages'
     ],
     'template' => 'entries/configs-add.gutt'
   ],

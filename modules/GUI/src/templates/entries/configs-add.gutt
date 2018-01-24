@@ -1,7 +1,6 @@
 <import name="default-layout" from="../../layouts/default/default.gutt" />
 <import name="configs-add-page" from="../pages/configs-add.gutt" />
 
-<param name={$id} value={false} />
 <param name={$collection} value="" />
 <param name={$collections} value={[]} />
 <param name={$page} value={[]} />
@@ -23,7 +22,6 @@
 		collections={$collections}
 		collection={$collection}
 		user={$user}
-		id={$id}
 		page={$page}
 		error={$error}
 		fields={$fields}

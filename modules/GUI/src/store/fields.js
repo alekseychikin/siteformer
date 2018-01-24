@@ -1,9 +1,12 @@
 const fields = {
 	'FIELDS_ADD_EMPTY': (store, payload) => {
 		const state = store.getState()
+		const lastPosition = state.fields.reduce((previous, item) => (
+			Math.max(previous, item.position)
+		), 1)
 		const emptyField = {
 			alias: '',
-			position: 0,
+			position: lastPosition + 1,
 			required: false,
 			settings: {},
 			title: '',

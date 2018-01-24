@@ -16,8 +16,7 @@ const configsForm = {
 		try {
 			await SFAPI.post({
 				'gui-collections': {
-					title: state.page.title,
-					alias: state.page.alias,
+					...state.page,
 					fields: state.fields
 				}
 			}, {

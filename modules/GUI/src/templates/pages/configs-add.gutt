@@ -3,10 +3,9 @@
 <import name="form-separate" from="../../components/form-separate/form-separate.gutt" />
 <import name="table-module-field" from="./partials/table-module-field.gutt" />
 
-<param name={$id} value={false} />
 <param name={$collection} value="" />
 <param name={$collections} value={[]} />
-<param name={$page} value={["title": "", "alias": ""]} />
+<param name={$page} value={["title": "", "alias": "", "id": false]} />
 <param name={$collection-title} value="Добавить" />
 <param name={$collection-url} value="add" />
 <param name={$save-button-label} value="Создать" />
@@ -24,9 +23,9 @@
 	"ENOTVALIDVALUE": "Веб-имя может содержать только латинские символы"
 ]} />
 
-<if test={$id}>
+<if test={$page.id? && $page.id != false}>
 	<variable name={$collection-title} value="Редактировать" />
-	<variable name={$collection-url} value={$alias} />
+	<variable name={$collection-url} value={$page.alias} />
 	<variable name={$save-button-label} value="Сохранить" />
 </if>
 
@@ -63,6 +62,7 @@
 				id="alias"
 				role="configs-add-alias"
 				focus={$alias-error}
+				disabled={$page.id? && $page.id != false}
 			>
 				<if test={$alias-error}>
 					<attribute name="error" value={$alias-error-messages[$error.code]} />
@@ -110,7 +110,7 @@
 			<button class="form__btn form__btn--submit">{$save-button-label}</button>
 			<a href="/cms/configs/" class="form__btn">Отменить</a>
 
-			<if test={$id}>
+			<if test={$page.id? && $page.id != false}>
 				<button class="form__btn form__btn--delete" type="button" data-role="delete">Удалить</button>
 			</if>
 		</div>
