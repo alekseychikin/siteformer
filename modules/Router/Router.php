@@ -150,6 +150,10 @@ class SFRouter
       }
     }
 
+    if (!$params) {
+      $params = [];
+    }
+
     $params = self::prepareGetParams($params);
 
     foreach ($params as $key => $value) {
