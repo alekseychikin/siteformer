@@ -186,7 +186,7 @@ class SFResponse
                 echo '<pre>' . print_r($state['error']['trace'], true) . '</pre>';
               }
             } else {
-              echo $state['error'];
+              println($state['error']);
             }
           }
         }
