@@ -187,6 +187,24 @@ class SFERM
     return false;
   }
 
+  public static function isCollectionExists($alias) {
+    if (isset(self::$collections[$alias])) {
+      return true;
+    }
+
+    $res = SFORM::select()
+      ->from('sys_collections')
+      ->where('sys_collections.alias', $alias)
+      ->andWhere('sys_collections.enable', true)
+      ->exec();
+
+    if (count($res)) {
+      return true;
+    }
+
+    return false;
+  }
+
   // Get collection by id
   public static function getCollectionById($id) {
     $res = SFORM::select()
