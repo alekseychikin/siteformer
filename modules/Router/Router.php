@@ -17,6 +17,10 @@ class SFRouter
   public static function init($params) {
     self::$routes = $params['routes'];
 
+    if (is_callable($params['routes'])) {
+      self::$routes = $params['routes'](SFURI::getUri());
+    }
+
     if (isset($params['models'])) {
       SFModels::registerPath(SFPath::prepareDir($params['models']));
     }
@@ -233,10 +237,12 @@ class SFRouter
   private static function parse($url) {
     if (substr($url, -1, 1) == '/') $url = substr($url, 0, -1);
 
-    if (isset(self::$routes[self::getUri()])) {
+    $uri = self::getUri();
+
+    if (isset(self::$routes[$uri])) {
       return [
-        'pattern' => self::getUri(),
-        'path' => self::$routes[self::getUri()], 'params' => []
+        'pattern' => $uri,
+        'path' => self::$routes[$uri], 'params' => []
       ];
     } else {
       $t = true;

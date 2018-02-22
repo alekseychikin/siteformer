@@ -58,8 +58,7 @@ class SFURI
 
   public static function getUri($index = false) {
     if ($index === false) {
-      return implode('/', self::$uri) .
-        (count(self::$uri) < 1 ? '/' : '');
+      return (count(self::$uri) > 1 ? '/' : '') . implode('/', self::$uri) . '/';
     }
 
     if (isset(self::$uri[$index])) {
