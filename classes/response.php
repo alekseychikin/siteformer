@@ -169,10 +169,6 @@ class SFResponse
         } else {
           if (self::$code === 200) {
             echo $content;
-            $endTime = explode(' ', microtime());
-            $endTime = $endTime[1] + $endTime[0];
-
-            echo '<!-- ' . ($endTime - $startTime) . 's; ' . SFORMDatabase::$countQueries . ' queries -->';
           } else {
             $state = [
               'error' => self::$state['error'],
