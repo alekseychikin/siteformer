@@ -131,27 +131,30 @@ class SFERMGetItemSuper
     return false;
   }
 
-  private function whereSystemField($field, $value) {
+  private function whereSystemField($field, $value, $params = false) {
     switch ($field) {
       case 'id':
-        $this->databaseQuery->where($field, $value);
-
-        break;
+        return [$field, $value];
       case 'status':
-        $this->databaseQuery->openWhere();
+        $insertions = [];
+        $values = [
+          'field' => $field
+        ];
 
-        foreach ($value as $index => $status) {
-          if (!$index) {
-            $this->databaseQuery->where($field, $status);
-            continue;
-          }
-
-          $this->databaseQuery->orWhere($field, $status);
+        foreach ($value as $index => $item) {
+          $insertions[] = ':field = ":value' . $index .'"';
+          $values['value' . $index] = $item;
         }
 
-        $this->databaseQuery->closeWhere();
+        $joinStr = ' AND ';
 
-        break;
+        if ($params !== false) {
+          if ($params === 'any') {
+            $joinStr = ' OR ';
+          }
+        }
+
+        return [SFORM::generateValue('(' . implode($joinStr, $insertions) . ')', $values)];
     }
   }
 }
