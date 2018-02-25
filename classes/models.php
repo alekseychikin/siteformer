@@ -34,6 +34,14 @@ class SFModels
     return false;
   }
 
+  public static function files ($model, $params) {
+    if ($className = self::getClassNameByModelName($model)) {
+      return call_user_func([$className, 'files'], $params);
+    }
+
+    return false;
+  }
+
   private static function getClassNameByModelName($model) {
     $path = explode('/', $model);
     $finded = false;
