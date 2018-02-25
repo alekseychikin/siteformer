@@ -1,7 +1,7 @@
 <?php
 
 function echoError($message) {
-  if (APPLICATION_ENV !== 'production') {
+  if (APPLICATION_ENV === 'develop') {
     SFResponse::error(500, $message);
   } else {
     SFResponse::error(500, 'Произошла некоторая ошибка');
