@@ -34,15 +34,10 @@ export default class SFAPI
 			})
 	}
 
-	static post(postData, getData, headers = {}) {
+	static post(postData = {}, getData = {}, headers = {}) {
 		const url = SFAPI.getUrl(getData)
-		const data = {}
 
-		for (let model in postData) {
-			data[model] = JSON.stringify(postData[model])
-		}
-
-		return sendPost(url, data, headers)
+		return sendPost(url, postData, headers)
 			.then(data => {
 				if (data && data.debug) {
 					console.groupCollapsed('Served debug info')
