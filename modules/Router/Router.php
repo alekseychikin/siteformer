@@ -144,14 +144,18 @@ class SFRouter
   }
 
   private static function returnModelData($params) {
-    if (strtoupper($_SERVER['REQUEST_METHOD']) === 'POST') {
-      foreach ($_POST as $key => $value) {
-        SFModels::post($key, parseJSON($value));
-      }
-    }
-
     if (!$params) {
       $params = [];
+    }
+
+    if (strtoupper($_SERVER['REQUEST_METHOD']) === 'POST') {
+      foreach ($_POST as $key => $value) {
+        SFResponse::set($key, SFModels::post($key, $value));
+      }
+
+      foreach ($_FILES as $key => $value) {
+        SFResponse::set($key, SFModels::files($key, $value));
+      }
     }
 
     $params = self::prepareGetParams($params);
@@ -395,7 +399,7 @@ class SFRouter
 
       return $uri;
     } else {
-      if (self::uriNum() > 1) {
+      if (self::uriNum() > 1 || self::$uri[0] !== '/') {
         return '/' . implode('/', self::$uri) . '/';
       } else {
         return '/';
