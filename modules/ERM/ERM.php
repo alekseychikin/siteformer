@@ -100,11 +100,15 @@ class SFERM
       ->exec();
 
     foreach ($fields as $field) {
+      if (!isset($data[$field['alias']])) continue;
+
       $className = SFERM::getClassNameByType($field['type']);
       $className::validateUpdateData($collection['alias'], $field, $currentData, $data);
     }
 
     foreach ($fields as $field) {
+      if (!isset($data[$field['alias']])) continue;
+
       $className = SFERM::getClassNameByType($field['type']);
 
       if ($className::hasSqlField()) {
