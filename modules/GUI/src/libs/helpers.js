@@ -91,35 +91,6 @@ function readyStateChange (req, resolve, reject) {
 	}
 }
 
-export function sendFile (url, data) {
-	return new Promise(function (resolve, reject) {
-		let formData = ''
-
-		if (window.FormData) {
-			formData = new FormData()
-
-			for (const field in data) {
-				const input = data[field]
-
-				if (input.getAttribute('type').toLowerCase() === 'file') {
-					for (const i in input.files) {
-						formData.append(`${field}[${i}]`, input.files[i])
-					}
-				}
-			}
-		} else {
-			console.error('not supporting FormData')
-		}
-
-		const req = new XMLHttpRequest()
-		req.open('POST', url, true)
-		req.setRequestHeader('X-Requested-With', 'XMLHttpRequest')
-		req.setRequestHeader('Accept', 'application/json')
-		req.onreadystatechange = readyStateChange(req, resolve, reject)
-		req.send(formData)
-	})
-}
-
 const defaultFetchHeaders = {
 	'X-Requested-With': 'XMLHttpRequest'
 }
@@ -141,34 +112,24 @@ export function fetch (url, srcHeaders = {}) {
 	})
 }
 
-function parsePostData (postData, name = '') {
-	if (~['string', 'number', 'boolean'].indexOf(typeof postData)) {
-		return `${name}=${encodeURIComponent(postData)}`
-	} else if (postData instanceof Array) {
-		const data = []
-
-		for (const i in postData) {
-			data.push(parsePostData(postData[i], (name.length ? `${name}[${i}]` : i)))
-		}
-
-		return data.join('&')
-	} else if (typeof postData === 'object') {
-		const data = []
-
-		for (const i in postData) {
-			if (!(Object.prototype.hasOwnProperty.call(postData, i))) continue
-
-			data.push(parsePostData(postData[i], (name.length ? `${name}[${i}]` : i)))
-		}
-
-		return data.join('&')
-	}
-}
-
 const defaultPostHeaders = {
 	'X-Requested-With': 'XMLHttpRequest',
-	'Accept': 'application/json',
-	'Content-type': 'application/x-www-form-urlencoded; charset=UTF-8'
+	'Accept': 'application/json'
+}
+
+function preparePostData (data, formData = new FormData(), name = '') {
+	for (const field in data) {
+		const value = data[field]
+		const fieldName = name.length ? `${name}[${field}]` : field
+
+		if (typeof value !== 'object' || value instanceof File || value === null) {
+			formData.append(fieldName, value)
+		} else {
+			preparePostData(value, formData, fieldName)
+		}
+	}
+
+	return formData
 }
 
 export function sendPost (url, data, srcHeaders = {}) {
@@ -183,7 +144,7 @@ export function sendPost (url, data, srcHeaders = {}) {
 		}
 
 		req.onreadystatechange = readyStateChange(req, resolve, reject)
-		req.send(parsePostData(data))
+		req.send(preparePostData(data))
 	})
 }
 
