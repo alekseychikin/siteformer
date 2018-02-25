@@ -15,8 +15,7 @@ class SFTypeRadio extends SFERMType
   public static function validateSettings($settings, $fields, $currentAlias, $indexes = []) {
     return SFValidate::value([
       'checked' => [
-        'type' => 'int',
-        'required' => true
+        'type' => 'int'
       ],
       'values' => [
         'minlength' => 1,
