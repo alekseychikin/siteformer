@@ -10,10 +10,10 @@ class CatchError {
 
 export default class SFAPI
 {
-	static get(data, headers = {}) {
+	static get(data, params = {}) {
 		const url = SFAPI.getUrl(data)
 
-		return fetch(url, headers)
+		return fetch(url, params)
 			.then(data => {
 				if (data && data.debug) {
 					console.groupCollapsed('Served debug info')
@@ -34,10 +34,10 @@ export default class SFAPI
 			})
 	}
 
-	static post(postData = {}, getData = {}, headers = {}) {
+	static post(postData = {}, getData = {}, params = {}) {
 		const url = SFAPI.getUrl(getData)
 
-		return sendPost(url, postData, headers)
+		return sendPost(url, postData, params)
 			.then(data => {
 				if (data && data.debug) {
 					console.groupCollapsed('Served debug info')

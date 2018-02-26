@@ -95,20 +95,26 @@ const defaultFetchHeaders = {
 	'X-Requested-With': 'XMLHttpRequest'
 }
 
-export function fetch (url, srcHeaders = {}) {
+export function fetch (url, params = {}) {
 	return new Promise(function (resolve, reject) {
-		const req = new XMLHttpRequest()
+		const xhr = new XMLHttpRequest()
+		const { headers: srcHeaders = {}, onProgress } = params
 		const headers = Object.assign({}, defaultFetchHeaders, srcHeaders)
 
-		req.open('GET', url, true)
+		xhr.open('GET', url, true)
 
 		for (let header in headers) {
-			req.setRequestHeader(header, headers[header])
+			xhr.setRequestHeader(header, headers[header])
 		}
 
-		req.setRequestHeader('Accept', 'application/json')
-		req.onreadystatechange = readyStateChange(req, resolve, reject)
-		req.send()
+		xhr.setRequestHeader('Accept', 'application/json')
+		xhr.onreadystatechange = readyStateChange(xhr, resolve, reject)
+
+		if (typeof onProgress === 'function') {
+			xhr.upload.onprogress = onProgress
+		}
+
+		xhr.send()
 	})
 }
 
@@ -132,19 +138,25 @@ function preparePostData (data, formData = new FormData(), name = '') {
 	return formData
 }
 
-export function sendPost (url, data, srcHeaders = {}) {
+export function sendPost (url, data, params = {}) {
 	return new Promise(function (resolve, reject) {
-		const req = new XMLHttpRequest()
+		const xhr = new XMLHttpRequest()
+		const { headers: srcHeaders = {}, onProgress } = params
 		const headers = Object.assign({}, defaultPostHeaders, srcHeaders)
 
-		req.open('POST', url, true)
+		xhr.open('POST', url, true)
 
 		for (let header in headers) {
-			req.setRequestHeader(header, headers[header])
+			xhr.setRequestHeader(header, headers[header])
 		}
 
-		req.onreadystatechange = readyStateChange(req, resolve, reject)
-		req.send(preparePostData(data))
+		xhr.onreadystatechange = readyStateChange(xhr, resolve, reject)
+
+		if (typeof onProgress === 'function') {
+			xhr.upload.onprogress = onProgress
+		}
+
+		xhr.send(preparePostData(data))
 	})
 }
 
