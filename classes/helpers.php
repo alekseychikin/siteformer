@@ -263,7 +263,11 @@ function pathresolve() {
     $path = dirname($trace[0]['file']) . DIRECTORY_SEPARATOR . $path;
   }
 
-  $dirs = explode(DIRECTORY_SEPARATOR, $path);
+  return normalizeUrl($path, DIRECTORY_SEPARATOR);
+}
+
+function normalizeUrl($path, $separator = '/') {
+  $dirs = explode($separator, $path);
   $path = [];
 
   foreach ($dirs as $dir) {
@@ -278,7 +282,7 @@ function pathresolve() {
     }
   }
 
-  return join(DIRECTORY_SEPARATOR, $path);
+  return join($separator, $path);
 }
 
 function extname($filename) {
