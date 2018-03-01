@@ -15,7 +15,7 @@ class SFTypeSelect extends SFERMType
   public static function validateSettings($settings, $fields, $currentAlias, $indexes = []) {
     return SFValidate::value([
       'checked' => [
-        'required' => true
+        'type' => 'int'
       ],
       'values' => [
         'minlength' => 1,
