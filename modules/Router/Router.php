@@ -17,12 +17,12 @@ class SFRouter
   public static function init($params) {
     self::$routes = $params['routes'];
 
-    if (is_callable($params['routes'])) {
-      self::$routes = $params['routes'](SFURI::getUri());
-    }
-
     if (isset($params['models'])) {
       SFModels::registerPath(SFPath::prepareDir($params['models']));
+    }
+
+    if (is_callable($params['routes'])) {
+      self::$routes = $params['routes'](SFURI::getUri());
     }
 
     if (isset($params['languages'])) {
