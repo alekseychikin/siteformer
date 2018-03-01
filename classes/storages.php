@@ -78,6 +78,14 @@ class SFStorages {
     return array_keys(self::$storages);
   }
 
+  public static function getStorage($storage) {
+    if (!isset(self::$storages[$storage])) {
+      throw new BaseException('No such storage (' . $storage . ') in configs');
+    }
+
+    return self::$storages[$storage];
+  }
+
   public static function put($storage, $path, $additionalPath = '') {
     if (!isset(self::$storages[$storage])) {
       throw new BaseException('No such storage (' . $storage . ') in configs');
