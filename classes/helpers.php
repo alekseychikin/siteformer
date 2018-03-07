@@ -5,7 +5,7 @@ function println() {
 
   foreach ($variables as $variable) {
     if (gettype($variable) === 'array') {
-      print_r($variable);
+      echo '<pre>' . print_r($variable, true) . '</pre>';
     } else {
       echo $variable;
     }
