@@ -257,7 +257,7 @@ function pathresolve() {
     }
   }
 
-  if ($path[0] !== DIRECTORY_SEPARATOR) {
+  if (strlen($path) && $path[0] !== DIRECTORY_SEPARATOR) {
     $error = new Exception();
     $trace = $error->getTrace();
     $path = dirname($trace[0]['file']) . DIRECTORY_SEPARATOR . $path;

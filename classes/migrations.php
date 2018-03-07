@@ -7,7 +7,7 @@ class SFMigrations
   private static $addConstructions = [];
 
   public static function init($params) {
-    if (isset($params['migration-path'])) {
+    if (isset($params['migration-path']) && strlen($params['migration-path'])) {
       self::$pathMigrations = pathresolve($params['migration-path']);
 
       if (!file_exists(self::$pathMigrations)) {
