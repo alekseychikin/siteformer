@@ -9,6 +9,8 @@ if (getenv('APPLICATION_ENV') !== false) {
   define('APPLICATION_ENV', 'production');
 }
 
+require_once __DIR__ . '/classes/log.php';
+
 ob_start();
 
 define('ROOT', realpath(__DIR__ . '/../') . '/');
