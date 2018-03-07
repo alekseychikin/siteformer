@@ -39,6 +39,7 @@ function doEngine($configs) {
   require_once CLASSES . 'image.php';
   require_once CLASSES . 'mail.php';
   require_once CLASSES . 'storages.php';
+  require_once CLASSES . 'migrations.php';
 
   ClearCache::clear();
 
@@ -59,6 +60,8 @@ function doEngine($configs) {
     require_once MODULES . 'ORM/ORM.php';
 
     Diagnostics::checkDatabaseConnection($configs['database']);
+
+    SFMigrations::init($configs);
 
     require_once MODULES . 'ERM/ERM.php';
 

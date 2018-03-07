@@ -124,6 +124,8 @@ class Diagnostics {
       ],
       'modrewrite-get-url' => [
         'required' => true
+      ],
+      'migration-path' => [
       ]
     ], $configs);
   }
