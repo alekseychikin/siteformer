@@ -61,13 +61,12 @@ function doEngine($configs) {
 
     Diagnostics::checkDatabaseConnection($configs['database']);
 
-    SFMigrations::init($configs);
-
     require_once MODULES . 'ERM/ERM.php';
 
     SFERM::init();
 
     SFStorages::init($configs['storages']);
+    SFMigrations::init($configs);
     SFResponse::initRedirData();
 
     require_once MODULES . 'Router/Router.php';
