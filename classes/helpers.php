@@ -13,7 +13,7 @@ function println() {
     echo '   ';
   }
 
-  echo "\n";
+  echo "<br/>\n";
 }
 
 function arrMap($arr, $cb) {
@@ -243,6 +243,7 @@ function findSourceIndexInBuffer($indexes, $elements, $srcElement) {
 function pathresolve() {
   $dirs = func_get_args();
   $path = '';
+  $isFirst = true;
 
   foreach ($dirs as $index => $dir) {
     if (!strlen($dir)) continue;
@@ -253,14 +254,10 @@ function pathresolve() {
     if ($dir[0] === DIRECTORY_SEPARATOR) {
       $path = $dir;
     } else {
-      $path .= ($index ? DIRECTORY_SEPARATOR : '') . $dir;
+      $path .= (!$isFirst ? DIRECTORY_SEPARATOR : '') . $dir;
     }
-  }
 
-  if (strlen($path) && $path[0] !== DIRECTORY_SEPARATOR) {
-    $error = new Exception();
-    $trace = $error->getTrace();
-    $path = dirname($trace[0]['file']) . DIRECTORY_SEPARATOR . $path;
+    $isFirst = false;
   }
 
   return normalizeUrl($path, DIRECTORY_SEPARATOR);
