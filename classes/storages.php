@@ -99,6 +99,19 @@ class SFStorages {
     }
   }
 
+  public static function predictCompiledPath($storage, $path, $additionalPath = '') {
+    if (!isset(self::$storages[$storage])) {
+      throw new BaseException('No such storage (' . $storage . ') in configs');
+    }
+
+    switch (self::$storages[$storage]['type']) {
+      case 'local':
+        return self::predictCompiledPathLocal(self::$storages[$storage], $path, $additionalPath);
+      case 's3':
+        return self::predictCompiledPathS3(self::$storages[$storage], $path, $additionalPath);
+    }
+  }
+
   public static function uploadToTemp($fieldname) {
     if (isset($_FILES[$fieldname])) {
       $files = $_FILES[$fieldname];
@@ -172,25 +185,32 @@ class SFStorages {
   }
 
   private static function putLocal($configs, $path, $additionalPath = '') {
+    $compiledPath = self::predictCompiledPathLocal($configs, $path, $additionalPath);
+
+    $outfilename = pathresolve($configs['path'], $compiledPath);
+
+    mkdirRecoursive(dirname($outfilename));
+
+    copy($path, $outfilename);
+
+    return $compiledPath;
+  }
+
+  private static function predictCompiledPathLocal($configs, $path, $additionalPath = '') {
     $ext = extname($path);
     $basename = basename($path, $ext);
     $dirname = dirname($path);
 
     $filename = $basename . $ext;
     $i = 1;
+    $outpath = pathresolve($additionalPath, date('Y/m'), $filename);
 
-    while (file_exists(pathresolve($configs['path'], $additionalPath, $filename))) {
+    while (file_exists(pathresolve($configs['path'], $outpath))) {
       $filename = $basename . '-' . ++$i . $ext;
+      $outpath = pathresolve($additionalPath, date('Y/m'), $filename);
     }
 
-    $outpath = dirname(pathresolve($configs['path'], $additionalPath, date('Y/m'), $filename));
-    mkdirRecoursive($outpath);
-
-    $outfilename = pathresolve($outpath, $filename);
-
-    copy($path, $outfilename);
-
-    return substr($outfilename, strlen(pathresolve($configs['path'])) + 1);
+    return $outpath;
   }
 
   private static function getS3Connection($configs) {
@@ -200,10 +220,11 @@ class SFStorages {
 
     S3::$useSSL = false;
     self::$s3Connections[$configs['accessKey']] = new S3($configs['accessKey'], $configs['secretKey']);
+
     return self::$s3Connections[$configs['accessKey']];
   }
 
-  private static function putS3($configs, $path, $additionalPath = '') {
+  private static function predictCompiledPathS3($configs, $path, $additionalPath = '') {
     $s3 = self::getS3Connection($configs);
 
     $ext = extname($path);
@@ -212,18 +233,27 @@ class SFStorages {
 
     $filename = $basename . $ext;
     $i = 1;
-    $dirroot = pathresolve(__DIR__, $configs['path']);
 
-    $outpath = substr(pathresolve($configs['path'], $additionalPath, date('Y/m'), $filename), strlen(__DIR__) + 1);
+    $outpath = pathresolve($additionalPath, date('Y/m'), $filename);
 
-    while ($s3->getObjectInfo($configs['bucket'], $outpath)) {
+    while ($s3->getObjectInfo($configs['bucket'], pathresolve($configs['path'], $outpath))) {
       $filename = $basename . '-' . ++$i . $ext;
-      $outpath = substr(pathresolve($configs['path'], $additionalPath, date('Y/m'), $filename), strlen(__DIR__) + 1);
+      $outpath = pathresolve($additionalPath, date('Y/m'), $filename);
     }
+
+    return $outpath;
+  }
+
+  private static function putS3($configs, $path, $additionalPath = '') {
+    $s3 = self::getS3Connection($configs);
+
+    $compiledPath = self::predictCompiledPathS3($configs, $path, $additionalPath);
+
+    $outpath = pathresolve($configs['path'], $compiledPath);
 
     $s3->putObjectFile($path, $configs['bucket'], $outpath, S3::ACL_PUBLIC_READ);
 
-    return substr(pathresolve($configs['path'], $additionalPath, date('Y/m'), $filename), strlen($dirroot) + 1);
+    return $compiledPath;
   }
 
   private static function deleteLocal($configs, $path) {
