@@ -125,7 +125,7 @@ class SFERMGetItemSuper
     }
 
     if (in_array($field, self::$systemFields)) {
-      return $this->whereSystemField($field, $value);
+      return $this->whereSystemField($field, $value, $params);
     }
 
     return false;
