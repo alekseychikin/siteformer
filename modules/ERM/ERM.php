@@ -80,6 +80,8 @@ class SFERM
       $className = SFERM::getClassNameByType($field['type']);
       $className::postPrepareInsertData($collection, $field, $record, $data);
     }
+
+    return $record;
   }
 
   public static function updateItem($collection, $params) {

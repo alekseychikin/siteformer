@@ -18,7 +18,7 @@ SFORM::alter($tablename)
 
 ```
 SFORM::alter($tablename)
-  ->add(array(
+  ->addField(array(
     'name' => 'field_name',
     'type' => 'INT(11) UNSIGNED',
     'null' => 'NULL',
@@ -32,7 +32,7 @@ SFORM::alter($tablename)
 
 ```
 SFORM::alter($tablename)
-  ->change('exists_change_field', array(
+  ->changeField('exists_change_field', array(
     'name' => 'field_name',
     'type' => 'INT(11) UNSIGNED',
     'null' => 'NULL',
@@ -46,7 +46,7 @@ SFORM::alter($tablename)
 
 ```
 SFORM::alter($tablename)
-  ->drop('field_to_drop')
+  ->dropField('field_to_drop')
   ->exec();
 ```
 
@@ -56,9 +56,9 @@ Methods `add`, `drop`, `change` return `$this`, so we can make a chain of method
 
 ```
 SFORM::alter($tablename)
-  ->drop(...)
-  ->change(...)
-  ->add()
-  ->change(...)
+  ->dropField(...)
+  ->changeField(...)
+  ->addIndex()
+  ->changeField(...)
   ->exec();
 ```
