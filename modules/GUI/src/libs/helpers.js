@@ -103,7 +103,7 @@ export function fetch (url, params = {}) {
 
 		xhr.open('GET', url, true)
 
-		for (let header in headers) {
+		for (const header in headers) {
 			xhr.setRequestHeader(header, headers[header])
 		}
 
@@ -146,7 +146,7 @@ export function sendPost (url, data, params = {}) {
 
 		xhr.open('POST', url, true)
 
-		for (let header in headers) {
+		for (const header in headers) {
 			xhr.setRequestHeader(header, headers[header])
 		}
 
@@ -172,7 +172,7 @@ export function emitEvent (element, eventName, params = {}) {
 	element.dispatchEvent(event)
 }
 
-export const skipEmptyQuery = (value) => new Promise ((resolve, reject) => {
+export const skipEmptyQuery = (value) => new Promise((resolve, reject) => {
 	if (value) {
 		resolve(value)
 	}
@@ -181,6 +181,7 @@ export const skipEmptyQuery = (value) => new Promise ((resolve, reject) => {
 })
 
 let throttleTimeoutResolve = false
+let throttleTimeout = false
 
 const timeoutHandler = (resolve, query) => () => {
 	clearTimeout(throttleTimeout)
@@ -188,7 +189,7 @@ const timeoutHandler = (resolve, query) => () => {
 	resolve(query)
 }
 
-export const throttle = (timeout) => (query) => new Promise ((resolve, reject) => {
+export const throttle = (timeout) => (query) => new Promise((resolve) => {
 	if (!throttleTimeoutResolve) {
 		resolve(query)
 	}
@@ -206,12 +207,12 @@ export const throttle = (timeout) => (query) => new Promise ((resolve, reject) =
 
 const lastQueries = {}
 
-export const skipLastQuery = (collection) => (query) => new Promise ((resolve, reject) => {
+export const skipLastQuery = (collection) => (query) => new Promise((resolve) => {
 	if (!lastQueries[collection]) {
 		lastQueries[collection] = ''
 	}
 
-	if (lastQueries[collection] != query) {
+	if (lastQueries[collection] !== query) {
 		lastQueries[collection] = query
 		resolve(query)
 	}
