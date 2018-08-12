@@ -112,19 +112,26 @@ class SFStorages {
     }
   }
 
-  public static function uploadToTemp($fieldname) {
-    if (isset($_FILES[$fieldname])) {
+  public static function uploadToTemp($fields) {
+    if (gettype($fields) !== 'array') {
+      $fields = [$fields];
+    }
+
+    if (isset($_FILES[$fields[0]])) {
+      $fieldname = $fields[0];
       $files = $_FILES[$fieldname];
       $outfilenames = [];
-      $isSingleSource = gettype($files['tmp_name']) !== 'array';
+      $tmpName = self::getFilesField($fields, 'tmp_name');
+      $name = self::getFilesField($fields, 'name');
+      $isSingleSource = gettype($tmpName) !== 'array';
 
       if ($isSingleSource) {
-        $files['tmp_name'] = [$files['tmp_name']];
-        $files['name'] = [$files['name']];
+        $tmpName = [$tmpName];
+        $name = [$name];
       }
 
-      foreach ($files['tmp_name'] as $index => $tmpname) {
-        $outfilename = pathresolve(ENGINE_TEMP, md5(time() . rand())) . extname($files['name'][$index]);
+      foreach ($tmpName as $index => $tmpname) {
+        $outfilename = pathresolve(ENGINE_TEMP, md5(time() . rand())) . extname($name[$index]);
 
         if (@is_uploaded_file($tmpname)) {
           if (@move_uploaded_file($tmpname, $outfilename)) {
@@ -154,6 +161,20 @@ class SFStorages {
       case 's3':
         return self::deleteS3(self::$storages[$storage], $path);
     }
+  }
+
+  private static function getFilesField($fields, $field) {
+    if (count($fields) > 1) {
+      $files = $_FILES[$fields[0]][$field];
+
+      for ($i = 1; $i < count($fields); $i++) {
+        $files = $files[$fields[$i]];
+      }
+
+      return $files;
+    }
+
+    return $_FILES[$fields[0]][$field];
   }
 
   private static function validateLocal($configs, $storage) {
