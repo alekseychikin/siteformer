@@ -28,29 +28,35 @@ class SFORMDatabase
       $configs['alias'] = 'default';
     }
 
-    if (isset(self::$connections[$configs['alias']]) && self::$connections[$configs['alias']]) {
-      self::close($configs['alias']);
+    $alias = $configs['alias'];
+
+    if (isset(self::$connections[$alias]) && self::$connections[$alias]) {
+      self::close($alias);
     }
 
     if (self::$supportPDO) {
+      $dsn = 'mysql:host=' . $configs['host'] . (isset($configs['database']) ? ';dbname=' . $configs['database'] : '');
+
       try {
-        self::$connections[$configs['alias']] = new PDO('mysql:host=' . $configs['host'] . (isset($configs['database']) ? ';dbname=' . $configs['database'] : ''), $configs['user'], $configs['password']);
-      } catch (Exception $e) {
-        return false;
+        self::$connections[$alias] = new PDO($dsn, $configs['user'], $configs['password'], [
+          PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+        ]);
+      } catch (PDOException $e) {
+        throw new BaseException($e);
       }
     } else  {
       try {
-        self::$connections[$configs['alias']] = mysql_connect($configs['host'], $configs['user'], $configs['password']);
+        self::$connections[$alias] = mysql_connect($configs['host'], $configs['user'], $configs['password']);
       } catch (Exception $e) {
+        throw new BaseException($e);
+      }
+
+      if (!self::$connections[$alias]) {
         return false;
       }
 
-      if (!self::$connections[$configs['alias']]) {
-        return false;
-      }
-
-      if (self::$connections[$params['alias']] && isset($configs['database'])) {
-        mysql_select_db($configs['database'], self::$connections[$params['alias']]);
+      if (self::$connections[$alias] && isset($configs['database'])) {
+        mysql_select_db($configs['database'], self::$connections[$alias]);
       }
     }
 
@@ -59,7 +65,7 @@ class SFORMDatabase
     }
 
     if (isset($configs['database'])) {
-      self::$databases[$configs['alias']] = $configs['database'];
+      self::$databases[$alias] = $configs['database'];
 
       self::updateExistsTableList();
     }
@@ -75,9 +81,9 @@ class SFORMDatabase
     return $databases;
   }
 
-  public static function database($database, $alias = 'default') {
+  public static function setDatabase($database, $alias = 'default') {
     if (!in_array($database, self::getDatabases($alias))) {
-      return false;
+      throw new BaseException('No such database: ' . $database);
     }
 
     return self::query('use `' . $database . '`');
@@ -156,8 +162,9 @@ class SFORMDatabase
     $res = self::query('SHOW TABLES');
 
     foreach ($res as $tabs) {
-      list($index, $tab) = each ($tabs);
-      $tables[] = $tab;
+      foreach ($tabs as $table) {
+        $tables[] = $table;
+      }
     }
 
     self::$existsTableList = $tables;
@@ -192,7 +199,7 @@ class SFORMDatabase
         $tableName = $matches[1];
         self::$lastInsertIds[$tableName] = self::$connections[$alias]->lastInsertId();
       } else {
-        $res = self::$connections[$alias]->prepare($sql, array(PDO::ATTR_CURSOR => PDO::CURSOR_SCROLL));
+        $res = self::$connections[$alias]->prepare($sql, [PDO::ATTR_CURSOR => PDO::CURSOR_SCROLL]);
         $res->execute();
         $err = $res->errorInfo();
       }
@@ -391,14 +398,18 @@ class SFORMDatabase
   }
 
   private static function fetch($result, $firstRow = false) {
-    if (defined('PDO::FETCH_BOTH')) {
-      if ($firstRow) {
-        return $result->fetch(PDO::FETCH_ASSOC, PDO::FETCH_ORI_ABS, 0);
+    try {
+      if (defined('PDO::FETCH_BOTH')) {
+        if ($firstRow) {
+          return $result->fetch(PDO::FETCH_ASSOC, PDO::FETCH_ORI_ABS, 0);
+        } else {
+          return $result->fetch(PDO::FETCH_ASSOC, PDO::FETCH_ORI_NEXT);
+        }
       } else {
-        return $result->fetch(PDO::FETCH_ASSOC, PDO::FETCH_ORI_NEXT);
+        return mysql_fetch_assoc($result);
       }
-    } else {
-      return mysql_fetch_assoc($result);
+    } catch (PDOException $e) {
+      return [];
     }
   }
 

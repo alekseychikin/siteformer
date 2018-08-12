@@ -35,17 +35,19 @@ class Diagnostics {
       throw new ValidateException(['code' => $message['code'], 'index' => $message['index'], 'source' => $message['source']]);
     }
 
-    $connection = SFORM::init([
-      'host' => $configs['host'],
-      'user' => $configs['user'],
-      'password' => $configs['password']
-    ]);
-
-    if (!$connection) {
+    try {
+      $connection = SFORM::init([
+        'host' => $configs['host'],
+        'user' => $configs['user'],
+        'password' => $configs['password']
+      ]);
+    } catch (BaseException $e) {
       throw new ValidateException(['code' => 'EDATABASECONNECTION', 'index' => ['database'], 'source' => $configs]);
     }
 
-    if (SFORM::database($configs['database']) === false) {
+    try {
+      SFORM::setDatabase($configs['database']);
+    } catch (BaseException $e) {
       throw new ValidateException(['code' => 'EDATABASENAME', 'index' => ['database', 'database'], 'source' => $configs]);
     }
   }

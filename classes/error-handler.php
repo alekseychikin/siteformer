@@ -24,9 +24,9 @@ function shutdownHandler() {
   }
 }
 
-function errorHandler($severity, $msg, $file, $line) {
-  if (error_reporting() & $severity) {
-    echoError($msg . ' at ' . $file . ':' . $line);
+function errorHandler($errno, $msg, $file, $line) {
+  if (!(error_reporting() & $errno)) {
+    throw new ErrorException($msg, 0, $errno, $file, $line);
   }
 }
 

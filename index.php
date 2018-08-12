@@ -17,12 +17,13 @@ define('ROOT', realpath(__DIR__ . '/../') . '/');
 define('ENGINE', __DIR__ . '/');
 define('ENGINE_TEMP', ENGINE . 'temp/');
 
+require_once __DIR__ . '/classes/helpers.php';
 require_once __DIR__ . '/classes/response.php';
 require_once __DIR__ . '/classes/base-exception.php';
 require_once __DIR__ . '/classes/error-handler.php';
 
 register_shutdown_function('shutdownHandler');
-set_error_handler('errorHandler');
 set_exception_handler('exceptionHandler');
+set_error_handler('errorHandler', E_ALL | E_STRICT);
 
 include __DIR__ . "/engine.php";
