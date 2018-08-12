@@ -7,7 +7,6 @@ function doEngine($configs) {
   require_once __DIR__ . '/classes/diagnostics.php';
 
   Diagnostics::checkRequiredDirs();
-  Diagnostics::checkTempConstExists();
 
   session_start();
   header('Content-type: text/html; charset=utf8');

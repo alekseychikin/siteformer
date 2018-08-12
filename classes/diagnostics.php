@@ -15,16 +15,6 @@ class Diagnostics {
     }
   }
 
-  public static function checkTempConstExists() {
-    if (!defined('TEMP')) die('Константа `TEMP` должна быть задана и содержать путь до временных файлов проекта. ' . "<br />\n" . 'Например:' . "<br />\n" .' define(\'TEMP\', \'./temp/\');');
-
-    if (!file_exists(TEMP)) die('Путь ' . TEMP . ' не найден');
-
-    if (!is_dir(TEMP)) die(TEMP . ' должна быть директория, а не файл');
-
-    if (!is_writable(TEMP)) die('Временная директория ' . TEMP . ' должна быть доступна на запись');
-  }
-
   public static function checkDatabaseConnection($configs) {
     try {
       $configs = SFValidate::value([
