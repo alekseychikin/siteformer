@@ -1,6 +1,6 @@
 <?php
 
-function doEngine($configs) {
+function runEngine($configs) {
   $startTime = explode(' ', microtime());
   $startTime = $startTime[1] + $startTime[0];
 
@@ -25,7 +25,6 @@ function doEngine($configs) {
     die;
   }
 
-  require_once CLASSES . 'helpers.php';
   require_once CLASSES . 'json.php';
   require_once CLASSES . 'S3.php';
   require_once CLASSES . 'models.php';
@@ -76,7 +75,17 @@ function doEngine($configs) {
       'languages' => $configs['languages'],
       'models' => $configs['models']
     ]);
+  } catch (ValidateException $e) {
+    $message = $e->getDetails();
 
+    SFResponse::error(422, $message);
+  } catch (BaseException $e) {
+    SFResponse::error(400, $e->message());
+  } catch (Exception $e) {
+    SFResponse::error(400, $e->getMessage());
+  }
+
+  try {
     require_once MODULES . 'GUI/GUI.php';
 
     SFGUI::init();
@@ -93,30 +102,7 @@ function doEngine($configs) {
   } catch (ValidateException $e) {
     $message = $e->getDetails();
 
-    if (in_array($message['index'][0], ['config_actions', 'config_routes', 'config_models', 'config_templates'])) {
-      switch ($message['code']) {
-        case 'EPATHISNOTEXISTS':
-          die('Путь не найден: ' . $message['source']);
-        case 'EPATHISNOTDIR':
-          die('Это должна быть директория, а не файл: ' . $message['source']);
-          break;
-        case 'EPATHISNOTFILE':
-          die('Это должен быть файл, а не директория: ' . $message['source']);
-          break;
-      }
-    } elseif ($message['index'][0] === 'database') {
-      switch ($message['code']) {
-        case 'EDATABASECONNECTION':
-          unset($message['source']['database']);
-          die('Данные для подключения к mysql не подходят: ' . "\n" . print_r($message['source'], true));
-        case 'EDATABASENAME':
-          die('Подключение к mysql произошло, но база не найдена: ' . $message['source']['database']);
-        case 'EEMPTYREQUIRED':
-          die('Поле ' . $message['index'][1] . ' обязательно нужно заполнить');
-      }
-    } else {
-      SFResponse::error(422, $message);
-    }
+    SFResponse::error(422, $message);
   } catch (BaseException $e) {
     SFResponse::error(400, $e->message());
   } catch (Exception $e) {
