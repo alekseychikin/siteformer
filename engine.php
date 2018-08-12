@@ -15,9 +15,9 @@ function doEngine($configs) {
   define('MODULES', ENGINE . 'modules/');
   define('N', "\n");
 
-  require_once CLASSES . 'clear_cache.php';
+  require_once CLASSES . 'clear-cache.php';
   require_once CLASSES . 'validate-exception.php';
-  require_once CLASSES . 'page_not_found_exception.php';
+  require_once CLASSES . 'page-not-found-exception.php';
 
   if (isset($_SESSION['location'])) {
     $location = $_SESSION['location'];
@@ -35,7 +35,7 @@ function doEngine($configs) {
   require_once CLASSES . 'path.php';
   require_once CLASSES . 'text.php';
   require_once CLASSES . 'socket.php';
-  require_once CLASSES . 'error.php';
+  require_once CLASSES . 'errors.php';
   require_once CLASSES . 'image.php';
   require_once CLASSES . 'mail.php';
   require_once CLASSES . 'storages.php';
