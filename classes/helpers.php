@@ -6,6 +6,8 @@ function println() {
   foreach ($variables as $variable) {
     if (gettype($variable) === 'array') {
       echo '<pre>' . print_r($variable, true) . '</pre>';
+    } elseif (gettype($variable) === 'boolean') {
+      echo '<pre>' . ($variable ? 'true' : 'false') . '</pre>';
     } else {
       echo $variable;
     }
