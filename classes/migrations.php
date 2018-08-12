@@ -2,7 +2,7 @@
 
 class SFMigrations
 {
-  private static $lastMigration = 0;
+  private static $lastMigration = null;
   private static $pathMigrations;
   private static $addConstructions = [];
 
@@ -16,7 +16,13 @@ class SFMigrations
 
       self::preserveLastMigration();
 
-      self::doMigrations();
+      if (isset($_GET['do-migration']) && !empty($_GET['do-migration']) && APPLICATION_ENV === 'develop') {
+        self::doMigration($_GET['do-migration']);
+      }
+
+      if (isset($_GET['do-migrations'])) {
+        self::doMigrations();
+      }
     }
   }
 
@@ -57,6 +63,16 @@ class SFMigrations
 
     foreach (self::$addConstructions as $addConstruction) {
       $addConstruction();
+    }
+  }
+
+  private static function doMigration($name) {
+    $filePath = pathresolve(self::$pathMigrations, $name . '.php');
+
+    if (file_exists($filePath)) {
+      require_once $filePath;
+    } else {
+      die('Migration file ' . $filePath . ' does not exists');
     }
   }
 

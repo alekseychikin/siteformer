@@ -10,7 +10,6 @@ require_once __DIR__ . '/ORMSelect2.php';
 require_once __DIR__ . '/ORMDelete.php';
 require_once __DIR__ . '/ORMUpdate.php';
 require_once __DIR__ . '/ORMInsert.php';
-require_once __DIR__ . '/ORMMigrate.php';
 require_once __DIR__ . '/ORMField.php';
 require_once __DIR__ . '/ORMFunc.php';
 require_once __DIR__ . '/ORMCustomValue.php';
@@ -26,12 +25,6 @@ class SFORM extends SFORMDatabase
       if (!file_exists($params['fixtures'])) die('Not exists fixtures file: ' . $params['fixtures']);
 
       include $params['fixtures'];
-    }
-
-    if (isset($params['migrations'])) {
-      if (!file_exists($params['migrations'])) die('Not exists migrations folder: ' . $params['migrations']);
-
-      SFORMMigrate::init($params);
     }
 
     return true;
@@ -112,10 +105,6 @@ class SFORM extends SFORMDatabase
 
   public static function error() {
     return parent::error();
-  }
-
-  public static function migration() {
-    return new SFORMMigrate();
   }
 
   public static function lastQuery() {
