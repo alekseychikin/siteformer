@@ -18,4 +18,22 @@ class SFTypeFile extends SFERMType
       'ext' => []
     ], $settings, $indexes);
   }
+
+  public static function prepareInsertData($collection, $field, $data) {
+    $settings = $field['settings'];
+
+    return SFStorages::put($settings['storage'], $value, $settings['path']);
+  }
+
+  public static function prepareUpdateData($collection, $field, $currentData, $data) {
+    if ($currentData[$field['alias']] === $data[$field['alias']]) {
+      return $data[$field['alias']];
+    }
+
+    $settings = $field['settings'];
+
+    SFStorages::delete($settings['storage'], $currentData[$field['alias']]);
+
+    return SFStorages::put($settings['storage'], $value, $settings['path']);
+  }
 }
