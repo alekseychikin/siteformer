@@ -14,13 +14,13 @@ class SFTypeFile extends SFERMType
         'valid' => function ($value) use ($settings, $indexes) {
           return SFStorages::checkWritablePath($settings['storage'], $value, array_merge($indexes, ['path']));
         }
-      ],
-      'ext' => []
+      ]
     ], $settings, $indexes);
   }
 
   public static function prepareInsertData($collection, $field, $data) {
     $settings = $field['settings'];
+    $value = $data[$field['alias']];
 
     return SFStorages::put($settings['storage'], $value, $settings['path']);
   }
@@ -29,6 +29,8 @@ class SFTypeFile extends SFERMType
     if ($currentData[$field['alias']] === $data[$field['alias']]) {
       return $data[$field['alias']];
     }
+
+    $value = $data[$field['alias']];
 
     $settings = $field['settings'];
 
