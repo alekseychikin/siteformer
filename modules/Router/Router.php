@@ -56,6 +56,7 @@ class SFRouter
 
     self::$uri = $uri;
 
+    // lang handler
     if (isset(self::$uri[0]) && in_array(self::$uri[0], self::$languages)) {
       self::$language = self::$uri[0];
       self::$uri = array_splice(self::$uri, 1);
@@ -143,6 +144,93 @@ class SFRouter
     return count(self::$uri);
   }
 
+  private static function parse($url) {
+    if (substr($url, -1, 1) == '/') $url = substr($url, 0, -1);
+
+    $uri = self::getUri();
+
+    if (isset(self::$routes[$uri])) {
+      return [
+        'pattern' => $uri,
+        'path' => self::$routes[$uri], 'params' => []
+      ];
+    } else {
+      $t = true;
+
+      // find out all pairs of stars-keys => path-to-controller
+      // relations contains connection of starts-key to origin key with variables
+      list($pairs, $relations) = self::parseUriReplace(self::$routes);
+
+      // getting array of uri
+      $uri = self::getUriByArray(self::uriNum() - 1);
+
+      // get a string with stars
+      $compuri = self::recParsive($pairs, $uri);
+
+      // find out the path to controller by starts-key
+      if (isset($pairs[$compuri])) {
+
+        // get original key with variables by starts-key
+        $pattern = $relations[$compuri];
+        $uri = explode('/', $pattern);
+        $params = [];
+
+        foreach ($uri as $key => $val) {
+          if (strpos($val, '{') === 0 && strrpos($val, '}') === strlen($val) -1) {
+
+            // make a variables
+            $field = substr($val, 1, strlen($val) -2);
+            $param = self::uri($key -1);
+            $params[$field] = $param;
+          }
+        }
+
+        return ['pattern' => $pattern, 'path' => $pairs[$compuri], 'params' => $params];
+      }
+    }
+
+    return false;
+  }
+
+  private static function getUriByArray($num = 0) {
+    if ($num != 0) {
+      $uri = [];
+
+      for ($i = 0; $i <= $num; $i++) {
+        $uri[$i] = self::$uri[$i];
+      }
+
+      return $uri;
+    }
+
+    return self::$uri;
+  }
+
+  private static function recParsive($params, & $uri) {
+    foreach ($params as $pattern => $actionPath) {
+      $pattern = explode('/', $pattern);
+      $pattern = arrFilter($pattern, function ($value) {
+        return strlen($value);
+      });
+
+      if(count($pattern) && count($pattern) === count($uri)) {
+        $t = true;
+
+        for ($i = 0; $i < count($pattern); $i++) {
+          if ($pattern[$i] !== '*' && $pattern[$i] !== $uri[$i]) {
+            $t = false;
+          }
+        }
+
+        if ($t) {
+          return '/' . implode('/', $pattern) . '/';
+        }
+      }
+    }
+
+    return false;
+  }
+
   private static function returnModelData($params) {
     if (!$params) {
       $params = [];
@@ -192,13 +280,20 @@ class SFRouter
     $outputData = [];
 
     foreach ($rules as $key => $value) {
-      if (gettype($value) === 'array') {
+      if (gettype($value) === 'array' && isset($value['model'])) {
+        $params = [];
+
+        if (isset($value['params'])) {
+          $params = $value['params'];
+        }
+
+        $inputData[$key] = self::getDataFromModel($value['model'], $params);
+        $outputData[$key] = $inputData[$key];
+      } elseif (gettype($value) === 'array') {
         $subData = self::prepareGetParams($value, $inputData);
         $outputData[$key] = $subData;
       } else {
-        list($model, $options) = self::parseSource($value, $inputData);
-        $inputData[$key] = self::getDataFromModel($model, $options);
-        $outputData[$key] = $inputData[$key];
+        $outputData[$key] = $value;
       }
     }
 
@@ -242,82 +337,6 @@ class SFRouter
     return [$model, $data];
   }
 
-  private static function parse($url) {
-    if (substr($url, -1, 1) == '/') $url = substr($url, 0, -1);
-
-    $uri = self::getUri();
-
-    if (isset(self::$routes[$uri])) {
-      return [
-        'pattern' => $uri,
-        'path' => self::$routes[$uri], 'params' => []
-      ];
-    } else {
-      $t = true;
-      $n = self::uriNum() - 1;
-      $a = 1;
-      $i = $n;
-
-      // find out all pairs of stars-keys => path-to-controller
-      // relations contains connection of starts-key to origin key with variables
-      list($pairs, $relations) = self::parseUriReplace(self::$routes);
-
-      // getting array of uri
-      $uri = self::getUriByArray($n);
-
-      // get a string with stars
-      $compuri = self::recParsive($pairs, $uri, $a, $n);
-
-      // find out the path to controller by starts-key
-      if (isset($pairs[$compuri])) {
-
-        // get original key with variables by starts-key
-        $pattern = $relations[$compuri];
-        $uri = explode('/', $pattern);
-        $params = [];
-
-        foreach ($uri as $key => $val) {
-          if (strpos($val, '{') === 0 && strrpos($val, '}') === strlen($val) -1) {
-
-            // make a variables
-            $field = substr($val, 1, strlen($val) -2);
-            $param = self::uri($key -1);
-            $params[$field] = $param;
-          }
-        }
-
-        return ['pattern' => $pattern, 'path' => $pairs[$compuri], 'params' => $params];
-      }
-    }
-
-    return false;
-  }
-
-  private static function recParsive($params, & $uri, $start, $n) {
-    foreach ($params as $pattern => $actionPath) {
-      $pattern = explode('/', $pattern);
-      $pattern = arrFilter($pattern, function ($value) {
-        return strlen($value);
-      });
-
-      if(count($pattern) && count($pattern) === count($uri)) {
-        $t = true;
-
-        for ($i = 0; $i < count($pattern); $i++) {
-          if ($pattern[$i] !== '*' && $pattern[$i] !== $uri[$i]) {
-            $t = false;
-          }
-        }
-
-        if ($t) {
-          return '/' . implode('/', $pattern) . '/';
-        }
-      }
-    }
-
-    return false;
-  }
-
   private static function parseUriReplace($uri) {
     $replace_uri = [];
     $relations = [];
@@ -334,20 +353,6 @@ class SFRouter
     }
 
     return [$replace_uri, $relations];
-  }
-
-  private static function getUriByArray($num = 0) {
-    if ($num != 0) {
-      $uri = [];
-
-      for ($i = 0; $i <= $num; $i++) {
-        $uri[$i] = self::$uri[$i];
-      }
-
-      return $uri;
-    }
-
-    return self::$uri;
   }
 
   private static function getUri() {
