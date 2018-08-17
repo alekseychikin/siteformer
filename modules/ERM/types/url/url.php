@@ -14,7 +14,7 @@ class SFTypeUrl extends SFERMType
   }
 
   public static function prepareInsertData($collection, $field, $data) {
-    $collection = SFGUI::getCollection($collection);
+    $collection = SFERM::getCollection($collection);
     $settings = $field['settings'];
 
     if (empty($data[$field['alias']]) && empty($data[$settings['source']])) {
@@ -48,7 +48,7 @@ class SFTypeUrl extends SFERMType
   }
 
   public static function prepareUpdateData($collection, $field, $currentData, $data) {
-    $collection = SFGUI::getCollection($collection);
+    $collection = SFERM::getCollection($collection);
     $settings = $field['settings'];
 
     if (empty($data[$field['alias']]) && empty($data[$settings['source']])) {
