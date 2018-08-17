@@ -256,6 +256,9 @@ class SFRouter
   }
 
   private static function runAction($data, $params) {
+    if (is_callable($data)) {
+      $data = call_user_func_array($data, $params);
+    }
     if (isset($data['data'])) {
       $params = self::prepareGetParams($data['data'], $params);
 
