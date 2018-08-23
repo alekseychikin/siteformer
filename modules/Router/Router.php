@@ -237,12 +237,16 @@ class SFRouter
     }
 
     if (strtoupper($_SERVER['REQUEST_METHOD']) === 'POST') {
-      foreach ($_POST as $key => $value) {
-        SFResponse::set($key, SFModels::post($key, $value));
-      }
+      $files = self::prepareFiles();
 
-      foreach ($_FILES as $key => $value) {
-        SFResponse::set($key, SFModels::files($key, $value));
+      foreach ($_POST as $key => $value) {
+        $values = $value;
+
+        if (isset($files[$key])) {
+          $values = array_merge($values, $files[$key]);
+        }
+
+        SFResponse::set($key, SFModels::post($key, $values));
       }
     }
 
@@ -253,6 +257,46 @@ class SFRouter
     }
 
     SFResponse::render();
+  }
+
+  private static function prepareFiles() {
+    $files = [];
+
+    foreach ($_FILES as $field => $item) {
+      $files[$field] = [];
+
+      foreach ($item as $paramName => $param) {
+        self::getFilesFields($param, $paramName, $files[$field]);
+      }
+    }
+
+    return $files;
+  }
+
+  private static function getFilesFields($value, $paramName, & $result) {
+    if (gettype($value) !== 'array') {
+      $result[$paramName] = $value;
+    } else {
+      $isNumberIndexes = true;
+
+      foreach ($value as $index => $item) {
+        if (gettype($index) !== 'integer') {
+          $isNumberIndexes = false;
+        }
+      }
+
+      if ($isNumberIndexes) {
+        $result[$paramName] = $value;
+      } else {
+        foreach ($value as $field => $item) {
+          if (!isset($result[$field])) {
+            $result[$field] = [];
+          }
+
+          self::getFilesFields($item, $paramName, $result[$field]);
+        }
+      }
+    }
   }
 
   private static function runAction($data, $params) {

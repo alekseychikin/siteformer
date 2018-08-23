@@ -112,42 +112,32 @@ class SFStorages {
     }
   }
 
-  public static function uploadToTemp($fields) {
-    if (gettype($fields) !== 'array') {
-      $fields = [$fields];
+  public static function uploadToTemp($files) {
+    $outfilenames = [];
+    $tmpName = $files['tmp_name'];
+    $name = $files['name'];
+    $isSingleSource = gettype($tmpName) !== 'array';
+
+    if ($isSingleSource) {
+      $tmpName = [$tmpName];
+      $name = [$name];
     }
 
-    if (isset($_FILES[$fields[0]])) {
-      $fieldname = $fields[0];
-      $files = $_FILES[$fieldname];
-      $outfilenames = [];
-      $tmpName = self::getFilesField($fields, 'tmp_name');
-      $name = self::getFilesField($fields, 'name');
-      $isSingleSource = gettype($tmpName) !== 'array';
+    foreach ($tmpName as $index => $tmpname) {
+      $outfilename = pathresolve(ENGINE_TEMP, md5(time() . rand())) . extname($name[$index]);
 
-      if ($isSingleSource) {
-        $tmpName = [$tmpName];
-        $name = [$name];
-      }
-
-      foreach ($tmpName as $index => $tmpname) {
-        $outfilename = pathresolve(ENGINE_TEMP, md5(time() . rand())) . extname($name[$index]);
-
-        if (@is_uploaded_file($tmpname)) {
-          if (@move_uploaded_file($tmpname, $outfilename)) {
-            $outfilenames[] = $outfilename;
-          } else {
-            throw new BaseException('Ошибка перемещения файла из временного хранилища в папку-приёмник. Возможно недостаточно прав на запись в папке ' . $path);
-          }
+      if (@is_uploaded_file($tmpname)) {
+        if (@move_uploaded_file($tmpname, $outfilename)) {
+          $outfilenames[] = $outfilename;
         } else {
-          throw new BaseException('Ошибка загрузки файла');
+          throw new BaseException('Ошибка перемещения файла из временного хранилища в папку-приёмник. Возможно недостаточно прав на запись в папке ' . $path);
         }
+      } else {
+        throw new BaseException('Ошибка загрузки файла');
       }
-
-      return $isSingleSource ? $outfilenames[0] : $outfilenames;
-    } else {
-      throw new BaseException('Файл не передан для загрузки');
     }
+
+    return $isSingleSource ? $outfilenames[0] : $outfilenames;
   }
 
   public static function delete($storage, $path) {
@@ -161,20 +151,6 @@ class SFStorages {
       case 's3':
         return self::deleteS3(self::$storages[$storage], $path);
     }
-  }
-
-  private static function getFilesField($fields, $field) {
-    if (count($fields) > 1) {
-      $files = $_FILES[$fields[0]][$field];
-
-      for ($i = 1; $i < count($fields); $i++) {
-        $files = $files[$fields[$i]];
-      }
-
-      return $files;
-    }
-
-    return $_FILES[$fields[0]][$field];
   }
 
   private static function validateLocal($configs, $storage) {
