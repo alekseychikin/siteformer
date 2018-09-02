@@ -39,7 +39,7 @@ if (isset($_FILES['gallery'])) {
   // <input type="file" name="gallery[]" multiple />
   $gallery = SFStorages::uploadToTemp('gallery');
 
-  SFERM::createItem('places', [
+  SFERM::updateItem('places', [
     'id' => 1
     'status' => 'public',
     'user' => '777',
@@ -47,6 +47,35 @@ if (isset($_FILES['gallery'])) {
       'gallery' => [
         'add' => gallery, // массив изображений, которые нужно добавить в галерею
         'delete' => [1, 3, 5] // массив айдишников изображений из таблицы sys_type_gallery, которые нужно удалить
+      ]
+    ]
+  ]);
+
+  // обязательное условие для обновления галереи — это передача данных обо всех
+  // элементах галереи. в противном случае будет конфликт сортировки элементов
+  // 4 типа экшенов: add, skip, update, delete.
+  // skip — значит нужно только обновить индекс
+
+  SFERM::updateItem('places', [
+    'id' => 1
+    'status' => 'public',
+    'user' => '777',
+    'data' => [
+      'gallery' => [
+        [
+          'action' => 'add',
+          'image' => '/path/to/image.jpg'
+        ], [
+          'action' => 'skip',
+          'id' => 34
+        ], [
+          'action' => 'update',
+          'id' => 36,
+          'image' => '/path/to/image.jpg'
+        ], [
+          'action' => 'delete',
+          'id' => '37'
+        ]
       ]
     ]
   ]);
