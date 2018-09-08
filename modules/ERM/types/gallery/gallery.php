@@ -59,7 +59,7 @@ class SFTypeGallery extends SFERMType
           'default' => NULL
         ])
         ->addField([
-          'name' => 'photo',
+          'name' => 'image',
           'type' => 'VARCHAR(200)',
           'null' => 'NULL',
           'default' => NULL
@@ -71,24 +71,24 @@ class SFTypeGallery extends SFERMType
   }
 
   public static function postPrepareInsertData($collection, $field, $record, $data) {
-    $photos = $data[$field['alias']];
+    $images = $data[$field['alias']];
     $settings = $field['settings'];
 
-    foreach ($photos as $photo) {
-      $basename = basename($photo);
-      $dirname = dirname($photo);
+    foreach ($images as $image) {
+      $basename = basename($image);
+      $dirname = dirname($image);
       $preview = pathresolve($dirname, 'preview_' . $basename);
 
-      copy($photo, $preview);
+      copy($image, $preview);
 
       SFImage::resize($preview, [
         'width' => $settings['previewWidth'],
         'height' => $settings['previewHeight']
       ]);
-      SFImage::resize($photo, $settings);
+      SFImage::resize($image, $settings);
 
       $preview = SFStorages::put($settings['storage'], $preview, $settings['path']);
-      $photo = SFStorages::put($settings['storage'], $photo, $settings['path']);
+      $image = SFStorages::put($settings['storage'], $image, $settings['path']);
 
       SFORM::insert('sys_type_gallery')
         ->values([
@@ -96,7 +96,7 @@ class SFTypeGallery extends SFERMType
           'field' => $field['alias'],
           'record' => $record['id'],
           'preview' => $preview,
-          'photo' => $photo
+          'image' => $image
         ])
         ->exec();
     }
@@ -106,56 +106,49 @@ class SFTypeGallery extends SFERMType
     $actions = $data[$field['alias']];
     $settings = $field['settings'];
 
-    if (isset($actions['delete'])) {
-      $photos = SFORM::select()
-        ->from('sys_type_gallery');
+    foreach ($actions as $action) {
+      switch ($action['action']) {
+        case 'delete':
+          $image = SFORM::select()
+            ->from('sys_type_gallery')
+            ->where('id', $action['id'])
+            ->execOne();
 
-      foreach ($actions['delete'] as $index => $id) {
-        if (!$index) {
-          $photos->where('id', $id);
-        } else {
-          $photos->orWhere('id', $id);
-        }
-      }
+          SFStorages::delete($settings['storage'], $image['preview']);
+          SFStorages::delete($settings['storage'], $image['image']);
 
-      $photos = $photos->exec();
+          SFORM::delete('sys_type_gallery')
+            ->where('id', $image['id'])
+            ->exec();
+          break;
+        case 'add':
+          $image = $action['image'];
+          $basename = basename($image);
+          $dirname = dirname($image);
+          $preview = pathresolve($dirname, 'preview_' . $basename);
 
-      foreach ($photos as $photo) {
-        SFStorages::delete($settings['storage'], $photo['preview']);
-        SFStorages::delete($settings['storage'], $photo['photo']);
+          copy($image, $preview);
 
-        SFORM::delete('sys_type_gallery')
-          ->where('id', $photo['id'])
-          ->exec();
-      }
-    }
+          SFImage::resize($preview, [
+            'width' => $settings['previewWidth'],
+            'height' => $settings['previewHeight']
+          ]);
+          SFImage::resize($image, $settings);
 
-    if (isset($actions['add'])) {
-      foreach ($actions['add'] as $photo) {
-        $basename = basename($photo);
-        $dirname = dirname($photo);
-        $preview = pathresolve($dirname, 'preview_' . $basename);
+          $preview = SFStorages::put($settings['storage'], $preview, $settings['path']);
+          $image = SFStorages::put($settings['storage'], $image, $settings['path']);
 
-        copy($photo, $preview);
+          println($record);
 
-        SFImage::resize($preview, [
-          'width' => $settings['previewWidth'],
-          'height' => $settings['previewHeight']
-        ]);
-        SFImage::resize($photo, $settings);
-
-        $preview = SFStorages::put($settings['storage'], $preview, $settings['path']);
-        $photo = SFStorages::put($settings['storage'], $photo, $settings['path']);
-
-        SFORM::insert('sys_type_gallery')
-          ->values([
-            'collection' => $collection['id'],
-            'field' => $field['alias'],
-            'record' => $record['id'],
-            'preview' => $preview,
-            'photo' => $photo
-          ])
-          ->exec();
+          SFORM::insert('sys_type_gallery')
+            ->values([
+              'collection' => $collection['id'],
+              'field' => $field['alias'],
+              'record' => $record['id'],
+              'preview' => $preview,
+              'image' => $image
+            ])
+            ->exec();
       }
     }
   }
