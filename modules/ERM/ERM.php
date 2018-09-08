@@ -2,8 +2,9 @@
 
 require_once __DIR__ . '/ERMGetItem.php';
 require_once __DIR__ . '/ERMGetItemList.php';
+require_once __DIR__ . '/ERMHelpers.php';
 
-class SFERM
+class SFERM extends SFERMHelpers
 {
   private static $collections = [];
 
@@ -825,46 +826,5 @@ class SFERM
         ->addKey('alias')
         ->exec();
     }
-  }
-
-  public static function getClassNameByType($type) {
-    return 'SFType' . SFText::camelCasefy($type, true);
-  }
-
-  private static function sortFields ($fields, & $data) {
-    while (true) {
-      $find = false;
-      $lookingFor = false;
-      $needSource = false;
-      $mapIndexes = [];
-
-      foreach ($fields as $index => $field) {
-        $mapIndexes[$field['alias']] = $index;
-
-        if ($lookingFor && $field['alias'] === $lookingFor) {
-          array_splice($fields, $index, 1);
-          array_splice($fields, $needSource, 0, array($field));
-          $find = true;
-
-          break;
-        } else {
-          $className = self::getClassNameByType($field['type']);
-
-          if (method_exists($className, 'detectSource') && $className::detectSource($field)) {
-            $lookingFor = $className::detectSource($field);
-            $data[$field['alias']] = $data[$lookingFor];
-            $needSource = $index;
-
-            if (isset($mapIndexes[$lookingFor])) {
-              $lookingFor = false;
-            }
-          }
-        }
-      }
-
-      if (!$find) break;
-    }
-
-    return $fields;
   }
 }

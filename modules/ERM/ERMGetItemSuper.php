@@ -1,8 +1,9 @@
 <?php if (!defined('ROOT')) die('You can\'t just open this file, dude');
 
 require_once __DIR__ . '/../ORM/ORM.php';
+require_once __DIR__ . '/ERMHelpers.php';
 
-class SFERMGetItemSuper
+class SFERMGetItemSuper extends SFERMHelpers
 {
   protected $collection;
   protected $fields;
