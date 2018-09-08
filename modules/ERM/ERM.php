@@ -2,6 +2,7 @@
 
 require_once __DIR__ . '/ERMGetItem.php';
 require_once __DIR__ . '/ERMGetItemList.php';
+require_once __DIR__ . '/ERMUpdate.php';
 require_once __DIR__ . '/ERMHelpers.php';
 
 class SFERM extends SFERMHelpers
@@ -85,6 +86,11 @@ class SFERM extends SFERMHelpers
     return $record;
   }
 
+  public static function update($collection, $params) {
+    return new SFERMUpdate($collection, $params);
+  }
+
+  // Deprecated
   public static function updateItem($collection, $params) {
     $id = $params['id'];
     $data = $params['data'];

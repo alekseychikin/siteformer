@@ -104,7 +104,7 @@ class SFORMSelect extends SFORMDatabase
 
   public function andOn () {
     $params = func_get_args();
-    $this->joins[$this->joining]['on'][] = ' AND ';
+    $this->joins[$this->joining]['on'][] = ' and ';
     $this->joins[$this->joining]['on'][] = $this->handleExpression($params);
 
     return $this;
@@ -126,13 +126,13 @@ class SFORMSelect extends SFORMDatabase
   }
 
   public function andOpenWhere () {
-    $this->where[] = ' AND (';
+    $this->where[] = ' and (';
 
     return $this;
   }
 
   public function orOpenWhere () {
-    $this->where[] = ' OR (';
+    $this->where[] = ' or (';
 
     return $this;
   }
