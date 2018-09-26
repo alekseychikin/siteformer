@@ -7,28 +7,21 @@ class SFTypeSelect extends SFERMType
 {
   public static function getSqlField($params) {
     return [
-      'type' => 'INT(6)',
-      'default' => $params['checked']
+      'type' => 'ENUM("' . implode('", "', array_keys($params['values'])) . '")',
+      'default' => $params['default']
     ];
   }
 
   public static function validateSettings($settings, $fields, $currentAlias, $indexes = []) {
     return SFValidate::value([
-      'checked' => [
-        'type' => 'int'
-      ],
+      'default' => array_keys($settings['values']),
       'values' => [
-        'minlength' => 1,
-        'collection' => [
-          'required' => true,
-          'unique' => true,
-          'skipempty' => true
-        ]
+        'type' => 'array'
       ]
     ], $settings, $indexes);
   }
 
   public static function getDefaultData($settings) {
-    return $settings['defaultValue'];
+    return $settings['default'];
   }
 }

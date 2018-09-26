@@ -83,7 +83,9 @@ class SFERM extends SFERMHelpers
       $className::postPrepareInsertData($collection, $field, $record, $data);
     }
 
-    return $record;
+    return self::getItem($collection['alias'])
+      ->where('id', $record['id'])
+      ->exec();
   }
 
   public static function update($collection, $params) {

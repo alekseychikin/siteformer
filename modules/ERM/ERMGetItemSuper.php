@@ -142,6 +142,10 @@ class SFERMGetItemSuper extends SFERMHelpers
           'field' => $field
         ];
 
+        if (gettype($value) !== 'array') {
+          $value = [$value];
+        }
+
         foreach ($value as $index => $item) {
           $insertions[] = ':field = ":value' . $index .'"';
           $values['value' . $index] = $item;
