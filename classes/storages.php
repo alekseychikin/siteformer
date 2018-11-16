@@ -124,7 +124,11 @@ class SFStorages {
     }
 
     foreach ($tmpName as $index => $tmpname) {
-      $outfilename = pathresolve(ENGINE_TEMP, md5(time() . rand())) . extname($name[$index]);
+      $extname = extname($name[$index]);
+      $basename = basename(mb_strtolower($name[$index], 'utf-8'), $extname);
+      $basename = SFText::removeSpecialCharacters($basename);
+      $basename = SFText::translite($basename);
+      $outfilename = pathresolve(ENGINE_TEMP, $basename) . $extname;
 
       if (@is_uploaded_file($tmpname)) {
         if (@move_uploaded_file($tmpname, $outfilename)) {

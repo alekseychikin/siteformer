@@ -284,6 +284,11 @@ function normalizeUrl($path, $separator = '/') {
   return join($separator, $path);
 }
 
+/**
+ * @param string $filename
+ *
+ * @return string extname of filename with prefix dot
+ */
 function extname($filename) {
   $ext = '';
 
