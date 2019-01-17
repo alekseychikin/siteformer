@@ -6,14 +6,6 @@ class SFModels
 {
   private static $paths = [];
 
-  public static function factory($model) {
-    $path = explode('/', $model);
-    require_once ACTIONS . $model . '.php';
-    $model = $path[count($path) - 1];
-    $className = 'SF' . SFText::camelCasefy($model, true);
-    return new $className;
-  }
-
   public static function registerPath ($path) {
     self::$paths[] = SFPath::prepareDir($path);
   }

@@ -101,19 +101,9 @@ class SFRouter
 
     if (!$result) return false;
 
-    if (gettype($result['path']) === 'string') {
-      if (SFResponse::actionExists($result['path'])) {
-        SFResponse::run($result['path'], $result['params']);
+    self::runAction($result['path'], $result['params']);
 
-        return true;
-      }
-    } else {
-      self::runAction($result['path'], $result['params']);
-
-      return true;
-    }
-
-    return false;
+    return true;
   }
 
   public static function addRule($url, $action) {
@@ -312,15 +302,24 @@ class SFRouter
     }
 
     $headers = SFResponse::getRequestHeaders();
-    $accept = 'text/html';
 
     if (isset($headers['Accept'])) {
       $accept = strtolower($headers['Accept']);
     }
 
-    if (isset($data['template']) && strpos($accept, 'text/html') !== false) {
+    if (isset($data['template']) && self::checkAcceptHeader(['text/html', '*/*'], $accept)) {
       echo SFTemplater::render($data['template'], SFResponse::getState());
     }
+  }
+
+  private static function checkAcceptHeader($values, $header) {
+    foreach ($values as $value) {
+      if (strpos($header, $value) !== false) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   private static function prepareGetParams($rules = [], $inputData = []) {

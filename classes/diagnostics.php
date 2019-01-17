@@ -78,11 +78,6 @@ class Diagnostics {
     };
 
     return SFValidate::value([
-      'actions' => [
-        'valid' => function ($path) use ($validateDirPath) {
-          return $validateDirPath('config_actions', $path);
-        }
-      ],
       'routes' => [
         'type' => 'array'
       ],

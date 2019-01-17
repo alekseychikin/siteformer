@@ -71,7 +71,6 @@ function runEngine($configs) {
 
     SFRouter::init([
       'routes' => $configs['routes'],
-      'actions' => $configs['actions'],
       'languages' => $configs['languages'],
       'models' => $configs['models']
     ]);
