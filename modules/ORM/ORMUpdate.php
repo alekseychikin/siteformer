@@ -1,10 +1,9 @@
-<?php if (!defined('ROOT')) die('You can\'t just open this file, dude');
+<?php
 
 require_once __DIR__ . '/ORM.php';
 require_once __DIR__ . '/ORMWhere.php';
 
-class SFORMUpdate extends SFORMWhere
-{
+class SFORMUpdate extends SFORMWhere {
   private $table;
   private $params;
 
@@ -23,7 +22,7 @@ class SFORMUpdate extends SFORMWhere
   }
 
   public function getQuery($alias = 'default') {
-    $sql = 'UPDATE `'.$this->table.'`'.N.'SET ';
+    $sql = 'UPDATE `' . $this->table . '`' . EOL . 'SET ';
     $params = array();
 
     foreach ($this->params as $field => $value) {
@@ -36,7 +35,7 @@ class SFORMUpdate extends SFORMWhere
       $params[] = _field_($field).' = '. $value;
     }
 
-    $sql .= implode(', ', $params).N;
+    $sql .= implode(', ', $params) . EOL;
 
     if ($this->getById !== false) {
       $idField = self::getPrimaryFields($this->table, $alias);
@@ -45,7 +44,7 @@ class SFORMUpdate extends SFORMWhere
     }
 
     if ($this->where) {
-      $sql .= 'WHERE '.$this->expandExpression($this->table, $this->where).N;
+      $sql .= 'WHERE '.$this->expandExpression($this->table, $this->where) . EOL;
     }
 
     return $sql;

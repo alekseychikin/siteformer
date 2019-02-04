@@ -1,7 +1,6 @@
-<?php if (!defined('ROOT')) die('You can\'t just open this file, dude');
+<?php
 
-class ValidateException extends Exception
-{
+class ValidateException extends Exception {
   protected $message;
   protected $details;
   protected $file = false;

@@ -1,11 +1,9 @@
-<?php if (!defined('ROOT')) die('You can\'t just open this file, dude');
+<?php
 
 require_once __DIR__ . '/../../classes/validate.php';
-require_once __DIR__ . '/../../classes/path.php';
 require_once __DIR__ . '/../../classes/base-exception.php';
 
-class SFORMDatabase
-{
+class SFORMDatabase {
   public static $countQueries = 0;
   protected static $defaultBase = 'default';
   private static $supportPDO;
@@ -140,10 +138,10 @@ class SFORMDatabase
       ]
     ], $field);
 
+    $res['default'] = false;
+
     if (isset($field['default'])) {
       $res['default'] = $field['default'];
-    } else {
-      $res['default'] = false;
     }
 
     return $res;
@@ -283,9 +281,9 @@ class SFORMDatabase
       reset(self::$connections);
 
       return $connection->quote($value);
-    } else {
-      return '\''.mysql_real_escape_string($value).'\'';
     }
+
+    return '\''.mysql_real_escape_string($value).'\'';
   }
 
   protected static function lastId($table, $alias = 'default') {
@@ -419,7 +417,7 @@ class SFORMDatabase
 
   private static function putReport($sql, $time) {
     if (strpos($sql, '__events') === false) {
-      SFPath::mkdir(self::$reports);
+      mkdirRecoursive(self::$reports);
 
       if (!file_exists(self::$reports.'queries.log')) {
         $file = fopen(self::$reports.'queries.log', 'w');

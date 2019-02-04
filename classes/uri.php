@@ -1,9 +1,8 @@
-<?php if (!defined('ROOT')) die('You can\'t just open this file, dude');
+<?php
 
 require_once __DIR__ . '/response.php';
 
-class SFURI
-{
+class SFURI {
   private static $init = false;
   private static $uri = array();
   private static $port = 80;
@@ -20,7 +19,7 @@ class SFURI
 
     self::$init = true;
 
-    $uri = array();
+    $uri = [];
     $uriRaw = rawurldecode($path);
     $getRaw = '';
 
@@ -35,15 +34,9 @@ class SFURI
     $i = 1;
 
     foreach ($uriRaw as $key => $val) {
-      if ($i++ <= $max) {
-        if (!empty($val)) {
-          $uri[] = $uriRaw[$key];
-        }
+      if ($i++ <= $max && !empty($val)) {
+        $uri[] = $uriRaw[$key];
       }
-    }
-
-    if (!count($uri)) {
-      $uri[] = '/';
     }
 
     self::$uri = $uri;
@@ -56,32 +49,20 @@ class SFURI
     self::$name = explode('.', $domain);
   }
 
-  public static function getUri($index = false) {
-    if ($index === false) {
-      if (count(self::$uri) === 1 && self::$uri[0] === '/') {
-        return '/';
-      }
+  public static function getUri($index = null) {
+    return '/' . (count(self::$uri) ? implode('/', self::$uri) . '/' : '');
+  }
 
-      return '/' . implode('/', self::$uri) . '/';
-    }
-
+  public static function getUriItem($index) {
     if (isset(self::$uri[$index])) {
       return self::$uri[$index];
     }
 
-    return false;
+    return '';
   }
 
-  public static function getUriRaw() {
+  public static function getUriArray() {
     return self::$uri;
-  }
-
-  public static function getLastUri($item = false) {
-    return self::getUri(self::getUriLength() - 1);
-  }
-
-  public static function getFirstUri($item = false) {
-    return self::getUri(0);
   }
 
   public static function getUriLength() {
@@ -90,16 +71,10 @@ class SFURI
 
   public static function getDomain($index = false) {
     if ($index === false) return implode('.', self::$name);
+
     if (isset(self::$name[$index])) return self::$name[$index];
+
     return false;
-  }
-
-  public static function getLastDomain($item = false) {
-    return self::getDomain(self::getDomainsLength() - 1);
-  }
-
-  public static function getFirstDomain($item = false) {
-    return self::getDomain(0);
   }
 
   public static function getDomainsLength() {

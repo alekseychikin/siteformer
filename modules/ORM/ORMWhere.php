@@ -1,10 +1,9 @@
-<?php if (!defined('ROOT')) die('You can\'t just open this file, dude');
+<?php
 
 require_once __DIR__ . '/ORM.php';
 require_once __DIR__ . '/ORMDatabase.php';
 
-class SFORMWhere extends SFORMDatabase
-{
+class SFORMWhere extends SFORMDatabase {
   protected $where;
   protected $getById = false;
   protected $group;

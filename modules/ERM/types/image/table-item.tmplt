@@ -1,7 +1,0 @@
-<component>
-  <param name={$value} value="" />
-
-  <if test={$value}>
-    <img src={$value} width="130" />
-  </if>
-</component>

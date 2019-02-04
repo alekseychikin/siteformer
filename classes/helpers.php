@@ -1,21 +1,37 @@
-<?php if (!defined('ROOT')) die('You can\'t just open this file, dude');
+<?php
 
 function println() {
   $variables = func_get_args();
 
-  foreach ($variables as $variable) {
+  $headers = SFResponse::getRequestHeaders();
+
+  if (isset($headers['Accept'])) {
+    $accept = strtolower($headers['Accept']);
+  }
+
+  if (!isset($headers['X-Requested-With']) || $headers['X-Requested-With'] !== 'XMLHttpRequest') {
+    echo '<pre>';
+  }
+
+  foreach ($variables as $index => $variable) {
     if (gettype($variable) === 'array') {
-      echo '<pre>' . print_r($variable, true) . '</pre>';
+      print_r($variable);
     } elseif (gettype($variable) === 'boolean') {
-      echo '<pre>' . ($variable ? 'true' : 'false') . '</pre>';
+      echo $variable ? 'true' : 'false';
     } else {
       echo $variable;
     }
 
-    echo '   ';
+    if ($index < count($variables) - 1) {
+      echo '   ';
+    }
   }
 
-  echo "<br/>\n";
+  if (isset($headers['X-Requested-With']) && $headers['X-Requested-With'] === 'XMLHttpRequest') {
+    echo EOL;
+  } else {
+    echo '</pre>' . EOL;
+  }
 }
 
 function arrMap($arr, $cb) {
@@ -76,170 +92,6 @@ function arrSort($arr, $cb) {
   }
 
   return $arr;
-}
-
-function arrDifference($source, $dest) {
-  $res = [];
-  $indexA = 0; // for source
-  $indexB = 0; // for dest
-  $buffer = [
-    'indexesA' => [],
-    'indexesB' => []
-  ];
-
-  if (!count($source)) {
-    for (; $indexB < count($dest); $indexB++) {
-      $buffer['indexesB'][] = $indexB;
-    }
-  } else {
-    while ($indexA < count($source)) {
-      if ($indexB < count($dest)) {
-        if (isEqual($source[$indexA], $dest[$indexB])) {
-          putBufferElementsInRes($res, $buffer, $source, $dest);
-
-          putElementInRes($res, $dest[$indexB], 'skip', $source[$indexA]);
-        } else {
-          $findedIndexB = findSourceIndexInBuffer($buffer['indexesB'], $dest, $source[$indexA]);
-          $findedIndexA = findSourceIndexInBuffer($buffer['indexesA'], $source, $dest[$indexB]);
-
-          if ($findedIndexB !== false) {
-            $indexB = $buffer['indexesB'][$findedIndexB];
-
-            array_splice($buffer['indexesB'], $findedIndexB);
-
-            putBufferElementsInRes($res, $buffer, $source, $dest);
-
-            putElementInRes($res, $dest[$indexB], 'skip', $source[$indexA]);
-          } else if ($findedIndexA !== false) {
-            $indexA = $buffer['indexesA'][$findedIndexA];
-
-            array_splice($buffer['indexesA'], $findedIndexA, count($buffer['indexesA']));
-
-            putBufferElementsInRes($res, $buffer, $source, $dest);
-
-            putElementInRes($res, $dest[$indexB], 'skip', $source[$indexA]);
-          } else {
-            $buffer['indexesA'][] = $indexA;
-            $buffer['indexesB'][] = $indexB;
-          }
-        }
-
-        $indexA++;
-        $indexB++;
-      }
-
-      if ($indexA >= count($source) || $indexB >= count($dest)) {
-        for (; $indexA < count($source); $indexA++) {
-          $findedIndexB = findSourceIndexInBuffer($buffer['indexesB'], $dest, $source[$indexA]);
-
-          if ($findedIndexB !== false) {
-            $indexB = $buffer['indexesB'][$findedIndexB];
-
-            array_splice($buffer['indexesB'], $findedIndexB, count($buffer['indexesB']));
-
-            putBufferElementsInRes($res, $buffer, $source, $dest);
-
-            putElementInRes($res, $dest[$indexB], 'skip', $source[$indexA]);
-            $indexA++;
-            $indexB++;
-
-            break;
-          } else {
-            $buffer['indexesA'][] = $indexA;
-          }
-        }
-
-        for (; $indexB < count($dest); $indexB++) {
-          $findedIndexA = findSourceIndexInBuffer($buffer['indexesA'], $source, $dest[$indexB]);
-
-          if ($findedIndexA !== false) {
-            $indexA = $buffer['indexesA'][$findedIndexA];
-
-            array_splice($buffer['indexesA'], $findedIndexA, count($buffer['indexesA']));
-
-            putBufferElementsInRes($res, $buffer, $source, $dest);
-
-            putElementInRes($res, $dest[$indexB], 'skip', $source[$indexA]);
-            $indexA++;
-            $indexB++;
-
-            break;
-          } else {
-            $buffer['indexesB'][] = $indexB;
-          }
-        }
-      }
-    }
-  }
-
-  putBufferElementsInRes($res, $buffer, $source, $dest);
-
-  return $res;
-}
-
-function putElementInRes(& $res, $element, $mark, $origin = false) {
-  $element = array(
-    'mark' => $mark,
-    'element' => $element
-  );
-
-  if ($origin !== false) {
-    $element['origin'] = $origin;
-  }
-
-  $res[] = $element;
-}
-
-function putBufferElementsInRes(& $res, & $buffer, $source, $dest) {
-  for ($i = 0, $len = min(count($buffer['indexesA']), count($buffer['indexesB'])); $i < $len; $i++) {
-    putElementInRes($res, $dest[$buffer['indexesB'][$i]], 'edit', $source[$buffer['indexesA'][$i]]);
-  }
-
-  if (count($buffer['indexesA']) > count($buffer['indexesB'])) {
-    for ($j = $i; $j < count($buffer['indexesA']); $j++) {
-      putElementInRes($res, $source[$buffer['indexesA'][$j]], 'delete');
-    }
-  } else {
-    for ($j = $i; $j < count($buffer['indexesB']); $j++) {
-      putElementInRes($res, $dest[$buffer['indexesB'][$j]], 'add');
-    }
-  }
-
-  array_splice($buffer['indexesA'], 0, count($buffer['indexesA']));
-  array_splice($buffer['indexesB'], 0, count($buffer['indexesB']));
-}
-
-function isEqual($sourceA, $sourceB) {
-  if (gettype($sourceA) !== gettype($sourceB)) return false;
-
-  if (gettype($sourceA) !== 'array' && gettype($sourceB) !== 'array') return $sourceA !== $sourceB;
-
-  // each fields of source array and check them at dest array
-  // if it not exists or not equals then return false
-  foreach ($sourceA as $key => $value) {
-    if (!isset($sourceB[$key])) return false;
-    elseif ($value !== $sourceB[$key]) return false;
-  }
-  // do the same thing with dest array
-  // if dest field not exists in source array
-  // or not empty then return false
-  foreach ($sourceB as $key => $value) {
-    if (!isset($sourceA[$key])) return false;
-    elseif ($value !== $sourceA[$key]) return false;
-  }
-  // if everything fine return true
-  // arrays are equals
-  return true;
-}
-
-function findSourceIndexInBuffer($indexes, $elements, $srcElement) {
-  for ($i = 0; $i < count($indexes); $i++) {
-    if (isEqual($elements[$indexes[$i]], $srcElement)) {
-      return $i;
-    }
-  }
-
-  return false;
 }
 
 function pathresolve() {

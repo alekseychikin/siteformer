@@ -1,14 +1,9 @@
-<?php if (!defined('ROOT')) die('You can\'t just open this file, dude');
+<?php
 
 require_once __DIR__ . '/ORM.php';
 require_once __DIR__ . '/ORMDatabase.php';
 
-if (!defined('N')) {
-  define('N', "\n");
-}
-
-class SFORMInsert extends SFORMDatabase
-{
+class SFORMInsert extends SFORMDatabase {
   private $table;
   private $values;
 
@@ -31,9 +26,9 @@ class SFORMInsert extends SFORMDatabase
       $alias = 'default';
     }
 
-    $sql = 'INSERT INTO `' . $this->table . '`' . N;
-    $fields = array();
-    $values = array();
+    $sql = 'INSERT INTO `' . $this->table . '`' . EOL;
+    $fields = [];
+    $values = [];
 
     foreach ($this->values as $field => $value) {
       $fields[] = $field;
@@ -47,8 +42,8 @@ class SFORMInsert extends SFORMDatabase
       $values[] = $value;
     }
 
-    $sql .= '( `'.implode('`, `', $fields).'` )'.N;
-    $sql .= 'VALUES ('.implode(', ', $values).')';
+    $sql .= '( `' . implode('`, `', $fields).'` )' . EOL;
+    $sql .= 'VALUES (' . implode(', ', $values).')';
 
     return $sql;
   }

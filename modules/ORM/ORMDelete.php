@@ -1,9 +1,8 @@
-<?php if (!defined('ROOT')) die('You can\'t just open this file, dude');
+<?php
 
 require_once __DIR__ . '/ORMWhere.php';
 
-class SFORMDelete extends SFORMWhere
-{
+class SFORMDelete extends SFORMWhere {
   private $table;
   private $params;
 
@@ -16,16 +15,16 @@ class SFORMDelete extends SFORMWhere
   }
 
   public function getQuery($alias = 'default') {
-    $sql = 'DELETE FROM `' . $this->table . '`' . N;
+    $sql = 'DELETE FROM `' . $this->table . '`' . EOL;
 
     if ($this->getById !== false) {
       $idField = self::getPrimaryFields($this->table, $alias);
       $idField = $idField[0];
-      $this->where = '`'. $this->table .'`.`'. $idField .'` = '.$this->getById;
+      $this->where = '`' . $this->table . '`.`' . $idField . '` = ' . $this->getById;
     }
 
     if ($this->where) {
-      $sql .= 'WHERE '.$this->expandExpression($this->table, $this->where).N;
+      $sql .= 'WHERE ' . $this->expandExpression($this->table, $this->where) . EOL;
     }
 
     return $sql;

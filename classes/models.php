@@ -1,13 +1,12 @@
-<?php if (!defined('ROOT')) die('You can\'t just open this file, dude');
+<?php
 
 require_once __DIR__ . '/text.php';
 
-class SFModels
-{
+class SFModels {
   private static $paths = [];
 
   public static function registerPath ($path) {
-    self::$paths[] = SFPath::prepareDir($path);
+    self::$paths[] = pathresolve($path);
   }
 
   public static function get ($model, $params) {
@@ -39,8 +38,10 @@ class SFModels
     $finded = false;
 
     foreach (self::$paths as $pathItem) {
-      if (file_exists($pathItem . $model . '.php')) {
-        require_once $pathItem . $model . '.php';
+      $modelPath = pathresolve($pathItem, $model . '.php');
+
+      if (file_exists($modelPath)) {
+        require_once $modelPath;
 
         $model = $path[count($path) - 1];
         return 'SF' . SFText::camelCasefy($model, true);

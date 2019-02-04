@@ -1,10 +1,9 @@
-<?php if (!defined('ROOT')) die('You can\'t just open this file, dude');
+<?php
 
 require_once __DIR__ . '/ORMDatabase.php';
 require_once __DIR__ . '/../../classes/validate.php';
 
-class SFORMCreate extends SFORMDatabase
-{
+class SFORMCreate extends SFORMDatabase {
   private $sql = '';
   private $tableName;
   private $fields = array();

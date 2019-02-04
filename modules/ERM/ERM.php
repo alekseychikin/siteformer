@@ -1,26 +1,25 @@
-<?php if (!defined('ROOT')) die('You can\'t just open this file, dude');
+<?php
 
 require_once __DIR__ . '/ERMGetItem.php';
 require_once __DIR__ . '/ERMGetItemList.php';
 require_once __DIR__ . '/ERMUpdate.php';
 require_once __DIR__ . '/ERMHelpers.php';
 
-class SFERM extends SFERMHelpers
-{
+class SFERM extends SFERMHelpers {
   private static $collections = [];
 
   public static function init($params = []) {
     self::checkTables();
 
     // append types handlers
-    $dir = opendir(MODULES . 'ERM/types');
+    $dir = opendir(__DIR__ . '/types');
 
     while ($filename = readdir($dir)) {
-      $dirname = MODULES . 'ERM/types/' . $filename;
+      $dirname = __DIR__ . '/types/' . $filename;
       $isDir = is_dir($dirname);
       $isFileExists = file_exists($dirname . '/' . $filename . '.php');
       if ($filename != '.' && $filename != '..' && $isDir && $isFileExists) {
-        require_once MODULES . 'ERM/types/' . $filename . '/' . $filename . '.php';
+        require_once __DIR__ . '/types/' . $filename . '/' . $filename . '.php';
 
         $className = self::getClassNameByType($filename);
 
@@ -246,9 +245,6 @@ class SFERM extends SFERMHelpers
 
   // Add collection
   public static function addCollection($data) {
-    $modules = self::getModules();
-    $modules[] = 'default';
-
     $types = arrMap(self::getTypes(), function ($type) use (& $types) {
       return $type['type'];
     });
@@ -420,9 +416,6 @@ class SFERM extends SFERMHelpers
 
   // Save collection
   public static function saveCollection($id, $data) {
-    $modules = self::getModules();
-    $modules[] = 'default';
-
     $types = arrMap(self::getTypes(), function ($type) {
       return $type['type'];
     });
@@ -608,16 +601,29 @@ class SFERM extends SFERMHelpers
 
   // Get types for collection structure
   public static function getTypes() {
-    if (file_exists(MODULES . 'ERM/types')) {
-      $dir = opendir(MODULES . 'ERM/types');
+    if (file_exists(__DIR__ . '/Types')) {
+      $dir = opendir(__DIR__ . '/Types');
       $types = [];
 
-      while ($subdir = readdir($dir)) {
-        if (is_dir(MODULES . 'ERM/types/' . $subdir) && !in_array($subdir, ['.', '..'])) {
-          if (file_exists(MODULES . 'ERM/types/' . $subdir . '/configs.json')) {
-            $type = parseJSON(file_get_contents(MODULES . 'ERM/types/' . $subdir . '/configs.json'));
-            $type['type'] = $subdir;
-            $types[] = $type;
+      while ($typeFilename = readdir($dir)) {
+        $ext = extname($typeFilename);
+
+        if (is_file(__DIR__ . '/Types/' . $typeFilename) && !in_array($typeFilename, ['.', '..']) && $ext === '.php') {
+          $typePath = __DIR__ . '/Types/' . $typeFilename;
+
+          if (file_exists($typePath)) {
+            require_once $typePath;
+
+            $baseName = basename($typePath, $ext);
+
+            $classNameType = 'SF' . $baseName;
+            $classVars = get_class_vars($classNameType);
+
+            $types[] = [
+              'name' => $classVars['name'],
+              'type' => $subdir,
+              'settings' => $classVars['settings']
+            ];
           }
         }
       }
@@ -635,25 +641,6 @@ class SFERM extends SFERMHelpers
       ])
       ->where('id', $id)
       ->exec();
-  }
-
-  // Get array of modules
-  // Module is view-type: table or masonry or etc.
-  public static function getModules() {
-    if (file_exists(MODULES . 'ERM/modules')) {
-      $dir = opendir(MODULES . 'ERM/modules');
-      $handlers = [];
-
-      while ($subdir = readdir($dir)) {
-        if (is_dir(MODULES . 'ERM/modules/' . $subdir) && !in_array($subdir, ['.', '..'])) {
-          $handlers[] = $subdir;
-        }
-      }
-
-      return $handlers;
-    }
-
-    return [];
   }
 
   private static function getFieldsDiff($src, $dest) {

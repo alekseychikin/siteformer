@@ -1,9 +1,8 @@
-<?php if (!defined('ROOT')) die('You can\'t just open this file, dude');
+<?php
 
 require_once __DIR__ . '/ERMGetItemSuper.php';
 
-class SFERMUpdate extends SFERMGetItemSuper
-{
+class SFERMUpdate extends SFERMGetItemSuper {
   private $params;
 
   public function __construct($collection, $params) {

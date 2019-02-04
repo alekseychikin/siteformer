@@ -69,33 +69,6 @@ Get value from state.
 Required.
 String of field name.
 
-## `run`
-
-Running php action file.
-
-### Params
-
-#### `$action`
-
-Required.
-String-path with action.
-
-#### `$params`
-
-Not required.
-Array of params.
-
-## `actionExists`
-
-Checks existing action by path.
-
-### Params
-
-#### `$action`
-
-Required.
-String-path with action.
-
 ## `getState`
 
 Returns state.

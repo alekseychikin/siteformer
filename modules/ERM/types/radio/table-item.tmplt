@@ -1,9 +1,0 @@
-<component>
-  <param name={$field} value={['settings': ['defaultData': []]]} />
-
-  <for-each key={$i} item={$item} from={$field.settings.defaultData}>
-    <if test={$i == $value}>
-      {$item}
-    </if>
-  </for-each>
-</component>

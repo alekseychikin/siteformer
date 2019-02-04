@@ -1,4 +1,6 @@
-<?php if (!defined('ROOT')) die('You can\'t just open this file, dude');
+<?php
+
+require_once __DIR__ . '/ORMValue.php';
 
 /**
  * @param $field
@@ -6,8 +8,7 @@
  *
  * @return string
  */
-function _field_($field, $table = '')
-{
+function _field_($field, $table = '') {
   if (substr($field, 0, 1) == '`') {
     return $field;
   }
@@ -31,8 +32,7 @@ function _field_($field, $table = '')
  *
  * @return string
  */
-function _expr_($field, $relation, $value = '')
-{
+function _expr_($field, $relation, $value = '') {
   if (func_num_args() == 2) {
     $value = $relation;
     $relation = '=';
@@ -79,19 +79,6 @@ function _or_() {
   }
 
   return $orArray;
-}
-
-class SFORMValue
-{
-  private $expr;
-
-  public function __construct($expr) {
-    $this->expr = $expr;
-  }
-
-  public function get() {
-    return $this->expr;
-  }
 }
 
 function _func_($expr, $field = '') {

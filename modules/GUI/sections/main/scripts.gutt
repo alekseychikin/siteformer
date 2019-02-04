@@ -1,5 +1,0 @@
-<component>
-  <script src="/sf-engine/modules/GUI/dist/polyfills/polyfills.js"></script>
-  <script src="/sf-engine/modules/GUI/dist/common-bundle.js"></script>
-  {$children}
-</component>

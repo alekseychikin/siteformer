@@ -1,7 +1,6 @@
-<?php if (!defined('ROOT')) die('You can\'t just open this file, dude');
+<?php
 
-class SFORMFunc
-{
+class SFORMFunc {
   private $func;
 
   public function __construct ($func) {

@@ -1,7 +1,6 @@
-<?php if (!defined('ROOT')) die('You can\'t just open this file, dude');
+<?php
 
-class SFERMHelpers
-{
+class SFERMHelpers {
   public static function getClassNameByType($type) {
     return 'SFType' . SFText::camelCasefy($type, true);
   }

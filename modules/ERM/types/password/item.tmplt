@@ -1,7 +1,0 @@
-<component>
-  <param name={$field} value={['alias': '']} />
-
-  <div class="form__inp-contain" data-role="input-contain">
-    <input type="password" name={$field.alias} id={$field.alias} class="form__inp" value="" data-role="password" />
-  </div>
-</component>

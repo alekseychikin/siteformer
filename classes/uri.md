@@ -26,6 +26,10 @@ Default value is `$_SERVER['SERVER_PORT']`
 
 Returns full URI of part of them
 
+## `geUriItem`
+
+Returns item of uri
+
 ### Params
 
 If you send lack of parameters then it returns string of query.
@@ -35,21 +39,13 @@ If you send lack of parameters then it returns string of query.
 Returns one part of path. Example:
 ```
 SFURI::init('/one/two/three');
-echo SFURI::getUri(1);
+echo SFURI::getUriItem(1);
 // output: two
 ```
 
-## `getUriRaw`
+## `getUriArray`
 
 Returns array of parts
-
-## `getFirstUri`
-
-Returns first part
-
-## `getLastUri`
-
-Returns last part
 
 ## `getUriLength`
 
@@ -72,14 +68,6 @@ SFURI::init('/one/two/three', 'sub.domain.com.uk', '8080');
 echo SFURI::getDomain(2);
 // output: com
 ```
-
-## `getFirstDomain`
-
-Returns first part
-
-## `getLastDomain`
-
-Returns last part
 
 ## `getDomainsLength`
 
