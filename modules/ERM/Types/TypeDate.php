@@ -4,6 +4,7 @@ require_once __DIR__ . '/../ERMType.php';
 
 class SFTypeDate extends SFERMType {
   public static $name = 'Дата';
+  public static $type = 'date';
   public static $requiredable = true;
   public static $settings = [
     'useTime' => false,

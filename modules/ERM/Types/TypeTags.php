@@ -5,6 +5,7 @@ require_once __DIR__ . '/../ERMType.php';
 
 class SFTypeTags extends SFERMType {
   public static $name = 'Теги';
+  public static $type = 'tags';
   public static $requiredable = true;
   public static $settings = [];
 

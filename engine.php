@@ -23,12 +23,11 @@ function runEngine($configs) {
     die;
   }
 
+  require_once __DIR__ . '/classes/text.php';
   require_once __DIR__ . '/classes/parseJSON.php';
   require_once __DIR__ . '/classes/S3.php';
   require_once __DIR__ . '/classes/models.php';
-  require_once __DIR__ . '/classes/uri.php';
   require_once __DIR__ . '/classes/validate.php';
-  require_once __DIR__ . '/classes/text.php';
   require_once __DIR__ . '/classes/socket.php';
   require_once __DIR__ . '/classes/image.php';
   require_once __DIR__ . '/classes/mail.php';
@@ -40,22 +39,16 @@ function runEngine($configs) {
   try {
     $configs = Diagnostics::checkConfigs($configs);
 
-    $url = isset($_GET[$configs['modrewrite-get-url']]) ?
-      $_GET[$configs['modrewrite-get-url']] :
-      '';
-    SFURI::init($url);
-
     require_once __DIR__ . '/modules/Templater/Templater.php';
+    require_once __DIR__ . '/modules/ORM/ORM.php';
+    require_once __DIR__ . '/modules/ERM/ERM.php';
+    require_once __DIR__ . '/modules/Router/Router.php';
 
     SFTemplater::init([
       'path' => $configs['templates']
     ]);
 
-    require_once __DIR__ . '/modules/ORM/ORM.php';
-
     Diagnostics::checkDatabaseConnection($configs['database']);
-
-    require_once __DIR__ . '/modules/ERM/ERM.php';
 
     SFERM::init();
 
@@ -63,9 +56,12 @@ function runEngine($configs) {
     SFMigrations::init($configs);
     SFResponse::initRedirData();
 
-    require_once __DIR__ . '/modules/Router/Router.php';
+    $url = isset($_GET[$configs['modrewrite-get-url']]) ?
+      $_GET[$configs['modrewrite-get-url']] :
+      '';
 
     SFRouter::init([
+      'url' => $url,
       'routes' => $configs['routes'],
       'languages' => $configs['languages'],
       'models' => $configs['models']
@@ -85,6 +81,7 @@ function runEngine($configs) {
 
     SFResponse::render();
   } catch (PageNotFoundException $e) {
+    println('PageNotFoundException');
   } catch (ValidateException $e) {
     $message = $e->getDetails();
 

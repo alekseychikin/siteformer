@@ -9,23 +9,15 @@ class SFERM extends SFERMHelpers {
   private static $collections = [];
 
   public static function init($params = []) {
-    self::checkTables();
+    self::createTables();
+    $types = self::getTypes();
 
-    // append types handlers
-    $dir = opendir(__DIR__ . '/types');
-
-    while ($filename = readdir($dir)) {
-      $dirname = __DIR__ . '/types/' . $filename;
-      $isDir = is_dir($dirname);
-      $isFileExists = file_exists($dirname . '/' . $filename . '.php');
-      if ($filename != '.' && $filename != '..' && $isDir && $isFileExists) {
-        require_once __DIR__ . '/types/' . $filename . '/' . $filename . '.php';
-
-        $className = self::getClassNameByType($filename);
-
-        if (method_exists($className, 'prepareDatabase')) {
-          $className::prepareDatabase();
-        }
+    foreach ($types as $type) {
+      if (
+        class_exists($type['className']) &&
+        method_exists($type['className'], 'prepareDatabase')
+      ) {
+        return $type['className']::prepareDatabase();
       }
     }
   }
@@ -38,7 +30,7 @@ class SFERM extends SFERMHelpers {
     return new SFERMGetItem($collection);
   }
 
-  public static function createItem ($collection, $params) {
+  public static function createItem($collection, $params) {
     $data = $params['data'];
     $status = $params['status'];
     $newData = [
@@ -420,6 +412,10 @@ class SFERM extends SFERMHelpers {
       return $type['type'];
     });
 
+    foreach ($data['fields'] as $index => $field) {
+      $data['fields'][$index]['position'] = $index + 1;
+    }
+
     $data = SFValidate::value([
       'title' => [
         'required' => true,
@@ -621,7 +617,8 @@ class SFERM extends SFERMHelpers {
 
             $types[] = [
               'name' => $classVars['name'],
-              'type' => $subdir,
+              'type' => $classVars['type'],
+              'className' => $classNameType,
               'settings' => $classVars['settings']
             ];
           }
@@ -641,6 +638,18 @@ class SFERM extends SFERMHelpers {
       ])
       ->where('id', $id)
       ->exec();
+  }
+
+  public static function getField($collection, $fieldAlias) {
+    $collection = self::getCollection($collection);
+
+    foreach ($collection['fields'] as $field) {
+      if ($field['alias'] === $fieldAlias) {
+        return $field;
+      }
+    }
+
+    return null;
   }
 
   private static function getFieldsDiff($src, $dest) {
@@ -741,7 +750,7 @@ class SFERM extends SFERMHelpers {
     return $tableName;
   }
 
-  private static function checkTables() {
+  private static function createTables() {
     if (!SFORM::exists('sys_collections')) {
       SFORM::create('sys_collections')
         ->addField([

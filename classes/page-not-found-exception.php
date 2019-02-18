@@ -3,13 +3,11 @@
 class PageNotFoundException extends Exception {
   protected $message;
 
-  public function __construct($message)
-  {
+  public function __construct($message) {
     $this->message = $message;
   }
 
-  public function message()
-  {
+  public function message() {
     $trace = $this->getTrace();
     $newTrace = array();
     foreach ($trace as $entry) {

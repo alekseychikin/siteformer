@@ -1,9 +1,9 @@
 <?php
 
-require_once __DIR__ . '/../../classes/uri.php';
 require_once __DIR__ . '/../../classes/response.php';
 require_once __DIR__ . '/../../classes/models.php';
 require_once __DIR__ . '/RouterModel.php';
+require_once __DIR__ . '/RouterRoute.php';
 
 class SFRouter {
   public static $languages = [];
@@ -14,12 +14,35 @@ class SFRouter {
   public static function init($params) {
     self::$routes = $params['routes'];
 
+    $uri = [];
+    $uriRaw = rawurldecode($params['url']);
+
+    if (strpos($uriRaw, '?') !== false) {
+      $uriRaw = substr($uriRaw, 0, strpos($uriRaw, '?'));
+    }
+
+    $uriRaw = explode('/', $uriRaw);
+    $max = 10;
+    $i = 1;
+
+    foreach ($uriRaw as $key => $val) {
+      if ($i++ <= $max && !empty($val)) {
+        $uri[] = $uriRaw[$key];
+      }
+    }
+
+    self::$uri = $uri;
+
+    SFResponse::set('uri', self::$uri, true);
+
+    if (isset($_GET['q'])) unset($_GET['q']);
+
     if (isset($params['models'])) {
       SFModels::registerPath($params['models']);
     }
 
     if (is_callable($params['routes'])) {
-      self::$routes = $params['routes'](SFURI::getUri());
+      self::$routes = $params['routes'](self::getUri());
     }
 
     if (isset($params['languages'])) {
@@ -27,29 +50,8 @@ class SFRouter {
     }
 
     SFResponse::set('lang', '', true);
-    SFResponse::set('uri', SFURI::getUri());
-    $uri = SFURI::getUriArray();
-
-    foreach ($uri as $index => $item) {
-      if (empty($item)) {
-        unset($uri[$index]);
-      }
-    }
-
+    SFResponse::set('uri', self::getUri());
     SFResponse::set('uri_items', $uri);
-    self::$uri = $uri;
-    $uri = [];
-    $max = 10;
-    $i = 1;
-
-    foreach (self::$uri as $key => $val) {
-      if ($i <= $max && !empty($val)) {
-        $uri[] = self::$uri[$key];
-        $i++;
-      }
-    }
-
-    self::$uri = $uri;
 
     // lang handler
     if (isset(self::$uri[0]) && in_array(self::$uri[0], self::$languages)) {
@@ -61,7 +63,6 @@ class SFRouter {
     }
 
     if (strpos($_SERVER['REQUEST_URI'], '?') !== false) {
-      $_SERVER['REQUEST_URI'];
       $get = substr($_SERVER['REQUEST_URI'], strpos($_SERVER['REQUEST_URI'], '?') + 1);
       $get = explode('&', $get);
 
@@ -83,20 +84,20 @@ class SFRouter {
     $url = self::getUri();
 
     if ($url === '/' && isset($_GET['graph'])) {
-      // TODO: здесь нужно дописать обработку content-type
+      // TODO: Нужно придумать модель передачи данных
+      // в зависимости от content-type
       // x-www-form-urlencode
       // application/json
+      // Нужно обернуть стркутуру запросов в SFModelGet и SFModelSet
+      // и далее получить данные
       self::returnModelData(parseJSON(urldecode($_GET['graph'])));
 
       return true;
     }
 
-    // TODO: Нужно что-то здесь сделать
-    $result = self::parse($url);
+    $route = self::parse($url);
 
-    if (!$result) return false;
-
-    self::runAction($result['path'], $result['params']);
+    self::handleRoute($route);
 
     return true;
   }
@@ -136,10 +137,6 @@ class SFRouter {
         'path' => self::$routes[$uri], 'params' => []
       ];
     } else {
-      $t = true;
-
-      //TODO: list — deprecated method
-
       // find out all pairs of stars-keys => path-to-controller
       // relations contains connection of starts-key to origin key with variables
       list($pairs, $relations) = self::parseUriReplace(self::$routes);
@@ -172,7 +169,7 @@ class SFRouter {
       }
     }
 
-    return false;
+    throw new PageNotFoundException('');
   }
 
   private static function getUriByArray($num = 0) {
@@ -282,27 +279,30 @@ class SFRouter {
     }
   }
 
-  private static function runAction($data, $params) {
-    if (is_callable($data)) {
-      $data = call_user_func_array($data, $params);
+  private static function handleRoute($route) {
+    if (is_callable($route['path'])) {
+      $route['path'] = call_user_func_array($route['path'], $route['params']);
     }
 
-    if (isset($data['data'])) {
-      $params = self::prepareGetParams($data['data'], $params);
+    if ($route['path'] instanceof SFRouterRoute) {
+      $data = $route['path']->getData();
+      $template = $route['path']->getTemplate();
+
+      $params = self::prepareGetParams($data, $params);
 
       foreach ($params as $key => $value) {
         SFResponse::set($key, $value);
       }
-    }
 
-    $headers = SFResponse::getRequestHeaders();
+      $headers = SFResponse::getRequestHeaders();
 
-    if (isset($headers['Accept'])) {
-      $accept = strtolower($headers['Accept']);
-    }
+      if (isset($headers['Accept'])) {
+        $accept = strtolower($headers['Accept']);
+      }
 
-    if (isset($data['template']) && self::isHeaderContainsAnyItem($accept, ['text/html', '*/*'])) {
-      echo SFTemplater::render($data['template'], SFResponse::getState());
+      if (self::isHeaderContainsAnyItem($accept, ['text/html', '*/*'])) {
+        echo SFTemplater::render($template, SFResponse::getState());
+      }
     }
   }
 

@@ -5,6 +5,7 @@ require_once __DIR__ . '/../ERMType.php';
 
 class SFTypeGallery extends SFERMType {
   public static $name = 'Галерея';
+  public static $type = 'gallery';
   public static $requiredable = false;
   public static $settings = [
     'storage' => '',

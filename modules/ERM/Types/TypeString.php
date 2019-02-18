@@ -5,6 +5,7 @@ require_once __DIR__ . '/../ERMType.php';
 
 class SFTypeString extends SFERMType {
   public static $name = 'Строка';
+  public static $type = 'string';
   public static $requiredable = true;
   public static $settings = [];
 

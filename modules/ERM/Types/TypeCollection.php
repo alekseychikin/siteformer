@@ -4,6 +4,7 @@ require_once __DIR__ . '/../ERMType.php';
 
 class SFTypeCollection extends SFERMType {
   public static $name = 'Коллекция';
+  public static $type = 'collection';
   public static $requiredable = true;
   public static $settings = [
     'collection' => '',

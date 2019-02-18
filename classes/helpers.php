@@ -94,6 +94,18 @@ function arrSort($arr, $cb) {
   return $arr;
 }
 
+function arraySplice(& $source, $start = 0, $length = null, $insert = []) {
+  $subArray = array_slice($source, $start, $length);
+
+  $source = array_merge(
+    array_slice($source, 0, $start),
+    $insert,
+    $length !== null ? array_slice($source, $start + $length) : []
+  );
+
+  return $subArray;
+}
+
 function pathresolve() {
   $dirs = func_get_args();
   $path = '';

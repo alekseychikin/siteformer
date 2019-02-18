@@ -6,6 +6,7 @@ require_once __DIR__ . '/../ERMType.php';
 
 class SFTypeCheckbox extends SFERMType {
   public static $name = 'Флажки';
+  public static $type = 'checkbox';
   public static $requiredable = false;
   public static $settings = [
     'values' => [[

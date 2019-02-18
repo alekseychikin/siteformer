@@ -5,6 +5,7 @@ require_once __DIR__ . '/../ERMType.php';
 
 class SFTypeRadio extends SFERMType {
   public static $name = 'Переключатели';
+  public static $type = 'radio';
   public static $requiredable = false;
   public static $settings = [
     'checked' => -1,

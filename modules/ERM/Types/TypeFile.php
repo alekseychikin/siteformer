@@ -5,6 +5,7 @@ require_once __DIR__ . '/../ERMType.php';
 
 class SFTypeFile extends SFERMType {
   public static $name = 'Файл';
+  public static $type = 'file';
   public static $requiredable = true;
   public static $settings = [
     'storage' => '',

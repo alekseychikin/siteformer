@@ -5,6 +5,7 @@ require_once __DIR__ . '/../ERMType.php';
 
 class SFTypePassword extends SFERMType {
   public static $name = 'Пароль';
+  public static $type = 'password';
   public static $requiredable = true;
   public static $settings = [];
 

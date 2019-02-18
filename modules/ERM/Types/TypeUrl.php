@@ -5,6 +5,7 @@ require_once __DIR__ . '/../ERMType.php';
 
 class SFTypeUrl extends SFERMType {
   public static $name = 'Урл';
+  public static $type = 'url';
   public static $requiredable = true;
   public static $settings = [
     'source' => ''

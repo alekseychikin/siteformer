@@ -393,6 +393,10 @@ class SFORMSelect extends SFORMDatabase {
       $sql .= EOL . 'WHERE ' . $this->generateWhere();
     }
 
+    if ($this->group !== false) {
+      $sql .= EOL . 'GROUP BY `' . $this->group . '`';
+    }
+
     if ($this->order !== false) {
       $sql .= EOL . 'ORDER BY ';
       $orders = [];
@@ -403,10 +407,6 @@ class SFORMSelect extends SFORMDatabase {
       }
 
       $sql .= implode(', ', $orders);
-    }
-
-    if ($this->group !== false) {
-      $sql .= EOL . 'GROUP BY `' . $this->group . '`';
     }
 
     if ($this->limit !== false) {
