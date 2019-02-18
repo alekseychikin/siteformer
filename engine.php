@@ -1,6 +1,6 @@
 <?php
 
-function runEngine($configs) {
+function runEngine($entryPoint) {
   $startTime = explode(' ', microtime());
   $startTime = $startTime[1] + $startTime[0];
 
@@ -34,38 +34,15 @@ function runEngine($configs) {
   require_once __DIR__ . '/classes/storages.php';
   require_once __DIR__ . '/classes/migrations.php';
 
+  require_once __DIR__ . '/modules/Templater/Templater.php';
+  require_once __DIR__ . '/modules/ORM/ORM.php';
+  require_once __DIR__ . '/modules/ERM/ERM.php';
+  require_once __DIR__ . '/modules/Router/Router.php';
+
   ClearCache::clear();
 
   try {
-    $configs = Diagnostics::checkConfigs($configs);
-
-    require_once __DIR__ . '/modules/Templater/Templater.php';
-    require_once __DIR__ . '/modules/ORM/ORM.php';
-    require_once __DIR__ . '/modules/ERM/ERM.php';
-    require_once __DIR__ . '/modules/Router/Router.php';
-
-    SFTemplater::init([
-      'path' => $configs['templates']
-    ]);
-
-    Diagnostics::checkDatabaseConnection($configs['database']);
-
-    SFERM::init();
-
-    SFStorages::init($configs['storages']);
-    SFMigrations::init($configs);
-    SFResponse::initRedirData();
-
-    $url = isset($_GET[$configs['modrewrite-get-url']]) ?
-      $_GET[$configs['modrewrite-get-url']] :
-      '';
-
-    SFRouter::init([
-      'url' => $url,
-      'routes' => $configs['routes'],
-      'languages' => $configs['languages'],
-      'models' => $configs['models']
-    ]);
+    $entryPoint();
   } catch (ValidateException $e) {
     $message = $e->getDetails();
 

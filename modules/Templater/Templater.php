@@ -3,8 +3,8 @@
 class SFTemplater {
   public static $templatesPath;
 
-  public static function init($params) {
-    self::$templatesPath = $params['path'];
+  public static function setTemplatesPath($path) {
+    self::$templatesPath = $path;
   }
 
   public static function setCompilesPath($compilePath) {

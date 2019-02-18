@@ -6,23 +6,21 @@ class SFMigrations
   private static $pathMigrations;
   private static $addConstructions = [];
 
-  public static function init($params) {
-    if (isset($params['migration-path']) && strlen($params['migration-path'])) {
-      self::$pathMigrations = pathresolve($params['migration-path']);
+  public static function setMigrationsPath($path) {
+    self::$pathMigrations = pathresolve($path);
 
-      if (!file_exists(self::$pathMigrations)) {
-        die('Не найдена папка с миграциями: ' . self::$pathMigrations);
-      }
+    if (!file_exists(self::$pathMigrations)) {
+      die('Не найдена папка с миграциями: ' . self::$pathMigrations);
+    }
 
-      self::preserveLastMigration();
+    self::preserveLastMigration();
 
-      if (isset($_GET['do-migration']) && !empty($_GET['do-migration']) && APPLICATION_ENV === 'develop') {
-        self::doMigration($_GET['do-migration']);
-      }
+    if (isset($_GET['migration']) && !empty($_GET['migration']) && APPLICATION_ENV === 'develop') {
+      self::doMigration($_GET['migration']);
+    }
 
-      if (isset($_GET['do-migrations'])) {
-        self::doMigrations();
-      }
+    if (isset($_GET['migrations'])) {
+      self::doMigrations();
     }
   }
 

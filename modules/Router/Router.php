@@ -11,11 +11,11 @@ class SFRouter {
   private static $routes = [];
   private static $language = '';
 
-  public static function init($params) {
-    self::$routes = $params['routes'];
+  public static function setRoutes($url, $routes) {
+    self::$routes = $routes;
 
     $uri = [];
-    $uriRaw = rawurldecode($params['url']);
+    $uriRaw = rawurldecode($url);
 
     if (strpos($uriRaw, '?') !== false) {
       $uriRaw = substr($uriRaw, 0, strpos($uriRaw, '?'));
@@ -35,31 +35,8 @@ class SFRouter {
 
     SFResponse::set('uri', self::$uri, true);
 
-    if (isset($_GET['q'])) unset($_GET['q']);
-
-    if (isset($params['models'])) {
-      SFModels::registerPath($params['models']);
-    }
-
-    if (is_callable($params['routes'])) {
-      self::$routes = $params['routes'](self::getUri());
-    }
-
-    if (isset($params['languages'])) {
-      self::$languages = $params['languages'];
-    }
-
-    SFResponse::set('lang', '', true);
-    SFResponse::set('uri', self::getUri());
-    SFResponse::set('uri_items', $uri);
-
-    // lang handler
-    if (isset(self::$uri[0]) && in_array(self::$uri[0], self::$languages)) {
-      self::$language = self::$uri[0];
-      self::$uri = array_splice(self::$uri, 1);
-      SFResponse::set('lang', self::$language, true);
-    } else if (count(self::$languages)) {
-      self::$language = self::$languages[0];
+    if (is_callable($routes)) {
+      self::$routes = $routes(self::getUri());
     }
 
     if (strpos($_SERVER['REQUEST_URI'], '?') !== false) {
@@ -76,8 +53,23 @@ class SFRouter {
         }
       }
     }
+  }
 
-    $_SERVER['REQUEST_URI'] = '/' . (count(self::$uri) ? implode('/', self::$uri) . '/' : '');
+  public static function setLanguages($languages) {
+    self::$languages = $languages;
+
+    SFResponse::set('lang', '', true);
+    SFResponse::set('uri', self::getUri());
+    SFResponse::set('uri_items', $uri);
+
+    // lang handler
+    if (isset(self::$uri[0]) && in_array(self::$uri[0], self::$languages)) {
+      self::$language = self::$uri[0];
+      self::$uri = array_splice(self::$uri, 1);
+      SFResponse::set('lang', self::$language, true);
+    } else if (count(self::$languages)) {
+      self::$language = self::$languages[0];
+    }
   }
 
   public static function route() {

@@ -7,7 +7,7 @@ class SFStorages {
   private static $storages;
   private static $s3Connections = [];
 
-  public static function init($configs) {
+  public static function setStorages($configs) {
     try {
       self::$storages = arrMap($configs, function ($configs, $storage) {
         switch ($configs['type']) {
