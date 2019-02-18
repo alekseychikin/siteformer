@@ -1,7 +1,6 @@
-<? if (!defined('ROOT')) die('You can\'t just open this file, dude');
+<?php
 
-class SFMail
-{
+class SFMail {
   private $destinations = array();
   private $addresser = '';
   private $addresser_mail = 'admin@localhost';

@@ -1,4 +1,0 @@
-<component>
-  <param name={$value} value="" />
-  {$value}
-</component>

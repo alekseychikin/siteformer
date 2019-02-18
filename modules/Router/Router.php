@@ -1,28 +1,48 @@
-<?php if (!defined('ROOT')) die('You can\'t just open this file, dude');
+<?php
 
-require_once __DIR__ . '/../../classes/uri.php';
 require_once __DIR__ . '/../../classes/response.php';
 require_once __DIR__ . '/../../classes/models.php';
 require_once __DIR__ . '/RouterModel.php';
+require_once __DIR__ . '/RouterRoute.php';
 
-class SFRouter
-{
+class SFRouter {
   public static $languages = [];
   private static $uri;
-  private static $num_page = 1;
   private static $routes = [];
   private static $language = '';
-  private static $modelsPath = false;
 
   public static function init($params) {
     self::$routes = $params['routes'];
 
+    $uri = [];
+    $uriRaw = rawurldecode($params['url']);
+
+    if (strpos($uriRaw, '?') !== false) {
+      $uriRaw = substr($uriRaw, 0, strpos($uriRaw, '?'));
+    }
+
+    $uriRaw = explode('/', $uriRaw);
+    $max = 10;
+    $i = 1;
+
+    foreach ($uriRaw as $key => $val) {
+      if ($i++ <= $max && !empty($val)) {
+        $uri[] = $uriRaw[$key];
+      }
+    }
+
+    self::$uri = $uri;
+
+    SFResponse::set('uri', self::$uri, true);
+
+    if (isset($_GET['q'])) unset($_GET['q']);
+
     if (isset($params['models'])) {
-      SFModels::registerPath(SFPath::prepareDir($params['models']));
+      SFModels::registerPath($params['models']);
     }
 
     if (is_callable($params['routes'])) {
-      self::$routes = $params['routes'](SFURI::getUri());
+      self::$routes = $params['routes'](self::getUri());
     }
 
     if (isset($params['languages'])) {
@@ -30,43 +50,19 @@ class SFRouter
     }
 
     SFResponse::set('lang', '', true);
-    SFResponse::set('uri', SFURI::getUri());
-    $uri = SFURI::getUriRaw();
-
-    foreach ($uri as $index => $item) {
-      if (empty($item)) {
-        unset($uri[$index]);
-      }
-    }
-
+    SFResponse::set('uri', self::getUri());
     SFResponse::set('uri_items', $uri);
-    self::$uri = $uri;
-    $uri = [];
-    $max = 10;
-    $i = 1;
-
-    foreach (self::$uri as $key => $val) {
-      if ($i <= $max) {
-        if (!empty($val)) {
-          $uri[] = self::$uri[$key];
-          $i++;
-        }
-      }
-    }
-
-    self::$uri = $uri;
 
     // lang handler
     if (isset(self::$uri[0]) && in_array(self::$uri[0], self::$languages)) {
       self::$language = self::$uri[0];
       self::$uri = array_splice(self::$uri, 1);
-      SFResponse::set('lang', '/' . self::$language, true);
+      SFResponse::set('lang', self::$language, true);
     } else if (count(self::$languages)) {
       self::$language = self::$languages[0];
     }
 
     if (strpos($_SERVER['REQUEST_URI'], '?') !== false) {
-      $_SERVER['REQUEST_URI'];
       $get = substr($_SERVER['REQUEST_URI'], strpos($_SERVER['REQUEST_URI'], '?') + 1);
       $get = explode('&', $get);
 
@@ -81,27 +77,27 @@ class SFRouter
       }
     }
 
-    $_SERVER['REQUEST_URI'] = '/' . implode('/', self::$uri) . '/';
-
-    if ($_SERVER['REQUEST_URI'] == '//') {
-      $_SERVER['REQUEST_URI'] = '/';
-    }
+    $_SERVER['REQUEST_URI'] = '/' . (count(self::$uri) ? implode('/', self::$uri) . '/' : '');
   }
 
   public static function route() {
     $url = self::getUri();
 
     if ($url === '/' && isset($_GET['graph'])) {
+      // TODO: Нужно придумать модель передачи данных
+      // в зависимости от content-type
+      // x-www-form-urlencode
+      // application/json
+      // Нужно обернуть стркутуру запросов в SFModelGet и SFModelSet
+      // и далее получить данные
       self::returnModelData(parseJSON(urldecode($_GET['graph'])));
 
       return true;
     }
 
-    $result = self::parse($url);
+    $route = self::parse($url);
 
-    if (!$result) return false;
-
-    self::runAction($result['path'], $result['params']);
+    self::handleRoute($route);
 
     return true;
   }
@@ -118,16 +114,12 @@ class SFRouter
     return self::$languages[0];
   }
 
-  public static function uri($item = false) {
-    if ($item !== false) {
-      if (isset(self::$uri[$item])) {
-        return self::$uri[$item];
-      } else {
-        return false;
-      }
-    } else {
-      return self::$uri;
+  public static function uri($item) {
+    if (isset(self::$uri[$item])) {
+      return self::$uri[$item];
     }
+
+    return '';
   }
 
   public static function uriNum() {
@@ -145,8 +137,6 @@ class SFRouter
         'path' => self::$routes[$uri], 'params' => []
       ];
     } else {
-      $t = true;
-
       // find out all pairs of stars-keys => path-to-controller
       // relations contains connection of starts-key to origin key with variables
       list($pairs, $relations) = self::parseUriReplace(self::$routes);
@@ -179,7 +169,7 @@ class SFRouter
       }
     }
 
-    return false;
+    throw new PageNotFoundException('');
   }
 
   private static function getUriByArray($num = 0) {
@@ -289,30 +279,34 @@ class SFRouter
     }
   }
 
-  private static function runAction($data, $params) {
-    if (is_callable($data)) {
-      $data = call_user_func_array($data, $params);
+  private static function handleRoute($route) {
+    if (is_callable($route['path'])) {
+      $route['path'] = call_user_func_array($route['path'], $route['params']);
     }
-    if (isset($data['data'])) {
-      $params = self::prepareGetParams($data['data'], $params);
+
+    if ($route['path'] instanceof SFRouterRoute) {
+      $data = $route['path']->getData();
+      $template = $route['path']->getTemplate();
+
+      $params = self::prepareGetParams($data, $params);
 
       foreach ($params as $key => $value) {
         SFResponse::set($key, $value);
       }
-    }
 
-    $headers = SFResponse::getRequestHeaders();
+      $headers = SFResponse::getRequestHeaders();
 
-    if (isset($headers['Accept'])) {
-      $accept = strtolower($headers['Accept']);
-    }
+      if (isset($headers['Accept'])) {
+        $accept = strtolower($headers['Accept']);
+      }
 
-    if (isset($data['template']) && self::checkAcceptHeader(['text/html', '*/*'], $accept)) {
-      echo SFTemplater::render($data['template'], SFResponse::getState());
+      if (self::isHeaderContainsAnyItem($accept, ['text/html', '*/*'])) {
+        echo SFTemplater::render($template, SFResponse::getState());
+      }
     }
   }
 
-  private static function checkAcceptHeader($values, $header) {
+  private static function isHeaderContainsAnyItem($header, $values) {
     foreach ($values as $value) {
       if (strpos($header, $value) !== false) {
         return true;
@@ -384,77 +378,25 @@ class SFRouter
   }
 
   private static function parseUriReplace($uri) {
-    $replace_uri = [];
+    $replaceUri = [];
     $relations = [];
 
     foreach ($uri as $key => $val) {
-      $new_key = $key;
+      $preparedKey = $key;
 
-      while (strpos($new_key, '{') !== false && strpos($new_key, '}') !== false && strpos($new_key, '{') < strpos($new_key, '}')) {
-        $new_key = substr($new_key, 0, strpos($new_key, '{')) . '*' . substr($new_key, strpos($new_key, '}') + 1);
+      // переписать на регулярку
+      while (strpos($preparedKey, '{') !== false && strpos($preparedKey, '}') !== false && strpos($preparedKey, '{') < strpos($preparedKey, '}')) {
+        $preparedKey = substr($preparedKey, 0, strpos($preparedKey, '{')) . '*' . substr($preparedKey, strpos($preparedKey, '}') + 1);
       }
 
-      $replace_uri[$new_key] = $val;
-      $relations[$new_key] = $key;
+      $replaceUri[$preparedKey] = $val;
+      $relations[$preparedKey] = $key;
     }
 
-    return [$replace_uri, $relations];
+    return [$replaceUri, $relations];
   }
 
   private static function getUri() {
-    if (func_num_args() == 1) {
-      $length = func_get_arg(0);
-
-      if ($length > self::uriNum()) {
-        $length = self::uriNum();
-      }
-
-      $uri = '/';
-
-      for ($i = 0; $i < $length; $i++) {
-        $uri .= self::uri($i) . '/';
-      }
-
-      return $uri;
-    } elseif (func_num_args() == 2) {
-      $length = func_get_arg(0);
-      $stars = func_get_arg(1);
-      $uri = '/';
-
-      for ($i = 0; $i < $length - $stars; $i++) {
-        $uri .= self::uri($i) . '/';
-      }
-
-      for ($i = 0; $i <= $stars; $i++) {
-        $uri .= '*/';
-      }
-
-      return $uri;
-    } elseif (func_num_args() == 3) {
-      $length = func_get_arg(0);
-      $stars = func_get_arg(1);
-      $start = func_get_arg(2);
-      $uri = '/';
-
-      for ($i = 0; $i < $length - $stars - $start + 1; $i++) {
-        $uri .= self::uri($i) . '/';
-      }
-
-      for ($i = 0; $i < $stars; $i++) {
-        $uri .= '*/';
-      }
-
-      for ($i = $length - $start + 1; $i <= $length; $i++) {
-        $uri .= self::uri($i) . '/';
-      }
-
-      return $uri;
-    } else {
-      if (self::uriNum() > 1 || self::$uri[0] !== '/') {
-        return '/' . implode('/', self::$uri) . '/';
-      } else {
-        return '/';
-      }
-    }
+    return '/' . (count(self::$uri) ? implode('/', self::$uri) . '/' : '');
   }
 }

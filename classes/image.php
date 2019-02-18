@@ -1,7 +1,6 @@
-<?php if (!defined('ROOT')) die('You can\'t just open this file, dude');
+<?php
 
-class SFImage
-{
+class SFImage {
   public static function crop($filepath, $params) {
     $imageSize = self::getSize($filepath);
     $width = $imageSize['width'];

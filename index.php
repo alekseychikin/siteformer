@@ -9,13 +9,10 @@ if (getenv('APPLICATION_ENV') !== false) {
   define('APPLICATION_ENV', 'production');
 }
 
-require_once __DIR__ . '/classes/log.php';
-
 ob_start();
 
 define('ROOT', realpath(__DIR__ . '/../') . '/');
-define('ENGINE', __DIR__ . '/');
-define('ENGINE_TEMP', ENGINE . 'temp/');
+define('ENGINE_TEMP', __DIR__ . '/temp/');
 
 require_once __DIR__ . '/classes/helpers.php';
 require_once __DIR__ . '/classes/response.php';
@@ -26,4 +23,4 @@ register_shutdown_function('shutdownHandler');
 set_exception_handler('exceptionHandler');
 set_error_handler('errorHandler', E_ALL | E_STRICT);
 
-include __DIR__ . "/engine.php";
+include __DIR__ . '/engine.php';

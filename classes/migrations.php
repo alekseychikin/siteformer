@@ -57,7 +57,7 @@ class SFMigrations
       $lastMigration = $index;
     }
 
-    $file = fopen(ENGINE . 'configs/migrations', 'w');
+    $file = fopen(__DIR__ . '/../configs/migrations', 'w');
     fputs($file, $lastMigration);
     fclose($file);
 
@@ -77,8 +77,8 @@ class SFMigrations
   }
 
   private static function preserveLastMigration() {
-    if (file_exists(ENGINE . 'configs/migrations')) {
-      $lastMigration = trim(file_get_contents(ENGINE . 'configs/migrations'));
+    if (file_exists(__DIR__ . '/../configs/migrations')) {
+      $lastMigration = trim(file_get_contents(__DIR__ . '/../configs/migrations'));
 
       settype($lastMigration, 'integer');
 

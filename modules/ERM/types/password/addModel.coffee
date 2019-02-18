@@ -1,8 +1,0 @@
-Model = require "libs/model.coffee"
-
-module.exports = class PasswordDataModel extends Model
-  constructor: (state = {data: ""}) -> super state
-
-  update: (data) -> @set {data}
-
-  get: -> @state.data

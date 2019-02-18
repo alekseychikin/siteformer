@@ -1,7 +1,6 @@
-<?php if (!defined('ROOT')) die('You can\'t just open this file, dude');
+<?php
 
-class SFERMType
-{
+class SFERMType {
   /**
   * Prepare database for this type. Maybe creating some tables would be needed.
   */

@@ -1,4 +1,4 @@
-<?php if (!defined('ROOT')) die('You can\'t just open this file, dude');
+<?php
 
 require_once __DIR__ . '/base-exception.php';
 require_once __DIR__ . '/validate.php';

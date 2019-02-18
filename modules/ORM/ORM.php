@@ -1,4 +1,4 @@
-<?php if (!defined('ROOT')) die('You can\'t just open this file, dude');
+<?php
 
 require_once __DIR__ . '/SFDB.php';
 require_once __DIR__ . '/ORMDatabase.php';
@@ -6,7 +6,7 @@ require_once __DIR__ . '/ORMAlter.php';
 require_once __DIR__ . '/ORMCreate.php';
 require_once __DIR__ . '/ORMDrop.php';
 require_once __DIR__ . '/ORMWhere.php';
-require_once __DIR__ . '/ORMSelect2.php';
+require_once __DIR__ . '/ORMSelect.php';
 require_once __DIR__ . '/ORMDelete.php';
 require_once __DIR__ . '/ORMUpdate.php';
 require_once __DIR__ . '/ORMInsert.php';
@@ -14,8 +14,7 @@ require_once __DIR__ . '/ORMField.php';
 require_once __DIR__ . '/ORMFunc.php';
 require_once __DIR__ . '/ORMCustomValue.php';
 
-class SFORM extends SFORMDatabase
-{
+class SFORM extends SFORMDatabase {
   public static function init($params) {
     if (!parent::init($params)) {
       return false;

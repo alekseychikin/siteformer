@@ -1,7 +1,6 @@
-<?php if (!defined('ROOT')) die('You can\'t just open this file, dude');
+<?php
 
-class SFRouterModel
-{
+class SFRouterModel {
   public static function get($params) {
   }
 

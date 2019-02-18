@@ -1,7 +1,6 @@
-<?php if (!defined('ROOT')) die('You can\'t just open this file, dude');
+<?php
 
-class SFResponse
-{
+class SFResponse {
   private static $state = [];
   private static $template;
   private static $main;
@@ -30,10 +29,6 @@ class SFResponse
     self::render();
   }
 
-  public static function setStatus($code) {
-    header('HTTP/1.1 ' . $code . ' ' . self::$codes[$code]);
-  }
-
   public static function initRedirData() {
     if (isset($_SESSION['redir_data'])) {
       self::$state = array_merge_recursive(self::$state, $_SESSION['redir_data']);
@@ -48,62 +43,6 @@ class SFResponse
   public static function get($name) {
     if (isset(self::$state[$name])) {
       return self::$state[$name];
-    }
-
-    return false;
-  }
-
-  public static function run($action, $params = []) {
-    $urlParams = [];
-
-    foreach ($params as $field => $value) {
-      $$field = $value;
-    }
-
-    self::set('url_params', implode(N, $urlParams));
-    $actionsPath = ROOT;
-
-    if (defined('ACTIONS')) {
-      $actionsPath = ACTIONS;
-    }
-
-    $isFile = false;
-    $isDir = false;
-    $action = self::prepareActionPath($action, $isFile, $isDir);
-
-    if (file_exists($action . '.php') && !$isDir) {
-      include $action . '.php';
-    } elseif (file_exists($actionsPath . $action . '.php') && !$isDir) {
-      include $actionsPath . $action . '.php';
-    } elseif (file_exists($action) && is_dir($action) && file_exists($action . '/index.php') && !$isFile) {
-      include $action . '/index.php';
-    } elseif (file_exists($actionsPath . $action) && is_dir($actionsPath . $action) && file_exists($actionsPath . $action . '/index.php') && !$isFile) {
-      include $actionsPath . $action . '/index.php';
-    } else {
-      throw new BaseException('Action file not find: ' . $action . '.php');
-      // die('Action file not find: '.$action.'.php');
-    }
-  }
-
-  public static function actionExists($action) {
-    $actionsPath = ROOT;
-
-    if (defined('ACTIONS')) {
-      $actionsPath = ACTIONS;
-    }
-
-    $isFile = false;
-    $isDir = false;
-    $action = self::prepareActionPath($action, $isFile, $isDir);
-
-    if (file_exists($action . '.php') && !$isDir) {
-      return true;
-    } elseif (file_exists($actionsPath . $action . '.php') && !$isDir) {
-      return true;
-    } elseif (file_exists($action) && is_dir($action) && file_exists($action . '/index.php') && !$isFile) {
-      return true;
-    } elseif (file_exists($actionsPath . $action) && is_dir($actionsPath . $action) && file_exists($actionsPath . $action . '/index.php') && !$isFile) {
-      return true;
     }
 
     return false;
@@ -217,14 +156,16 @@ class SFResponse
   }
 
   public static function getRequestHeaders() {
-    $headers = array();
+    $headers = [];
 
     foreach($_SERVER as $key => $value) {
-      if (strtolower(substr($key, 0, 5)) !== 'http_') {
-        continue;
+      $header = str_replace(' ', '-', ucwords(str_replace(['_', '-'], ' ', strtolower($key))));
+
+      if (strtolower(substr($key, 0, 5)) === 'http_') {
+        $a = str_replace(['_', '-'], ' ', strtolower(substr($key, 5)));
+        $header = str_replace(' ', '-', ucwords(str_replace(['_', '-'], ' ', strtolower(substr($key, 5)))));
       }
 
-      $header = str_replace(' ', '-', ucwords(str_replace('_', ' ', strtolower(substr($key, 5)))));
       $headers[$header] = $value;
     }
 

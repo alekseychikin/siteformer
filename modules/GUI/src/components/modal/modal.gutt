@@ -1,3 +1,0 @@
-<section class="modal" data-role="modal">
-	<div class="modal__container" data-role="modal-container"></div>
-</section>

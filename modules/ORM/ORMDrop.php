@@ -1,9 +1,8 @@
-<?php if (!defined('ROOT')) die('You can\'t just open this file, dude');
+<?php
 
 require_once __DIR__ . '/ORMDatabase.php';
 
-class SFORMDrop extends SFORMDatabase
-{
+class SFORMDrop extends SFORMDatabase {
   private $sql = '';
   private $tableName;
 

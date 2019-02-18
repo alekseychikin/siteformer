@@ -10,13 +10,11 @@ function runEngine($configs) {
 
   session_start();
   header('Content-type: text/html; charset=utf8');
-  define('CLASSES', ENGINE . 'classes/');
-  define('MODULES', ENGINE . 'modules/');
-  define('N', "\n");
+  define('EOL', "\n");
 
-  require_once CLASSES . 'clear-cache.php';
-  require_once CLASSES . 'validate-exception.php';
-  require_once CLASSES . 'page-not-found-exception.php';
+  require_once __DIR__ . '/classes/ClearCache.php';
+  require_once __DIR__ . '/classes/validate-exception.php';
+  require_once __DIR__ . '/classes/page-not-found-exception.php';
 
   if (isset($_SESSION['location'])) {
     $location = $_SESSION['location'];
@@ -25,41 +23,32 @@ function runEngine($configs) {
     die;
   }
 
-  require_once CLASSES . 'json.php';
-  require_once CLASSES . 'S3.php';
-  require_once CLASSES . 'models.php';
-  require_once CLASSES . 'uri.php';
-  require_once CLASSES . 'validate.php';
-  require_once CLASSES . 'path.php';
-  require_once CLASSES . 'text.php';
-  require_once CLASSES . 'socket.php';
-  require_once CLASSES . 'errors.php';
-  require_once CLASSES . 'image.php';
-  require_once CLASSES . 'mail.php';
-  require_once CLASSES . 'storages.php';
-  require_once CLASSES . 'migrations.php';
+  require_once __DIR__ . '/classes/text.php';
+  require_once __DIR__ . '/classes/parseJSON.php';
+  require_once __DIR__ . '/classes/S3.php';
+  require_once __DIR__ . '/classes/models.php';
+  require_once __DIR__ . '/classes/validate.php';
+  require_once __DIR__ . '/classes/socket.php';
+  require_once __DIR__ . '/classes/image.php';
+  require_once __DIR__ . '/classes/mail.php';
+  require_once __DIR__ . '/classes/storages.php';
+  require_once __DIR__ . '/classes/migrations.php';
 
   ClearCache::clear();
 
   try {
     $configs = Diagnostics::checkConfigs($configs);
 
-    $url = isset($_GET[$configs['modrewrite-get-url']]) ?
-      $_GET[$configs['modrewrite-get-url']] :
-      '';
-    SFURI::init($url);
-
-    require_once MODULES . 'Templater/Templater.php';
+    require_once __DIR__ . '/modules/Templater/Templater.php';
+    require_once __DIR__ . '/modules/ORM/ORM.php';
+    require_once __DIR__ . '/modules/ERM/ERM.php';
+    require_once __DIR__ . '/modules/Router/Router.php';
 
     SFTemplater::init([
       'path' => $configs['templates']
     ]);
 
-    require_once MODULES . 'ORM/ORM.php';
-
     Diagnostics::checkDatabaseConnection($configs['database']);
-
-    require_once MODULES . 'ERM/ERM.php';
 
     SFERM::init();
 
@@ -67,9 +56,12 @@ function runEngine($configs) {
     SFMigrations::init($configs);
     SFResponse::initRedirData();
 
-    require_once MODULES . 'Router/Router.php';
+    $url = isset($_GET[$configs['modrewrite-get-url']]) ?
+      $_GET[$configs['modrewrite-get-url']] :
+      '';
 
     SFRouter::init([
+      'url' => $url,
       'routes' => $configs['routes'],
       'languages' => $configs['languages'],
       'models' => $configs['models']
@@ -85,19 +77,11 @@ function runEngine($configs) {
   }
 
   try {
-    require_once MODULES . 'GUI/GUI.php';
-
-    SFGUI::init();
-
     SFRouter::route();
 
     SFResponse::render();
   } catch (PageNotFoundException $e) {
-    if (SFResponse::actionExists('404')) {
-      SFResponse::run('404');
-    } else {
-      SFResponse::error(404, 'Page not found');
-    }
+    println('PageNotFoundException');
   } catch (ValidateException $e) {
     $message = $e->getDetails();
 
