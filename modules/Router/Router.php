@@ -118,6 +118,20 @@ class SFRouter {
     return count(self::$uri);
   }
 
+  public static function getUriByArray($num = 0) {
+    if ($num != 0) {
+      $uri = [];
+
+      for ($i = 0; $i <= $num; $i++) {
+        $uri[$i] = self::$uri[$i];
+      }
+
+      return $uri;
+    }
+
+    return self::$uri;
+  }
+
   private static function parse($url) {
     if (substr($url, -1, 1) == '/') $url = substr($url, 0, -1);
 
@@ -164,20 +178,6 @@ class SFRouter {
     throw new PageNotFoundException('');
   }
 
-  private static function getUriByArray($num = 0) {
-    if ($num != 0) {
-      $uri = [];
-
-      for ($i = 0; $i <= $num; $i++) {
-        $uri[$i] = self::$uri[$i];
-      }
-
-      return $uri;
-    }
-
-    return self::$uri;
-  }
-
   private static function recParsive($params, & $uri) {
     foreach ($params as $pattern => $actionPath) {
       $pattern = explode('/', $pattern);
@@ -209,16 +209,19 @@ class SFRouter {
     }
 
     if (strtoupper($_SERVER['REQUEST_METHOD']) === 'POST') {
+      $post = $_POST;
       $files = self::prepareFiles();
 
-      foreach ($_POST as $key => $value) {
-        $values = $value;
-
-        if (isset($files[$key])) {
-          $values = array_merge($values, $files[$key]);
+      foreach ($files as $key => $value) {
+        if (isset($post[$key])) {
+          $post[$key] = array_merge($post[$key], $value);
+        } else {
+          $post[$key] = $value;
         }
+      }
 
-        SFResponse::set($key, SFModels::post($key, $values));
+      foreach ($post as $key => $value) {
+        SFResponse::set($key, SFModels::post($key, $value));
       }
     }
 
