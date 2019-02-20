@@ -96,7 +96,8 @@ class SFORMDatabase {
         $result = self::query('SHOW TABLES FROM `' . $database . '`', $alias, false, false);
 
         foreach ($result as $item) {
-          list($index, $table) = each($item);
+          $index = key($item);
+          $table = $item[$index];
           $tables[] = $table;
         }
 
@@ -277,8 +278,8 @@ class SFORMDatabase {
     if (is_numeric($value)) return $value;
 
     if (self::$supportPDO) {
-      list($index, $connection) = each(self::$connections);
-      reset(self::$connections);
+      $key = key(self::$connections);
+      $connection = self::$connections[$key];
 
       return $connection->quote($value);
     }
