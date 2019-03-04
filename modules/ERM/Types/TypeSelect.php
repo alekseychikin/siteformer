@@ -9,7 +9,7 @@ class SFTypeSelect extends SFERMType {
   public static $requiredable = false;
   public static $settings = [
     'checked' => -1,
-    'values' => ['']
+    'values' => []
   ];
 
   public static function getSqlField($params) {

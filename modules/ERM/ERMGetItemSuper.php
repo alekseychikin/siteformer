@@ -40,6 +40,7 @@ class SFERMGetItemSuper extends SFERMHelpers {
 
   public function andWhere($field, $value, $params = []) {
     if ($value = $this->getValueForORMQuery($field, $value, $params)) {
+      // println($value);
       call_user_func_array([$this->databaseQuery, 'andWhere'], $value);
     }
 
@@ -134,6 +135,10 @@ class SFERMGetItemSuper extends SFERMHelpers {
   private function whereSystemField($field, $value, $params = false) {
     switch ($field) {
       case 'id':
+        if (gettype($params) === 'string') {
+          return [$field, $params, $value];
+        }
+
         return [$field, $value];
       case 'status':
         $insertions = [];

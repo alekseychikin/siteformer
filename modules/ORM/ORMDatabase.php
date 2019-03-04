@@ -270,7 +270,7 @@ class SFORMDatabase {
     return self::$lastSQL;
   }
 
-  protected static function quote($value) {
+  public static function quote($value) {
     if (gettype($value) === 'boolean') return $value ? '\'true\'' : '\'false\'';
 
     if (is_null($value)) return 'NULL';

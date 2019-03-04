@@ -83,7 +83,7 @@ It may be:
 * `application/xhtml+xml` – XML
 * any else will returns html
 
-## `redir`
+## `redirect`
 
 Sends header for redirection
 

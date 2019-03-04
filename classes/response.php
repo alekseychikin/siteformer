@@ -104,7 +104,7 @@ class SFResponse {
       default:
         if (isset($_SERVER['HTTP_REFERER']) && $_SERVER['REQUEST_METHOD'] === 'POST') {
           $_SESSION['redir_data'] = self::$state;
-          self::redir($_SERVER['HTTP_REFERER']);
+          self::redirect($_SERVER['HTTP_REFERER']);
         } else {
           if (self::$code === 200) {
             echo $content;
@@ -130,15 +130,14 @@ class SFResponse {
     die();
   }
 
-  public static function redir($path) {
-    $_SESSION['location'] = $path;
-    header('Location: /', true, 301);
+  public static function redirect($path) {
+    header('Location: ' . $path, true, 301);
 
     die();
   }
 
   public static function refresh() {
-    self::redir($_SERVER['REQUEST_URI']);
+    self::redirect($_SERVER['REQUEST_URI']);
   }
 
   private static function prepareActionPath($action, & $isFile, & $isDir) {

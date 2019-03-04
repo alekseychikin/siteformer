@@ -15,14 +15,6 @@ function runEngine($entryPoint) {
   require_once __DIR__ . '/classes/ClearCache.php';
   require_once __DIR__ . '/classes/validate-exception.php';
   require_once __DIR__ . '/classes/page-not-found-exception.php';
-
-  if (isset($_SESSION['location'])) {
-    $location = $_SESSION['location'];
-    unset($_SESSION['location']);
-    header('Location: ' . $location, true, 301);
-    die;
-  }
-
   require_once __DIR__ . '/classes/text.php';
   require_once __DIR__ . '/classes/parseJSON.php';
   require_once __DIR__ . '/classes/S3.php';
