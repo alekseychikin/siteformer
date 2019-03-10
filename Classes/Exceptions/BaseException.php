@@ -2,7 +2,7 @@
 
 namespace Engine\Classes\Exceptions;
 
-class BaseException extends Exception {
+class BaseException extends \Exception {
 	protected $message;
 	private $errfile = false;
 	private $errline = false;
@@ -31,6 +31,6 @@ class BaseException extends Exception {
 		$trace = ob_get_contents();
 		ob_end_clean();
 
-		SFResponse::error(500, $this->message, $this->errfile, $this->errline, $trace);
+		Response::error(500, $this->message, $this->errfile, $this->errline, $trace);
 	}
 }

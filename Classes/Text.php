@@ -8,14 +8,15 @@ class Text {
 
 		foreach ($separate as $sepword) {
 			$res = explode($sepword, $str);
+
 			foreach ($res as $index => $word) {
 				if ($allChars || $index) {
 					$res[$index] = strtoupper(substr($word, 0, 1)) . substr($word, 1);
-				}
-				else {
+				} else {
 					$res[$index] = $word;
 				}
 			}
+
 			$str = implode('', $res);
 		}
 
@@ -26,6 +27,7 @@ class Text {
 		if ($len === false) {
 			$len = self::strl($text) - $from;
 		}
+
 		return preg_replace('#^(?:[\x00-\x7F]|[\xC0-\xFF][\x80-\xBF]+){0,'.$from.'}'.'((?:[\x00-\x7F]|[\xC0-\xFF][\x80-\xBF]+){0,'.$len.'}).*#s', '$1', $text);
 	}
 
@@ -72,6 +74,7 @@ class Text {
 	public static function unhtmlentities($string) {
 		$trans_tbl = get_html_translation_table(HTML_ENTITIES);
 		$trans_tbl = array_flip($trans_tbl);
+
 		return strtr($string, $trans_tbl);
 	}
 

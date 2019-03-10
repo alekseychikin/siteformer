@@ -1,5 +1,7 @@
 <?php
 
+namespace Engine\Classes;
+
 // EEMPTYREQUIRED
 // EMINLENGTH
 // EMAXLENGTH
@@ -8,8 +10,8 @@
 // EVALUESNOTMATCHED
 // ENOTUNIQUEVALUE
 
-require_once __DIR__ . '/Exceptions/ValidateException.php';
-require_once __DIR__ . '/Exceptions/ValidationSkipEmptyException.php';
+use \Engine\Classes\Exceptions\ValidateException;
+use \Engine\Classes\Exceptions\ValidationSkipEmptyException;
 
 class Validate {
 	private static $regexpTypes = array(

@@ -2,7 +2,7 @@
 
 namespace Engine\Classes\Exceptions;
 
-class ValidateException extends Exception {
+class ValidateException extends \Exception {
 	protected $message;
 	protected $details;
 	protected $file = false;

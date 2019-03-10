@@ -1,4 +1,4 @@
-# SFResponse class
+# Response class
 
 ## `error`
 

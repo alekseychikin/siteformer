@@ -2,9 +2,14 @@
 
 namespace Engine\Classes;
 
+use \Engine\Classes\Exceptions\ValidateException;
+use \Engine\Classes\Exceptions\BaseException;
+use \Engine\Classes\Validate;
+use \Engine\Modules\ORM\ORM;
+
 class Diagnostics {
 	public static function checkRequiredDirs() {
-		$requiredDirs = ['userpics', 'temp', 'configs'];
+		$requiredDirs = ['configs'];
 
 		foreach ($requiredDirs as $dir) {
 			$path = __DIR__ . '/../' . $dir;
@@ -19,7 +24,7 @@ class Diagnostics {
 
 	public static function checkDatabaseConnection($configs) {
 		try {
-			$configs = SFValidate::value([
+			$configs = Validate::value([
 				'host' => [
 					'required' => true
 				],
@@ -38,7 +43,7 @@ class Diagnostics {
 		}
 
 		try {
-			$connection = SFORM::init([
+			$connection = ORM::init([
 				'host' => $configs['host'],
 				'user' => $configs['user'],
 				'password' => $configs['password']
@@ -48,7 +53,7 @@ class Diagnostics {
 		}
 
 		try {
-			SFORM::setDatabase($configs['database']);
+			ORM::setDatabase($configs['database']);
 		} catch (BaseException $e) {
 			throw new ValidateException(['code' => 'EDATABASENAME', 'index' => ['database', 'database'], 'source' => $configs]);
 		}

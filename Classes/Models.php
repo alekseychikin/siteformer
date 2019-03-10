@@ -2,13 +2,13 @@
 
 namespace Engine\Classes;
 
-require_once __DIR__ . '/text.php';
+use \Engine\Classes\Text;
 
 class Models {
 	private static $paths = [];
 
 	public static function registerPath($path) {
-		self::$paths[] = pathresolve($path);
+		self::$paths[] = $path;
 	}
 
 	public static function get($model, $params) {
@@ -36,17 +36,11 @@ class Models {
 	}
 
 	private static function getClassNameByModelName($model) {
-		$path = explode('/', $model);
-		$finded = false;
-
 		foreach (self::$paths as $pathItem) {
-			$modelPath = pathresolve($pathItem, $model . '.php');
+			$modelPath = $pathItem . $model;
 
-			if (file_exists($modelPath)) {
-				require_once $modelPath;
-
-				$model = $path[count($path) - 1];
-				return Text::camelCasefy($model, true);
+			if (class_exists($modelPath)) {
+				return $modelPath;
 			}
 		}
 

@@ -1,4 +1,7 @@
 <?php
+
+namespace Engine\Classes;
+
 /**
 * $Id$
 *
@@ -2370,7 +2373,7 @@ final class S3Request
  * @version 0.5.0-dev
  */
 
-class S3Exception extends Exception {
+class S3Exception extends \Exception {
 	/**
 	 * Class constructor
 	 *

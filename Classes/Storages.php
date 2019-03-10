@@ -2,8 +2,8 @@
 
 namespace Engine\Classes;
 
-require_once __DIR__ . '/base-exception.php';
-require_once __DIR__ . '/validate.php';
+use \Engine\Classes\Exceptions\BaseException;
+use \Engine\Classes\Exceptions\ValidateException;
 
 class Storages {
 	private static $storages;

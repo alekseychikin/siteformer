@@ -2,4 +2,4 @@
 
 namespace Engine\Classes\Exceptions;
 
-class SkipEmptyException extends Exception {}
+class SkipEmptyException extends \Exception {}

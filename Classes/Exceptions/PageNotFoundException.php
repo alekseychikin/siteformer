@@ -2,7 +2,7 @@
 
 namespace Engine\Classes\Exceptions;
 
-class PageNotFoundException extends Exception {
+class PageNotFoundException extends \Exception {
 	protected $message;
 
 	public function __construct($message) {
