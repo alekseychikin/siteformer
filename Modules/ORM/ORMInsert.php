@@ -12,6 +12,7 @@ class ORMInsert extends ORMDatabase {
 
   public function values($values) {
     $this->values = $values;
+
     return $this;
   }
 

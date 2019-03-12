@@ -130,7 +130,7 @@ class TypeImage extends ERMType {
 	}
 
 	private static function getSources($fields, $currentField, $currentAlias) {
-		$sources = array('upload');
+		$sources = ['upload'];
 
 		foreach ($fields as $field) {
 			if ($field['type'] == 'image' && $currentAlias != $field['alias']) {

@@ -14,48 +14,48 @@ class TypeTags extends ERMType {
 	public static function prepareDatabase() {
 		if (!ORM::exists('sys_type_tags')) {
 			ORM::create('sys_type_tags')
-				->addField([
-					'name' => 'id',
-					'type' => 'INT(11) UNSIGNED',
-					'autoincrement' => true,
-					'null' => false
-				])
-				->addField([
-					'name' => 'collection',
-					'type' => 'INT(11) UNSIGNED',
-					'null' => 'NULL',
-					'default' => NULL
-				])
-				->addField([
-					'name' => 'field',
-					'type' => 'VARCHAR(100)',
-					'null' => 'NULL',
-					'default' => NULL
-				])
-				->addField([
-					'name' => 'tag',
-					'type' => 'VARCHAR(200)'
-				])
-				->addKey('id', 'primary key')
-				->addKey(['collection', 'field'])
-				->addKey(['collection', 'field', 'tag'])
-				->exec();
+			->addField([
+				'name' => 'id',
+				'type' => 'INT(11) UNSIGNED',
+				'autoincrement' => true,
+				'null' => false
+			])
+			->addField([
+				'name' => 'collection',
+				'type' => 'INT(11) UNSIGNED',
+				'null' => 'NULL',
+				'default' => NULL
+			])
+			->addField([
+				'name' => 'field',
+				'type' => 'VARCHAR(100)',
+				'null' => 'NULL',
+				'default' => NULL
+			])
+			->addField([
+				'name' => 'tag',
+				'type' => 'VARCHAR(200)'
+			])
+			->addKey('id', 'primary key')
+			->addKey(['collection', 'field'])
+			->addKey(['collection', 'field', 'tag'])
+			->exec();
 		}
 
 		if (!ORM::exists('sys_type_tags_records')) {
 			ORM::create('sys_type_tags_records')
-				->addField([
-					'name' => 'record',
-					'type' => 'INT(11) UNSIGNED',
-					'null' => false
-				])
-				->addField([
-					'name' => 'tag',
-					'type' => 'INT(11) UNSIGNED',
-					'null' => false
-				])
-				->addKey(['record', 'tag'], 'primary key')
-				->exec();
+			->addField([
+				'name' => 'record',
+				'type' => 'INT(11) UNSIGNED',
+				'null' => false
+			])
+			->addField([
+				'name' => 'tag',
+				'type' => 'INT(11) UNSIGNED',
+				'null' => false
+			])
+			->addKey(['record', 'tag'], 'primary key')
+			->exec();
 		}
 	}
 
@@ -77,12 +77,12 @@ class TypeTags extends ERMType {
 		foreach ($tags as $index => $tag) {
 			if (!in_array($tag, $existsTags)) {
 				ORM::insert('sys_type_tags')
-					->values([
-						'collection' => $field['collection'],
-						'field' => $field['alias'],
-						'tag' => $tag
-					])
-					->exec();
+				->values([
+					'collection' => $field['collection'],
+					'field' => $field['alias'],
+					'tag' => $tag
+				])
+				->exec();
 			}
 		}
 
@@ -103,12 +103,12 @@ class TypeTags extends ERMType {
 		foreach ($tags as $index => $tag) {
 			if (!in_array($tag, $existsTags)) {
 				ORM::insert('sys_type_tags')
-					->values([
-						'collection' => $field['collection'],
-						'field' => $field['alias'],
-						'tag' => $tag
-					])
-					->exec();
+				->values([
+					'collection' => $field['collection'],
+					'field' => $field['alias'],
+					'tag' => $tag
+				])
+				->exec();
 			}
 		}
 
@@ -130,11 +130,11 @@ class TypeTags extends ERMType {
 
 		foreach ($ids as $id) {
 			ORM::insert('sys_type_tags_records')
-				->values([
-					'record' => $record['id'],
-					'tag' => $id
-				])
-				->exec();
+			->values([
+				'record' => $record['id'],
+				'tag' => $id
+			])
+			->exec();
 		}
 	}
 
@@ -153,11 +153,11 @@ class TypeTags extends ERMType {
 
 		foreach ($ids as $id) {
 			ORM::insert('sys_type_tags_records')
-				->values([
-					'record' => $record['id'],
-					'tag' => $id
-				])
-				->exec();
+			->values([
+				'record' => $record['id'],
+				'tag' => $id
+			])
+			->exec();
 		}
 	}
 
@@ -207,10 +207,10 @@ class TypeTags extends ERMType {
 
 	private static function getTagRecords($collection, $field, $tags) {
 		$result = ORM::select()
-			->from('sys_type_tags')
-			->where('collection', $collection)
-			->andWhere('field', $field)
-			->andOpenWhere();
+		->from('sys_type_tags')
+		->where('collection', $collection)
+		->andWhere('field', $field)
+		->andOpenWhere();
 
 		foreach ($tags as $index => $tag) {
 			if (!$index) {
@@ -221,6 +221,6 @@ class TypeTags extends ERMType {
 		}
 
 		return $result->closeWhere()
-			->exec();
+		->exec();
 	}
 }

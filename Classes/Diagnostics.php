@@ -4,7 +4,6 @@ namespace Engine\Classes;
 
 use \Engine\Classes\Exceptions\ValidateException;
 use \Engine\Classes\Exceptions\BaseException;
-use \Engine\Classes\Validate;
 use \Engine\Modules\ORM\ORM;
 
 class Diagnostics {
@@ -39,6 +38,7 @@ class Diagnostics {
 		} catch (ValidateException $e) {
 			$message = $e->getDetails();
 			array_unshift($message['index'], 'database');
+
 			throw new ValidateException(['code' => $message['code'], 'index' => $message['index'], 'source' => $message['source']]);
 		}
 

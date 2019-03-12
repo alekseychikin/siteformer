@@ -42,8 +42,8 @@ class TypeUrl extends ERMType {
 		$value = Text::translite($value);
 
 		$record = ORM::select()
-			->from($collection['table'])
-			->where($field['alias'], $value);
+		->from($collection['table'])
+		->where($field['alias'], $value);
 
 		$i = 1;
 		$newValue = $value;
@@ -51,8 +51,8 @@ class TypeUrl extends ERMType {
 		while ($record->length()) {
 			$newValue = $value . '-' . ++$i;
 			$record = ORM::select()
-				->from($collection['table'])
-				->where($field['alias'], $newValue);
+			->from($collection['table'])
+			->where($field['alias'], $newValue);
 		}
 
 		return $newValue;
@@ -76,9 +76,9 @@ class TypeUrl extends ERMType {
 		$value = Text::translite($value);
 
 		$record = ORM::select()
-			->from($collection['table'])
-			->where($field['alias'], $value)
-			->andWhere('id', '!=', $currentData['id']);
+		->from($collection['table'])
+		->where($field['alias'], $value)
+		->andWhere('id', '!=', $currentData['id']);
 
 		$i = 1;
 		$newValue = $value;
@@ -86,9 +86,9 @@ class TypeUrl extends ERMType {
 		while ($record->length()) {
 			$newValue = $value . '-' . ++$i;
 			$record = ORM::select()
-				->from($collection['table'])
-				->where($field['alias'], $newValue)
-				->andWhere('id', '!=', $currentData['id']);
+			->from($collection['table'])
+			->where($field['alias'], $newValue)
+			->andWhere('id', '!=', $currentData['id']);
 		}
 
 		return $newValue;

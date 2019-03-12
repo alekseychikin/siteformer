@@ -19,11 +19,11 @@ class TypeTable extends ERMType {
 	public static function getSqlField($params) {
 		$defaultData = json_encode($params['defaultData']);
 
-		return array(
+		return [
 			'type' => 'TEXT',
 			'default' => $defaultData,
 			'null' => false
-		);
+		];
 	}
 
 	public static function getDefaultData($settings) {

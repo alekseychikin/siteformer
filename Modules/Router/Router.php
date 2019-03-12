@@ -280,7 +280,7 @@ class Router {
 			$route['path'] = call_user_func_array($route['path'], $route['params']);
 		}
 
-		if ($route['path'] instanceof \Engine\Modules\Router\RouterRoute) {
+		if ($route['path'] instanceof RouterRoute) {
 			$data = $route['path']->getData();
 			$template = $route['path']->getTemplate();
 

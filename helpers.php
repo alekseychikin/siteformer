@@ -57,7 +57,7 @@ function arrReduce($arr, $cb, $default = 0) {
 }
 
 function arrFilter($arr, $cb) {
-	$result = array();
+	$result = [];
 
 	foreach ($arr as $item) {
 		if ($cb($item)) {

@@ -72,7 +72,7 @@ class ORMWhere extends ORMDatabase {
 
         return $result;
       } elseif ($exprs[0] == 'or') {
-        $orArray = array();
+        $orArray = [];
 
         for ($i = 1; $i < count($exprs); $i++) {
           $orArray[] = $this->expandExpression($defaultTable, $exprs[$i]);
@@ -80,7 +80,7 @@ class ORMWhere extends ORMDatabase {
 
         return '('.implode(' OR ', $orArray).')';
       } elseif ($exprs[0] == 'and') {
-        $andArray = array();
+        $andArray = [];
 
         for ($i = 1; $i < count($exprs); $i++) {
           $andArray[] = $this->expandExpression($defaultTable, $exprs[$i]);
@@ -105,7 +105,7 @@ class ORMWhere extends ORMDatabase {
 			$field = self::_field_($field);
 		}
 
-		return array('expr', $field, $relation, $value);
+		return ['expr', $field, $relation, $value];
 	}
 
 	protected static function _field_($field, $table = '') {

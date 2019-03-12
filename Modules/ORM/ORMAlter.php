@@ -4,7 +4,7 @@ namespace Engine\Modules\ORM;
 
 class ORMAlter extends ORMDatabase {
   private $tableName;
-  private $orderActions = array();
+  private $orderActions = [];
 
   public function __construct($tableName) {
     $this->tableName = $tableName;
@@ -12,31 +12,31 @@ class ORMAlter extends ORMDatabase {
 
   public function addField($field, $after = false) {
     $field = $this->validateField($field);
-    $this->orderActions[] = array(
+    $this->orderActions[] = [
       'action' => 'add-field',
       'field' => $field,
       'after' => $after
-    );
+    ];
 
     return $this;
   }
 
   public function changeField($sourceField, $field) {
     $field = $this->validateField($field);
-    $this->orderActions[] = array(
+    $this->orderActions[] = [
       'action' => 'edit-field',
       'sourceField' => $sourceField,
       'field' => $field
-    );
+    ];
 
     return $this;
   }
 
   public function dropField($field) {
-    $this->orderActions[] = array(
+    $this->orderActions[] = [
       'action' => 'drop-field',
       'field' => $field
-    );
+    ];
 
     return $this;
   }

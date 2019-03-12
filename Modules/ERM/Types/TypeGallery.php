@@ -46,44 +46,44 @@ class TypeGallery extends ERMType {
 	public static function prepareDatabase() {
 		if (!ORM::exists('sys_type_gallery')) {
 			ORM::create('sys_type_gallery')
-				->addField([
-					'name' => 'id',
-					'type' => 'INT(11) UNSIGNED',
-					'autoincrement' => true,
-					'null' => false
-				])
-				->addField([
-					'name' => 'collection',
-					'type' => 'INT(11) UNSIGNED',
-					'null' => 'NULL',
-					'default' => NULL
-				])
-				->addField([
-					'name' => 'field',
-					'type' => 'VARCHAR(100)',
-					'null' => 'NULL',
-					'default' => NULL
-				])
-				->addField([
-					'name' => 'record',
-					'type' => 'INT(11) UNSIGNED',
-					'null' => false
-				])
-				->addField([
-					'name' => 'preview',
-					'type' => 'VARCHAR(200)',
-					'null' => 'NULL',
-					'default' => NULL
-				])
-				->addField([
-					'name' => 'image',
-					'type' => 'VARCHAR(200)',
-					'null' => 'NULL',
-					'default' => NULL
-				])
-				->addKey(['collection', 'field'])
-				->addKey('id', 'primary key')
-				->exec();
+			->addField([
+				'name' => 'id',
+				'type' => 'INT(11) UNSIGNED',
+				'autoincrement' => true,
+				'null' => false
+			])
+			->addField([
+				'name' => 'collection',
+				'type' => 'INT(11) UNSIGNED',
+				'null' => 'NULL',
+				'default' => NULL
+			])
+			->addField([
+				'name' => 'field',
+				'type' => 'VARCHAR(100)',
+				'null' => 'NULL',
+				'default' => NULL
+			])
+			->addField([
+				'name' => 'record',
+				'type' => 'INT(11) UNSIGNED',
+				'null' => false
+			])
+			->addField([
+				'name' => 'preview',
+				'type' => 'VARCHAR(200)',
+				'null' => 'NULL',
+				'default' => NULL
+			])
+			->addField([
+				'name' => 'image',
+				'type' => 'VARCHAR(200)',
+				'null' => 'NULL',
+				'default' => NULL
+			])
+			->addKey(['collection', 'field'])
+			->addKey('id', 'primary key')
+			->exec();
 		}
 	}
 
@@ -108,14 +108,14 @@ class TypeGallery extends ERMType {
 			$image = Storages::put($settings['storage'], $image, $settings['path']);
 
 			ORM::insert('sys_type_gallery')
-				->values([
-					'collection' => $collection['id'],
-					'field' => $field['alias'],
-					'record' => $record['id'],
-					'preview' => $preview,
-					'image' => $image
-				])
-				->exec();
+			->values([
+				'collection' => $collection['id'],
+				'field' => $field['alias'],
+				'record' => $record['id'],
+				'preview' => $preview,
+				'image' => $image
+			])
+			->exec();
 		}
 	}
 
@@ -127,16 +127,16 @@ class TypeGallery extends ERMType {
 			switch ($action['action']) {
 				case 'delete':
 					$image = ORM::select()
-						->from('sys_type_gallery')
-						->where('id', $action['id'])
-						->execOne();
+					->from('sys_type_gallery')
+					->where('id', $action['id'])
+					->execOne();
 
 					Storages::delete($settings['storage'], $image['preview']);
 					Storages::delete($settings['storage'], $image['image']);
 
 					ORM::delete('sys_type_gallery')
-						->where('id', $image['id'])
-						->exec();
+					->where('id', $image['id'])
+					->exec();
 					break;
 				case 'add':
 					$image = $action['image'];
@@ -156,14 +156,14 @@ class TypeGallery extends ERMType {
 					$image = Storages::put($settings['storage'], $image, $settings['path']);
 
 					ORM::insert('sys_type_gallery')
-						->values([
-							'collection' => $collection['id'],
-							'field' => $field['alias'],
-							'record' => $record['id'],
-							'preview' => $preview,
-							'image' => $image
-						])
-						->exec();
+					->values([
+						'collection' => $collection['id'],
+						'field' => $field['alias'],
+						'record' => $record['id'],
+						'preview' => $preview,
+						'image' => $image
+					])
+					->exec();
 			}
 		}
 	}
@@ -171,9 +171,9 @@ class TypeGallery extends ERMType {
 
 	public static function joinData($databaseQuery, $collection, $field) {
 		$databaseQuery->join('sys_type_gallery')
-			->on('sys_type_gallery.record', ORM::field($collection['table'] . '.id'))
-			->andOn('sys_type_gallery.collection', $collection['id'])
-			->andOn('sys_type_gallery.field', $field['alias']);
+		->on('sys_type_gallery.record', ORM::field($collection['table'] . '.id'))
+		->andOn('sys_type_gallery.collection', $collection['id'])
+		->andOn('sys_type_gallery.field', $field['alias']);
 	}
 
 	public static function postProcessData($collection, $field, $data) {

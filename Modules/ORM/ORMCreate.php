@@ -7,8 +7,8 @@ use \Engine\Classes\Validate;
 class ORMCreate extends ORMDatabase {
 	private $sql = '';
 	private $tableName;
-	private $fields = array();
-	private $keys = array();
+	private $fields = [];
+	private $keys = [];
 
 	public function __construct($tableName) {
 		$this->tableName = $tableName;
@@ -47,7 +47,7 @@ class ORMCreate extends ORMDatabase {
 
 	public function getQuery() {
 		$sql = 'CREATE TABLE IF NOT EXISTS `' . $this->tableName . '` (' . "\n";
-		$fields = array();
+		$fields = [];
 
 		foreach ($this->fields as $field) {
 			$fields[] = $this->makeStringOfField($field);

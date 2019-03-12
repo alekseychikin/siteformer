@@ -2,6 +2,8 @@
 
 namespace Engine\Classes\Exceptions;
 
+use Engine\Classes\Response;
+
 class BaseException extends \Exception {
 	protected $message;
 	private $errfile = false;
@@ -16,7 +18,7 @@ class BaseException extends \Exception {
 
 	public function message($withTrace = true) {
 		$trace = $this->getTrace();
-		$newTrace = array();
+		$newTrace = [];
 
 		if (gettype($trace) === 'array') {
 			foreach ($trace as $index => $entry) {

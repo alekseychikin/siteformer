@@ -68,8 +68,8 @@ class ERM extends ERMHelpers {
 		}
 
 		$record = ORM::insert($collection['table'])
-			->values($newData)
-			->exec('default', true);
+		->values($newData)
+		->exec('default', true);
 
 		foreach ($fields as $field) {
 			$className = ERM::getClassNameByType($field['type']);
@@ -77,8 +77,8 @@ class ERM extends ERMHelpers {
 		}
 
 		return self::getItem($collection['alias'])
-			->where('id', $record['id'])
-			->exec();
+		->where('id', $record['id'])
+		->exec();
 	}
 
 	public static function update($collection, $params) {
@@ -100,8 +100,8 @@ class ERM extends ERMHelpers {
 		$fields = self::sortFields($collection['fields'], $data);
 
 		$currentData = ERM::getItem($collection['alias'])
-			->where('id', $id)
-			->exec();
+		->where('id', $id)
+		->exec();
 
 		foreach ($fields as $field) {
 			if (!isset($data[$field['alias']])) continue;
@@ -132,9 +132,9 @@ class ERM extends ERMHelpers {
 		}
 
 		$record = ORM::update($collection['table'])
-			->values($newData)
-			->where('id', $id)
-			->exec();
+		->values($newData)
+		->where('id', $id)
+		->exec();
 
 		foreach ($fields as $field) {
 			$className = ERM::getClassNameByType($field['type']);
@@ -148,12 +148,12 @@ class ERM extends ERMHelpers {
 	// It could be news or events or galleries
 	public static function getCollections() {
 		$res = ORM::select()
-			->from('sys_collections')
-			->join('sys_collection_fields')
-			->on('sys_collection_fields.collection', ORM::field('sys_collections.id'))
-			->order('sys_collections.id desc')
-			->where('sys_collections.enable', true)
-			->exec();
+		->from('sys_collections')
+		->join('sys_collection_fields')
+		->on('sys_collection_fields.collection', ORM::field('sys_collections.id'))
+		->order('sys_collections.id desc')
+		->where('sys_collections.enable', true)
+		->exec();
 
 		if (count($res)) {
 			$res = arrMap($res, function ($item) {
@@ -201,10 +201,10 @@ class ERM extends ERMHelpers {
 		}
 
 		$res = ORM::select()
-			->from('sys_collections')
-			->where('sys_collections.alias', $alias)
-			->andWhere('sys_collections.enable', true)
-			->exec();
+		->from('sys_collections')
+		->where('sys_collections.alias', $alias)
+		->andWhere('sys_collections.enable', true)
+		->exec();
 
 		if (count($res)) {
 			return true;
@@ -216,12 +216,12 @@ class ERM extends ERMHelpers {
 	// Get collection by id
 	public static function getCollectionById($id) {
 		$res = ORM::select()
-			->from('sys_collections')
-			->join('sys_collection_fields')
-			->on('sys_collection_fields.collection', ORM::field('sys_collections.id'))
-			->where('id', $id)
-			->andWhere('sys_collections.enable', true)
-			->exec();
+		->from('sys_collections')
+		->join('sys_collection_fields')
+		->on('sys_collection_fields.collection', ORM::field('sys_collections.id'))
+		->where('id', $id)
+		->andWhere('sys_collections.enable', true)
+		->exec();
 
 		if (count($res)) {
 			$res = $res[0];
@@ -261,12 +261,11 @@ class ERM extends ERMHelpers {
 				'required' => true,
 				'valid' => '/^[a-zA-Z\-_]+$/i',
 				'unique' => function ($value) {
-					$res = ORM::select()
-						->from('sys_collections')
-						->where('alias', $value)
-						->andWhere('enable', true);
-
-					return !$res->length();
+					return !ORM::select()
+					->from('sys_collections')
+					->where('alias', $value)
+					->andWhere('enable', true)
+					->length();
 				}
 			],
 			'fields' => [
@@ -384,25 +383,25 @@ class ERM extends ERMHelpers {
 		$table->exec();
 
 		$idCollection = ORM::insert('sys_collections')
-			->values([
-				'title' => $data['title'],
-				'alias' => $data['alias'],
-				'table' => $data['table']
-			])
-			->exec();
+		->values([
+			'title' => $data['title'],
+			'alias' => $data['alias'],
+			'table' => $data['table']
+		])
+		->exec();
 
 		arrMap($data['fields'], function ($field) use ($idCollection) {
 			ORM::insert('sys_collection_fields')
-				->values([
-					'collection' => $idCollection,
-					'title' => $field['title'],
-					'alias' => $field['alias'],
-					'type' => $field['type'],
-					'required' => $field['required'],
-					'settings' => $field['settings'],
-					'position' => $field['position']
-				])
-				->exec();
+			->values([
+				'collection' => $idCollection,
+				'title' => $field['title'],
+				'alias' => $field['alias'],
+				'type' => $field['type'],
+				'required' => $field['required'],
+				'settings' => $field['settings'],
+				'position' => $field['position']
+			])
+			->exec();
 		});
 
 		return $idCollection;
@@ -423,9 +422,9 @@ class ERM extends ERMHelpers {
 				'required' => true,
 				'unique' => function ($value) use ($id) {
 					$res = ORM::select()
-						->from('sys_collections')
-						->where('title', $value)
-						->andWhere('enable', true);
+					->from('sys_collections')
+					->where('title', $value)
+					->andWhere('enable', true);
 
 					if ($id !== false) {
 						$res = $res->andWhere('id', '!=', $id);
@@ -526,8 +525,8 @@ class ERM extends ERMHelpers {
 					$fieldType = array_merge($defaultField, self::getSqlFieldType($field['element']));
 					$fieldType['name'] = $field['element']['alias'];
 					ORM::alter($source['table'])
-						->changeField($field['origin']['alias'], $fieldType)
-						->exec();
+					->changeField($field['origin']['alias'], $fieldType)
+					->exec();
 
 					break;
 			}
@@ -539,55 +538,55 @@ class ERM extends ERMHelpers {
 					$fieldType = array_merge($defaultField, self::getSqlFieldType($field['element']));
 					$fieldType['name'] = $field['element']['alias'];
 					ORM::alter($source['table'])
-						->addField($fieldType)
-						->exec();
+					->addField($fieldType)
+					->exec();
 
 					break;
 			}
 		}
 
 		ORM::update('sys_collections')
-			->values([
-				'title' => $data['title']
-			])
-			->id($id)
-			->exec();
+		->values([
+			'title' => $data['title']
+		])
+		->id($id)
+		->exec();
 
 		foreach ($arrDiff as $field) {
 			switch($field['mark']) {
 				case 'add':
 					ORM::insert('sys_collection_fields')
-						->values([
-							'collection' => $id,
-							'title' => $field['element']['title'],
-							'alias' => $field['element']['alias'],
-							'type' => $field['element']['type'],
-							'required' => $field['element']['required'],
-							'settings' => $field['element']['settings'],
-							'position' => $field['element']['position']
-						])
-						->exec();
+					->values([
+						'collection' => $id,
+						'title' => $field['element']['title'],
+						'alias' => $field['element']['alias'],
+						'type' => $field['element']['type'],
+						'required' => $field['element']['required'],
+						'settings' => $field['element']['settings'],
+						'position' => $field['element']['position']
+					])
+					->exec();
 
 					break;
 				case 'delete':
 					ORM::delete('sys_collection_fields')
-						->id($field['element']['id'])
-						->exec();
+					->id($field['element']['id'])
+					->exec();
 
 					break;
 				case 'alias':
 				case 'edit':
 					ORM::update('sys_collection_fields')
-						->values([
-							'title' => $field['element']['title'],
-							'alias' => $field['element']['alias'],
-							'type' => $field['element']['type'],
-							'required' => $field['element']['required'],
-							'settings' => $field['element']['settings'],
-							'position' => $field['element']['position']
-						])
-						->id($field['origin']['id'])
-						->exec();
+					->values([
+						'title' => $field['element']['title'],
+						'alias' => $field['element']['alias'],
+						'type' => $field['element']['type'],
+						'required' => $field['element']['required'],
+						'settings' => $field['element']['settings'],
+						'position' => $field['element']['position']
+					])
+					->id($field['origin']['id'])
+					->exec();
 
 					break;
 			}
@@ -634,11 +633,11 @@ class ERM extends ERMHelpers {
 
 	public static function removeCollection($id) {
 		$request = ORM::update('sys_collections')
-			->values([
-				'enable' => false
-			])
-			->where('id', $id)
-			->exec();
+		->values([
+			'enable' => false
+		])
+		->where('id', $id)
+		->exec();
 	}
 
 	public static function getField($collection, $fieldAlias) {
@@ -754,82 +753,82 @@ class ERM extends ERMHelpers {
 	private static function createTables() {
 		if (!ORM::exists('sys_collections')) {
 			ORM::create('sys_collections')
-				->addField([
-					'name' => 'id',
-					'type' => 'INT(11) UNSIGNED',
-					'autoincrement' => true
-				])
-				->addField([
-					'name' => 'title',
-					'type' => 'VARCHAR(150)'
-				])
-				->addField([
-					'name' => 'alias',
-					'type' => 'VARCHAR(150)'
-				])
-				->addField([
-					'name' => 'table',
-					'type' => 'VARCHAR(120)'
-				])
-				->addField([
-					'name' => 'enable',
-					'type' => 'enum("false","true")',
-					'default' => 'true'
-				])
-				->addKey('id', 'PRIMARY KEY')
-				->addKey('alias', 'KEY')
-				->exec();
+			->addField([
+				'name' => 'id',
+				'type' => 'INT(11) UNSIGNED',
+				'autoincrement' => true
+			])
+			->addField([
+				'name' => 'title',
+				'type' => 'VARCHAR(150)'
+			])
+			->addField([
+				'name' => 'alias',
+				'type' => 'VARCHAR(150)'
+			])
+			->addField([
+				'name' => 'table',
+				'type' => 'VARCHAR(120)'
+			])
+			->addField([
+				'name' => 'enable',
+				'type' => 'enum("false","true")',
+				'default' => 'true'
+			])
+			->addKey('id', 'PRIMARY KEY')
+			->addKey('alias', 'KEY')
+			->exec();
 		}
 
 		if (!ORM::exists('sys_collection_fields')) {
 			ORM::create('sys_collection_fields')
-				->addField([
-					'name' => 'id',
-					'type' => 'INT(11) UNSIGNED',
-					'autoincrement' => true,
-					'null' => false
-				])
-				->addField([
-					'name' => 'collection',
-					'type' => 'INT(11) UNSIGNED',
-					'null' => true,
-					'default' => NULL
-				])
-				->addField([
-					'name' => 'title',
-					'type' => 'VARCHAR(60)',
-					'null' => false
-				])
-				->addField([
-					'name' => 'alias',
-					'type' => 'VARCHAR(60)',
-					'null' => false
-				])
-				->addField([
-					'name' => 'type',
-					'type' => 'VARCHAR(20)',
-					'null' => false
-				])
-				->addField([
-					'name' => 'required',
-					'type' => 'ENUM("false","true")',
-					'default' => 'false'
-				])
-				->addField([
-					'name' => 'settings',
-					'type' => 'TEXT'
-				])
-				->addField([
-					'name' => 'position',
-					'type' => 'INT(3)',
-					'null' => false,
-					'default' => 0
-				])
-				->addKey('id', 'primary key')
-				->addKey('position')
-				->addKey('collection')
-				->addKey('alias')
-				->exec();
+			->addField([
+				'name' => 'id',
+				'type' => 'INT(11) UNSIGNED',
+				'autoincrement' => true,
+				'null' => false
+			])
+			->addField([
+				'name' => 'collection',
+				'type' => 'INT(11) UNSIGNED',
+				'null' => true,
+				'default' => NULL
+			])
+			->addField([
+				'name' => 'title',
+				'type' => 'VARCHAR(60)',
+				'null' => false
+			])
+			->addField([
+				'name' => 'alias',
+				'type' => 'VARCHAR(60)',
+				'null' => false
+			])
+			->addField([
+				'name' => 'type',
+				'type' => 'VARCHAR(20)',
+				'null' => false
+			])
+			->addField([
+				'name' => 'required',
+				'type' => 'ENUM("false","true")',
+				'default' => 'false'
+			])
+			->addField([
+				'name' => 'settings',
+				'type' => 'TEXT'
+			])
+			->addField([
+				'name' => 'position',
+				'type' => 'INT(3)',
+				'null' => false,
+				'default' => 0
+			])
+			->addKey('id', 'primary key')
+			->addKey('position')
+			->addKey('collection')
+			->addKey('alias')
+			->exec();
 		}
 	}
 }

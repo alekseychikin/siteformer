@@ -3,11 +3,11 @@
 namespace Engine\Classes;
 
 class Mail {
-	private $destinations = array();
+	private $destinations = [];
 	private $addresser = '';
 	private $addresserMail = 'admin@localhost';
 	private $content = '';
-	private $attaches = array();
+	private $attaches = [];
 	private $subject = '(Без темы)';
 
 	public static function factory() {
@@ -45,13 +45,14 @@ class Mail {
 		if (!in_array($file_path, $this->attaches)) {
 			if (file_exists($file_path)) {
 				$this->attaches[] = $file_path;
+
 				return (count($this->attaches) - 1);
-			} else {
-				return false;
 			}
-		} else {
+
 			return false;
 		}
+
+		return false;
 	}
 
 	private static function code($string) {
@@ -78,34 +79,34 @@ class Mail {
 
 			if (@mail($destinations, $this->subject, $this->content, $headers)){
 				return true;
-			} else {
-				return false;
-			}
-		} else {
-			$headers .= 'Content-Type: multipart/mixed; boundary='.$mimeBoundary."\n\n";
-			$message  = '--'.$mimeBoundary."\n";
-			$message .= 'Content-Type: text/html; charset=utf-8'."\n";
-			$message .= 'Content-Transfer-Encoding: 8bit'."\n\n";
-			$message .= $this->content."\n\n";
-
-			foreach ($this->attaches as $file) {
-				$message .= '--'.$mimeBoundary."\n";
-				$fp = @fopen($file, 'rb');
-				$data = @fread($fp, filesize($file));
-				$data = chunk_split(base64_encode($data));
-				$message .= 'Content-Type: image/png; name="'.basename($file).'"'."\n";
-				$message .= 'Content-Description: '.basename($file)."\n";
-				$message .= 'Content-Disposition: attachment;'."\n".' filename="'.basename($file).'"; size='.filesize($file).';'."\n";
-				$message .= 'Content-Transfer-Encoding: base64'."\n\n".$data."\n\n";
 			}
 
-			$message .= '--'.$mimeBoundary.'--'."\n\n";
-
-			if (@mail($destinations, $this->subject, $message, $headers)){
-				return true;
-			} else {
-				return false;
-			}
+			return false;
 		}
+
+		$headers .= 'Content-Type: multipart/mixed; boundary='.$mimeBoundary."\n\n";
+		$message  = '--'.$mimeBoundary."\n";
+		$message .= 'Content-Type: text/html; charset=utf-8'."\n";
+		$message .= 'Content-Transfer-Encoding: 8bit'."\n\n";
+		$message .= $this->content."\n\n";
+
+		foreach ($this->attaches as $file) {
+			$message .= '--'.$mimeBoundary."\n";
+			$fp = @fopen($file, 'rb');
+			$data = @fread($fp, filesize($file));
+			$data = chunk_split(base64_encode($data));
+			$message .= 'Content-Type: image/png; name="'.basename($file).'"'."\n";
+			$message .= 'Content-Description: '.basename($file)."\n";
+			$message .= 'Content-Disposition: attachment;'."\n".' filename="'.basename($file).'"; size='.filesize($file).';'."\n";
+			$message .= 'Content-Transfer-Encoding: base64'."\n\n".$data."\n\n";
+		}
+
+		$message .= '--'.$mimeBoundary.'--'."\n\n";
+
+		if (@mail($destinations, $this->subject, $message, $headers)){
+			return true;
+		}
+
+		return false;
 	}
 }

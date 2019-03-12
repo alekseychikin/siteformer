@@ -3,6 +3,8 @@
 namespace Engine\Modules\ERM\Types;
 
 use \Engine\Classes\Validate;
+use \Engine\Modules\ORM\ORM;
+use \Engine\Modules\ERM\ERM;
 use \Engine\Modules\ERM\ERMType;
 
 class TypeCollection extends ERMType {
@@ -59,7 +61,7 @@ class TypeCollection extends ERMType {
 	public static function joinData($databaseQuery, $collection, $field) {
 		$joinCollection = ERM::getCollection($field['settings']['collection']);
 		$databaseQuery->join($joinCollection['table'])
-			->on($joinCollection['table'] . '.id', ORM::field($collection['table'] . '.' . $field['alias']));
+		->on($joinCollection['table'] . '.id', ORM::field($collection['table'] . '.' . $field['alias']));
 	}
 
 	public static function postProcessData($collection, $field, $data) {

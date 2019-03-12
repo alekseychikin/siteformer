@@ -11,15 +11,18 @@ class PageNotFoundException extends \Exception {
 
 	public function message() {
 		$trace = $this->getTrace();
-		$newTrace = array();
+		$newTrace = [];
+
 		foreach ($trace as $entry) {
 			$newTrace[] = $entry['file'] . ':' . $entry['line'];
 		}
+
 		ob_start();
 		print_r($newTrace);
 		$trace = ob_get_contents();
 		ob_end_clean();
 		$message = $this->message . ($this->errfile ? ' at file' . $this->errfile . ':' . $this->errline : '') . "\n" . $trace;
+
 		return $message;
 	}
 }

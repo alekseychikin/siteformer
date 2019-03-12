@@ -14,7 +14,7 @@ class ERMGetItemSuper extends ERMHelpers {
 		$this->collection = ERM::getCollection($collection);
 		$this->fields = $this->collection['fields'];
 		$this->databaseQuery = ORM::select()
-			->from($this->collection['table']);
+		->from($this->collection['table']);
 
 		foreach ($this->collection['fields'] as $field) {
 			$typeClass = ERM::getClassNameByType($field['type']);

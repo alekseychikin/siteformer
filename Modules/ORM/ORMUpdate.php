@@ -22,7 +22,7 @@ class ORMUpdate extends ORMWhere {
 
   public function getQuery($alias = 'default') {
     $sql = 'UPDATE `' . $this->table . '`' . EOL . 'SET ';
-    $params = array();
+    $params = [];
 
     foreach ($this->params as $field => $value) {
       if (gettype($value) == 'object' && method_exists($value, 'get')) {

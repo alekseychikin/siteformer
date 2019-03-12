@@ -2,6 +2,9 @@
 
 namespace Engine\Classes;
 
+use \Engine\Classes\Exceptions\ValidateException;
+use \Engine\Classes\Exceptions\SkipEmptyException;
+
 // EEMPTYREQUIRED
 // EMINLENGTH
 // EMAXLENGTH
@@ -10,18 +13,15 @@ namespace Engine\Classes;
 // EVALUESNOTMATCHED
 // ENOTUNIQUEVALUE
 
-use \Engine\Classes\Exceptions\ValidateException;
-use \Engine\Classes\Exceptions\ValidationSkipEmptyException;
-
 class Validate {
-	private static $regexpTypes = array(
+	private static $regexpTypes = [
 		'uint' => '/^(([1-9]\d*)|0)$/',
 		'uzint' => '/^([1-9]\d*)$/',
 		'int' => '/^((\-?[1-9]\d*)|0)$/',
 		'email' => '/^[a-zA-Z_\-0-9\.]+@[a-zA-Z_\-0-9]+(\.[a-zA-Z]+)+$/',
 		'float' => '/^(([1-9]\d*)|0)(\.\d+)?$/',
 		'bool' => '/^(true|false)$/'
-	);
+	];
 
 	public static function collection($params, $source, $index = []) {
 		$data = [];

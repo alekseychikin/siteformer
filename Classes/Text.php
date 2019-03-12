@@ -4,7 +4,7 @@ namespace Engine\Classes;
 
 class Text {
 	public static function camelCasefy($str, $allChars = false) {
-		$separate = array('-', '_');
+		$separate = ['-', '_'];
 
 		foreach ($separate as $sepword) {
 			$res = explode($sepword, $str);
@@ -40,11 +40,11 @@ class Text {
 	}
 
 	public static function db_html($text) { // в базу с фильтрацией html-тэгов
-		return str_replace(array("\\r", "\\n"), array("\r", "\n"), @mysql_escape_string(htmlspecialchars(get_magic_quotes_gpc() ? stripslashes($text) : $text)));
+		return str_replace(["\\r", "\\n"], ["\r", "\n"], @mysql_escape_string(htmlspecialchars(get_magic_quotes_gpc() ? stripslashes($text) : $text)));
 	}
 
 	public static function db($text) {// в базу без фильтрации html-тэгов
-		return str_replace(array("\\r", "\\n"), array("\r", "\n"), @mysql_escape_string(get_magic_quotes_gpc() ? stripslashes($text) : $text));
+		return str_replace(["\\r", "\\n"], ["\r", "\n"], @mysql_escape_string(get_magic_quotes_gpc() ? stripslashes($text) : $text));
 	}
 
 	public static function page_html($text) {// на страницу с фильтрацией html-тэгов

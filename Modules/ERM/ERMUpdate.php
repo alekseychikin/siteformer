@@ -4,7 +4,6 @@ namespace Engine\Modules\ERM;
 
 require_once __DIR__ . '/ERMGetItemSuper.php';
 
-use \Engine\Modules\ERM\ERM;
 use \Engine\Modules\ORM\ORM;
 
 class ERMUpdate extends ERMGetItemSuper {
@@ -60,9 +59,9 @@ class ERMUpdate extends ERMGetItemSuper {
 			}
 
 			ORM::update($this->collection['table'])
-				->values($newData)
-				->where('id', $currentData['id'])
-				->exec();
+			->values($newData)
+			->where('id', $currentData['id'])
+			->exec();
 
 			foreach ($fields as $field) {
 				$className = ERM::getClassNameByType($field['type']);

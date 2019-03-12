@@ -130,7 +130,7 @@ class Image {
 			case 'image/png':
 				return imagecreatefrompng($filename);
 			default:
-				throw new Exception('This mime type does not supporting yet as image: ' . $imageinfo['mime']);
+				throw new \Exception('This mime type does not supporting yet as image: ' . $imageinfo['mime']);
 		}
 
 		return false;
