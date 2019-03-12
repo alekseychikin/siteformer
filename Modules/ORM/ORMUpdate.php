@@ -31,7 +31,7 @@ class ORMUpdate extends ORMWhere {
         $value = $this->quote($value);
       }
 
-      $params[] = _field_($field).' = '. $value;
+      $params[] = self::_field_($field).' = '. $value;
     }
 
     $sql .= implode(', ', $params) . EOL;

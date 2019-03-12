@@ -16,9 +16,9 @@ class ORMWhere extends ORMDatabase {
 
   public function where($expr) {
     if (func_num_args() == 3) {
-      $expr = _expr_(func_get_arg(0), func_get_arg(1), func_get_arg(2));
+      $expr = self::_expr_(func_get_arg(0), func_get_arg(1), func_get_arg(2));
     } elseif (func_num_args() == 2) {
-      $expr = _expr_(func_get_arg(0), '=', func_get_arg(1));
+      $expr = self::_expr_(func_get_arg(0), '=', func_get_arg(1));
     }
 
     $this->where = $expr;
@@ -52,7 +52,6 @@ class ORMWhere extends ORMDatabase {
     return str_replace('`', '', $field);
   }
 
-
   protected function expandExpression($defaultTable, $exprs) {
     if (gettype($exprs) == 'array') {
       if ($exprs[0] == 'expr') {
@@ -66,7 +65,7 @@ class ORMWhere extends ORMDatabase {
         }
 
         if ($exprs[2] == 'FIND_IN_SET') {
-          $result = ' FIND_IN_SET('.$value.', '._field_($exprs[1]).') > 0';
+          $result = ' FIND_IN_SET('.$value.', '.self::_field_($exprs[1]).') > 0';
         } else {
           $result = ' '.$exprs[1].' '.$exprs[2].' '.$value.' ';
         }
@@ -92,5 +91,37 @@ class ORMWhere extends ORMDatabase {
     }
 
     return $exprs;
-  }
+	}
+
+	protected static function _expr_($field, $relation, $value = '') {
+		if (func_num_args() == 2) {
+			$value = $relation;
+			$relation = '=';
+		}
+
+		if (gettype($field) == 'object') {
+			$field = $field->get();
+		} else {
+			$field = self::_field_($field);
+		}
+
+		return array('expr', $field, $relation, $value);
+	}
+
+	protected static function _field_($field, $table = '') {
+		if (substr($field, 0, 1) == '`') {
+			return $field;
+		}
+
+		if ($table) {
+			return '`'.$field.'`.`'.$table.'`';
+		}
+
+		if (strpos($field, '.') !== false) {
+			$field = explode('.', $field);
+			return '`'.$field[0].'`.`'.$field[1].'`';
+		} else {
+			return '`'.$field.'`';
+		}
+	}
 }

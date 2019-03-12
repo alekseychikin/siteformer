@@ -2,6 +2,7 @@
 
 namespace Engine\Modules\ERM\Types;
 
+use \Engine\Classes\Text;
 use \Engine\Classes\Validate;
 use \Engine\Modules\ERM\ERM;
 use \Engine\Modules\ERM\ERMType;

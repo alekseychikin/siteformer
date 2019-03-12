@@ -16,11 +16,11 @@ class ORMSelect extends ORMDatabase {
   private $offset = 0;
   private $group = false;
 
-  public function __construct ($args) {
+  public function __construct($args) {
     $this->selectFields = $args;
   }
 
-  public function from ($table) {
+  public function from($table) {
     $this->fromTable = $table;
     $this->fromTableAlias = $table;
 
@@ -41,7 +41,7 @@ class ORMSelect extends ORMDatabase {
     return $this;
   }
 
-  public function join ($table, $alias = false) {
+  public function join($table, $alias = false) {
     if ($alias === false) {
       $alias = $this->getJoinAliasName($table);
     }
@@ -57,7 +57,7 @@ class ORMSelect extends ORMDatabase {
     return $this;
   }
 
-  public function joinTo ($table, $tableTo, $alias = false) {
+  public function joinTo($table, $tableTo, $alias = false) {
     if ($alias === false) {
       $alias = $this->getJoinAliasName($table);
     }
@@ -73,7 +73,7 @@ class ORMSelect extends ORMDatabase {
     return $this;
   }
 
-  public function on () {
+  public function on() {
     $params = func_get_args();
 
     if ($this->joining) {
@@ -83,7 +83,7 @@ class ORMSelect extends ORMDatabase {
     return $this;
   }
 
-  public function openOn () {
+  public function openOn() {
     if ($this->joining) {
       $this->joins[$this->joining]['on'][] = ' (';
     }
@@ -91,7 +91,7 @@ class ORMSelect extends ORMDatabase {
     return $this;
   }
 
-  public function closeOn () {
+  public function closeOn() {
     if ($this->joining) {
       $this->joins[$this->joining]['on'][] = ')';
     }
@@ -99,7 +99,7 @@ class ORMSelect extends ORMDatabase {
     return $this;
   }
 
-  public function andOn () {
+  public function andOn() {
     $params = func_get_args();
     $this->joins[$this->joining]['on'][] = ' and ';
     $this->joins[$this->joining]['on'][] = $this->handleExpression($params);
@@ -107,7 +107,7 @@ class ORMSelect extends ORMDatabase {
     return $this;
   }
 
-  public function orOn () {
+  public function orOn() {
     $params = func_get_args();
     $this->joins[$this->joining]['on'][] = ' OR ';
     $this->joins[$this->joining]['on'][] = $this->handleExpression($params);
@@ -115,7 +115,7 @@ class ORMSelect extends ORMDatabase {
     return $this;
   }
 
-  public function where () {
+  public function where() {
     $params = func_get_args();
     $this->where[] = $this->handleExpression($params);
 
@@ -128,25 +128,25 @@ class ORMSelect extends ORMDatabase {
     return $this;
   }
 
-  public function orOpenWhere () {
+  public function orOpenWhere() {
     $this->where[] = ' or (';
 
     return $this;
   }
 
-  public function openWhere () {
+  public function openWhere() {
     $this->where[] = ' (';
 
     return $this;
   }
 
-  public function closeWhere () {
+  public function closeWhere() {
     $this->where[] = ')';
 
     return $this;
   }
 
-  public function andWhere () {
+  public function andWhere() {
     $params = func_get_args();
     $this->where[] = ' AND ';
     $this->where[] = $this->handleExpression($params);
@@ -154,7 +154,7 @@ class ORMSelect extends ORMDatabase {
     return $this;
   }
 
-  public function orWhere () {
+  public function orWhere() {
     $params = func_get_args();
     $this->where[] = ' OR ';
     $this->where[] = $this->handleExpression($params);
@@ -162,7 +162,7 @@ class ORMSelect extends ORMDatabase {
     return $this;
   }
 
-  public function id ($id, $alias = 'default') {
+  public function id($id, $alias = 'default') {
     $primaryFields = self::getPrimaryFields($this->fromTable, $alias);
 
     if (count($primaryFields) === 1) {
@@ -172,7 +172,7 @@ class ORMSelect extends ORMDatabase {
     return $this;
   }
 
-  public function order ($order) {
+  public function order($order) {
     $order = explode(',', $order);
     $orders = [];
 
@@ -191,7 +191,7 @@ class ORMSelect extends ORMDatabase {
     return $this;
   }
 
-  public function limit ($param) {
+  public function limit($param) {
     $this->limit = $param;
 
     if (func_num_args() === 2) {
@@ -202,13 +202,13 @@ class ORMSelect extends ORMDatabase {
     return $this;
   }
 
-  public function group ($field) {
+  public function group($field) {
     $this->group = $field;
 
     return $this;
   }
 
-  public function length ($alias = 'default') {
+  public function length($alias = 'default') {
     $query = ORM::select([ORM::func('COUNT(*)'), 'length'])
       ->from($this)
       ->getQuery();
@@ -222,7 +222,7 @@ class ORMSelect extends ORMDatabase {
     return 0;
   }
 
-  public function exec ($alias = 'default') {
+  public function exec($alias = 'default') {
     $sql = $this->getQuery($alias);
 
     $resultRaw = parent::query($sql, $alias);
@@ -236,7 +236,7 @@ class ORMSelect extends ORMDatabase {
     return $result;
   }
 
-  public function execOne ($alias = 'default') {
+  public function execOne($alias = 'default') {
     $this->limit(1);
     $result = $this->exec($alias);
 
@@ -247,7 +247,7 @@ class ORMSelect extends ORMDatabase {
     return [];
   }
 
-  private function dropIdKeys ($resultRaw) {
+  private function dropIdKeys($resultRaw) {
     $result = [];
 
     foreach ($resultRaw as $id => $row) {
@@ -263,7 +263,7 @@ class ORMSelect extends ORMDatabase {
     return $result;
   }
 
-  private function prepareResult ($resultRaw, $alias) {
+  private function prepareResult($resultRaw, $alias) {
     $result = [];
 
     foreach ($resultRaw as $row) {
@@ -296,7 +296,7 @@ class ORMSelect extends ORMDatabase {
     return $result;
   }
 
-  private function prepareDataJoin (
+  private function prepareDataJoin(
     $alias,
     & $result,
     $row,
@@ -339,7 +339,7 @@ class ORMSelect extends ORMDatabase {
     }
   }
 
-  private function cutOfTableAlias ($field, $alias) {
+  private function cutOfTableAlias($field, $alias) {
     if (strpos($field, $alias) === 0) {
       return substr($field, strlen($alias) + 1);
     }
@@ -347,7 +347,7 @@ class ORMSelect extends ORMDatabase {
     return $field;
   }
 
-  private function getIdByRow ($row, $table, $tableAlias, $alias) {
+  private function getIdByRow($row, $table, $tableAlias, $alias) {
     $idFields = self::getPrimaryFields($table, $alias);
     $id = [];
 
@@ -358,11 +358,11 @@ class ORMSelect extends ORMDatabase {
     return implode(',', $id);
   }
 
-  private function getFieldInRow ($field, $tableAlias) {
+  private function getFieldInRow($field, $tableAlias) {
     return str_replace('`', '', $this->generateField($field, $tableAlias));
   }
 
-  public function getQuery ($alias = 'default') {
+  public function getQuery($alias = 'default') {
     $fromTable = $this->fromTable;
 
     if (gettype($fromTable) === 'object' && $fromTable instanceof ORMSelect) {
@@ -437,7 +437,7 @@ class ORMSelect extends ORMDatabase {
     return $result;
   }
 
-  private function generateOn ($params) {
+  private function generateOn($params) {
     $result = '';
 
     foreach ($params as $option) {
@@ -452,7 +452,7 @@ class ORMSelect extends ORMDatabase {
     return $result;
   }
 
-  public function selectFields () {
+  public function selectFields() {
     $fields = [];
 
     foreach ($this->fieldsAliases as $field => $value) {
@@ -462,7 +462,7 @@ class ORMSelect extends ORMDatabase {
     return $fields;
   }
 
-  private function getSelectFields ($alias = 'default') {
+  private function getSelectFields($alias = 'default') {
     $fields = [];
 
     if ($this->selectFields === '*') {
@@ -553,7 +553,7 @@ class ORMSelect extends ORMDatabase {
     return implode(', ', $fields);
   }
 
-  private function generateField ($srcField, $tableAlias, $dropAlias = false) {
+  private function generateField($srcField, $tableAlias, $dropAlias = false) {
     if (gettype($srcField) === 'object' && $srcField instanceof ORMFunc) {
       return $srcField->get();
     }
@@ -578,7 +578,7 @@ class ORMSelect extends ORMDatabase {
     return $field;
   }
 
-  private function generateSelectField (
+  private function generateSelectField(
     $srcField,
     $tableAlias,
     $alias = false
@@ -603,7 +603,7 @@ class ORMSelect extends ORMDatabase {
     return $field . ' AS ' . $fieldAlias;
   }
 
-  private function registerFieldAlias ($field, $alias) {
+  private function registerFieldAlias($field, $alias) {
     $field = explode('.', $field);
 
     $this->fieldsAliases[str_replace('`', '', $alias)] = [
@@ -612,7 +612,7 @@ class ORMSelect extends ORMDatabase {
     ];
   }
 
-  private function handleExpression ($params) {
+  private function handleExpression($params) {
     if (gettype($params[0]) === 'object' && $params[0] instanceof ORMCustomValue) {
       return $params[0];
     }
@@ -634,7 +634,7 @@ class ORMSelect extends ORMDatabase {
     return [$field, $rel, $value];
   }
 
-  private function getJoinAliasName ($table) {
+  private function getJoinAliasName($table) {
     $alias = $table;
     $i = '';
 
@@ -645,7 +645,7 @@ class ORMSelect extends ORMDatabase {
     return $table . $i;
   }
 
-  protected function handleValue ($value) {
+  protected function handleValue($value) {
     if (gettype($value) === 'object' && $value instanceof ORMField) {
       return $this->generateField($value->get(), $this->fromTableAlias, true);
     }
