@@ -284,7 +284,7 @@ class Router {
 			$data = $route['path']->getData();
 			$template = $route['path']->getTemplate();
 
-			$params = self::prepareGetParams($data, $params);
+			$params = self::prepareGetParams($data);
 
 			foreach ($params as $key => $value) {
 				Response::set($key, $value);
