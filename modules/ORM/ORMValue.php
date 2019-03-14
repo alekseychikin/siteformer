@@ -1,6 +1,8 @@
 <?php
 
-class SFORMValue {
+namespace Engine\Modules\ORM;
+
+class ORMValue {
   private $expr;
 
   public function __construct($expr) {

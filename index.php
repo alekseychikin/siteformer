@@ -1,12 +1,13 @@
 <?php
 
-ini_set('display_errors', false);
-error_reporting(E_ALL);
+namespace Engine;
+
+use \Engine\Classes\ErrorHandler;
 
 if (getenv('APPLICATION_ENV') !== false) {
-  define('APPLICATION_ENV', getenv('APPLICATION_ENV'));
+	define('APPLICATION_ENV', getenv('APPLICATION_ENV'));
 } else {
-  define('APPLICATION_ENV', 'production');
+	define('APPLICATION_ENV', 'production');
 }
 
 ob_start();
@@ -14,13 +15,8 @@ ob_start();
 define('ROOT', realpath(__DIR__ . '/../') . '/');
 define('ENGINE_TEMP', __DIR__ . '/temp/');
 
-require_once __DIR__ . '/classes/helpers.php';
-require_once __DIR__ . '/classes/response.php';
-require_once __DIR__ . '/classes/base-exception.php';
-require_once __DIR__ . '/classes/error-handler.php';
+register_shutdown_function('\Engine\Classes\ErrorHandler::shutdownHandler');
+set_exception_handler('\Engine\Classes\ErrorHandler::exceptionHandler');
+set_error_handler('\Engine\Classes\ErrorHandler::errorHandler', E_ALL | E_STRICT);
 
-register_shutdown_function('shutdownHandler');
-set_exception_handler('exceptionHandler');
-set_error_handler('errorHandler', E_ALL | E_STRICT);
-
-include __DIR__ . '/engine.php';
+return include __DIR__ . '/engine.php';
