@@ -36,8 +36,8 @@ class ERM extends ERMHelpers {
 		$data = $params['data'];
 		$status = $params['status'];
 		$newData = [
-			'status' => $params['status'],
-			'usercreate' => $params['user'],
+			'status' => $status,
+			'usercreate' => isset($params['user']) ? $params['user'] : 0,
 			'datecreate' => gmdate('Y-m-d H:i:s')
 		];
 		$collection = self::getCollection($collection);

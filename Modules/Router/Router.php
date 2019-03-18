@@ -61,7 +61,7 @@ class Router {
 
 		Response::set('lang', '', true);
 		Response::set('uri', self::getUri());
-		Response::set('uri_items', $uri);
+		Response::set('uri_items', self::$uri);
 
 		// lang handler
 		if (isset(self::$uri[0]) && in_array(self::$uri[0], self::$languages)) {
