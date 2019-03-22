@@ -10,6 +10,7 @@ class Router {
 	public static $languages = [];
 	private static $uri;
 	private static $routes = [];
+	private static $errorPages = [];
 	private static $language = '';
 
 	public static function setRoutes($url, $routes) {
@@ -54,6 +55,10 @@ class Router {
 				}
 			}
 		}
+	}
+
+	public static function setErrorPages($pages) {
+		self::$errorPages = $pages;
 	}
 
 	public static function setLanguages($languages) {
@@ -133,16 +138,30 @@ class Router {
 		return self::$uri;
 	}
 
+	public static function handleError($error) {
+		foreach (self::$errorPages as $code => $route) {
+			$regexp = '/^' . str_replace('x', '.', $code) . '$/';
+
+			if (preg_match($regexp, $error)) {
+				$message = Templater::render($route->getTemplate(), []);
+
+				Response::error($error, $message);
+			}
+		}
+
+		Response::error($error);
+	}
+
 	private static function parse($url) {
 		if (substr($url, -1, 1) == '/') $url = substr($url, 0, -1);
 
 		$uri = self::getUri();
 
 		if (isset(self::$routes[$uri])) {
-			return [
-				'pattern' => $uri,
-				'path' => self::$routes[$uri], 'params' => []
-			];
+			return self::extractRoute([
+				'path' => self::$routes[$uri],
+				'params' => []
+			]);
 		} else {
 			// find out all pairs of stars-keys => path-to-controller
 			// relations contains connection of starts-key to origin key with variables
@@ -172,11 +191,22 @@ class Router {
 					}
 				}
 
-				return ['pattern' => $pattern, 'path' => $pairs[$compuri], 'params' => $params];
+				return self::extractRoute([
+					'path' => $pairs[$compuri],
+					'params' => $params
+				]);
 			}
 		}
 
 		throw new \Engine\Classes\Exceptions\PageNotFoundException('');
+	}
+
+	private static function extractRoute($result) {
+		if (is_callable($result['path'])) {
+			return call_user_func_array($result['path'], $result['params']);
+		}
+
+		return $result['path'];
 	}
 
 	private static function recParsive($params, & $uri) {
@@ -275,30 +305,24 @@ class Router {
 		}
 	}
 
-	private static function handleRoute($route) {
-		if (is_callable($route['path'])) {
-			$route['path'] = call_user_func_array($route['path'], $route['params']);
+	private static function handleRoute(RouterRoute $route) {
+		$data = $route->getData();
+		$template = $route->getTemplate();
+
+		$params = self::prepareGetParams($data);
+
+		foreach ($params as $key => $value) {
+			Response::set($key, $value);
 		}
 
-		if ($route['path'] instanceof RouterRoute) {
-			$data = $route['path']->getData();
-			$template = $route['path']->getTemplate();
+		$headers = Response::getRequestHeaders();
 
-			$params = self::prepareGetParams($data);
+		if (isset($headers['Accept'])) {
+			$accept = strtolower($headers['Accept']);
+		}
 
-			foreach ($params as $key => $value) {
-				Response::set($key, $value);
-			}
-
-			$headers = Response::getRequestHeaders();
-
-			if (isset($headers['Accept'])) {
-				$accept = strtolower($headers['Accept']);
-			}
-
-			if (self::isHeaderContainsAnyItem($accept, ['text/html', '*/*'])) {
-				echo Templater::render($template, Response::getState());
-			}
+		if (self::isHeaderContainsAnyItem($accept, ['text/html', '*/*'])) {
+			echo Templater::render($template, Response::getState());
 		}
 	}
 

@@ -17,9 +17,15 @@ class Response {
 	];
 	private static $code = 200;
 
-	public static function error($code, $message) {
+	public static function error($code, $message = null) {
+		$header = $_SERVER['SERVER_PROTOCOL'] . ' ' . $code . ' ' . self::$codes[$code];
+
+		if ($message === null) {
+			$message = $header;
+		}
+
 		self::$code = $code;
-		header('HTTP/1.1 ' . $code . ' ' . self::$codes[$code]);
+		header($header);
 
 		self::set('error', $message);
 
@@ -123,7 +129,7 @@ class Response {
 								echo '<pre>' . print_r($state['error']['trace'], true) . '</pre>';
 							}
 						} else {
-							println($state['error']);
+							echo $state['error'];
 						}
 					}
 				}

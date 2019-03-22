@@ -30,7 +30,7 @@ class errorHandler {
 			$handler($exception);
 		}
 
-		if (APPLICATION_ENV === 'develop') {
+		if (APPLICATION_ENV === 'develop/') {
 			\Engine\Classes\Response::error(
 				500,
 				$exception->getMessage() . ' at ' . $exception->getFile() .
@@ -38,7 +38,7 @@ class errorHandler {
 				$exception->getTrace()
 			);
 		} else {
-			\Engine\Classes\Response::error(500, 'Произошла некоторая ошибка');
+			\Engine\Modules\Router\Router::handleError(500);
 		}
 	}
 
