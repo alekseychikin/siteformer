@@ -2,6 +2,12 @@
 
 namespace Engine;
 
+use \Engine\Classes\Response;
+use \Engine\Classes\Exceptions\ValidateException;
+use \Engine\Classes\Exceptions\BaseException;
+use \Engine\Classes\Exceptions\PageNotFoundException;
+use \Engine\Modules\Router\Router;
+
 return function ($entryPoint) {
 	$startTime = explode(' ', microtime());
 	$startTime = $startTime[1] + $startTime[0];
@@ -19,26 +25,26 @@ return function ($entryPoint) {
 	} catch (ValidateException $e) {
 		$message = $e->getDetails();
 
-		\Engine\Classes\Response::error(422, $message);
+		Response::error(422, $message);
 	} catch (BaseException $e) {
-		\Engine\Classes\Response::error(400, $e->message());
-	} catch (Exception $e) {
-		\Engine\Classes\Response::error(400, $e->getMessage());
+		Response::error(400, $e->message());
+	} catch (\Exception $e) {
+		Response::error(400, $e->getMessage());
 	}
 
 	try {
-		\Engine\Modules\Router\Router::route();
+		Router::route();
 
-		\Engine\Classes\Response::render();
+		Response::render();
 	} catch (PageNotFoundException $e) {
-		println('PageNotFoundException');
+		Router::handleError(404);
 	} catch (ValidateException $e) {
 		$message = $e->getDetails();
 
-		\Engine\Classes\Response::error(422, $message);
+		Response::error(422, $message);
 	} catch (BaseException $e) {
-		\Engine\Classes\Response::error(400, $e->message());
+		Response::error(400, $e->message());
 	} catch (Exception $e) {
-		\Engine\Classes\Response::error(400, $e->getMessage());
+		Response::error(400, $e->getMessage());
 	}
 };
