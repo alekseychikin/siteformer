@@ -18,16 +18,16 @@ class Models {
 	}
 
 	public static function post($model, $params) {
-		if ($className = self::getClass($model)) {
-			return call_user_func([$className, 'post'], $params);
+		if ($serviceClass = self::getClass($model)) {
+			return call_user_func([$serviceClass, 'post'], $params);
 		}
 
 		return false;
 	}
 
 	public static function files($model, $params) {
-		if ($className = self::getClass($model)) {
-			return call_user_func([$className, 'files'], $params);
+		if ($serviceClass = self::getClass($model)) {
+			return call_user_func([$serviceClass, 'files'], $params);
 		}
 
 		return false;
@@ -35,10 +35,10 @@ class Models {
 
 	private static function getClass($model) {
 		foreach (self::$paths as $pathItem) {
-			$modelPath = $pathItem . $model;
+			$serviceClass = $pathItem . Text::camelCasefy($model, true);
 
-			if (class_exists($modelPath)) {
-				return $modelPath;
+			if (class_exists($serviceClass)) {
+				return $serviceClass;
 			}
 		}
 
