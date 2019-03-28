@@ -30,7 +30,7 @@ class errorHandler {
 			$handler($exception);
 		}
 
-		if (APPLICATION_ENV === 'develop/') {
+		if (APPLICATION_ENV === 'develop') {
 			\Engine\Classes\Response::error(
 				500,
 				$exception->getMessage() . ' at ' . $exception->getFile() .

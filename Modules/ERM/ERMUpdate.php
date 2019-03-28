@@ -21,12 +21,12 @@ class ERMUpdate extends ERMGetItemSuper {
 		$fields = self::sortFields($this->collection['fields'], $data);
 
 		foreach ($currentItems as $currentData) {
-			$data = $this->params['data'];
+			$data = isset($this->params['data']) ? $this->params['data'] : [];
 			$status = isset($this->params['status']) ? $this->params['status'] : $currentData['status'];
 			$newData = [
 				'id' => $currentData['id'],
 				'status' => $status,
-				'usermodify' => $params['user'],
+				'usermodify' => isset($params['user']) ? $params['user'] : 0,
 				'datemodify' => gmdate('Y-m-d H:i:s')
 			];
 
@@ -34,7 +34,7 @@ class ERMUpdate extends ERMGetItemSuper {
 				if (!isset($data[$field['alias']])) continue;
 
 				$className = ERM::getClassNameByType($field['type']);
-				$className::validateUpdateData($collection['alias'], $field, $currentData, $data);
+				$className::validateUpdateData($this->collection['alias'], $field, $currentData, $data);
 			}
 
 			foreach ($fields as $field) {
@@ -43,7 +43,7 @@ class ERMUpdate extends ERMGetItemSuper {
 				$className = ERM::getClassNameByType($field['type']);
 
 				if ($className::hasSqlField()) {
-					$newData[$field['alias']] = $className::prepareUpdateData($collection['alias'], $field, $currentData, $data);
+					$newData[$field['alias']] = $className::prepareUpdateData($this->collection['alias'], $field, $currentData, $data);
 				}
 			}
 
@@ -63,9 +63,11 @@ class ERMUpdate extends ERMGetItemSuper {
 			->where('id', $currentData['id'])
 			->exec();
 
-			foreach ($fields as $field) {
-				$className = ERM::getClassNameByType($field['type']);
-				$className::postPrepareUpdateData($this->collection, $field, $newData, $data);
+			if (count($data)) {
+				foreach ($fields as $field) {
+					$className = ERM::getClassNameByType($field['type']);
+					$className::postPrepareUpdateData($this->collection, $field, $newData, $data);
+				}
 			}
 		}
 
