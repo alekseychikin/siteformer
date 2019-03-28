@@ -2,7 +2,7 @@
 
 namespace Engine\Classes;
 
-class Models {
+class Services {
 	private static $paths = [];
 
 	public static function registerPath($path) {

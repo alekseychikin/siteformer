@@ -2,7 +2,7 @@
 
 namespace Engine\Modules\Router;
 
-use \Engine\Classes\Models;
+use \Engine\Classes\Services;
 use \Engine\Classes\Response;
 use \Engine\Modules\Templater\Templater;
 
@@ -13,9 +13,11 @@ class Router {
 	private static $errorPages = [];
 	private static $language = '';
 
-	public static function setRoutes($url, $routes) {
-		self::$routes = $routes;
+	public static function addRoutes($routes) {
+		self::$routes[] = $routes;
+	}
 
+	public static function setUrl($url) {
 		$uri = [];
 		$uriRaw = rawurldecode($url);
 
@@ -36,9 +38,37 @@ class Router {
 		self::$uri = $uri;
 
 		Response::set('uri', self::$uri, true);
+	}
 
-		if (is_callable($routes)) {
-			self::$routes = $routes(self::getUri());
+	public static function setErrorPages($pages) {
+		self::$errorPages = $pages;
+	}
+
+	public static function setLanguages($languages) {
+		self::$languages = $languages;
+
+		Response::set('lang', '', true);
+		Response::set('uri', self::getUri());
+		Response::set('uri_items', self::$uri);
+
+		if (isset(self::$uri[0]) && in_array(self::$uri[0], self::$languages)) {
+			self::$language = self::$uri[0];
+			self::$uri = array_splice(self::$uri, 1);
+			Response::set('lang', self::$language, true);
+		} else if (count(self::$languages)) {
+			self::$language = self::$languages[0];
+		}
+	}
+
+	public static function route() {
+		$routes = [];
+
+		foreach(self::$routes as $route) {
+			if (is_callable($route)) {
+				$routes = array_merge($routes, $route(self::getUri()));
+			} else {
+				$routes = array_merge($routes, $route);
+			}
 		}
 
 		if (strpos($_SERVER['REQUEST_URI'], '?') !== false) {
@@ -55,53 +85,28 @@ class Router {
 				}
 			}
 		}
-	}
 
-	public static function setErrorPages($pages) {
-		self::$errorPages = $pages;
-	}
-
-	public static function setLanguages($languages) {
-		self::$languages = $languages;
-
-		Response::set('lang', '', true);
-		Response::set('uri', self::getUri());
-		Response::set('uri_items', self::$uri);
-
-		// lang handler
-		if (isset(self::$uri[0]) && in_array(self::$uri[0], self::$languages)) {
-			self::$language = self::$uri[0];
-			self::$uri = array_splice(self::$uri, 1);
-			Response::set('lang', self::$language, true);
-		} else if (count(self::$languages)) {
-			self::$language = self::$languages[0];
-		}
-	}
-
-	public static function route() {
 		$url = self::getUri();
 
 		if ($url === '/' && isset($_GET['graph'])) {
+			println($_SERVER);
+			die();
 			// TODO: Нужно придумать модель передачи данных
 			// в зависимости от content-type
-			// x-www-form-urlencode
+			// application/x-www-form-urlencode
 			// application/json
-			// Нужно обернуть стркутуру запросов в SFModelGet и Modelset
+			// multipart/form-data
 			// и далее получить данные
 			self::returnModelData(parseJSON(urldecode($_GET['graph'])));
 
 			return true;
 		}
 
-		$route = self::parse($url);
+		$route = self::parse($url, $routes);
 
 		self::handleRoute($route);
 
 		return true;
-	}
-
-	public static function addRule($url, $action) {
-		self::$routes[$url] = $action;
 	}
 
 	public static function language() {
@@ -152,20 +157,20 @@ class Router {
 		Response::error($error);
 	}
 
-	private static function parse($url) {
+	private static function parse($url, $routes) {
 		if (substr($url, -1, 1) == '/') $url = substr($url, 0, -1);
 
 		$uri = self::getUri();
 
-		if (isset(self::$routes[$uri])) {
+		if (isset($routes[$uri])) {
 			return self::extractRoute([
-				'path' => self::$routes[$uri],
+				'path' => $routes[$uri],
 				'params' => []
 			]);
 		} else {
 			// find out all pairs of stars-keys => path-to-controller
 			// relations contains connection of starts-key to origin key with variables
-			list($pairs, $relations) = self::parseUriReplace(self::$routes);
+			list($pairs, $relations) = self::parseUriReplace($routes);
 
 			// getting array of uri
 			$uri = self::getUriByArray(self::uriNum() - 1);
@@ -252,7 +257,7 @@ class Router {
 			}
 
 			foreach ($post as $key => $value) {
-				Response::set($key, Models::post($key, $value));
+				Response::set($key, Services::post($key, $value));
 			}
 		}
 
@@ -340,14 +345,21 @@ class Router {
 		$outputData = [];
 
 		foreach ($rules as $key => $value) {
-			if (gettype($value) === 'array' && isset($value['model'])) {
+			if (gettype($value) === 'object' && $value instanceof \Engine\Classes\ServiceGet) {
+				$model = $value->getModel();
+				$params = $value->getParams();
+
+				$inputData[$key] = self::getDataFromModel($model, $params);
+				$outputData[$key] = $inputData[$key];
+			} elseif (gettype($value) === 'array' && isset($value['model'])) {
+				$model = $value['model'];
 				$params = [];
 
 				if (isset($value['params'])) {
 					$params = $value['params'];
 				}
 
-				$inputData[$key] = self::getDataFromModel($value['model'], $params);
+				$inputData[$key] = self::getDataFromModel($model, $params);
 				$outputData[$key] = $inputData[$key];
 			} elseif (gettype($value) === 'array') {
 				$subData = self::prepareGetParams($value, $inputData);
@@ -361,7 +373,7 @@ class Router {
 	}
 
 	private static function getDataFromModel($model, $params) {
-		return Models::get($model, $params);
+		return Services::get($model, $params);
 	}
 
 	private static function parseSource($source, $params) {

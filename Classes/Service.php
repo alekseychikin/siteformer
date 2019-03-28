@@ -1,8 +1,8 @@
 <?php
 
-namespace Engine\Modules\Router;
+namespace Engine\Classes;
 
-class RouterModel {
+class Service {
 	public static function get($params) {
 	}
 
