@@ -3,6 +3,8 @@
 namespace Engine\Modules\Router;
 
 use \Engine\Classes\Services;
+use \Engine\Classes\ServiceGet;
+use \Engine\Classes\ServicePost;
 use \Engine\Classes\Response;
 use \Engine\Modules\Templater\Templater;
 
@@ -88,16 +90,8 @@ class Router {
 
 		$url = self::getUri();
 
-		if ($url === '/' && isset($_GET['graph'])) {
-			println($_SERVER);
-			die();
-			// TODO: Нужно придумать модель передачи данных
-			// в зависимости от content-type
-			// application/x-www-form-urlencode
-			// application/json
-			// multipart/form-data
-			// и далее получить данные
-			self::returnModelData(parseJSON(urldecode($_GET['graph'])));
+		if ($url === '/' && isset($_GET['api'])) {
+			self::handleApiRequest();
 
 			return true;
 		}
@@ -239,38 +233,31 @@ class Router {
 		return false;
 	}
 
-	private static function returnModelData($params) {
-		if (!$params) {
-			$params = [];
+	private static function handleApiRequest() {
+		if (!empty($_GET['api'])) {
+			$getRequestParams = self::parseGetRequest(parseJSON(urldecode($_GET['api'])));
+		} else {
+			$getRequestParams = self::parseGetRequest($_GET);
 		}
+
+		Response::setArray(self::handleGetServiceData($getRequestParams));
 
 		if (strtoupper($_SERVER['REQUEST_METHOD']) === 'POST') {
-			$post = $_POST;
-			$files = self::prepareFiles();
-
-			foreach ($files as $key => $value) {
-				if (isset($post[$key])) {
-					$post[$key] = array_merge($post[$key], $value);
-				} else {
-					$post[$key] = $value;
-				}
+			if (isset($_SERVER['CONTENT_TYPE']) && $_SERVER['CONTENT_TYPE'] === 'application/json') {
+				$rawPostData = file_get_contents('php://input');
+				$postRequestParams = self::parsePostRequest(parseJSON($rawPostData));
+			} else {
+				$files = self::transformFiles();
+				$postRequestParams = self::parsePostRequest(self::deepMerge($_POST, $files));
 			}
 
-			foreach ($post as $key => $value) {
-				Response::set($key, Services::post($key, $value));
-			}
-		}
-
-		$params = self::prepareGetParams($params);
-
-		foreach ($params as $key => $value) {
-			Response::set($key, $value);
+			Response::setArray(self::handlePostServiceData($postRequestParams));
 		}
 
 		Response::render();
 	}
 
-	private static function prepareFiles() {
+	private static function transformFiles() {
 		$files = [];
 
 		foreach ($_FILES as $field => $item) {
@@ -314,7 +301,7 @@ class Router {
 		$data = $route->getData();
 		$template = $route->getTemplate();
 
-		$params = self::prepareGetParams($data);
+		$params = self::handleGetServiceData($data);
 
 		foreach ($params as $key => $value) {
 			Response::set($key, $value);
@@ -341,28 +328,18 @@ class Router {
 		return false;
 	}
 
-	private static function prepareGetParams($rules = [], $inputData = []) {
+	private static function handleGetServiceData($data = [], $inputData = []) {
 		$outputData = [];
 
-		foreach ($rules as $key => $value) {
+		foreach ($data as $key => $value) {
 			if (gettype($value) === 'object' && $value instanceof \Engine\Classes\ServiceGet) {
 				$model = $value->getModel();
 				$params = $value->getParams();
 
-				$inputData[$key] = self::getDataFromModel($model, $params);
-				$outputData[$key] = $inputData[$key];
-			} elseif (gettype($value) === 'array' && isset($value['model'])) {
-				$model = $value['model'];
-				$params = [];
-
-				if (isset($value['params'])) {
-					$params = $value['params'];
-				}
-
-				$inputData[$key] = self::getDataFromModel($model, $params);
+				$inputData[$key] = Services::get($model, $params);
 				$outputData[$key] = $inputData[$key];
 			} elseif (gettype($value) === 'array') {
-				$subData = self::prepareGetParams($value, $inputData);
+				$subData = self::handleGetServiceData($value, $inputData);
 				$outputData[$key] = $subData;
 			} else {
 				$outputData[$key] = $value;
@@ -372,8 +349,34 @@ class Router {
 		return $outputData;
 	}
 
-	private static function getDataFromModel($model, $params) {
-		return Services::get($model, $params);
+	private static function handlePostServiceData($data = [], $inputData = []) {
+		if ($data instanceof \Engine\Classes\ServicePost) {
+			$model = $data->getModel();
+			$params = $data->getParams();
+
+			Services::post($model, $params);
+
+			return [];
+		}
+
+		$outputData = [];
+
+		foreach ($data as $key => $value) {
+			if (gettype($value) === 'object' && $value instanceof \Engine\Classes\ServicePost) {
+				$model = $value->getModel();
+				$params = $value->getParams();
+
+				$inputData[$key] = Services::post($model, $params);
+				$outputData[$key] = $inputData[$key];
+			} elseif (gettype($value) === 'array') {
+				$subData = self::handlePostServiceData($value, $inputData);
+				$outputData[$key] = $subData;
+			} else {
+				$outputData[$key] = $value;
+			}
+		}
+
+		return $outputData;
 	}
 
 	private static function parseSource($source, $params) {
@@ -430,5 +433,91 @@ class Router {
 
 	private static function getUri() {
 		return '/' . (count(self::$uri) ? implode('/', self::$uri) . '/' : '');
+	}
+
+	private static function parseGetRequest($data) {
+		$result = [];
+
+		foreach ($data as $field => $value) {
+			if (strpos($field, '[') === false) {
+				if ($field === '__model') {
+					$params = [];
+
+					if (isset($data['__params'])) {
+						$params = $data['__params'];
+					}
+
+					return new ServiceGet($value, $params);
+				} elseif ($field === '__params') {
+					continue;
+				} elseif (gettype($value) === 'array') {
+					$result[$field] = self::parseGetRequest($value);
+				}
+			}
+		}
+
+		return $result;
+	}
+
+	private static function parsePostRequest($data) {
+		$result = [];
+
+		foreach ($data as $field => $value) {
+			if (strpos($field, '[') === false) {
+				if ($field === '__model') {
+					$params = [];
+
+					if (isset($data['__params'])) {
+						$params = $data['__params'];
+					}
+
+					return new ServicePost($value, $params);
+				} elseif ($field === '__params') {
+					continue;
+				} elseif (gettype($value) === 'array') {
+					$result[$field] = self::parsePostRequest($value);
+				}
+			}
+		}
+
+		return $result;
+	}
+
+	private static function deepMerge($left, $right) {
+		$result = [];
+
+		foreach ($left as $key => $value) {
+			if (gettype($value) === 'array') {
+				if (isset($right[$key])) {
+					if (gettype($right[$key]) === 'array') {
+						$result[$key] = self::deepMerge($value, $right[$key]);
+					} else {
+						$result[$key] = $right[$key];
+					}
+				} else {
+					$result[$key] = $value;
+				}
+			} else {
+				$result[$key] = $value;
+
+				if (isset($right[$key])) {
+					$result[$key] = $right[$key];
+				}
+			}
+		}
+
+		foreach ($right as $key => $value) {
+			if (isset($result[$key])) {
+				if (gettype($result[$key]) === 'array' && gettype($value) === 'array') {
+					$result[$key] = self::deepMerge($result[$key], $value);
+				} else {
+					$result[$key] = $value;
+				}
+			} else {
+				$result[$key] = $value;
+			}
+		}
+
+		return $result;
 	}
 }

@@ -48,6 +48,10 @@ class Response {
 		self::$state[$field] = $value;
 	}
 
+	public static function setArray($values) {
+		self::$state = array_merge(self::$state, $values);
+	}
+
 	public static function get($name) {
 		if (isset(self::$state[$name])) {
 			return self::$state[$name];
