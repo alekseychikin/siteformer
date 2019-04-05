@@ -32,7 +32,7 @@ class TypeUrl extends ERMType {
 			return '';
 		}
 
-		$value = $data[$field['alias']];
+		$value = isset($data[$field['alias']]) ? $data[$field['alias']] : '';
 
 		if (empty($value)) {
 			$value = $data[$settings['source']];
