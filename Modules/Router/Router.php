@@ -309,6 +309,8 @@ class Router {
 
 		$headers = Response::getRequestHeaders();
 
+		$accept = '*/*';
+
 		if (isset($headers['Accept'])) {
 			$accept = strtolower($headers['Accept']);
 		}
@@ -417,12 +419,7 @@ class Router {
 		$relations = [];
 
 		foreach ($uri as $key => $val) {
-			$preparedKey = $key;
-
-			// TOOD: переписать на регулярку
-			while (strpos($preparedKey, '{') !== false && strpos($preparedKey, '}') !== false && strpos($preparedKey, '{') < strpos($preparedKey, '}')) {
-				$preparedKey = substr($preparedKey, 0, strpos($preparedKey, '{')) . '*' . substr($preparedKey, strpos($preparedKey, '}') + 1);
-			}
+			$preparedKey = preg_replace('/{.*?}/', '*', $key);
 
 			$replaceUri[$preparedKey] = $val;
 			$relations[$preparedKey] = $key;
