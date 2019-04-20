@@ -593,7 +593,6 @@ class ERM extends ERMHelpers {
 		}
 
 		$collection = self::getCollectionById($id);
-		Response::set('fields', $collection['fields']);
 	}
 
 	// Get types for collection structure
@@ -613,7 +612,7 @@ class ERM extends ERMHelpers {
 
 						$classNameType = basename($typePath, $ext);
 
-						$classVars = get_class_vars($classNameType);
+						$classVars = get_class_vars("\\Engine\\Modules\\ERM\\Types\\" . $classNameType);
 
 						$types[] = [
 							'name' => $classVars['name'],
