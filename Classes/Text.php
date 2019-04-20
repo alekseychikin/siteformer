@@ -166,7 +166,7 @@ class Text {
 	}
 
 	public static function removeSpecialCharacters($text) {
-		return preg_replace('/[^0-9a-zA-Zа-яА-ЯёЁÀ-Öß-ž\-_\s]/i', '', $text);
+		return preg_replace('/[^\p{L}0-9\-_\s]/iu', '', $text);
 	}
 
 	public static function getTag($text) {
