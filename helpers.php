@@ -196,7 +196,7 @@ function prepareJSONResponse($obj) {
 			return $obj === 'true' ? true : false;
 		}
 
-		if (preg_match('/^\d+\.\d+/', $obj)) {
+		if (preg_match('/^\d+\.\d+$/', $obj)) {
 			return (float)$obj;
 		}
 
