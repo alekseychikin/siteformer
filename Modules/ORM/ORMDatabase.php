@@ -274,7 +274,7 @@ class ORMDatabase {
 	}
 
 	public static function quote($value) {
-		if (gettype($value) === 'boolean') return $value ? '\'true\'' : '\'false\'';
+		if (gettype($value) === 'boolean') return $value ? 'TRUE' : 'FALSE';
 
 		if (is_null($value)) return 'NULL';
 
