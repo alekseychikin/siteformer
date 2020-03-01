@@ -34,8 +34,7 @@ class errorHandler {
 			\Engine\Classes\Response::error(
 				500,
 				$exception->getMessage() . ' at ' . $exception->getFile() .
-				':' . $exception->getLine(),
-				$exception->getTrace()
+				':' . $exception->getLine() . '<pre>' . print_r($exception->getTrace(), true) . '</pre>'
 			);
 		} else {
 			\Engine\Modules\Router\Router::handleError(500);
