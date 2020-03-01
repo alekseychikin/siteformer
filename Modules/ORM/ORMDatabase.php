@@ -278,7 +278,7 @@ class ORMDatabase {
 
 		if (is_null($value)) return 'NULL';
 
-		if (is_numeric($value)) return $value;
+		if (preg_match('/^[0-9]+((\.|\,)[0-9]+?)?$/', $value)) return $value;
 
 		if (self::$supportPDO) {
 			$key = key(self::$connections);
