@@ -1,0 +1,21 @@
+{
+  "name": "makingoff/siteformer",
+  "description": "Experimental php-engine",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Aleksei Chikin",
+      "email": "mail@makingoff.name"
+    }
+  ],
+  "require": {},
+  "autoload": {
+    "psr-4": {
+      "Engine\\": "/"
+    },
+    "files": [
+      "./helpers.php"
+    ]
+  }
+}

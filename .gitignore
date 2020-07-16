@@ -1,8 +1,4 @@
-/node_modules/
+/configs/
+/vendor/
 *.map
 *.log
-/modules/GUI/dist/
-/errorShots/
-/configs/
-.cache
-package-lock.json
