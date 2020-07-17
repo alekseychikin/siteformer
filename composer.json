@@ -1,6 +1,6 @@
 {
   "name": "makingoff/siteformer",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Experimental php-engine",
   "type": "library",
   "license": "MIT",
