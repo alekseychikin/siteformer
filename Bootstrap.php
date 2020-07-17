@@ -21,8 +21,8 @@ set_error_handler('\Engine\Classes\ErrorHandler::errorHandler', E_ALL | E_STRICT
 
 class Bootstrap {
 	public static function run($handler) {
-		$handler = include __DIR__ . '/engine.php';
+		$engine = include __DIR__ . '/engine.php';
 
-		$handler($handler);
+		$engine($handler);
 	}
 }
