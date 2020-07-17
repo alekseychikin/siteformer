@@ -7,20 +7,6 @@ use Engine\Classes\Exceptions\BaseException;
 use Engine\Modules\ORM\ORM;
 
 class Diagnostics {
-	public static function checkRequiredDirs() {
-		$requiredDirs = ['configs'];
-
-		foreach ($requiredDirs as $dir) {
-			$path = __DIR__ . '/../' . $dir;
-
-			if (!file_exists($path)) die('В директории движка должна быть создана директория ' . $dir . ' доступная на запись');
-
-			if (!is_dir($path)) die($dir . ' — это должна быть директория, а не файл');
-
-			if (!is_writable($path)) die('Директория ' . $dir . ' должна быть доступна на запись');
-		}
-	}
-
 	public static function checkDatabaseConnection($configs) {
 		try {
 			$configs = Validate::value([

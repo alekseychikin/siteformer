@@ -12,8 +12,6 @@ return function ($entryPoint) {
 	$startTime = explode(' ', microtime());
 	$startTime = $startTime[1] + $startTime[0];
 
-	Diagnostics::checkRequiredDirs();
-
 	session_start();
 	header('Content-type: text/html; charset=utf8');
 	define('EOL', "\n");
