@@ -2,8 +2,8 @@
 
 namespace Engine\Modules\ERM\Types;
 
-use \Engine\Classes\Validate;
-use \Engine\Modules\ERM\ERMType;
+use Engine\Classes\Validate;
+use Engine\Modules\ERM\ERMType;
 
 class TypeRadio extends ERMType {
 	public static $name = 'Переключатели';

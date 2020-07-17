@@ -2,8 +2,8 @@
 
 namespace Engine\Modules\ERM\Types;
 
-use \Engine\Modules\ERM\ERMType;
-use \Engine\Modules\ORM\ORM;
+use Engine\Modules\ERM\ERMType;
+use Engine\Modules\ORM\ORM;
 
 class TypeString extends ERMType {
 	public static $name = 'Строка';

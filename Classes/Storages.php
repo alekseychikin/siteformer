@@ -2,12 +2,17 @@
 
 namespace Engine\Classes;
 
-use \Engine\Classes\Exceptions\BaseException;
-use \Engine\Classes\Exceptions\ValidateException;
+use Engine\Classes\Exceptions\BaseException;
+use Engine\Classes\Exceptions\ValidateException;
 
 class Storages {
 	private static $storages;
 	private static $s3Connections = [];
+	private static $tempPath = false;
+
+	public static function setTempPath($path) {
+		self::$tempPath = $path;
+	}
 
 	public static function setStorages($configs) {
 		try {
@@ -115,6 +120,10 @@ class Storages {
 	}
 
 	public static function uploadToTemp($files) {
+		if (self::$tempPath === false) {
+			throw new BaseException('Set Storages::setTempPath(\'path-to-folder\') before using uploadToTemp');
+		}
+
 		$outfilenames = [];
 		$tmpName = $files['tmp_name'];
 		$name = $files['name'];
@@ -130,7 +139,7 @@ class Storages {
 			$basename = basename(mb_strtolower($name[$index], 'utf-8'), $extname);
 			$basename = Text::removeSpecialCharacters($basename);
 			$basename = Text::translite($basename);
-			$outfilename = pathresolve(ENGINE_TEMP, $basename) . $extname;
+			$outfilename = pathresolve(self::$tempPath, $basename) . $extname;
 
 			if (@is_uploaded_file($tmpname)) {
 				if (@move_uploaded_file($tmpname, $outfilename)) {

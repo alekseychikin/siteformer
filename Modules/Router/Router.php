@@ -2,15 +2,15 @@
 
 namespace Engine\Modules\Router;
 
-use \Engine\Classes\Services;
-use \Engine\Classes\ServiceGet;
-use \Engine\Classes\ServicePost;
-use \Engine\Classes\Response;
-use \Engine\Modules\Templater\Templater;
+use Engine\Classes\Services;
+use Engine\Classes\ServiceGet;
+use Engine\Classes\ServicePost;
+use Engine\Classes\Response;
+use Engine\Modules\Templater\Templater;
 
 class Router {
 	public static $languages = [];
-	private static $uri;
+	private static $uri = [];
 	private static $routes = [];
 	private static $errorPages = [];
 	private static $language = '';

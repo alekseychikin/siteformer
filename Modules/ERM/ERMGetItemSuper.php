@@ -2,7 +2,7 @@
 
 namespace Engine\Modules\ERM;
 
-use \Engine\Modules\ORM\ORM;
+use Engine\Modules\ORM\ORM;
 
 class ERMGetItemSuper extends ERMHelpers {
 	protected $collection;

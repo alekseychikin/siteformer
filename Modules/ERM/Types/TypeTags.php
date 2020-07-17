@@ -2,8 +2,8 @@
 
 namespace Engine\Modules\ERM\Types;
 
-use \Engine\Modules\ERM\ERMType;
-use \Engine\Modules\ORM\ORM;
+use Engine\Modules\ERM\ERMType;
+use Engine\Modules\ORM\ORM;
 
 class TypeTags extends ERMType {
 	public static $name = 'Теги';

@@ -3,9 +3,8 @@
 namespace Engine\Classes;
 
 class Migrations {
-	private static $lastMigration = null;
+	private static $migrations = [];
 	private static $pathMigrations;
-	private static $addConstructions = [];
 
 	public static function setMigrationsPath($path) {
 		self::$pathMigrations = pathresolve($path);
@@ -25,19 +24,15 @@ class Migrations {
 		}
 	}
 
-	public static function add($callback) {
-		self::$addConstructions[] = $callback;
-	}
-
 	private static function doMigrations() {
+		$lockFile = pathresolve(self::$pathMigrations, 'migrations.lock');
 		$dir = opendir(self::$pathMigrations);
-		$lastMigration = 0;
 		$files = [];
 
 		while ($file = readdir($dir)) {
 			$filePath = pathresolve(self::$pathMigrations, $file);
 
-			if ($file !== '.' && $file !== '..' && is_file($filePath) && extname($file) === '.php') {
+			if ($file !== '.' && $file !== '..' && is_file($filePath) && $filePath !== 'migrations.lock' && extname($file) === '.php') {
 				$index = (int) $file;
 
 				$files[$index] = $file;
@@ -49,20 +44,19 @@ class Migrations {
 		foreach ($files as $index => $file) {
 			$filePath = pathresolve(self::$pathMigrations, $file);
 
-			if (self::$lastMigration < $index) {
+			if (array_search($file, self::$migrations) === false) {
+				self::$migrations[] = $file;
+
 				require_once $filePath;
 			}
-
-			$lastMigration = $index;
 		}
 
-		$file = fopen(__DIR__ . '/../configs/migrations', 'w');
-		fputs($file, $lastMigration);
+		$file = fopen($lockFile, 'w');
+		fputs($file, json_encode([
+				'executed' => self::$migrations
+			], JSON_PRETTY_PRINT)
+		);
 		fclose($file);
-
-		foreach (self::$addConstructions as $addConstruction) {
-			$addConstruction();
-		}
 	}
 
 	private static function doMigration($name) {
@@ -76,12 +70,22 @@ class Migrations {
 	}
 
 	private static function preserveLastMigration() {
-		if (file_exists(__DIR__ . '/../configs/migrations')) {
-			$lastMigration = trim(file_get_contents(__DIR__ . '/../configs/migrations'));
+		$lockFile = pathresolve(self::$pathMigrations, 'migrations.lock');
 
-			settype($lastMigration, 'integer');
-
-			self::$lastMigration = $lastMigration;
+		if (file_exists($lockFile)) {
+			try {
+				$migrations = json_decode(file_get_contents($lockFile), true);
+				self::$migrations = $migrations['executed'];
+			} catch (Exception $e) {
+			}
+		} else {
+			try {
+				$file = fopen($lockFile, 'w');
+				fputs($file, '{executed:[]}');
+				fclose($file);
+			} catch (Exception $e) {
+				throw new \Exception('There is no write permission for lock file by path: ' . $lockFile . '. Create it manually and give permission for write.');
+			}
 		}
 	}
 }

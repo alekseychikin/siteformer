@@ -2,7 +2,7 @@
 
 namespace Engine\Modules\ERM\Types;
 
-use \Engine\Modules\ERM\ERMType;
+use Engine\Modules\ERM\ERMType;
 
 class TypeTable extends ERMType {
 	public static $name = 'Таблица';

@@ -2,7 +2,7 @@
 
 namespace Engine\Classes;
 
-use \stdClass;
+use stdClass;
 
 /**
 * $Id$

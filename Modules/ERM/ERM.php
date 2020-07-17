@@ -2,10 +2,10 @@
 
 namespace Engine\Modules\ERM;
 
-use \Engine\Classes\Validate;
-use \Engine\Classes\Response;
-use \Engine\Modules\ORM\ORM;
-use \Engine\Modules\ORM\ORMDatabase;
+use Engine\Classes\Validate;
+use Engine\Classes\Response;
+use Engine\Modules\ORM\ORM;
+use Engine\Modules\ORM\ORMDatabase;
 
 class ERM extends ERMHelpers {
 	private static $collections = [];

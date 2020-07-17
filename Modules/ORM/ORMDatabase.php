@@ -2,9 +2,9 @@
 
 namespace Engine\Modules\ORM;
 
-use \Engine\Classes\Exceptions\BaseException;
-use \Engine\Classes\Validate;
-use \PDO;
+use Engine\Classes\Exceptions\BaseException;
+use Engine\Classes\Validate;
+use PDO;
 
 class ORMDatabase {
 	public static $countQueries = 0;

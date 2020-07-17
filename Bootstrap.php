@@ -2,7 +2,7 @@
 
 namespace Engine;
 
-use \Engine\Classes\ErrorHandler;
+use Engine\Classes\ErrorHandler;
 
 if (getenv('APPLICATION_ENV') !== false) {
 	define('APPLICATION_ENV', getenv('APPLICATION_ENV'));
@@ -19,4 +19,10 @@ register_shutdown_function('\Engine\Classes\ErrorHandler::shutdownHandler');
 set_exception_handler('\Engine\Classes\ErrorHandler::exceptionHandler');
 set_error_handler('\Engine\Classes\ErrorHandler::errorHandler', E_ALL | E_STRICT);
 
-return include __DIR__ . '/engine.php';
+class Bootstrap {
+	public static function run($handler) {
+		$handler = include __DIR__ . '/engine.php';
+
+		$handler($handler);
+	}
+}

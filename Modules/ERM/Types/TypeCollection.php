@@ -2,10 +2,10 @@
 
 namespace Engine\Modules\ERM\Types;
 
-use \Engine\Classes\Validate;
-use \Engine\Modules\ORM\ORM;
-use \Engine\Modules\ERM\ERM;
-use \Engine\Modules\ERM\ERMType;
+use Engine\Classes\Validate;
+use Engine\Modules\ORM\ORM;
+use Engine\Modules\ERM\ERM;
+use Engine\Modules\ERM\ERMType;
 
 class TypeCollection extends ERMType {
 	public static $name = 'Коллекция';

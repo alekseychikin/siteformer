@@ -4,7 +4,7 @@ namespace Engine\Modules\ERM;
 
 require_once __DIR__ . '/ERMGetItemSuper.php';
 
-use \Engine\Modules\ORM\ORM;
+use Engine\Modules\ORM\ORM;
 
 class ERMUpdate extends ERMGetItemSuper {
 	private $params;

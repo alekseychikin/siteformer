@@ -2,11 +2,11 @@
 
 namespace Engine\Modules\ERM\Types;
 
-use \Engine\Classes\Text;
-use \Engine\Classes\Validate;
-use \Engine\Modules\ERM\ERM;
-use \Engine\Modules\ERM\ERMType;
-use \Engine\Modules\ORM\ORM;
+use Engine\Classes\Text;
+use Engine\Classes\Validate;
+use Engine\Modules\ERM\ERM;
+use Engine\Modules\ERM\ERMType;
+use Engine\Modules\ORM\ORM;
 
 class TypeUrl extends ERMType {
 	public static $name = 'Урл';

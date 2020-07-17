@@ -2,7 +2,7 @@
 
 namespace Engine\Modules\ORM;
 
-use \Engine\Classes\Validate;
+use Engine\Classes\Validate;
 
 class ORMCreate extends ORMDatabase {
 	private $sql = '';

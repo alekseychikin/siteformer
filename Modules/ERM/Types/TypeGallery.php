@@ -2,11 +2,11 @@
 
 namespace Engine\Modules\ERM\Types;
 
-use \Engine\Classes\Image;
-use \Engine\Classes\Validate;
-use \Engine\Classes\Storages;
-use \Engine\Modules\ERM\ERMType;
-use \Engine\Modules\ORM\ORM;
+use Engine\Classes\Image;
+use Engine\Classes\Validate;
+use Engine\Classes\Storages;
+use Engine\Modules\ERM\ERMType;
+use Engine\Modules\ORM\ORM;
 
 class TypeGallery extends ERMType {
 	public static $name = 'Галерея';

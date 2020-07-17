@@ -2,10 +2,10 @@
 
 namespace Engine\Modules\ERM\Types;
 
-use \Engine\Classes\Image;
-use \Engine\Classes\Validate;
-use \Engine\Classes\Storages;
-use \Engine\Modules\ERM\ERMType;
+use Engine\Classes\Image;
+use Engine\Classes\Validate;
+use Engine\Classes\Storages;
+use Engine\Modules\ERM\ERMType;
 
 class TypeImage extends ERMType {
 	public static $name = 'Изображение';

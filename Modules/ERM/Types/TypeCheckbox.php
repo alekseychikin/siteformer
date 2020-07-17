@@ -2,9 +2,9 @@
 
 namespace Engine\Modules\ERM\Types;
 
-use \Engine\Classes\Validate;
-use \Engine\Modules\ERM\ERMType;
-use \Engine\Modules\ORM\ORM;
+use Engine\Classes\Validate;
+use Engine\Modules\ERM\ERMType;
+use Engine\Modules\ORM\ORM;
 
 class TypeCheckbox extends ERMType {
 	public static $name = 'Флажки';

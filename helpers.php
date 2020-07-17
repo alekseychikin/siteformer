@@ -1,8 +1,6 @@
 <?php
 
-// namespace \;
-
-use \Engine\Classes\Response;
+use Engine\Classes\Response;
 
 function println() {
 	$variables = func_get_args();

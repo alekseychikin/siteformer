@@ -2,7 +2,7 @@
 
 namespace Engine\Modules\ERM;
 
-use \Engine\Classes\Text;
+use Engine\Classes\Text;
 
 class ERMHelpers {
 	public static function getClassNameByType($type) {

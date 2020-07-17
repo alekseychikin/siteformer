@@ -2,9 +2,9 @@
 
 namespace Engine\Modules\ERM\Types;
 
-use \Engine\Classes\Validate;
-use \Engine\Classes\Storages;
-use \Engine\Modules\ERM\ERMType;
+use Engine\Classes\Validate;
+use Engine\Classes\Storages;
+use Engine\Modules\ERM\ERMType;
 
 class TypeFile extends ERMType {
 	public static $name = 'Файл';

@@ -1,24 +1,24 @@
 <?php
 
-namespace Engine;
-
-use \Engine\Classes\Response;
-use \Engine\Classes\Exceptions\ValidateException;
-use \Engine\Classes\Exceptions\BaseException;
-use \Engine\Classes\Exceptions\PageNotFoundException;
-use \Engine\Modules\Router\Router;
+use Engine\Classes\Response;
+use Engine\Classes\Diagnostics;
+use Engine\Classes\ClearCache;
+use Engine\Classes\Exceptions\ValidateException;
+use Engine\Classes\Exceptions\BaseException;
+use Engine\Classes\Exceptions\PageNotFoundException;
+use Engine\Modules\Router\Router;
 
 return function ($entryPoint) {
 	$startTime = explode(' ', microtime());
 	$startTime = $startTime[1] + $startTime[0];
 
-	\Engine\Classes\Diagnostics::checkRequiredDirs();
+	Diagnostics::checkRequiredDirs();
 
 	session_start();
 	header('Content-type: text/html; charset=utf8');
 	define('EOL', "\n");
 
-	\Engine\Classes\ClearCache::clear();
+	ClearCache::clear();
 
 	try {
 		$entryPoint();

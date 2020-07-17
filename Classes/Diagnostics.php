@@ -2,9 +2,9 @@
 
 namespace Engine\Classes;
 
-use \Engine\Classes\Exceptions\ValidateException;
-use \Engine\Classes\Exceptions\BaseException;
-use \Engine\Modules\ORM\ORM;
+use Engine\Classes\Exceptions\ValidateException;
+use Engine\Classes\Exceptions\BaseException;
+use Engine\Modules\ORM\ORM;
 
 class Diagnostics {
 	public static function checkRequiredDirs() {
