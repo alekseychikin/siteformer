@@ -5,6 +5,7 @@ namespace Engine\Modules\Router;
 use Engine\Classes\Services;
 use Engine\Classes\ServiceGet;
 use Engine\Classes\ServicePost;
+use Engine\Classes\ServiceAction;
 use Engine\Classes\Response;
 use Engine\Modules\Templater\Templater;
 
@@ -243,9 +244,18 @@ class Router {
 		Response::setArray(self::handleGetServiceData($getRequestParams));
 
 		if (strtoupper($_SERVER['REQUEST_METHOD']) === 'POST') {
+			$postRequestParams = [];
+
 			if (isset($_SERVER['CONTENT_TYPE']) && $_SERVER['CONTENT_TYPE'] === 'application/json') {
 				$rawPostData = file_get_contents('php://input');
-				$postRequestParams = self::parsePostRequest(parseJSON($rawPostData));
+
+				$parsedJson = parseJSON($rawPostData);
+
+				if (is_null($parsedJson)) {
+					throw new \Engine\Classes\Exceptions\BaseException('Not valid request json');
+				}
+
+				$postRequestParams = self::parsePostRequest($parsedJson);
 			} else {
 				$files = self::transformFiles();
 				$postRequestParams = self::parsePostRequest(self::deepMerge($_POST, $files));
@@ -297,16 +307,7 @@ class Router {
 		}
 	}
 
-	private static function handleRoute(RouterRoute $route) {
-		$data = $route->getData();
-		$template = $route->getTemplate();
-
-		$params = self::handleGetServiceData($data);
-
-		foreach ($params as $key => $value) {
-			Response::set($key, $value);
-		}
-
+	private static function handleRoute($route) {
 		$headers = Response::getRequestHeaders();
 
 		$accept = '*/*';
@@ -315,8 +316,22 @@ class Router {
 			$accept = strtolower($headers['Accept']);
 		}
 
-		if (self::isHeaderContainsAnyItem($accept, ['text/html', '*/*'])) {
-			echo Templater::render($template, Response::getState());
+		if ($route instanceof RouterRoute) {
+			$data = $route->getData();
+			$template = $route->getTemplate();
+			$params = self::handleGetServiceData($data);
+
+			foreach ($params as $key => $value) {
+				Response::set($key, $value);
+			}
+
+			if (self::isHeaderContainsAnyItem($accept, ['text/html', '*/*'])) {
+				echo Templater::render($template, Response::getState());
+			}
+		} elseif (is_callable($route)) {
+			echo $route();
+		} else {
+			echo $route;
 		}
 	}
 
@@ -334,7 +349,14 @@ class Router {
 		$outputData = [];
 
 		foreach ($data as $key => $value) {
-			if (gettype($value) === 'object' && $value instanceof \Engine\Classes\ServiceGet) {
+			if (gettype($value) === 'object' && $value instanceof ServiceAction) {
+				$model = $value->getModel();
+				$action = $value->getAction();
+				$params = $value->getParams();
+
+				$inputData[$key] = Services::action($model, $action, $params);
+				$outputData[$key] = $inputData[$key];
+			} elseif (gettype($value) === 'object' && $value instanceof ServiceGet) {
 				$model = $value->getModel();
 				$params = $value->getParams();
 
@@ -352,7 +374,7 @@ class Router {
 	}
 
 	private static function handlePostServiceData($data = [], $inputData = []) {
-		if ($data instanceof \Engine\Classes\ServicePost) {
+		if ($data instanceof ServicePost) {
 			$model = $data->getModel();
 			$params = $data->getParams();
 
@@ -361,10 +383,27 @@ class Router {
 			return [];
 		}
 
+		if ($data instanceof ServiceAction) {
+			$model = $data->getModel();
+			$action = $data->getAction();
+			$params = $data->getParams();
+
+			Services::action($model, $action, $params);
+
+			return [];
+		}
+
 		$outputData = [];
 
 		foreach ($data as $key => $value) {
-			if (gettype($value) === 'object' && $value instanceof \Engine\Classes\ServicePost) {
+			if (gettype($value) === 'object' && $value instanceof ServiceAction) {
+				$model = $value->getModel();
+				$action = $value->getAction();
+				$params = $value->getParams();
+
+				$inputData[$key] = Services::action($model, $action, $params);
+				$outputData[$key] = $inputData[$key];
+			} elseif (gettype($value) === 'object' && $value instanceof ServicePost) {
 				$model = $value->getModel();
 				$params = $value->getParams();
 
@@ -437,7 +476,19 @@ class Router {
 
 		foreach ($data as $field => $value) {
 			if (strpos($field, '[') === false) {
-				if ($field === '__model') {
+				if ($field === '__action') {
+					$params = [];
+
+					if (isset($data['__params'])) {
+						$params = $data['__params'];
+					}
+
+					$value = explode('/', $value);
+					$model = $value[0];
+					$action = $value[1];
+
+					return new ServiceAction($model, $action, $params);
+				} elseif ($field === '__model') {
 					$params = [];
 
 					if (isset($data['__params'])) {
@@ -461,7 +512,19 @@ class Router {
 
 		foreach ($data as $field => $value) {
 			if (strpos($field, '[') === false) {
-				if ($field === '__model') {
+				if ($field === '__action') {
+					$params = [];
+
+					if (isset($data['__params'])) {
+						$params = $data['__params'];
+					}
+
+					$value = explode('/', $value);
+					$model = $value[0];
+					$action = $value[1];
+
+					return new ServiceAction($model, $action, $params);
+				} elseif ($field === '__model') {
 					$params = [];
 
 					if (isset($data['__params'])) {

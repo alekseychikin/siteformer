@@ -2,6 +2,8 @@
 
 namespace Engine\Modules\ORM;
 
+use Engine\Classes\Validate;
+
 class ORMAlter extends ORMDatabase {
   private $tableName;
   private $orderActions = [];

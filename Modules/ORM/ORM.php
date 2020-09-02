@@ -82,6 +82,16 @@ class ORM extends ORMDatabase {
 		return parent::query($sql, $alias, $source, $saveUrl);
 	}
 
+	public static function queryWithParams(
+		$sql,
+		$params,
+		$alias = 'default',
+		$source = false,
+		$saveUrl = true
+	) {
+		return parent::query(self::prepareQuery($sql, $params), $alias, $source, $saveUrl);
+	}
+
 	public static function hasConnection($alias = 'default') {
 		return parent::hasConnection($alias);
 	}
@@ -118,5 +128,31 @@ class ORM extends ORMDatabase {
 
 	public static function getFields($table, $alias = 'default') {
 		return parent::getFields($table, $alias);
+	}
+
+	public static function prepareQuery($query, $params) {
+		$result = $query;
+
+		foreach ($params as $field => $value) {
+			if (gettype($value) === 'array') {
+				if (count($value)) {
+					$arrayValues = [];
+
+					foreach ($value as $arrayValue) {
+						$arrayValues[] = ORM::quote($arrayValue);
+					}
+
+					$value = implode(', ', $arrayValues);
+				} else {
+					$value = 'NULL';
+				}
+			} else {
+				$value = ORM::quote($value);
+			}
+
+			$result = str_replace(':' . $field, $value, $result);
+		}
+
+		return $result;
 	}
 }

@@ -57,26 +57,32 @@ class Validate {
 		return $result;
 	}
 
-	public static function value($params, $source = false, $index = [], & $uniqueCache = []) {
+	public static function value($params, $source = null, $index = [], & $uniqueCache = []) {
 		$isTypeArray = isset($params['type']) && $params['type'] === 'array';
 
 		if (!isset($params['collection']) && gettype($source) === 'array' && !$isTypeArray) {
 			$data = [];
 
 			foreach ($params as $field => $param) {
-				$value = false;
+				$value = null;
 
 				if (isset($source[$field])) {
 					$value = $source[$field];
 				}
 
-				$data[$field] = self::value($param, $value, array_merge($index, [$field]), $uniqueCache);
+				$value = self::value($param, $value, array_merge($index, [$field]), $uniqueCache);
+
+				if (!is_null($value)) {
+					$data[$field] = $value;
+				}
 			}
 		} elseif (isset($params['collection'])) {
-			if (gettype($source) === 'array') {
-				$data = self::collection($params['collection'], $source, $index);
-			} elseif (isset($params['required'])) {
+			if (isset($params['required']) && $params['required'] && (!isset($source) || is_null($source))) {
 				return self::returnError('EEMPTYREQUIRED', $index, $source);
+			} elseif (gettype($source) === 'array') {
+				$data = self::collection($params['collection'], $source, $index);
+			} else {
+				return self::returnError('ENOTVALIDTYPE', $index, $source);
 			}
 
 			if (isset($params['minlength'])) {
@@ -89,6 +95,14 @@ class Validate {
 				if (count($data) > $params['maxlength']) {
 					return self::returnError('EMAXLENGTH', $index, $data);
 				}
+			}
+
+			if (gettype($params['valid']) === 'object' && is_callable($params['valid'])) {
+				if (!$params['valid']($data)) {
+					return self::returnError('ENOTVALIDVALUE', $index, $data);
+				}
+			} else {
+				throw new \Error('Field `valid` with type string is not allowed in collection, only callable');
 			}
 		} else {
 			$data = $source;
@@ -107,7 +121,13 @@ class Validate {
 				}
 			}
 
-			if (isset($params['type']) && $params['type'] !== 'array') {
+			if (isset($params['required']) && $params['required']) {
+				if (empty($data)) {
+					return self::returnError('EEMPTYREQUIRED', $index, $data);
+				}
+			}
+
+			if (isset($params['type']) && $params['type'] !== 'array' && !is_null($data)) {
 				$isBoolean = gettype($data) === 'boolean';
 				$isMatch = preg_match(self::$regexpTypes[$params['type']], $data);
 
@@ -116,13 +136,7 @@ class Validate {
 				}
 			}
 
-			if (isset($params['required']) && $params['required']) {
-				if (empty($data)) {
-					return self::returnError('EEMPTYREQUIRED', $index, $data);
-				}
-			}
-
-			if (isset($params['valid'])) {
+			if (isset($params['valid']) && !is_null($data)) {
 				if (gettype($params['valid']) === 'object' && is_callable($params['valid'])) {
 					if (!$params['valid']($data)) {
 						return self::returnError('ENOTVALIDVALUE', $index, $data);
@@ -135,7 +149,7 @@ class Validate {
 			}
 
 			if (isset($params['values'])) {
-				if (!in_array($data, $params['values'])) {
+				if (!empty($data) && !in_array($data, $params['values'])) {
 					return self::returnError('EVALUESNOTMATCHED', $index, $data);
 				}
 			}

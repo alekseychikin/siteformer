@@ -23,7 +23,7 @@ return function ($entryPoint) {
 	} catch (ValidateException $e) {
 		$message = $e->getDetails();
 
-		Response::error(422, $message);
+		Response::error(400, $message);
 	} catch (BaseException $e) {
 		Response::error(400, $e->message());
 	} catch (\Exception $e) {
@@ -39,7 +39,7 @@ return function ($entryPoint) {
 	} catch (ValidateException $e) {
 		$message = $e->getDetails();
 
-		Response::error(422, $message);
+		Response::error(400, $message);
 	} catch (BaseException $e) {
 		Response::error(400, $e->message());
 	} catch (Exception $e) {

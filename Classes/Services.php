@@ -33,6 +33,14 @@ class Services {
 		return false;
 	}
 
+	public static function action($model, $action, $params) {
+		if ($serviceClass = self::getClass($model)) {
+			return call_user_func([$serviceClass, $action], $params);
+		}
+
+		return false;
+	}
+
 	private static function getClass($model) {
 		foreach (self::$paths as $pathItem) {
 			$serviceClass = $pathItem . Text::camelCasefy($model, true);

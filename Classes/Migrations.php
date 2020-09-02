@@ -48,15 +48,15 @@ class Migrations {
 				self::$migrations[] = $file;
 
 				require_once $filePath;
+
+				$file = fopen($lockFile, 'w');
+				fputs($file, json_encode([
+						'executed' => self::$migrations
+					], JSON_PRETTY_PRINT)
+				);
+				fclose($file);
 			}
 		}
-
-		$file = fopen($lockFile, 'w');
-		fputs($file, json_encode([
-				'executed' => self::$migrations
-			], JSON_PRETTY_PRINT)
-		);
-		fclose($file);
 	}
 
 	private static function doMigration($name) {
@@ -81,7 +81,12 @@ class Migrations {
 		} else {
 			try {
 				$file = fopen($lockFile, 'w');
-				fputs($file, '{executed:[]}');
+				fputs(
+					$file,
+					json_encode([
+						'executed' => []
+					], JSON_PRETTY_PRINT)
+				);
 				fclose($file);
 			} catch (Exception $e) {
 				throw new \Exception('There is no write permission for lock file by path: ' . $lockFile . '. Create it manually and give permission for write.');
