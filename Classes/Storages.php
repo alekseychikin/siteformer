@@ -189,10 +189,7 @@ class Storages {
 			'bucket' => [
 				'required' => true
 			],
-			'path' => [],
-			'location' => [
-				'required' => true
-			]
+			'path' => []
 		], $configs, [$storage]);
 	}
 

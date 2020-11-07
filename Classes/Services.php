@@ -10,35 +10,36 @@ class Services {
 	}
 
 	public static function get($model, $params) {
-		if ($serviceClass = self::getClass($model)) {
-			return call_user_func([$serviceClass, 'get'], $params);
-		}
-
-		return false;
+		return self::run($model, 'get', $params);
 	}
 
 	public static function post($model, $params) {
-		if ($serviceClass = self::getClass($model)) {
-			return call_user_func([$serviceClass, 'post'], $params);
-		}
-
-		return false;
+		return self::run($model, 'post', $params);
 	}
 
 	public static function files($model, $params) {
+		return self::run($model, 'files', $params);
+	}
+
+	public static function action($model, $action, $params) {
+		return self::run($model, $action, $params);
+	}
+
+	private static function run($model, $method, $params) {
 		if ($serviceClass = self::getClass($model)) {
-			return call_user_func([$serviceClass, 'files'], $params);
+			if (self::isAssoc($params)) {
+				return call_user_func([$serviceClass, $method], $params);
+			}
+
+			return call_user_func_array([$serviceClass, $method], $params);
 		}
 
 		return false;
 	}
 
-	public static function action($model, $action, $params) {
-		if ($serviceClass = self::getClass($model)) {
-			return call_user_func([$serviceClass, $action], $params);
-		}
-
-		return false;
+	private static function isAssoc($arr) {
+		if (array() === $arr) return false;
+		return array_keys($arr) !== range(0, count($arr) - 1);
 	}
 
 	private static function getClass($model) {

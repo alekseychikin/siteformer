@@ -57,10 +57,11 @@ class Router {
 		if (isset(self::$uri[0]) && in_array(self::$uri[0], self::$languages)) {
 			self::$language = self::$uri[0];
 			self::$uri = array_splice(self::$uri, 1);
-			Response::set('lang', self::$language, true);
 		} else if (count(self::$languages)) {
 			self::$language = self::$languages[0];
 		}
+
+		Response::set('lang', self::$language, true);
 	}
 
 	public static function route() {

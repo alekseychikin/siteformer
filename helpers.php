@@ -4,32 +4,46 @@ use Engine\Classes\Response;
 
 function println() {
 	$variables = func_get_args();
-
 	$headers = Response::getRequestHeaders();
+	$accept = '*/*';
 
 	if (isset($headers['Accept'])) {
 		$accept = strtolower($headers['Accept']);
 	}
 
-	if (!isset($headers['X-Requested-With']) || $headers['X-Requested-With'] !== 'XMLHttpRequest') {
+	$isAcceptJson = $accept === 'application/json';
+
+	if (!$isAcceptJson) {
 		echo '<pre>';
-	}
 
-	foreach ($variables as $index => $variable) {
-		if (gettype($variable) === 'array') {
-			print_r($variable);
-		} elseif (gettype($variable) === 'boolean') {
-			echo $variable ? 'true' : 'false';
+		foreach ($variables as $index => $variable) {
+			if (gettype($variable) === 'array') {
+				print_r($variable);
+			} elseif (gettype($variable) === 'boolean') {
+				echo $variable ? 'true' : 'false';
+			} else {
+				echo $variable;
+			}
+
+			if ($index < count($variables) - 1) {
+				echo '   ';
+			}
+		}
+	} else {
+		if (count($variables) === 1) {
+			echo json_encode($variables[0], JSON_UNESCAPED_UNICODE);
 		} else {
-			echo $variable;
-		}
+			$output = [];
 
-		if ($index < count($variables) - 1) {
-			echo '   ';
+			foreach ($variables as $variable) {
+				$output[] = json_encode($variable, JSON_UNESCAPED_UNICODE);
+			}
+
+			echo '[' . implode(', ', $output) . ']';
 		}
 	}
 
-	if (isset($headers['X-Requested-With']) && $headers['X-Requested-With'] === 'XMLHttpRequest') {
+	if ($isAcceptJson) {
 		echo EOL;
 	} else {
 		echo '</pre>' . EOL;
