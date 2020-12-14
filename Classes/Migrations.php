@@ -2,9 +2,10 @@
 
 namespace Engine\Classes;
 
+use Engine\Modules\ORM\ORM;
+
 class Migrations {
-	private static $migrationFile = 'migrations.json';
-	private static $migrationLock = 'migrations.lock';
+	private static $migrationLockPath;
 	private static $migrations = [];
 	private static $pathMigrations;
 
@@ -15,24 +16,30 @@ class Migrations {
 			die('Не найдена папка с миграциями: ' . self::$pathMigrations);
 		}
 
+		self::$migrationLockPath = pathresolve(sys_get_temp_dir(), md5(__DIR__) . '.lock');
 		self::migration();
+	}
+
+	public static function removeLock() {
+		if (file_exists(self::$migrationLockPath)) {
+			unlink(self::$migrationLockPath);
+		}
 	}
 
 	private static function migration() {
 		self::preserveLastMigration();
 
-		if (file_exists(pathresolve(self::$pathMigrations, self::$migrationLock))) {
+		if (file_exists(self::$migrationLockPath)) {
 			return false;
 		}
 
-		$migrationFilePath = pathresolve(self::$pathMigrations, self::$migrationFile);
 		$dir = opendir(self::$pathMigrations);
 		$files = [];
 
 		while ($file = readdir($dir)) {
 			$filePath = pathresolve(self::$pathMigrations, $file);
 
-			if ($file !== '.' && $file !== '..' && is_file($filePath) && $filePath !== self::$migrationFile && extname($file) === '.php') {
+			if ($file !== '.' && $file !== '..' && is_file($filePath) && extname($file) === '.php') {
 				$index = (int) $file;
 
 				$files[$index] = $file;
@@ -50,7 +57,7 @@ class Migrations {
 		}
 
 		if ($hasChanges) {
-			$lockFile = fopen(pathresolve(self::$pathMigrations, self::$migrationLock), 'w');
+			$lockFile = fopen(self::$migrationLock, 'w');
 			fclose($lockFile);
 
 			foreach ($files as $index => $file) {
@@ -60,41 +67,37 @@ class Migrations {
 
 					require_once $filePath;
 
-					$file = fopen($migrationFilePath, 'w');
-					fputs($file, json_encode([
-							'executed' => self::$migrations
-						], JSON_PRETTY_PRINT)
-					);
-					fclose($file);
+					ORM::insert('sys_migrations')
+					->values(['filepath' => $file])
+					->exec();
 				}
 			}
 
-			unlink(pathresolve(self::$pathMigrations, self::$migrationLock));
+			self::removeLock();
 		}
 	}
 
 	private static function preserveLastMigration() {
-		$migrationFilePath = pathresolve(self::$pathMigrations, self::$migrationFile);
+		if (!ORM::exists('sys_migrations')) {
+			ORM::create('sys_migrations')
+			->addField([
+				'name' => 'id',
+				'type' => 'INT(11) UNSIGNED',
+				'autoincrement' => true
+			])
+			->addField([
+				'name' => 'filepath',
+				'type' => 'VARCHAR(200)'
+			])
+			->addKey('id', 'PRIMARY KEY')
+			->addKey('filepath', 'KEY')
+			->exec();
+		}
 
-		if (file_exists($migrationFilePath)) {
-			try {
-				$migrations = json_decode(file_get_contents($migrationFilePath), true);
-				self::$migrations = $migrations['executed'];
-			} catch (Exception $e) {
-			}
-		} else {
-			try {
-				$file = fopen($migrationFilePath, 'w');
-				fputs(
-					$file,
-					json_encode([
-						'executed' => []
-					], JSON_PRETTY_PRINT)
-				);
-				fclose($file);
-			} catch (Exception $e) {
-				throw new \Exception('There is no write permission for lock file by path: ' . $migrationFilePath . '. Create it manually and give permission for write.');
-			}
+		$data = ORM::query('SELECT * FROM `sys_migrations` ORDER BY `filepath` ASC');
+
+		foreach ($data as $row) {
+			self::$migrations[] = $row['filepath'];
 		}
 	}
 }
