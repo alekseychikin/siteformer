@@ -2,6 +2,8 @@
 
 use Engine\Classes\Response;
 
+define('MYSQL_DATETIME_FORMAT', 'Y-m-d H:i:s');
+
 function println() {
 	$variables = func_get_args();
 	$headers = Response::getRequestHeaders();
@@ -218,4 +220,8 @@ function prepareJSONResponse($obj) {
 	}
 
 	return $obj;
+}
+
+function convertDateTimeToTimestamp($datetime) {
+	return date_timestamp_get(date_create_from_format(MYSQL_DATETIME_FORMAT, $datetime));
 }
