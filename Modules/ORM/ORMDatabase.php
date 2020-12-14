@@ -202,12 +202,21 @@ class ORMDatabase {
 				self::$lastInsertIds[$tableName] = self::$connections[$alias]->lastInsertId();
 			} else {
 				$res = self::$connections[$alias]->prepare($sql, [PDO::ATTR_CURSOR => PDO::CURSOR_SCROLL]);
-				$res->execute();
-				$err = $res->errorInfo();
-			}
 
-			if ($err[1] !== 0 && $err[1] !== null) {
-				self::makeException($err[2] . "\n\n" . $sql);
+				try {
+					$res->execute();
+				} catch (\PDOException $exception) {
+					$trace = $exception->getTrace();
+					array_shift($trace);
+					array_shift($trace);
+					\Engine\Classes\ErrorHandler::errorHandler(
+						1,
+						$exception->getMessage(),
+						$trace[0]['file'],
+						$trace[0]['line'],
+						$trace
+					);
+				}
 			}
 
 			self::$lastRes = $res;

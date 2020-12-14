@@ -2,7 +2,11 @@
 
 namespace Engine\Classes;
 
-class errorHandler {
+use Engine\Classes\Migrations;
+use Engine\Classes\Response;
+use Engine\Modules\Router\Router;
+
+class ErrorHandler {
 	private static $handlers = [];
 
 	public static function setHandler($handler) {
@@ -22,7 +26,7 @@ class errorHandler {
 				case E_CORE_WARNING:
 				case E_COMPILE_WARNING:
 				case E_PARSE:
-					throw new \ErrorException($error['message'], 0, $error['type'], $error['file'], $error['line']);
+					self::printError($error['message'], $error['file'], $error['line']);
 			}
 		}
 	}
@@ -32,20 +36,29 @@ class errorHandler {
 			$handler($exception);
 		}
 
-		if (APPLICATION_ENV === 'develop') {
-			\Engine\Classes\Response::error(
-				500,
-				$exception->getMessage() . ' at ' . $exception->getFile() .
-				':' . $exception->getLine() . '<pre>' . print_r($exception->getTrace(), true) . '</pre>'
-			);
-		} else {
-			\Engine\Modules\Router\Router::handleError(500);
+		self::printError(
+			$exception->getMessage(),
+			$exception->getFile(),
+			$exception->getLine(),
+			print_r($exception->getTrace(), true)
+		);
+	}
+
+	public static function errorHandler($errno, $msg, $file, $line, $trace = null) {
+		if (error_reporting() || $errno) {
+			self::printError($msg, $file, $line, print_r($trace === null ? debug_backtrace() : $trace, true));
 		}
 	}
 
-	public static function errorHandler($errno, $msg, $file, $line) {
-		if (error_reporting() || $errno) {
-			throw new \ErrorException($msg, 0, $errno, $file, $line);
+	private static function printError($msg, $file, $line, $additional = '') {
+		if (APPLICATION_ENV === 'develop') {
+			Migrations::removeLock();
+			Response::error(
+				500,
+				$msg . ' at ' . $file . ':' . $line . (strlen($additional) ? '<pre>' . $additional . '</pre>' : '')
+			);
+		} else {
+			Router::handleError(500);
 		}
 	}
 }
