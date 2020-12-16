@@ -57,7 +57,7 @@ class Migrations {
 		}
 
 		if ($hasChanges) {
-			$lockFile = fopen(self::$migrationLock, 'w');
+			$lockFile = fopen(self::$migrationLockPath, 'w');
 			fclose($lockFile);
 
 			foreach ($files as $index => $file) {
