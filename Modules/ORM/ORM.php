@@ -146,12 +146,23 @@ class ORM extends ORMDatabase {
 				} else {
 					$value = 'NULL';
 				}
-			} else {
-				$value = ORM::quote($value);
-			}
 
-			$result = str_replace(':' . $field, $value, $result);
-		}
+				$result = str_replace(':' . $field, $value, $result);
+			} else {
+				$result = str_replace(
+					[
+						':%' . $field . '%',
+						':' . $field . '%',
+						':%' . $field,
+						':' . $field
+					], [
+						ORM::quote('%' . $value . '%'),
+						ORM::quote($value . '%'),
+						ORM::quote('%' . $value),
+						ORM::quote($value)
+					], $result
+				);
+			}
 
 		return $result;
 	}
