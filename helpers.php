@@ -210,11 +210,11 @@ function prepareJSONResponse($obj) {
 			return $obj === 'true' ? true : false;
 		}
 
-		if (preg_match('/^\d+\.\d+$/', $obj)) {
+		if (preg_match('/^^([1-9]\d*|0)\.\d*?[1-9]$$/', $obj)) {
 			return (float)$obj;
 		}
 
-		if (preg_match('/^\d+$/', $obj)) {
+		if (preg_match('/^[1-9]\d*$/', $obj)) {
 			return (int)$obj;
 		}
 	}
