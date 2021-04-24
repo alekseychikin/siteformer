@@ -163,6 +163,7 @@ class ORM extends ORMDatabase {
 					], $result
 				);
 			}
+		}
 
 		return $result;
 	}
